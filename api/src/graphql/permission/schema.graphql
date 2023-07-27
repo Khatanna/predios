@@ -1,0 +1,33 @@
+# Types
+type Permission {
+  name: String!
+  description: String!
+}
+
+type PermissionWithUser {
+  name: String!
+  description: String!
+  users: [User!]!
+}
+
+type PermissionOnUser {
+  user: User
+  permission: Permission
+}
+
+# Queries
+type Query {
+  permissions: [Permission!]!
+  permissionsWithUsers: [PermissionWithUser!]!
+}
+
+# Mutations
+type Mutation {
+  createPermission(data: InputCreatePermission): Permission
+}
+
+# Input Types
+input InputCreatePermission {
+  name: String!
+  descripcion: String!
+}

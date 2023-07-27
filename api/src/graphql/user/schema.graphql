@@ -1,0 +1,45 @@
+# Types
+type User {
+  id: Int!
+  name: String!
+  firstLastName: String!
+  secondLastName: String!
+  userName: String!
+  password: String!
+  permissions: [Permission!]!
+}
+
+# Queries
+type Query {
+  allUsers: [User!]!
+  findUserById(id: Int): User
+}
+
+# Mutations
+type Mutation {
+  createUser(data: ForCreateUser): User
+  updateUser(data: ForUpdateUser): User
+  deleteUser(id: Int): Boolean
+}
+
+# Input types
+input ForCreateUser {
+  name: String!
+  firstLastName: String!
+  secondLastName: String!
+  userName: String!
+  password: String!
+}
+
+input ForUpdateUser {
+  id: Int!
+  name: String
+  firstLastName: String
+  secondLastName: String
+  userName: String
+  password: String
+}
+
+input ForDeleteUser {
+  id: Int!
+}
