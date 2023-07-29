@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 
@@ -11,21 +11,38 @@ const { cities } = JSON.parse(
 );
 
 async function main() {
-  await prisma.permission.createMany({
-    data: [
-      {
-        name: "create@predio",
-        description: "Otorga permisos de creacion sobre la entidad predio",
-      },
-      {
-        name: "delete",
-        description: "Otorga permisos de eliminación sobre la entidad predio",
-      },
-      {
-        name: "update",
-        description: "Otorga permisos de edición sobre la entidad predio",
-      },
-    ],
+  // await prisma.$executeRawUnsafe(`
+
+  // TRUNCATE TABLE usuario; 
+  // TRUNCATE TABLE permiso;
+  // `)
+  await prisma.user.deleteMany({ where: {} })
+  await prisma.permission.deleteMany({ where: {} })
+
+  const read = await prisma.permission.create({
+    data: {
+      name: "read",
+      description: "Otorga permisos de (vista) sobre la entidad predio",
+    },
+  })
+  const create = await prisma.permission.create({
+    data: {
+      name: "create",
+      description: "Otorga permisos de (creacion) sobre la entidad predio",
+    },
+  })
+  const _delete = await prisma.permission.create({
+    data: {
+      name: "delete",
+      description: "Otorga permisos de (eliminación) sobre la entidad predio",
+    },
+  })
+
+  const update = await prisma.permission.create({
+    data: {
+      name: "update",
+      description: "Otorga permisos de (edición) sobre la entidad predio",
+    },
   });
 
   await prisma.user.create({
@@ -33,14 +50,14 @@ async function main() {
       name: "Carlos Elmer",
       firstLastName: "Chambi",
       secondLastName: "Valencia",
-      userName: "Charlie",
+      username: "Charlie",
       password: "71264652",
-
       permissions: {
-        createMany: {
-          data: [{ permissionId: 1 }, { permissionId: 2 }],
-        },
-      },
+        connect: [
+          { id: read.id },
+          { id: create.id }
+        ]
+      }
     },
   });
 
@@ -49,76 +66,47 @@ async function main() {
       name: "Daniel",
       firstLastName: "Chambi",
       secondLastName: "Valencia",
-      userName: "DanielPana87",
+      username: "DanielPana87",
       password: "1109",
-      permissions: {
-        createMany: {
-          data: [{ permissionId: 1 }, { permissionId: 3 }],
-        },
-      },
+      permissions:
+      {
+        connect: [
+          { id: update.id },
+          { id: _delete.id }
+        ]
+      }
     },
   });
 
-  // await prisma.city.create({
-  //   data: {
-  //     name: "La Paz",
-  //     provinces: {
-  //       createMany: {
-  //         data: [
-  //           { name: "Pedro Domingo Murillo" },
-  //           { name: "Omasuyos" },
-  //           { name: "Pacajes" },
-  //           { name: "Eliodoro Camacho" },
-  //           { name: "Muñecas" },
-  //           { name: "Larecaja" },
-  //           { name: "Franz Tamayo" },
-  //           { name: "Ingavi" },
-  //           { name: "José Ramón Loayza" },
-  //           { name: "Inquisivi" },
-  //           { name: "Sud Yungas" },
-  //           { name: "Los Andes" },
-  //           { name: "Aroma" },
-  //           { name: "Nor Yungas" },
-  //           { name: "Caranavi" },
-  //           { name: "Abel Iturralde" },
-  //           { name: "Juan Bautista Saavedra" },
-  //           { name: "Manco Kapac" },
-  //           { name: "Gualberto Villaroel" },
-  //           { name: "Jose Manuel Pando Solares" },
-  //         ],
+  // cities.forEach((city: any) => {
+  //   city.provinces.forEach(async (province: any) => {
+  //     await prisma.city.create({
+  //       data: {
+  //         name: city.name,
+  //         provinces: {
+  //           create: {
+  //             name: province.name,
+  //           },
+  //         },
   //       },
-  //     },
-  //   },
-  // });
-  cities.forEach((city: any) => {
-    city.provinces.forEach(async (province: any) => {
-      await prisma.city.create({
-        data: {
-          name: city.name,
-          provinces: {
-            create: {
-              name: province.name,
-            },
-          },
-        },
-      });
-    });
+  //     });
+  //   });
 
-    city.provinces.forEach(({ municipalities, name: provinceName }: any) => {
-      municipalities.forEach(async ({ name }: any) => {
-        await prisma.municipality.create({
-          data: {
-            name,
-            province: {
-              connect: {
-                name: provinceName,
-              },
-            },
-          },
-        });
-      });
-    });
-  });
+  //   city.provinces.forEach(({ municipalities, name: provinceName }: any) => {
+  //     municipalities.forEach(async ({ name }: any) => {
+  //       await prisma.municipality.create({
+  //         data: {
+  //           name,
+  //           province: {
+  //             connect: {
+  //               name: provinceName,
+  //             },
+  //           },
+  //         },
+  //       });
+  //     });
+  //   });
+  // });
 }
 
 main()

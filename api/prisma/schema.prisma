@@ -11,35 +11,35 @@ datasource db {
 }
 
 model User {
-  id             Int                @id @default(autoincrement())
+  id             String             @id @default(uuid())
   name           String?            @map("nombre") @db.VarChar(30)
   firstLastName  String?            @map("apellido_paterno") @db.VarChar(50)
   secondLastName String?            @map("apellido_materno") @db.VarChar(50)
-  userName       String             @unique @map("nombre_de_usuario") @db.VarChar(20)
+  username       String             @unique @map("nombre_de_usuario") @db.VarChar(20)
   password       String             @map("contraseña") @db.VarChar(25)
-  permissions    PermissionOnUser[]
+  permissions    Permission[]
 
   @@map("usuario")
 }
 
 model Permission {
-  id          Int                @id @default(autoincrement())
+  id          String             @id @default(uuid())
   name        String             @unique @map("nombre")
   description String             @map("descripcion")
-  users       PermissionOnUser[]
+  users       User[]
 
   @@map("permiso")
 }
 
-model PermissionOnUser {
-  userId       Int        @map("usuario_id")
-  user         User       @relation(fields: [userId], references: [id])
-  permissionId Int        @map("permiso_id")
-  permission   Permission @relation(fields: [permissionId], references: [id])
+// model PermissionOnUser {
+//   userId       String     @map("usuario_id")
+//   user         User       @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+//   permissionId String     @map("permiso_id")
+//   permission   Permission @relation(fields: [permissionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
-  @@id([userId, permissionId])
-  @@map("usuarios_permisos")
-}
+//   @@id([userId, permissionId])
+//   @@map("usuarios_permisos")
+// }
 
 model Property {
   id                   Int     @id @default(autoincrement())
@@ -79,7 +79,7 @@ model State {
   order       String @map("orden") @db.VarChar(16)
 
   propertyId Int      @unique
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onUpdate: Cascade)
 
   stage Stage?
 
@@ -91,7 +91,7 @@ model Stage {
   name String @unique @map("nombre") @db.VarChar(32)
 
   stateId Int   @unique
-  state   State @relation(fields: [stateId], references: [id])
+  state   State @relation(fields: [stateId], references: [id], onUpdate: Cascade)
 
   @@map("etapa")
 }
@@ -101,7 +101,7 @@ model SubDirectory {
   name String @unique @map("nombre") @db.VarChar(128)
 
   propertyId Int      @unique
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onUpdate: Cascade)
 
   @@map("sub_carpeta")
 }
@@ -111,7 +111,7 @@ model Type {
   name String @map("nombre") @db.VarChar(64)
 
   propertyId Int      @unique
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onUpdate: Cascade)
 
   @@map("tipo")
 }
@@ -121,7 +121,7 @@ model Activity {
   name String @map("nombre") @db.VarChar(64)
 
   propertyId Int      @unique
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onUpdate: Cascade)
 
   @@map("actividad")
 }
@@ -131,7 +131,7 @@ model Clasification {
   name String @map("nombre") @db.VarChar(64)
 
   propertyId Int      @unique
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onUpdate: Cascade)
 
   @@map("clasificacion")
 }
@@ -141,7 +141,7 @@ model ResponsibleUnit {
   name String @map("nombre") @db.VarChar(64)
 
   propertyId Int      @unique
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onUpdate: Cascade)
 
   @@map("unidad_responsable")
 }
@@ -151,7 +151,7 @@ model GroupedState {
   name String @unique @map("nombre") @db.VarChar(128)
 
   propertyId Int      @unique
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onUpdate: Cascade)
 
   @@map("estado_agrupado")
 }
@@ -163,7 +163,7 @@ model Localization {
   municipalityId Int @unique @map("municipio_id")
 
   propertyId Int      @unique
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onUpdate: Cascade)
 
   //city City @relation(fields: [cityId], references: [id])
   // province     Province     @relation(fields: [provinceId], references: [id])
@@ -183,7 +183,7 @@ model Province {
   id            Int            @id @default(autoincrement())
   name          String         @unique @map("nombre") @db.VarChar(30)
   cityId        Int            @map("departamento_id")
-  city          City           @relation(fields: [cityId], references: [id])
+  city          City           @relation(fields: [cityId], references: [id], onUpdate: Cascade)
   municipalitys Municipality[]
 
   @@map("provincia")
@@ -194,7 +194,7 @@ model Municipality {
   name String @unique @map("nombre") @db.VarChar(30)
 
   provinceId Int
-  province   Province @relation(fields: [provinceId], references: [id])
+  province   Province @relation(fields: [provinceId], references: [id], onUpdate: Cascade)
 
   @@map("municipio")
 }
@@ -204,7 +204,7 @@ model Technical {
   name String @unique @db.VarChar(128)
 
   propertyId Int      @unique
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onUpdate: Cascade)
 
   // unidad
   @@map("tecnico")
@@ -215,7 +215,7 @@ model Legal {
   name String @unique @db.VarChar(128)
 
   propertyId Int      @unique
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onUpdate: Cascade)
 
   // unidad
   @@map("juridico")

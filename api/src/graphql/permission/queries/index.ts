@@ -7,10 +7,11 @@ export const permissions = async () => {
 
 export const permissionsWithUsers = async () => {
   const permissions = await prisma.permission.findMany({
-    include: { users: { include: { user: true } } },
+    include: { users: true },
   });
-  return permissions.map((p) => ({
-    ...p,
-    users: p.users.map((u) => ({ ...u.user })),
-  }));
+  return permissions;
+  // return permissions.map((p) => ({
+  //   ...p,
+  //   users: p.users.map((u) => ({ ...u.user })),
+  // }));
 };

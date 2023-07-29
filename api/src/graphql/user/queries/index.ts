@@ -1,36 +1,34 @@
 import { PrismaClient } from "@prisma/client";
+import { GraphQLArgs } from "graphql";
 const prisma = new PrismaClient();
 
-export const allUsers = async () => {
+export const allUsers = async (parent: any, args: GraphQLArgs, context: any) => {
   const result = await prisma.user.findMany({
     include: {
-      permissions: {
-        include: {
-          permission: true,
-        },
-      },
+      permissions: true
     },
   });
 
-  const response = result.map((u) => ({
-    ...u,
-    permissions: u.permissions.map((p) => ({ ...p.permission })),
-  }));
-  return response;
+  // const response = result.map((u) => ({
+  //   ...u,
+  //   permissions: u.permissions.map((p) => ({ ...p.permission })),
+  // }));
+  return result;
 };
 
-export const findUserById = async (_: any, { id }: { id: number }) => {
+export const findUserById = async (_: any, { id }: { id: string }) => {
   const user = await prisma.user.findUnique({
     where: { id },
-    include: { permissions: { include: { permission: true } } },
-  });
+    include: { permissions: true }
+  })
 
-  if (user) {
-    return {
-      ...user,
-      permissions: user.permissions.map((p) => ({ ...p.permission })),
-    };
-  }
+  console.log(user);
+  // if (user) {
+  //   return {
+  //     ...user,
+  //     permissions: user.permissions.map((p) => ({ ...p.permission })),
+  //   };
+  // }
 
-  return null;
+  return user;
 };

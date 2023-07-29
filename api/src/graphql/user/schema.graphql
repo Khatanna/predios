@@ -1,10 +1,10 @@
 # Types
 type User {
-  id: Int!
+  id: ID!
   name: String!
   firstLastName: String!
   secondLastName: String!
-  userName: String!
+  username: String!
   password: String!
   permissions: [Permission!]!
 }
@@ -12,14 +12,14 @@ type User {
 # Queries
 type Query {
   allUsers: [User!]!
-  findUserById(id: Int): User
+  findUserById(id: ID): User
 }
 
 # Mutations
 type Mutation {
   createUser(data: ForCreateUser): User
   updateUser(data: ForUpdateUser): User
-  deleteUser(id: Int): Boolean
+  deleteUser(id: ID): Boolean
 }
 
 # Input types

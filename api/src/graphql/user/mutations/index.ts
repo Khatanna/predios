@@ -1,4 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
+
+// const url = process.env.ENVIRONMENT === 'dev' ? process.env.DATABASE_URL_TESTM : process.env.DATABASE_URL;
 const prisma = new PrismaClient();
 
 export const createUser = async (
@@ -13,7 +15,7 @@ export const createUser = async (
 };
 export const updateUser = async (
   _: any,
-  { data: { id }, data }: { data: Prisma.UserUpdateInput & { id: number } }
+  { data: { id }, data }: { data: Prisma.UserUpdateInput & { id: string } }
 ) => {
   const user = await prisma.user.update({
     where: {
@@ -24,7 +26,7 @@ export const updateUser = async (
 
   return user;
 };
-export const deleteUser = async (_: any, { id }: { id: number }) => {
+export const deleteUser = async (_: any, { id }: { id: string }) => {
   const user = await prisma.user.delete({
     where: {
       id,
