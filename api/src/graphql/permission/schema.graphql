@@ -4,11 +4,11 @@ type Permission {
   description: String!
 }
 
-type PermissionWithUser {
-  name: String!
-  description: String!
-  users: [User!]!
-}
+# type PermissionWithUser {
+#   name: String!
+#   description: String!
+#   users: [User!]!
+# }
 
 type PermissionOnUser {
   user: User
@@ -18,7 +18,7 @@ type PermissionOnUser {
 # Queries
 type Query {
   permissions: [Permission!]!
-  permissionsWithUsers: [PermissionWithUser!]!
+  # permissionsWithUsers: [PermissionWithUser!]!
 }
 
 # Mutations

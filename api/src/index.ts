@@ -1,19 +1,18 @@
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { config } from "dotenv";
 import { server } from "./graphql";
-import { GraphQLError } from "graphql";
 
 config();
 
 async function getUser(token: string) {
-  if(token === 'uwu') {
+  if (token === "uwu") {
     return {
-      name: 'user'
-    }
+      name: "user",
+    };
   }
 
   return undefined;
-} 
+}
 
 async function main() {
   const { url } = await startStandaloneServer(server, {
@@ -21,7 +20,7 @@ async function main() {
     // context: async({ req, res }) => {
     //   const token = req.headers.authorization as string
     //   const user = await getUser(token);
-          
+
     //   if (!user)
     //   // throwing a `GraphQLError` here allows us to specify an HTTP status code,
     //   // standard `Error`s will have a 500 status code by default

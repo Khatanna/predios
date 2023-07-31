@@ -7,6 +7,8 @@ type User {
   username: String!
   password: String!
   permissions: [Permission!]!
+  createdAt: String
+  updatedAt: String
 }
 
 # Queries
@@ -27,7 +29,7 @@ input ForCreateUser {
   name: String!
   firstLastName: String!
   secondLastName: String!
-  userName: String!
+  username: String!
   password: String!
 }
 
@@ -36,7 +38,7 @@ input ForUpdateUser {
   name: String
   firstLastName: String
   secondLastName: String
-  userName: String
+  username: String
   password: String
 }
 

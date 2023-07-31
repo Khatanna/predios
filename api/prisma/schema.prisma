@@ -11,35 +11,29 @@ datasource db {
 }
 
 model User {
-  id             String             @id @default(uuid())
-  name           String?            @map("nombre") @db.VarChar(30)
-  firstLastName  String?            @map("apellido_paterno") @db.VarChar(50)
-  secondLastName String?            @map("apellido_materno") @db.VarChar(50)
-  username       String             @unique @map("nombre_de_usuario") @db.VarChar(20)
-  password       String             @map("contraseña") @db.VarChar(25)
+  id             String       @id @default(uuid())
+  name           String?      @map("nombre") @db.VarChar(30)
+  firstLastName  String?      @map("apellido_paterno") @db.VarChar(50)
+  secondLastName String?      @map("apellido_materno") @db.VarChar(50)
+  username       String       @unique @map("nombre_de_usuario") @db.VarChar(20)
+  password       String       @map("contraseña") @db.VarChar(25)
   permissions    Permission[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
   @@map("usuario")
 }
 
 model Permission {
-  id          String             @id @default(uuid())
-  name        String             @unique @map("nombre")
-  description String             @map("descripcion")
+  id          String   @id @default(uuid())
+  name        String   @unique @map("nombre")
+  description String   @map("descripcion")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   users       User[]
 
   @@map("permiso")
 }
-
-// model PermissionOnUser {
-//   userId       String     @map("usuario_id")
-//   user         User       @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-//   permissionId String     @map("permiso_id")
-//   permission   Permission @relation(fields: [permissionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-
-//   @@id([userId, permissionId])
-//   @@map("usuarios_permisos")
-// }
 
 model Property {
   id                   Int     @id @default(autoincrement())

@@ -1,20 +1,20 @@
 import { ApolloServer } from "@apollo/server";
-import { typeDefs as userTypeDefs, resolvers as userResolvers } from "./user";
+import { resolvers as cityResolvers, typeDefs as cityTypeDefs } from "./city";
 import {
-  typeDefs as permissionTypeDefs,
-  resolvers as PermissionResolvers,
-} from "./permission";
-import { typeDefs as cityTypeDefs, resolvers as cityResolvers } from "./cities";
-import {
-  typeDefs as provinceTypeDefs,
-  resolvers as provinceResolvers,
-} from "./provinces";
-import {
-  typeDefs as municipalityTypeDefs,
   resolvers as municipalityResolvers,
-} from "./municipalities";
+  typeDefs as municipalityTypeDefs,
+} from "./municipality";
+import {
+  resolvers as PermissionResolvers,
+  typeDefs as permissionTypeDefs,
+} from "./permission";
+import {
+  resolvers as provinceResolvers,
+  typeDefs as provinceTypeDefs,
+} from "./province";
+import { resolvers as userResolvers, typeDefs as userTypeDefs } from "./user";
 
-import { typeDefs as authTypeDefs, resolvers as authResolvers } from "./auth";
+import { resolvers as authResolvers, typeDefs as authTypeDefs } from "./auth";
 
 export const server = new ApolloServer({
   typeDefs: [
