@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { GraphQLArgs } from "graphql";
 const prisma = new PrismaClient();
 
@@ -13,7 +13,7 @@ export const allUsers = (_parent: any, _args: GraphQLArgs, _context: any) => {
   });
 };
 
-export const findUserById = async (_: any, { id }: { id: string }) => {
+export const getUserById = async (_: any, { id }: { id: string }) => {
   const user = await prisma.user.findUnique({
     where: { id },
     include: { permissions: true },
@@ -21,3 +21,14 @@ export const findUserById = async (_: any, { id }: { id: string }) => {
 
   return user;
 };
+
+export const getUserByUsername = async (_: any, { username }: { username: string }) => {
+  const user = await prisma.user.findUnique({
+    where: { username },
+    include: { permissions: true },
+    
+  });
+
+  return user;
+};
+

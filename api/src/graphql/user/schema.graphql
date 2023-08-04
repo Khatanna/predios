@@ -7,21 +7,34 @@ type User {
   username: String!
   password: String!
   permissions: [Permission!]!
-  createdAt: String
-  updatedAt: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type UserDelete {
+  deleted: Boolean
+  user: User
+}
+
+type UserUpdate {
+  updated: Boolean
+  user: User
 }
 
 # Queries
 type Query {
   allUsers: [User!]!
-  findUserById(id: ID): User
+  getUserById(id: ID): User
+  getUserByUsername(username: String): User
 }
 
 # Mutations
 type Mutation {
   createUser(data: ForCreateUser): User
-  updateUser(data: ForUpdateUser): User
-  deleteUser(id: ID): Boolean
+  updateUserByUsername(data: ForUpdateUserByUsername): UserUpdate
+  updateUserById(data: ForUpdateUserById): UserUpdate
+  deleteUserById(id: ID): UserDelete
+  deleteUserByUsername(username: String): UserDelete
 }
 
 # Input types
@@ -34,7 +47,6 @@ input ForCreateUser {
 }
 
 input ForUpdateUser {
-  id: Int!
   name: String
   firstLastName: String
   secondLastName: String
@@ -42,6 +54,12 @@ input ForUpdateUser {
   password: String
 }
 
-input ForDeleteUser {
-  id: Int!
+input ForUpdateUserById {
+  id: ID!
+  data: ForUpdateUser
+}
+
+input ForUpdateUserByUsername {
+  username: String!
+  data: ForUpdateUser
 }

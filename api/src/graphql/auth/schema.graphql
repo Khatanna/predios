@@ -1,11 +1,12 @@
-type Auth {
-    token: String
-    user: User
+type TokenResponse {
+    accessToken: String
+    refreshToken: String
 }
 
 type Query {
-    login(username: String, password: String): Auth
-    logout(token: String): Boolean
+    login(username: String, password: String): TokenResponse
+    isAuth(id: ID, token: String): Boolean
+    getNewAccessToken(refreshToken: String): String
 }
 
 # posibly not required mutation in this schema (?

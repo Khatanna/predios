@@ -5,8 +5,8 @@ import { useState } from 'react';
 import { Button, Col, FloatingLabel, Form, Spinner } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { useAuth } from '../../hooks';
-import { FormValues } from '../../models/types';
+import { useLogin } from '../../hooks';
+import { FormLoginValues } from '../../models/types';
 import { Error } from '../../styled-components/Error';
 
 export type LoginFormProps = {
@@ -22,12 +22,13 @@ const schema = yup.object({
 })
 
 const LoginForm: React.FC<LoginFormProps> = ({ }) => {
-	const { register, handleSubmit, formState: { errors }, getValues, reset } = useForm<FormValues>({
+	const { register, handleSubmit, formState: { errors }, getValues } = useForm<FormLoginValues>({
 		resolver: yupResolver(schema), defaultValues: { username: '', password: '' }
 	});
-	const { isLoading, login } = useAuth(getValues(), reset);
+	const { isLoading, login } = useLogin(getValues());
 	const [showPassword, setShowPassword] = useState(false);
 	const [capsLock, setCapsLock] = useState(false);
+
 	if (isLoading) {
 		return <Spinner variant='primary' />
 	}

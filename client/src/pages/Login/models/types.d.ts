@@ -17,7 +17,10 @@ export type APIIsAuthResponse = {
 }
 
 export type APILoginResponse = {
-  token: string
+  auth: {
+    accessToken: string
+    refreshToken: string
+  }
 }
 
 export type APILogoutResponse = {

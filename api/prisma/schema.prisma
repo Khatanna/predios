@@ -166,7 +166,7 @@ model Localization {
 
 model City {
   id        Int        @id @default(autoincrement())
-  name      String     @map("nombre") @db.VarChar(30)
+  name      String     @unique @map("nombre") @db.VarChar(30)
   // Localization Localization?
   provinces Province[]
 
@@ -177,7 +177,7 @@ model Province {
   id            Int            @id @default(autoincrement())
   name          String         @unique @map("nombre") @db.VarChar(30)
   cityId        Int            @map("departamento_id")
-  city          City           @relation(fields: [cityId], references: [id], onUpdate: Cascade)
+  city          City?           @relation(fields: [cityId], references: [id], onUpdate: Cascade)
   municipalitys Municipality[]
 
   @@map("provincia")

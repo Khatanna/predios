@@ -1,22 +1,20 @@
 import { instance } from "../../../utilities/config/axios";
 import { APILoginResponse, FormLoginValues, GraphQLResponse } from "../models/types";
 
-const LOGIN_QUERY = `
-	query Query($username: String, $password: String)	{
-		auth: login(username: $username, password: $password) {
-      accessToken
-      refreshToken
-    }
+const GET_NEW_ACCESS_TOKEN_QUERY = `
+	query Query($refreshToken: String)	{
+		accessToken: getNewAccessToken(refreshToken: $refreshToken)
 	}
 `;
 
-export const login = async ({ username, password }: FormLoginValues) => {
+export const newAccessToken = async (refreshToken: string) => {
   const { data } = await instance.post<GraphQLResponse<APILoginResponse>>('/', {
-    query: LOGIN_QUERY,
+    query: GET_NEW_ACCESS_TOKEN_QUERY,
     variables: {
-      username, password
+      refreshToken
     }
   })
 
+  console.log(data);
   return { ...data, error: data.errors ? data.errors[0] : undefined };
 }

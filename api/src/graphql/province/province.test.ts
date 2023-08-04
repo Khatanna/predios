@@ -5,25 +5,25 @@ import request from "supertest";
 const api = "http://localhost:3001";
 const prisma = new PrismaClient();
 
-describe("Users", () => {
+describe("Province", () => {
   afterAll(async () => {
     await prisma.user.deleteMany();
   })
   it("should return a status 200 and array of users", async () => {
     const response = await request(api).post("/").send({
-      query: "{ allUsers{ name }}",
+      query: "{ provinces: allProvinces{ name }}",
     });
 
     expect(response.status).toBe(200);
-    expect(Array.isArray(response.body.data.allUsers)).toBe(true);
+    expect(Array.isArray(response.body.data.provincs)).toBe(true);
   });
 
-  it("should return props name of each user", async () => {
+  it("should return props name of each province", async () => {
     const response = await request(api)
       .post("/")
       .send({
         query: `{ 
-        allUsers { 
+        provinces: allProvinces { 
           name 
         }
       }`,
@@ -31,109 +31,25 @@ describe("Users", () => {
 
     expect(response.status).toBe(200);
     expect(
-      response.body.data.allUsers.every((u: Prisma.UserCreateInput) =>
+      response.body.data.provinces.every((u: Prisma.ProvinceCreateInput) =>
         u.hasOwnProperty("name")
       )
     ).toBe(true);
   });
 
-  it("should return prop firstLastName of each user", async () => {
-    const response = await request(api)
-      .post("/")
-      .send({
-        query: `{
-        allUsers {
-          firstLastName
-        }
-      }`,
-      });
-
-    expect(response.status).toBe(200);
-    expect(
-      response.body.data.allUsers.every((u: Prisma.UserCreateInput) =>
-        u.hasOwnProperty("firstLastName")
-      )
-    ).toBe(true);
-  });
-
-  it("should return prop secondLastName of each user", async () => {
-    const response = await request(api)
-      .post("/")
-      .send({
-        query: `{
-        allUsers {
-          secondLastName
-        }
-      }`,
-      });
-
-    expect(response.status).toBe(200);
-    expect(
-      response.body.data.allUsers.every((u: Prisma.UserCreateInput) =>
-        u.hasOwnProperty("secondLastName")
-      )
-    ).toBe(true);
-  });
-
-  it("should return prop username of each user", async () => {
-    const response = await request(api)
-      .post("/")
-      .send({
-        query: `{
-          allUsers {
-            username
-          }
-        }`,
-      });
-
-    expect(response.status).toBe(200);
-    expect(
-      response.body.data.allUsers.every((u: Prisma.UserCreateInput) =>
-        u.hasOwnProperty("username")
-      )
-    ).toBe(true);
-  });
-
-  it("should return prop password of each user", async () => {
-    const response = await request(api)
-      .post("/")
-      .send({
-        query: `{
-        allUsers {
-          password
-        }
-      }`,
-      });
-
-    expect(response.status).toBe(200);
-    expect(
-      response.body.data.allUsers.every((u: Prisma.UserCreateInput) =>
-        u.hasOwnProperty("password")
-      )
-    ).toBe(true);
-  });
-
-  it("shuld be create user and return user", async () => {
+  it("shuld be create province and return province", async () => {
     const data = {
-      name: faker.person.firstName(),
-      firstLastName: faker.person.lastName(),
-      secondLastName: faker.person.lastName(),
-      username: faker.internet.userName(),
-      password: faker.internet.password()
+      name: faker.person.firstName()
     }
 
     const response = await request(api)
       .post("/")
       .send({
         query: `
-        mutation ($data: ForCreateUser) {
-          user: createUser(data: $data) {
+        mutation ($data: ForCreateProvince) {
+          province: createProvince(data: $data) {
             id
             name
-            firstLastName
-            secondLastName
-            username
-            password
             createdAt
             updatedAt
           }
@@ -145,86 +61,69 @@ describe("Users", () => {
       });
 
     expect(response.status).toBe(200);
-    expect(response.body.data.user).not.toBeNull();
-    expect(Object.keys(response.body.data.user)).toEqual([
+    expect(response.body.data.province).not.toBeNull();
+    expect(Object.keys(response.body.data.province)).toEqual([
       "id",
       "name",
-      "firstLastName",
-      "secondLastName",
-      "username",
-      "password",
       "createdAt",
       "updatedAt",
     ]);
-    const user = await prisma.user.findUnique({
+    const province = await prisma.province.findUnique({
       where: {
-        username: data.username
+        name: data.name
       }
     })
 
-    expect(JSON.stringify(response.body.data.user)).toEqual(JSON.stringify(user))
+    expect(JSON.stringify(response.body.data.province)).toEqual(JSON.stringify(province))
   });
 
-  it('should be find user if using only username', async () => {
-    const user = await prisma.user.create({
+  it('should be find province if using only name', async () => {
+    const province = await prisma.province.create({
       data: {
-        name: faker.person.firstName(),
-        firstLastName: faker.person.lastName(),
-        secondLastName: faker.person.lastName(),
-        username: faker.internet.userName(),
-        password: faker.internet.password()
+        name: faker.location.city()
       }
     })
     const response = await request(api).post('/').send({
       query: `
-        query ($username: String) {
-          user: getUserByUsername(username: $username) {
+        query ($name: String) {
+          province: getProvinceByName(name: $name) {
             id
             name
-            firstLastName
-            secondLastName
-            username
-            password
             createdAt
             updatedAt
           }
         }
       `,
       variables: {
-        username: user.username
+        name: province.name
       }
     })
 
     expect(response.status).toBe(200);
-    expect(Object.keys(response.body.data.user)).toEqual([
+    expect(Object.keys(response.body.data.province)).toEqual([
       "id",
       "name",
-      "firstLastName",
-      "secondLastName",
-      "username",
-      "password",
       "createdAt",
       "updatedAt"
     ]);
-    expect(JSON.stringify(response.body.data.user)).toEqual(JSON.stringify(user))
+    expect(JSON.stringify(response.body.data.province)).toEqual(JSON.stringify(province))
   })
 
-  it('should be update user if using only username', async () => {
-    const { username } = await prisma.user.create({
+  it('should be update user if using only id', async () => {
+    const { name } = await prisma.province.create({
       data: {
-        name: faker.person.firstName(),
-        firstLastName: faker.person.lastName(),
-        secondLastName: faker.person.lastName(),
-        username: faker.internet.userName(),
-        password: faker.internet.password()
+        name: faker.location.city(),
       }
     })
+
+    const newName = faker.location.city();
     const response = await request(api).post('/').send({
       query: `
         mutation ($data: ForUpdateUserByUsername) {
           result: updateUserByUsername(data: $data) {
             updated
             user {
+              id
               name
               firstLastName
               secondLastName
@@ -238,28 +137,25 @@ describe("Users", () => {
       `,
       variables: {
         data: {
-          username,
+          name,
           data: {
-            name: 'Charlie'
+            name: newName
           }
         }
       }
     })
     expect(response.status).toBe(200);
     expect(response.body.data.result.updated).toBe(true)
-    expect(Object.keys(response.body.data.result.user)).toEqual([
+    expect(Object.keys(response.body.data.result.province)).toEqual([
+      "id",
       "name",
-      "firstLastName",
-      "secondLastName",
-      "username",
-      "password",
       "createdAt",
       "updatedAt"
     ]);
-    expect(response.body.data.result.user.name).toBe('Charlie')
+    expect(response.body.data.result.province.name).toBe(newName)
   })
 
-  it('should be update user if using only id', async () => {
+  it('should be update pprovince if using only id', async () => {
     const user = await prisma.user.create({
       data: {
         name: faker.person.firstName(),
