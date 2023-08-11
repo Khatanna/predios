@@ -11,12 +11,18 @@ const LOGIN_QUERY = `
 `;
 
 export const login = async ({ username, password }: FormLoginValues) => {
-  const { data } = await instance.post<GraphQLResponse<APILoginResponse>>('/', {
-    query: LOGIN_QUERY,
-    variables: {
-      username, password
-    }
-  })
-
-  return { ...data, error: data.errors ? data.errors[0] : undefined };
+  try {
+    return await instance.post<GraphQLResponse<APILoginResponse>>('/', {
+      query: LOGIN_QUERY,
+      variables: {
+        username, password
+      }
+    }, {
+      headers: {
+        operation: 'Login',
+      }
+    })
+  } catch (e) {
+    throw e
+  }
 }

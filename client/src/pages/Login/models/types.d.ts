@@ -3,17 +3,17 @@ export type FormLoginValues = {
   password: string
 }
 
-export type ErrorMessage = {
+
+export type Error = {
   message: string
 }
 
 export type GraphQLResponse<T> = {
   data: T
-  errors: error[]
 }
 
-export type APIIsAuthResponse = {
-  isAuth: boolean
+export type GraphQLErrorResponse = {
+  errors: Error[]
 }
 
 export type APILoginResponse = {
@@ -23,13 +23,6 @@ export type APILoginResponse = {
   }
 }
 
-export type APILogoutResponse = {
-  logout: boolean
+export type APINewAccessTokenResponse = {
+  accessToken: string
 }
-
-export type GraphQLMappedResponse = {
-  data: APILoginResponse
-  error?: error
-}
-
-export type AxiosResponseLoginQuery = AxiosResponse<GraphQLMappedResponse>[keyof Pick<AxiosResponse<GraphQLMappedResponse>, 'data'>]

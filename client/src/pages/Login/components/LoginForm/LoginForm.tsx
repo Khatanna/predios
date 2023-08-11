@@ -1,31 +1,16 @@
-import { yupResolver } from '@hookform/resolvers/yup';
 import eyeFill from 'bootstrap-icons/icons/eye-fill.svg';
 import eyeSlashFill from 'bootstrap-icons/icons/eye-slash-fill.svg';
 import { useState } from 'react';
 import { Button, Col, FloatingLabel, Form, Spinner } from 'react-bootstrap';
-import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { useLogin } from '../../hooks';
-import { FormLoginValues } from '../../models/types';
+import { useFetchLogin, useFormLogin } from '../../hooks';
 import { Error } from '../../styled-components/Error';
 
 export type LoginFormProps = {
 }
 
-const schema = yup.object({
-	username: yup.string()
-		.required('El nombre de usuario es un campo obligatorio'),
-	password: yup.string()
-		.required('La contraseña es un campo obligatorio')
-		.min(8, 'La contraseña debe tener almenos 8 caracteres')
-		.max(32, 'La contraseña no debe tener mas de 32 caracteres')
-})
-
 const LoginForm: React.FC<LoginFormProps> = ({ }) => {
-	const { register, handleSubmit, formState: { errors }, getValues } = useForm<FormLoginValues>({
-		resolver: yupResolver(schema), defaultValues: { username: '', password: '' }
-	});
-	const { isLoading, login } = useLogin(getValues());
+	const { register, handleSubmit, errors, getValues } = useFormLogin();
+	const { isLoading, login } = useFetchLogin();
 	const [showPassword, setShowPassword] = useState(false);
 	const [capsLock, setCapsLock] = useState(false);
 
@@ -35,7 +20,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ }) => {
 
 	return <Col xs={11} sm={8} md={6} lg={4}>
 		<h1 className='display-6 mb-3 border-bottom border-2'>Iniciar sesión</h1>
-		<Form onSubmit={handleSubmit(() => login())} onKeyDown={(e) => setCapsLock(e.getModifierState('CapsLock'))}>
+		<Form onSubmit={handleSubmit(() => login(getValues()))} onKeyDown={(e) => setCapsLock(e.getModifierState('CapsLock'))}>
 			<FloatingLabel
 				controlId='floatingInputUsername'
 				label='Nombre de usuario'

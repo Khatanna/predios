@@ -1,4 +1,5 @@
 import { ApolloServer } from "@apollo/server";
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import { resolvers as cityResolvers, typeDefs as cityTypeDefs } from "./city";
 import {
   resolvers as municipalityResolvers,

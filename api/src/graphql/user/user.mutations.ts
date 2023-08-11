@@ -1,14 +1,16 @@
 import { Prisma, PrismaClient } from "@prisma/client";
+import bcrypt from 'bcryptjs';
 
-// const url = process.env.ENVIRONMENT === 'dev' ? process.env.DATABASE_URL_TESTM : process.env.DATABASE_URL;
 const prisma = new PrismaClient();
 
 export const createUser = async (
   _: any,
   { data }: { data: Prisma.UserCreateInput }
 ) => {
+  const password = await bcrypt.hash(data.password, 10);
+
   const user = await prisma.user.create({
-    data,
+    data: { ...data, password },
   });
 
   return user;
@@ -49,7 +51,7 @@ export const deleteUserById = async (_: any, { id }: { id: string }) => {
   return { deleted: Boolean(user), user };
 };
 
-export const deleteUserByUsername = async(_:any, { username }: { username: string }) => {
+export const deleteUserByUsername = async (_: any, { username }: { username: string }) => {
   const user = await prisma.user.delete({
     where: {
       username

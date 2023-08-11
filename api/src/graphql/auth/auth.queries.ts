@@ -1,68 +1,109 @@
 import { PrismaClient } from "@prisma/client"
-import { GraphQLError } from "graphql";
-import { JsonWebTokenError, sign, verify } from 'jsonwebtoken'
+import { sign, verify } from 'jsonwebtoken'
+import { handleJWTError, mapUserForToken, verifyPassword, verifyUsername } from "../../utilities";
+import { AuthErrorMessage, LifeTimeToken } from "../../constants";
+import { generateToken } from "../../utilities/generateToken";
+import { BaseContext } from "@apollo/server";
+import { throwLoginError } from "../../utilities/throwLoginError";
+
 const prisma = new PrismaClient();
 
-export const login = async (_: any, data: { username: string, password: string }) => {
-  const { username, password } = data;
+const updateRefreshToken = (username: string, token: string) => {
+  return prisma.user.update({
+    where: {
+      username
+    },
+    data: {
+      session: {
+        upsert: {
+          where: {
+            user: {
+              username
+            }
+          },
+          update: {
+            token
+          },
+          create: {
+            token
+          }
+        }
+      }
+    }
+  })
+}
+
+export const login = async (_parent: any, args: Record<string, string>, context: BaseContext) => {
+  const { username, password } = args;
   const user = await prisma.user.findUnique({
     where: {
       username,
     },
     select: {
-      id: true,
       username: true,
       password: true,
+      permissions: true,
     }
   })
 
   if (user) {
-    if (Boolean(user.username.localeCompare(username)) || Boolean(user.password.localeCompare(password))) {
-      throw new Error('Las credenciales son incorrectas')
+    if (verifyUsername(username, user.username)) {
+      throw throwLoginError(AuthErrorMessage.UNREGISTERED_USER)
     }
-    const accessToken = sign({ id: user.id, username }, 'my-secret', { expiresIn: 60 });
-    const refreshToken = sign({ id: user.id }, 'secret-refresh-token', { expiresIn: 60 * 60 })
 
+    if (!verifyPassword(password, user.password)) {
+      throw throwLoginError(AuthErrorMessage.INVALID_PASSWORD)
+    }
+
+    const accessToken = generateToken(
+      mapUserForToken(user, ['password']),
+      process.env.ACCESS_TOKEN_SECRET!,
+      LifeTimeToken.second * 5
+    )
+    const refreshToken = generateToken(
+      mapUserForToken(user, ['password', 'permissions']),
+      process.env.REFRESH_TOKEN_SECRET!,
+      LifeTimeToken.week
+    );
+
+    await updateRefreshToken(username, refreshToken);
     return { accessToken, refreshToken };
   }
 
-  throw Error('Las credenciales son incorrectas');
+  throw throwLoginError(AuthErrorMessage.UNREGISTERED_USER)
 }
 
-export const isAuth = async (_: any, data: { id: string; token: string }) => {
+export const getNewAccessToken = async (_parent: any, { refreshToken }: { refreshToken: string }) => {
   try {
-    const { id, token } = data;
-
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: {
-        id
+        session: {
+          token: refreshToken
+        }
       },
       select: {
-        id: true,
         username: true,
+        permissions: true
       }
     })
 
-    const verifyToken = verify(token, 'my-secret')
-    return JSON.stringify(user) === JSON.stringify(verifyToken);
-  } catch (e) {
-    if (e instanceof JsonWebTokenError) {
-      throw Error('Token incorrecto e invalido')
+    if (!user) {
+      throw Error("No existe el token en la base de datos")
     }
-    throw Error((e as GraphQLError).message)
-  }
-}
 
-export const getNewAccessToken = async (_: any, data: { refreshToken: string }) => {
-  try {
-    const { refreshToken } = data;
-    const verifyToken = verify(refreshToken, 'secret-refresh-token')
+    const verifyRefreshToken = verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!)
+    if (typeof verifyRefreshToken !== 'string') {
+      const accessToken = generateToken(
+        user,
+        process.env.ACCESS_TOKEN_SECRET!,
+        LifeTimeToken.second * 5
+      )
+      return accessToken
+    }
 
-    console.log(verifyToken);
-
-    return verifyToken
+    return null;
   } catch (e) {
-    console.log(e)
-    throw Error('token invalido')
+    // Manejar en el cliente por si el error es de token expirado
+    throw handleJWTError(e);
   }
 }

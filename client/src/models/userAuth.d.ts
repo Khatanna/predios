@@ -1,4 +1,9 @@
+export type Permission = {
+  name: string;
+  description: string;
+}
+
 export type UserAuthenticate = {
-  id: string,
-  username: string
+  username: string;
+  permissions: Permission[]
 }

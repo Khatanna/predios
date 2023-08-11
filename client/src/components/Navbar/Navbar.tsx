@@ -1,8 +1,7 @@
-import { Button, Col, Container, Navbar, Row } from 'react-bootstrap';
+import { Button, Container, Navbar } from 'react-bootstrap';
 import { Navigate, Outlet } from 'react-router-dom';
 import logo from '../../assets/logo.png';
-import { useAuth } from '../../pages/Login/hooks';
-import { Breadcrumb } from '../Breadcrumb';
+import { useAuth } from '../../hooks';
 import { Nav } from '../Nav';
 import { route } from '../Nav/types';
 
@@ -17,10 +16,6 @@ const routes: route[] = [
 	{
 		path: '/users',
 		name: 'Usuarios'
-	},
-	{
-		path: '/properties',
-		name: 'Predios'
 	}
 ]
 
@@ -32,7 +27,7 @@ const NavbarComponent: React.FC<NavbarProps> = ({ }) => {
 	}
 
 	return <>
-		<Navbar expand="sm" sticky='top' bg='body-tertiary' >
+		<Navbar expand="sm" sticky='top' bg='body-tertiary p-0'>
 			<Container fluid>
 				<Navbar.Brand>
 					<img src={logo} alt="Inra" width={42} height={32} className='img-responsive img-thumbnail p-0' />
@@ -45,11 +40,6 @@ const NavbarComponent: React.FC<NavbarProps> = ({ }) => {
 			</Container>
 		</Navbar>
 		<Container as={'main'}>
-			<Row>
-				<Col>
-					<Breadcrumb routes={routes} />
-				</Col>
-			</Row>
 			<Outlet />
 		</Container>
 	</>

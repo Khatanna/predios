@@ -8,7 +8,3 @@ export type User = {
 export type APIGetAllUser = {
   allUsers: User[]
 }
-
-export type APIGetAllUsersResponse = {
-  data: APIGetAllUser
-}

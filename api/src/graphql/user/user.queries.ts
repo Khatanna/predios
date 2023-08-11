@@ -1,8 +1,13 @@
+import { BaseContext } from "@apollo/server";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { GraphQLArgs } from "graphql";
+import { throwUnAuthenticateError } from "../../utilities";
+import { AuthResponses } from "../../constants";
 const prisma = new PrismaClient();
 
-export const allUsers = (_parent: any, _args: GraphQLArgs, _context: any) => {
+export const allUsers = (_parent: any, _args: GraphQLArgs, context: BaseContext & { user?: Prisma.UserCreateInput }) => {
+  if (!context.user) throw throwUnAuthenticateError(AuthResponses.UNAUTHENTICATED);
+
   return prisma.user.findMany({
     include: {
       permissions: true,
@@ -26,7 +31,7 @@ export const getUserByUsername = async (_: any, { username }: { username: string
   const user = await prisma.user.findUnique({
     where: { username },
     include: { permissions: true },
-    
+
   });
 
   return user;
