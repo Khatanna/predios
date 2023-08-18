@@ -36,7 +36,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ }) => {
 					className='mb-2 text-body-tertiary'
 				>
 					<Form.Control type={showPassword ? 'text' : 'password'} placeholder='password' {...register('password')} autoComplete='off' />
-					<img src={showPassword ? eyeSlashFill : eyeFill} alt="eyeFill" role='button' className='position-absolute top-50 end-0 translate-middle-y me-3' onClick={() => setShowPassword((s) => !s)} />
+					<img src={showPassword ? eyeFill : eyeSlashFill} alt="eyeFill" role='button' className='position-absolute top-50 end-0 translate-middle' onClick={() => setShowPassword((s) => !s)} />
 				</FloatingLabel>
 				<Error className='mb-3'>{errors.password?.message}</Error>
 			</div>

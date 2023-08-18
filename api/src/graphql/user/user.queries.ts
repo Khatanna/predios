@@ -9,8 +9,14 @@ export const allUsers = (_parent: any, _args: GraphQLArgs, context: BaseContext 
   if (!context.user) throw throwUnAuthenticateError(AuthResponses.UNAUTHENTICATED);
 
   return prisma.user.findMany({
+    where: {
+      NOT: {
+        username: context.user.username
+      }
+    },
     include: {
       permissions: true,
+      type: true,
     },
     orderBy: {
       createdAt: "asc",
@@ -31,7 +37,6 @@ export const getUserByUsername = async (_: any, { username }: { username: string
   const user = await prisma.user.findUnique({
     where: { username },
     include: { permissions: true },
-
   });
 
   return user;

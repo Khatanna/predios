@@ -2,10 +2,12 @@ import { create, StateCreator } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { produce } from 'immer';
-import { devtools } from 'zustand/middleware';
+import { devtools, createJSONStorage } from 'zustand/middleware';
+import jwtDecode from "jwt-decode";
 
 interface State {
   refreshToken?: string
+  expirationRefreshToken?: number
 }
 
 interface Actions {
@@ -14,17 +16,21 @@ interface Actions {
 }
 
 const initialState: State = {
-  refreshToken: undefined
+  refreshToken: undefined,
+  expirationRefreshToken: undefined
 }
 
-const middlewares = (f: StateCreator<State & Actions, [["zustand/immer", State & Actions]]>) => devtools(persist(immer(f), { name: 'token' }));
+const middlewares = (f: StateCreator<State & Actions, [["zustand/immer", State & Actions]]>) => devtools(persist(immer(f), { name: 'session', storage: createJSONStorage(() => sessionStorage) }));
 
 export const useSessionStore = create(middlewares((set) => ({
   ...initialState,
   setRefreshToken(token) {
+    const expirationRefreshToken: { exp: number } = jwtDecode(token);
+
     set(
       produce((state) => {
         state.refreshToken = token
+        state.expirationRefreshToken = expirationRefreshToken.exp;
       })
     )
   },

@@ -14,12 +14,14 @@ export const TokenErrorMessage = {
 
 export const Code = {
   UNAUTHENTICATED: 'UNAUTHENTICATED',
-  BAD_REQUEST: 'BAD_REQUEST'
+  BAD_REQUEST: 'BAD_REQUEST',
+  INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
 }
 
 export const Status = {
   UNAUTHORIZED: 401,
-  BAD_REQUEST: 400
+  BAD_REQUEST: 400,
+  INTERNAL_SERVER_ERROR: 500,
 }
 
 export const LifeTimeToken = {

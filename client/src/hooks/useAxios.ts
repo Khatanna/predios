@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import { useEffect } from "react";
 import { useAuth } from ".";
 import { getNewAccessToken } from "../pages/Login/services";
+import Swal from "sweetalert2";
 
 const instance = axios.create({
   baseURL: "http://localhost:3001",
@@ -11,21 +12,29 @@ const instance = axios.create({
 });
 
 export const useAxios = () => {
-  const { accessToken, expirationToken, refreshToken } = useAuth();
+  const { accessToken, expirationAccessToken, expirationRefreshToken, refreshToken, logout } = useAuth();
   useEffect(() => {
     if (!accessToken) {
       return;
     }
     const request = instance.interceptors.request.use(
       async (config) => {
-        console.log("seteando accesstoken");
-        // console.log(expirationToken, Date.now() / 1000, new Date(expirationToken!).getTime())
         if (
-          expirationToken &&
-          expirationToken < Math.floor(Date.now() / 1000)
+          expirationAccessToken &&
+          expirationAccessToken < Math.floor(Date.now() / 1000)
         ) {
-          const token = await getNewAccessToken(refreshToken!);
-          config.headers?.setAuthorization(token.data.data.accessToken);
+          if (expirationRefreshToken && expirationRefreshToken < Math.floor(Date.now() / 1000)) {
+            const token = await getNewAccessToken(refreshToken!);
+            config.headers?.setAuthorization(token.data.data.accessToken);
+          } else {
+            Swal.fire({
+              icon: 'info',
+              title: 'Mensaje de sesión',
+              text: 'La sesión expiro'
+            })
+            logout();
+            // Como no existe el refresh token significa que la sesion expiro
+          }
         } else {
           config.headers?.setAuthorization(accessToken);
         }
@@ -45,7 +54,7 @@ export const useAxios = () => {
     return () => {
       instance.interceptors.request.eject(request);
     };
-  }, [accessToken, refreshToken, expirationToken]);
+  }, [accessToken, refreshToken, expirationAccessToken, expirationRefreshToken, logout]);
 
   return instance;
 };

@@ -1,37 +1,32 @@
 import { useQuery } from "@tanstack/react-query";
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosError } from "axios";
 import {
   GraphQLErrorResponse,
   GraphQLResponse,
 } from "../../Login/models/types";
-import { APIGetAllUser } from "../models/user";
+import { APIGetAllUser } from "../models/types";
 import { useAxios } from "../../../hooks";
-
-const GET_ALL_USERS_QUERY = `
-  query AllUsers {
-    allUsers {
-      name
-      username
-			firstLastName
-			secondLastName
-    }
-  }
-`;
+import { useUsersStore } from "../state/useUsersStore";
+import { useEffect } from "react";
+import { getAllUsers } from "../services";
 
 export const useFetchUsers = () => {
   const axios = useAxios();
+  const { setUsers } = useUsersStore();
   const { isLoading, error, data } = useQuery<
-    AxiosResponse<GraphQLResponse<APIGetAllUser>>,
+    GraphQLResponse<APIGetAllUser>,
     AxiosError<GraphQLErrorResponse>
-  >(["get_users"], async () => {
-    return await axios.post<GraphQLResponse<APIGetAllUser>>("/", {
-      query: GET_ALL_USERS_QUERY,
-    });
-  });
+  >(["get_users"], () => getAllUsers(axios));
+
+  useEffect(() => {
+    console.log("set all users")
+    if (data) {
+      setUsers(data.data.allUsers)
+    }
+  }, [data, setUsers])
 
   return {
     isLoading,
-    error,
-    data,
+    error
   };
 };

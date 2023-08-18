@@ -1,0 +1,69 @@
+{
+  "properties": [
+    {
+      "name": "COMUNIDAD SULLCATA",
+      "beneficiaries": [
+        {
+          "name": "Roberto Torrez"
+        },
+        {
+          "name": "Yola Blanco"
+        },
+        {
+          "name": "Eleuterio Torrez Aguilar"
+        },
+        {
+          "name": "Maria Nemecia Mujica"
+        },
+        {
+          "name": "Julia Libertad Aguilar"
+        },
+        {
+          "name": "Flia. Saucedo Choque"
+        },
+        {
+          "name": "Graciela Mamani Callisaya"
+        },
+        {
+          "name": "Exalta Mamani"
+        }
+      ],
+      "idProyecto": "9008",
+      "polygone": 15,
+      "area": 8.9420,
+      "expertiseOfArea": 8.942,
+      "observations": [
+        {
+          "observation": "5 FOLDERS SOLO FLIP SIN FOLDER,CONFLICTO  DERECHO PROPIETARIO , SE ENCUENTRA EN   TRATAMIENTO CONCLUIDO  PARA SU PROSECUCION MEDIANTE PROCEDIMIENTO COMUN",
+          "type": "standard"
+        },
+        {
+          "observation": "PARA PROCEDIMIENTO COMUN DE SANEAMIENTO, ACTUALMENTE EN SEGUIMIENTO POR LAS PARTES INTERESADAS",
+          "type": "technical"
+        }
+      ],
+      "plots": 8,
+      "state": "CONFLICTO",
+      "type": "Comunitario",
+      "subDirectory": "CONFLICTOS",
+      "activity": "Agricola",
+      "clasification": "Pequeña",
+      "bodies": 5,
+      "sheets": 0,
+      "codeOfSearch": "DEP161",
+      "responsibleUnit": "CONFLICTOS",
+      "localizacion": {
+        "city": "La Paz",
+        "province": "Ingavi",
+        "municipality": "Guaqui"
+      },
+      "code": "500570",
+      "technical": "",
+      "groupedState": "Proceso Departamental",
+      "legal": "",
+      "agrupacionIdentifier": "",
+      "secondState": "POL.",
+      "reference": "verificado"
+    }
+  ]
+}

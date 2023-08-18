@@ -3,9 +3,9 @@ import { useSessionStore } from "../pages/Login/state";
 import { getNewAccessToken } from "../pages/Login/services";
 
 export const useAuth = () => {
-  const { isAuth, reset, accessToken, setAccessToken, expirationToken } =
+  const { isAuth, reset, accessToken, setAccessToken, expirationAccessToken } =
     useAuthStore();
-  const { refreshToken, deleteRefreshToken, setRefreshToken } =
+  const { refreshToken, deleteRefreshToken, setRefreshToken, expirationRefreshToken } =
     useSessionStore();
 
   const logout = () => {
@@ -29,6 +29,7 @@ export const useAuth = () => {
     setAccessToken,
     setRefreshToken,
     checkAuth,
-    expirationToken,
+    expirationAccessToken,
+    expirationRefreshToken
   };
 };

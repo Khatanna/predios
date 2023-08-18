@@ -1,8 +1,14 @@
+export type UserType = {
+  name: string
+}
+
 export type User = {
-  name: string;
+  names: string;
   firstLastName: string;
   secondLastName: string;
   username: string;
+  type?: UserType
+  status: string
 }
 
 export type APIGetAllUser = {

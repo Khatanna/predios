@@ -3,19 +3,30 @@ import { Navigate, Outlet } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import { useAuth } from '../../hooks';
 import { Nav } from '../Nav';
-import { route } from '../Nav/types';
+import { Route } from '../Nav/types';
 
 export type NavbarProps = {
 }
 
-const routes: route[] = [
+const routes: Route[] = [
 	{
 		path: '/',
-		name: 'Inicio'
+		name: 'Inicio',
 	},
 	{
 		path: '/users',
-		name: 'Usuarios'
+		name: 'Usuarios',
+		children: [
+			{ path: '/users/all', name: 'Ver todos' },
+			{ path: '/users/create', name: 'Crear usuario' },
+		]
+	},
+	{
+		path: '/admin',
+		name: 'Administración de entidades',
+		children: [
+			{ path: '/admin/usertype', name: 'Tipos de usuario' }
+		]
 	}
 ]
 
@@ -27,10 +38,10 @@ const NavbarComponent: React.FC<NavbarProps> = ({ }) => {
 	}
 
 	return <>
-		<Navbar expand="sm" sticky='top' bg='body-tertiary p-0'>
+		<Navbar expand="sm" sticky='top' bg='body-tertiary'>
 			<Container fluid>
 				<Navbar.Brand>
-					<img src={logo} alt="Inra" width={42} height={32} className='img-responsive img-thumbnail p-0' />
+					<img src={logo} alt="Inra" width={32} height={32} className='img-responsive' />
 				</Navbar.Brand>
 				<Navbar.Toggle aria-controls='basic-navbar-nav' />
 				<Navbar.Collapse>
@@ -39,7 +50,7 @@ const NavbarComponent: React.FC<NavbarProps> = ({ }) => {
 				</Navbar.Collapse>
 			</Container>
 		</Navbar>
-		<Container as={'main'}>
+		<Container as={'main'} fluid>
 			<Outlet />
 		</Container>
 	</>

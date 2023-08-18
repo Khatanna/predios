@@ -58,7 +58,7 @@ export const login = async (_parent: any, args: Record<string, string>, context:
     const accessToken = generateToken(
       mapUserForToken(user, ['password']),
       process.env.ACCESS_TOKEN_SECRET!,
-      LifeTimeToken.second * 5
+      LifeTimeToken.day
     )
     const refreshToken = generateToken(
       mapUserForToken(user, ['password', 'permissions']),
@@ -96,7 +96,7 @@ export const getNewAccessToken = async (_parent: any, { refreshToken }: { refres
       const accessToken = generateToken(
         user,
         process.env.ACCESS_TOKEN_SECRET!,
-        LifeTimeToken.second * 5
+        LifeTimeToken.day
       )
       return accessToken
     }

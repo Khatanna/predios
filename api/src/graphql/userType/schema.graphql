@@ -1,0 +1,32 @@
+type UserType {
+  id: ID!
+  name: String!
+  users: [User!]!
+}
+
+type UserTypeCreate {
+  created: Boolean
+  userType: UserType
+}
+
+type UserTypeDelete {
+  deleted: Boolean
+  userType: UserType
+}
+
+type UserTypeUpdate {
+  updated: Boolean
+  userType: UserType
+}
+
+type Query {
+  getAllUserTypes: [UserType!]
+}
+
+type Mutation {
+  createUserType(data: ForCreateTypeUser): UserTypeCreate
+}
+
+input ForCreateTypeUser {
+  name: String!
+}

@@ -6,177 +6,388 @@
         {
           "name": "Pedro Domingo Murillo",
           "municipalities": [
-            { "name": "Nuestra Señora de La Paz" },
-            { "name": "Palca" },
-            { "name": "Mecapaca" },
-            { "name": "Achocalla" },
-            { "name": "El Alto" }
-          ]
+            {
+              "name": "Nuestra Señora de La Paz"
+            },
+            {
+              "name": "Palca"
+            },
+            {
+              "name": "Mecapaca"
+            },
+            {
+              "name": "Achocalla"
+            },
+            {
+              "name": "El Alto"
+            }
+          ],
+          "code": "9001"
         },
         {
           "name": "Omasuyos",
           "municipalities": [
-            { "name": "Achacachi" },
-            { "name": "Ancoraimes" },
-            { "name": "Chua Cocani" },
-            { "name": "Huarina" },
-            { "name": "Siantago de Huata" },
-            { "name": "Huatajata" }
-          ]
+            {
+              "name": "Achacachi"
+            },
+            {
+              "name": "Ancoraimes"
+            },
+            {
+              "name": "Chua Cocani"
+            },
+            {
+              "name": "Huarina"
+            },
+            {
+              "name": "Siantago de Huata"
+            },
+            {
+              "name": "Huatajata"
+            }
+          ],
+          "code": "9002"
         },
         {
           "name": "Pacajes",
           "municipalities": [
-            { "name": "Coro Coro" },
-            { "name": "Caquiaviri" },
-            { "name": "Calacoto" },
-            { "name": "Comanche" },
-            { "name": "Charaña" },
-            { "name": "Waldo Ballivian" },
-            { "name": "Nazacara" },
-            { "name": "Callapa" }
-          ]
+            {
+              "name": "Coro Coro"
+            },
+            {
+              "name": "Caquiaviri"
+            },
+            {
+              "name": "Calacoto"
+            },
+            {
+              "name": "Comanche"
+            },
+            {
+              "name": "Charaña"
+            },
+            {
+              "name": "Waldo Ballivian"
+            },
+            {
+              "name": "Nazacara"
+            },
+            {
+              "name": "Callapa"
+            }
+          ],
+          "code": "9003"
         },
         {
           "name": "Eliodoro Camacho",
           "municipalities": [
-            { "name": "Escoma" },
-            { "name": "Mocomoco" },
-            { "name": "Puerto Acosta" },
-            { "name": "Puerto Carabuco" },
-            { "name": "Umanata" }
-          ]
+            {
+              "name": "Escoma"
+            },
+            {
+              "name": "Mocomoco"
+            },
+            {
+              "name": "Puerto Acosta"
+            },
+            {
+              "name": "Puerto Carabuco"
+            },
+            {
+              "name": "Umanata"
+            }
+          ],
+          "code": "9004"
         },
         {
           "name": "Muñecas",
           "municipalities": [
-            { "name": "Aucapata" },
-            { "name": "Ayata" },
-            { "name": "Chuma" }
-          ]
+            {
+              "name": "Aucapata"
+            },
+            {
+              "name": "Ayata"
+            },
+            {
+              "name": "Chuma"
+            }
+          ],
+          "code": "9005"
         },
         {
           "name": "Larecaja",
           "municipalities": [
-            { "name": "Combaya" },
-            { "name": "Guanay" },
-            { "name": "Mapiri" },
-            { "name": "Quiabaya" },
-            { "name": "Sorata" },
-            { "name": "Tacacoma" },
-            { "name": "Teoponte" },
-            { "name": "Tipuani" }
-          ]
+            {
+              "name": "Combaya"
+            },
+            {
+              "name": "Guanay"
+            },
+            {
+              "name": "Mapiri"
+            },
+            {
+              "name": "Quiabaya"
+            },
+            {
+              "name": "Sorata"
+            },
+            {
+              "name": "Tacacoma"
+            },
+            {
+              "name": "Teoponte"
+            },
+            {
+              "name": "Tipuani"
+            }
+          ],
+          "code": "9006"
         },
         {
           "name": "Franz Tamayo",
-          "municipalities": [{ "name": "Apolo" }, { "name": "Pelechuco" }]
+          "municipalities": [
+            {
+              "name": "Apolo"
+            },
+            {
+              "name": "Pelechuco"
+            }
+          ],
+          "code": "9007"
         },
         {
           "name": "Ingavi",
           "municipalities": [
-            { "name": "Desaguadero" },
-            { "name": "Guaqui" },
-            { "name": "Jesús de Machaca" },
-            { "name": "San Andrés de Machaca" },
-            { "name": "Taraco" },
-            { "name": "Tiwanaku" },
-            { "name": "Viacha" }
-          ]
+            {
+              "name": "Desaguadero"
+            },
+            {
+              "name": "Guaqui"
+            },
+            {
+              "name": "Jesús de Machaca"
+            },
+            {
+              "name": "San Andrés de Machaca"
+            },
+            {
+              "name": "Taraco"
+            },
+            {
+              "name": "Tiwanaku"
+            },
+            {
+              "name": "Viacha"
+            }
+          ],
+          "code": "9008"
         },
         {
           "name": "José Ramón Loayza",
           "municipalities": [
-            { "name": "Cairoma" },
-            { "name": "Luribay" },
-            { "name": "Malla" },
-            { "name": "Sapahaqui" },
-            { "name": "Yaco" }
-          ]
+            {
+              "name": "Cairoma"
+            },
+            {
+              "name": "Luribay"
+            },
+            {
+              "name": "Malla"
+            },
+            {
+              "name": "Sapahaqui"
+            },
+            {
+              "name": "Yaco"
+            }
+          ],
+          "code": "9009"
         },
         {
           "name": "Inquisivi",
           "municipalities": [
-            { "name": "Cajuata" },
-            { "name": "Colquiri" },
-            { "name": "Ichoca" },
-            { "name": "Inquisivi" },
-            { "name": "Licoma Pampa" },
-            { "name": "Quime" }
-          ]
+            {
+              "name": "Cajuata"
+            },
+            {
+              "name": "Colquiri"
+            },
+            {
+              "name": "Ichoca"
+            },
+            {
+              "name": "Inquisivi"
+            },
+            {
+              "name": "Licoma Pampa"
+            },
+            {
+              "name": "Quime"
+            }
+          ],
+          "code": "9010"
         },
         {
           "name": "Sud Yungas",
           "municipalities": [
-            { "name": "Chulumani" },
-            { "name": "Irupana" },
-            { "name": "La Asunta" },
-            { "name": "Palos Blancos" },
-            { "name": "Yanacachi" }
-          ]
+            {
+              "name": "Chulumani"
+            },
+            {
+              "name": "Irupana"
+            },
+            {
+              "name": "La Asunta"
+            },
+            {
+              "name": "Palos Blancos"
+            },
+            {
+              "name": "Yanacachi"
+            }
+          ],
+          "code": "9011"
         },
         {
           "name": "Los Andes",
           "municipalities": [
-            { "name": "Batallas" },
-            { "name": "Laja" },
-            { "name": "Pucarani" },
-            { "name": "Puerto Pérez" }
-          ]
+            {
+              "name": "Batallas"
+            },
+            {
+              "name": "Laja"
+            },
+            {
+              "name": "Pucarani"
+            },
+            {
+              "name": "Puerto Pérez"
+            }
+          ],
+          "code": "9012"
         },
         {
           "name": "Aroma",
           "municipalities": [
-            { "name": "Ayo Ayo" },
-            { "name": "Calamarca" },
-            { "name": "Collana" },
-            { "name": "Colquencha" },
-            { "name": "Patacamaya" },
-            { "name": "Sica Sica" },
-            { "name": "Umalla" }
-          ]
+            {
+              "name": "Ayo Ayo"
+            },
+            {
+              "name": "Calamarca"
+            },
+            {
+              "name": "Collana"
+            },
+            {
+              "name": "Colquencha"
+            },
+            {
+              "name": "Patacamaya"
+            },
+            {
+              "name": "Sica Sica"
+            },
+            {
+              "name": "Umalla"
+            }
+          ],
+          "code": "9013"
         },
         {
           "name": "Nor Yungas",
-          "municipalities": [{ "name": "Coripata" }, { "name": "Coroico" }]
-        },
-        {
-          "name": "Caranavi",
-          "municipalities": [{ "name": "Alto Beni" }, { "name": "Caranavi" }]
+          "municipalities": [
+            {
+              "name": "Coripata"
+            },
+            {
+              "name": "Coroico"
+            }
+          ],
+          "code": "9014"
         },
         {
           "name": "Abel Iturralde",
           "municipalities": [
-            { "name": "Ixiamas" },
-            { "name": "San Buenaventura" }
-          ]
+            {
+              "name": "Ixiamas"
+            },
+            {
+              "name": "San Buenaventura"
+            }
+          ],
+          "code": "9015"
         },
         {
           "name": "Juan Bautista Saavedra",
-          "municipalities": [{ "name": "Charazani" }, { "name": "Curva" }]
+          "municipalities": [
+            {
+              "name": "Charazani"
+            },
+            {
+              "name": "Curva"
+            }
+          ],
+          "code": "9016"
         },
         {
           "name": "Manco Kapac",
           "municipalities": [
-            { "name": "Copacabana" },
-            { "name": "San Pedro de Tiquina" },
-            { "name": "Tito Yupanqui" }
-          ]
+            {
+              "name": "Copacabana"
+            },
+            {
+              "name": "San Pedro de Tiquina"
+            },
+            {
+              "name": "Tito Yupanqui"
+            }
+          ],
+          "code": "9017"
         },
         {
           "name": "Gualberto Villaroel",
           "municipalities": [
-            { "name": "Chacarilla" },
-            { "name": "Papel Pampa" },
-            { "name": "San Pedro de Curahuara" }
-          ]
+            {
+              "name": "Chacarilla"
+            },
+            {
+              "name": "Papel Pampa"
+            },
+            {
+              "name": "San Pedro de Curahuara"
+            }
+          ],
+          "code": "9018"
         },
         {
           "name": "Jose Manuel Pando Solares",
           "municipalities": [
-            { "name": "Catacora" },
-            { "name": "Santiago de Machacas" }
-          ]
+            {
+              "name": "Catacora"
+            },
+            {
+              "name": "Santiago de Machacas"
+            }
+          ],
+          "code": "9019"
+        },
+        {
+          "name": "Caranavi",
+          "municipalities": [
+            {
+              "name": "Alto Beni"
+            },
+            {
+              "name": "Caranavi"
+            }
+          ],
+          "code": "9020"
+        },
+        {
+          "name": "Por definir",
+          "municipalities": [],
+          "code": "9021"
         }
       ]
     }

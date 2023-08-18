@@ -8,7 +8,7 @@ interface State {
   isAuth: boolean;
   accessToken?: string;
   user?: UserAuthenticate;
-  expirationToken?: number
+  expirationAccessToken?: number
 }
 
 interface Actions {
@@ -20,7 +20,7 @@ const initialState: State = {
   isAuth: false,
   accessToken: undefined,
   user: undefined,
-  expirationToken: undefined
+  expirationAccessToken: undefined
 }
 
 const middlewares = (f: StateCreator<State & Actions, [["zustand/immer", State & Actions]]>) => devtools(immer(f));
@@ -36,7 +36,7 @@ export const useAuthStore = create(middlewares(
         accessToken: token,
         user: tokenDecode,
         isAuth: true,
-        expirationToken: tokenDecode.exp
+        expirationAccessToken: tokenDecode.exp
       })
     },
     reset() {

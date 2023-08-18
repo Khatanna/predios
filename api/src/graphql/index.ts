@@ -16,6 +16,7 @@ import {
 import { resolvers as userResolvers, typeDefs as userTypeDefs } from "./user";
 
 import { resolvers as authResolvers, typeDefs as authTypeDefs } from "./auth";
+import { resolvers as UserTypeResolvers, typeDefs as UserTypeTypeDefs } from './userType'
 
 export const server = new ApolloServer({
   typeDefs: [
@@ -25,6 +26,7 @@ export const server = new ApolloServer({
     cityTypeDefs,
     provinceTypeDefs,
     municipalityTypeDefs,
+    UserTypeTypeDefs,
   ],
   resolvers: [
     permissionResolvers,
@@ -33,5 +35,6 @@ export const server = new ApolloServer({
     cityResolvers,
     provinceResolvers,
     municipalityResolvers,
+    UserTypeResolvers,
   ],
 });

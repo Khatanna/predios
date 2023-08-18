@@ -1,4 +1,5 @@
-export type route = {
-  path: `/${string}`  
-  name: string
+export type Route = {
+  path: string
+  name: string,
+  children?: Route[]
 }

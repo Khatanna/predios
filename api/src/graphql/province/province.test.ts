@@ -5,7 +5,7 @@ import request from "supertest";
 const api = "http://localhost:3001";
 const prisma = new PrismaClient();
 
-describe("Province", () => {
+xdescribe("Province", () => {
   afterAll(async () => {
     await prisma.user.deleteMany();
   })

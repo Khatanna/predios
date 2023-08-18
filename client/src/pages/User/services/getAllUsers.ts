@@ -1,22 +1,26 @@
-import { instance } from "../../../utilities/config/axios"
-import { GraphQLResponse } from "../../Login/models/types"
-import { APIGetAllUser } from "../models/user"
+import { AxiosInstance } from "axios";
+import { GraphQLResponse } from "../../Login/models/types";
+import { APIGetAllUser } from "../models/types";
 
 const GET_ALL_USERS_QUERY = `
   query AllUsers {
     allUsers {
-      name
+      names
       username
+			firstLastName
+			secondLastName
+      status
+      type {
+        name
+      }
     }
   }
-`
+`;
 
-export const getAllUsers = async () => {
-  try {
-    return await instance.post<GraphQLResponse<APIGetAllUser>>('/', {
-      query: GET_ALL_USERS_QUERY,
-    })
-  } catch (e) {
-    throw e;
-  }
+export const getAllUsers = async (axios: AxiosInstance) => {
+  const { data } = await axios.post<GraphQLResponse<APIGetAllUser>>('/', {
+    query: GET_ALL_USERS_QUERY,
+  });
+
+  return data;
 }
