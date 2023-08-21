@@ -5,15 +5,20 @@ import { throwUnAuthenticateError } from "../../utilities";
 import { AuthResponses } from "../../constants";
 const prisma = new PrismaClient();
 
-export const allUsers = (_parent: any, _args: GraphQLArgs, context: BaseContext & { user?: Prisma.UserCreateInput }) => {
-  if (!context.user) throw throwUnAuthenticateError(AuthResponses.UNAUTHENTICATED);
+export const allUsers = (
+  _parent: any,
+  _args: GraphQLArgs,
+  context: BaseContext & { user?: Prisma.UserCreateInput },
+) => {
+  if (!context.user)
+    throw throwUnAuthenticateError(AuthResponses.UNAUTHENTICATED);
 
   return prisma.user.findMany({
-    where: {
-      NOT: {
-        username: context.user.username
-      }
-    },
+    // where: {
+    //   NOT: {
+    //     username: context.user.username
+    //   }
+    // },
     include: {
       permissions: true,
       type: true,
@@ -33,7 +38,10 @@ export const getUserById = async (_: any, { id }: { id: string }) => {
   return user;
 };
 
-export const getUserByUsername = async (_: any, { username }: { username: string }) => {
+export const getUserByUsername = async (
+  _: any,
+  { username }: { username: string },
+) => {
   const user = await prisma.user.findUnique({
     where: { username },
     include: { permissions: true },
@@ -41,4 +49,3 @@ export const getUserByUsername = async (_: any, { username }: { username: string
 
   return user;
 };
-

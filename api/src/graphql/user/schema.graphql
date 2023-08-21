@@ -37,24 +37,25 @@ type Query {
 
 # Mutations
 type Mutation {
-  createUser(data: ForCreateUser): UserCreate
-  updateUserByUsername(data: ForUpdateUserByUsername): UserUpdate
-  updateUserById(data: ForUpdateUserById): UserUpdate
+  createUser(input: CreateUserInput): UserCreate
+  updateUserByUsername(input: UpdateUserByUsernameInput): UserUpdate
+  updateUserById(input: ForUpdateUserById): UserUpdate
   deleteUserById(id: ID): UserDelete
   deleteUserByUsername(username: String): UserDelete
 }
 
 # Input types
-input ForCreateUser {
+input CreateUserInput {
   names: String!
   firstLastName: String!
   secondLastName: String!
   username: String!
   password: String!
   type: ForCreateTypeUser!
+  status: String
 }
 
-input ForUpdateUser {
+input UpdateUserInput {
   names: String
   firstLastName: String
   secondLastName: String
@@ -66,10 +67,10 @@ input ForUpdateUser {
 
 input ForUpdateUserById {
   id: ID!
-  data: ForUpdateUser
+  data: UpdateUserInput
 }
 
-input ForUpdateUserByUsername {
+input UpdateUserByUsernameInput {
   username: String!
-  data: ForUpdateUser
+  data: UpdateUserInput
 }
