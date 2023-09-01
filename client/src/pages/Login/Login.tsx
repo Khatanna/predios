@@ -3,10 +3,7 @@ import { Navigate } from 'react-router';
 import { LoginForm } from './components/LoginForm';
 import { useAuth } from '../../hooks';
 
-export type LoginProps = {
-}
-
-const Login: React.FC<LoginProps> = ({ }) => {
+const Login: React.FC = () => {
 	const { isAuth } = useAuth();
 
 	if (isAuth) {

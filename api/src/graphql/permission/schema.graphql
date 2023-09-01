@@ -1,33 +1,58 @@
+
+enum Level {
+  CREATE  
+  READ
+  UPDATE
+  DELETE
+}
 # Types
 type Permission {
   name: String!
   description: String!
+  resource: String!
+  level: Level!
+  users: [User]!
 }
-
-# type PermissionWithUser {
-#   name: String!
-#   description: String!
-#   users: [User!]!
-# }
 
 type PermissionOnUser {
   user: User
   permission: Permission
 }
 
+type PermissionCreate {
+  created: Boolean,
+  permission: Permission
+}
+
+type PermissionUpdate {
+  updated: Boolean,
+  permission: Permission
+}
+
 # Queries
 type Query {
-  permissions: [Permission!]!
+  getAllPermissions: [Permission!]!
+  getPermissionByName(name: String!): [Permission]!
   # permissionsWithUsers: [PermissionWithUser!]!
 }
 
 # Mutations
 type Mutation {
-  createPermission(data: InputCreatePermission): Permission
+  createPermission(input: CreatePermissionInput): PermissionCreate
+  updatePermission(input: UpdatePermissionInput): PermissionUpdate
 }
 
 # Input Types
-input InputCreatePermission {
-  name: String!
-  descripcion: String!
+input CreatePermissionInput {
+  name: String
+  description: String
+  resource: String!
+  level: Level!
+}
+
+input UpdatePermissionInput {
+  name: String
+  description: String
+  resource: String!
+  level: Level!
 }

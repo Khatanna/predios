@@ -37,12 +37,19 @@ export const login = async (_parent: any, args: Record<string, string>, context:
   const { username, password } = args;
   const user = await prisma.user.findUnique({
     where: {
-      username,
+      username
     },
     select: {
       username: true,
       password: true,
-      permissions: true,
+      permissions: {
+        select: {
+          resource: true,
+          level: true
+        }
+      },
+      status: true,
+      role: true,
     }
   })
 
@@ -53,6 +60,10 @@ export const login = async (_parent: any, args: Record<string, string>, context:
 
     if (!verifyPassword(password, user.password)) {
       throw throwLoginError(AuthErrorMessage.INVALID_PASSWORD)
+    }
+
+    if (user.status === 'DISABLE') {
+      throw throwLoginError(AuthErrorMessage.USER_DISABLE)
     }
 
     const accessToken = generateToken(
@@ -83,7 +94,13 @@ export const getNewAccessToken = async (_parent: any, { refreshToken }: { refres
       },
       select: {
         username: true,
-        permissions: true
+        role: true,
+        permissions: {
+          select: {
+            resource: true,
+            level: true
+          }
+        }
       }
     })
 

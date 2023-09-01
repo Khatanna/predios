@@ -1,24 +1,29 @@
 import { BaseContext } from "@apollo/server";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, User, Permission, PrismaClient } from "@prisma/client";
 import { GraphQLArgs } from "graphql";
 import { throwUnAuthenticateError } from "../../utilities";
-import { AuthResponses } from "../../constants";
+import { AuthResponses, PermissionErrorMessage } from "../../constants";
+import { throwUnauthorizedError } from "../../utilities";
 const prisma = new PrismaClient();
 
-export const allUsers = (
+export const allUsers = async (
   _parent: any,
   _args: GraphQLArgs,
-  context: BaseContext & { user?: Prisma.UserCreateInput },
+  context: BaseContext & { user?: User & { permissions: Permission[] } },
 ) => {
   if (!context.user)
     throw throwUnAuthenticateError(AuthResponses.UNAUTHENTICATED);
 
+  if (!context.user.permissions.some(p => p.level === 'READ') && !context.user.permissions.some(p => p.resource === 'USER')) {
+    throw throwUnauthorizedError(PermissionErrorMessage.READ_USER);
+  }
+
   return prisma.user.findMany({
-    // where: {
-    //   NOT: {
-    //     username: context.user.username
-    //   }
-    // },
+    where: {
+      NOT: {
+        username: context.user.username
+      }
+    },
     include: {
       permissions: true,
       type: true,

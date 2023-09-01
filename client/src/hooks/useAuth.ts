@@ -1,9 +1,8 @@
-import { useAuthStore } from "../state/useAuthStore";
 import { useSessionStore } from "../pages/Login/state";
-import { getNewAccessToken } from "../pages/Login/services";
+import { useAuthStore } from "../state/useAuthStore";
 
 export const useAuth = () => {
-  const { isAuth, reset, accessToken, setAccessToken, expirationAccessToken } =
+  const { user, isAuth, reset, accessToken, setAccessToken, expirationAccessToken } =
     useAuthStore();
   const { refreshToken, deleteRefreshToken, setRefreshToken, expirationRefreshToken } =
     useSessionStore();
@@ -13,14 +12,6 @@ export const useAuth = () => {
     reset();
   };
 
-  const checkAuth = async () => {
-    if (!accessToken && refreshToken) {
-      console.log("refrescando el accestoken");
-      const response = await getNewAccessToken(refreshToken);
-      setAccessToken(response.data.data.accessToken);
-    }
-  };
-
   return {
     isAuth,
     logout,
@@ -28,8 +19,8 @@ export const useAuth = () => {
     refreshToken,
     setAccessToken,
     setRefreshToken,
-    checkAuth,
     expirationAccessToken,
-    expirationRefreshToken
+    expirationRefreshToken,
+    user
   };
 };

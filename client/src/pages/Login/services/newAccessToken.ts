@@ -1,5 +1,4 @@
-import { instance } from "../../../utilities/config/axios";
-import { APINewAccessTokenResponse, GraphQLResponse } from "../models/types";
+import axios from "axios";
 
 const GET_NEW_ACCESS_TOKEN_QUERY = `
 	query Query($refreshToken: String)	{
@@ -7,15 +6,11 @@ const GET_NEW_ACCESS_TOKEN_QUERY = `
 	}
 `;
 
-export const getNewAccessToken = async (refreshToken: string) => {
-  try {
-    return await instance.post<GraphQLResponse<APINewAccessTokenResponse>>('/', {
-      query: GET_NEW_ACCESS_TOKEN_QUERY,
-      variables: {
-        refreshToken
-      },
-    }, { headers: { operation: 'Login' } });
-  } catch (e) {
-    throw e;
-  }
+export const getNewAccessToken = (refreshToken: string) => {
+  return axios.post('http://localhost:3001/', {
+    query: GET_NEW_ACCESS_TOKEN_QUERY,
+    variables: {
+      refreshToken
+    },
+  }, { headers: { operation: 'Login' } });
 }

@@ -10,4 +10,11 @@ export type User = {
   password: string;
   status: string;
   type: UserType;
+  permissions: Permission[]
 };
+
+export type Permission = {
+  name: string,
+  description: string,
+  users: User[]
+}

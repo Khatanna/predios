@@ -1,7 +1,4 @@
 import { AxiosInstance } from "axios";
-import { GraphQLResponse } from "../../Login/models/types";
-import { APIGetAllUser } from "../models/types";
-
 const GET_ALL_USERS_QUERY = `
   query AllUsers {
     allUsers {
@@ -10,6 +7,8 @@ const GET_ALL_USERS_QUERY = `
 			firstLastName
 			secondLastName
       status
+      createdAt
+      typeId
       type {
         name
       }
@@ -18,7 +17,7 @@ const GET_ALL_USERS_QUERY = `
 `;
 
 export const getAllUsers = async (axios: AxiosInstance) => {
-  const { data } = await axios.post<GraphQLResponse<APIGetAllUser>>('/', {
+  const { data } = await axios.post('/', {
     query: GET_ALL_USERS_QUERY,
   });
 

@@ -14,6 +14,40 @@ enum Status {
   @@map("estado")
 }
 
+enum LevelPermission {
+  CREATE @map("escritura")
+  READ   @map("lectura")
+  UPDATE @map("actualización")
+  DELETE @map("eliminación")
+
+  @@map("tipo_de_permiso")
+}
+
+enum Resource {
+  USER         @map("usuario")
+  PROPERTY     @map("predio")
+  BENEFICIARY  @map("beneficiario")
+  CITY         @map("departamento")
+  PROVINCE     @map("provincia")
+  MUNICIPALITY @map("municipio")
+
+  CLASIFICATION @map("clasificación")
+  ACTIVITY      @map("actividad")
+  OBSERVATION   @map("observación")
+  PERMISSION    @map("permiso")
+  USERTYPE      @map("tipo_de_usuario")
+
+  TYPE         @map("tipo")
+  SUB_CARPERTA @map("sub_carpeta")
+}
+
+enum Role {
+  ADMIN @map("administrador")
+  USER  @map("usuario")
+
+  @@map("rol")
+}
+
 model User {
   id             String       @id @default(uuid())
   names          String?      @map("nombre") @db.VarChar(30)
@@ -28,6 +62,7 @@ model User {
   permissions    Permission[]
   type           UserType?    @relation(fields: [typeId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   status         Status       @default(ENABLE) @map("estado")
+  role           Role         @default(USER) @map("rol")
 
   @@map("usuario")
 }
@@ -39,6 +74,8 @@ model UserType {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("tipo_de_usuario")
 }
 
 model Session {
@@ -53,13 +90,16 @@ model Session {
 }
 
 model Permission {
-  id          String   @id @default(uuid())
-  name        String   @unique @map("nombre")
-  description String   @map("descripcion")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id          String          @id @default(uuid())
+  name        String          @map("nombre")
+  level       LevelPermission @map("nivel_de_acceso")
+  resource    Resource        @map("recurso")
+  description String          @map("descripcion")
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
   users       User[]
 
+  @@unique([resource, level])
   @@map("permiso")
 }
 

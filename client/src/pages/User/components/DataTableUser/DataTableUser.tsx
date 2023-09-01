@@ -3,11 +3,15 @@ import DataTable, { TableColumn } from "react-data-table-component";
 import { User } from "../../models/types";
 import { DropdownMenu } from "../DropdownMenu";
 import { StateCell } from "../StateCell";
+import { useNavigate } from "react-router";
+import { ArrowDownShort } from "react-bootstrap-icons";
 const columns: TableColumn<User>[] = [
   {
     name: "Nro",
     selector: (_row, index) => (index || 0) + 1,
     width: "100px",
+    sortable: true,
+    sortFunction: (a, b) => Number(a.createdAt) - Number(b.createdAt)
   },
   {
     name: "Nombre de usuario",
@@ -35,6 +39,11 @@ const columns: TableColumn<User>[] = [
     sortable: true,
   },
   {
+    name: 'Rol',
+    selector: (row) => row.role === 'USER' ? 'Usuario' : 'Administrador',
+    sortable: true,
+  },
+  {
     name: "Estado",
     cell: (row) => <StateCell status={row.status} />,
     sortable: true,
@@ -57,6 +66,8 @@ export type DataTableUserProps = {
 };
 
 const DataTableUser: React.FC<DataTableUserProps> = ({ data }) => {
+  const navigate = useNavigate();
+
   return (
     <DataTable
       className="overflow-visible"
@@ -67,6 +78,10 @@ const DataTableUser: React.FC<DataTableUserProps> = ({ data }) => {
       highlightOnHover
       responsive
       striped
+      pointerOnHover
+      onRowDoubleClicked={(row) => navigate('../edit', { state: row })}
+      sortIcon={<ArrowDownShort color="green" />}
+      noDataComponent="No existen registros"
     />
   );
 };

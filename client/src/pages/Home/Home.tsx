@@ -123,23 +123,6 @@ const Home: React.FC<HomeProps> = ({ }) => {
 		}
 	});
 
-	// useEffect(() => {
-	// 	const form = localStorage.getItem('form');
-
-	// 	if (form) {
-	// 		console.log("hay valores por recuperar")
-	// 		const parse = JSON.parse(form);
-	// 		Object.keys(parse).forEach(fieldName => {
-	// 			setValue(fieldName, parse[fieldName])
-	// 		})
-	// 	}
-	// }, [setValue])
-
-	// useEffect(() => {
-	// 	localStorage.setItem('form', JSON.stringify(formData));
-	// }, [formData])
-	//   
-
 	return <Form className='row d-flex mt-1'>
 		<Col xs={9}>
 			<Row>

@@ -1,8 +1,9 @@
 import { create, StateCreator } from 'zustand';
-import { UserAuthenticate } from '../models';
+import { UserAuthenticate } from '../types';
 import { immer } from 'zustand/middleware/immer';
 import { devtools } from 'zustand/middleware';
 import jwtDecode from 'jwt-decode';
+import { produce } from 'immer';
 
 interface State {
   isAuth: boolean;
@@ -26,18 +27,19 @@ const initialState: State = {
 const middlewares = (f: StateCreator<State & Actions, [["zustand/immer", State & Actions]]>) => devtools(immer(f));
 
 export const useAuthStore = create(middlewares(
-  (set, get) => ({
+  (set) => ({
     ...initialState,
     setAccessToken(token) {
       const tokenDecode: UserAuthenticate & { exp: number } = jwtDecode(token)!;
-
-      set({
-        ...get(),
-        accessToken: token,
-        user: tokenDecode,
-        isAuth: true,
-        expirationAccessToken: tokenDecode.exp
-      })
+      // console.log(tokenDecode)
+      set(
+        produce((state) => {
+          state.accessToken = token;
+          state.user = tokenDecode;
+          state.isAuth = true;
+          state.expirationAccessToken = tokenDecode.exp;
+        })
+      )
     },
     reset() {
       set(initialState)

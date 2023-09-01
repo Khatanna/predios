@@ -24,9 +24,9 @@ type Query {
 }
 
 type Mutation {
-  createUserType(data: ForCreateTypeUser): UserTypeCreate
+  createUserType(input: CreateTypeUserInput): UserTypeCreate
 }
 
-input ForCreateTypeUser {
+input CreateTypeUserInput {
   name: String!
 }

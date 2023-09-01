@@ -8,7 +8,7 @@ import { TokenExpiredError } from "jsonwebtoken";
 export const graphqlContext = async ({ req }: StandaloneServerContextFunctionArgument) => {
   const token = req.headers.authorization
   const operation = req.headers.operation!;
-  console.log("server context:", token);
+  // console.log("server context:", token);
   if (isOperationAuthLess(operation)) {
     return {};
   }

@@ -1,30 +1,35 @@
-import { useMutation } from '@tanstack/react-query';
-import { AxiosError, AxiosResponse } from 'axios';
-import Swal from 'sweetalert2';
-import type { APILoginResponse, FormLoginValues, GraphQLErrorResponse, GraphQLResponse } from "../models/types";
-import { login } from "../services";
 import { useAuth } from '../../../hooks';
+import { useCustomMutation } from '../../../hooks/useCustomMutation';
+import type { LoginResponse, FormLoginValues } from "../models/types";
+import { customSwalError } from '../../../utilities/alerts';
+
+const LOGIN_QUERY = `
+	query Query($username: String, $password: String)	{
+		auth: login(username: $username, password: $password) {
+      accessToken
+      refreshToken
+    }
+	}
+`;
 
 export const useFetchLogin = () => {
   const { setRefreshToken, setAccessToken } = useAuth()
-  const { isLoading, mutate } = useMutation<AxiosResponse<GraphQLResponse<APILoginResponse>>, AxiosError<GraphQLErrorResponse>, FormLoginValues>(login, {
-    onSuccess({ data: { data: { auth: { accessToken, refreshToken } } } }) {
+  const [login, { isLoading }] = useCustomMutation<LoginResponse, FormLoginValues>(LOGIN_QUERY, {
+    onSuccess({ auth: { accessToken, refreshToken } }) {
       setRefreshToken(refreshToken);
       setAccessToken(accessToken);
     },
-    onError({ response }) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Intento de sesión fallido',
-        text: response?.data.errors[0].message,
-        confirmButtonColor: 'green',
-        confirmButtonText: 'Aceptar'
-      })
+    onError(error) {
+      customSwalError(error, 'Intento de inicio de sesión fallido')
+    }
+  }, {
+    headers: {
+      operation: 'Login',
     }
   });
 
   return {
     isLoading,
-    login: mutate
+    login
   }
 }

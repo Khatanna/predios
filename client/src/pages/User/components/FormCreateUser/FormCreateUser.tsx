@@ -1,40 +1,25 @@
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { Form, Row, Col, Button, InputGroup } from "react-bootstrap";
-import { useForm } from "react-hook-form";
-import { useAxios } from "../../../../hooks";
-import Swal from "sweetalert2";
-import { AxiosError, AxiosResponse } from "axios";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import {
-  PlusCircle,
-  XCircle,
   ArrowLeftCircle,
   CheckCircle,
+  PlusCircle,
+  XCircle,
 } from "react-bootstrap-icons";
-import type { User, UserType } from "../../models/types";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Error } from "../../../Login/styled-components/Error";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
-//     mutationFn: async ({ username, usertype }) => {
-//       return axios.post('/', {
-//         query: `mutation UpdateUserByUsername($data: ForUpdateUserByUsername) {
-//             updateUserByUsername(data: $data) {
-//               updated
-//             }
-//           }
-//         `,
-//         variables: {
-//           data: {
-//             username,
-//             data: { type: { name: usertype } }
-//           }
-//         }
-//       })
+import Swal from "sweetalert2";
+import * as yup from "yup";
+import { useAxios } from "../../../../hooks";
+import { Error } from "../../../Login/styled-components/Error";
+import type { User, UserType } from "../../models/types";
+import { useFetchCreateUserType, useFetchCreateUser, useFetchUpdateUser } from "../../hooks";
+import { Role } from "../../../../types.d";
 
 export interface FormCreateUserProps {
-  user?: User;
+  user?: Omit<User, 'createdAt'>;
 }
 
 const schema = yup.object({
@@ -53,20 +38,17 @@ const schema = yup.object({
     .required("La contraseña es un campo obligatorio")
     .min(8, "La contraseña debe tener almenos 8 caracteres")
     .max(32, "La contraseña no debe tener mas de 32 caracteres"),
-  type: yup
-    .object({
-      name: yup.string().required("El tipo es requerido"),
-    })
-    .required(),
-  status: yup.string().required("El usuario debe tener un estado").required(),
+  typeId: yup.string().required("El tipo es requerido").required(),
+  status: yup.string().required("El usuario debe tener un estado").required()
 });
 
-const TypeOptions = ({ selected }: { selected?: string }) => {
+const TypeOptions = ({ typeId }: { typeId?: string }) => {
   const axios = useAxios();
   const { data } = useQuery(["getAllTypes"], async () => {
     return axios.post("/", {
       query: `{
 				userTypes: getAllUserTypes {
+          id
 					name
 				}
 			}`,
@@ -75,11 +57,11 @@ const TypeOptions = ({ selected }: { selected?: string }) => {
 
   return (
     <>
-      {data?.data.data.userTypes.map(({ name }: UserType) => (
+      {data?.data.data.userTypes.map(({ id, name }: UserType) => (
         <option
-          value={name}
+          value={id}
           key={crypto.randomUUID()}
-          selected={!!selected && selected.localeCompare(name) === 0}
+          selected={!!typeId && typeId === id}
         >
           {name}
         </option>
@@ -88,123 +70,14 @@ const TypeOptions = ({ selected }: { selected?: string }) => {
   );
 };
 
-const useFetchPostUser = () => {
-  const axios = useAxios();
-  const { mutate } = useMutation<
-    AxiosResponse<{ created: boolean }>,
-    AxiosError<{ errors: { message: string }[] }>,
-    User
-  >({
-    mutationFn: async (input) => {
-      return axios.post("/", {
-        query: `mutation CreateUser($input: CreateUserInput) {
-					result: createUser(input: $input) {
-						created
-					}
-				}`,
-        variables: {
-          input,
-        },
-      });
-    },
-    onSuccess() {
-      // TODO verificar
-      Swal.fire({
-        icon: "success",
-        title: "Usuario creado correctamente",
-      });
-    },
-    onError(e) {
-      Swal.fire({
-        icon: "error",
-        title: "Ocurrio un error",
-        text: e.response?.data.errors[0].message,
-      });
-    },
-  });
-
-  return {
-    postUser: mutate,
-  };
-};
-
-const useFetchPostUserType = () => {
-  const axios = useAxios();
-  const { mutate } = useMutation<
-    AxiosResponse<{ created: boolean }>,
-    AxiosError<{ errors: { message: string }[] }>,
-    UserType
-  >({
-    mutationFn: async (data: UserType) => {
-      return axios.post("/", {
-        query: `mutation CreateUserType ($data: ForCreateTypeUser){
-					createUserType(data: $data) {
-						created
-					}
-				}`,
-        variables: {
-          data,
-        },
-      });
-    },
-    onSuccess() {
-      Swal.fire({
-        icon: "success",
-        title: "Nuevo tipo agregado",
-      });
-    },
-    onError(error) {
-      Swal.fire({
-        icon: "error",
-        title: "Ocurrio un error",
-        text: error.response?.data.errors[0].message,
-      });
-    },
-  });
-
-  return {
-    postUserType: mutate,
-  };
-};
-
-const useFetchUpdateUser = () => {
-  const axios = useAxios();
-  const { mutate } = useMutation<
-    { updated: boolean },
-    AxiosError<{ errors: Error[] }>,
-    User
-  >({
-    mutationFn: async (data) => {
-      console.log(data);
-      return axios.post("/", {
-        query: `mutation UpdateUser($input: UpdateUserInput) {
-          updateUserByUsername(input: $input) {
-            updated,
-          }
-        }`,
-        variables: {
-          data,
-        },
-      });
-    },
-    onSuccess(data) {
-      console.log({ data });
-    },
-    onError(error) {
-      console.log({ error });
-    },
-  });
-
-  return { updateUser: mutate };
-};
-
 const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
   const navigate = useNavigate();
   const [showEditUserType, setShowEditUserType] = useState(false);
   const [userType, setUserType] = useState("");
-  const { postUserType } = useFetchPostUserType();
+  const usernameLocal = user ? user.username : '';
+  const { createUserType } = useFetchCreateUserType();
   const { updateUser } = useFetchUpdateUser();
-  const { postUser } = useFetchPostUser();
+  const { createUser } = useFetchCreateUser();
   const {
     register,
     setValue,
@@ -218,11 +91,10 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
       firstLastName: "",
       secondLastName: "",
       username: "",
-      password: "",
+      password: user ? 'Inra12345' : '',
       status: "ENABLE",
-      type: {
-        name: "",
-      },
+      role: Role.USER,
+      typeId: '',
       ...user,
     },
     resolver: yupResolver(schema),
@@ -248,9 +120,15 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
 
   const submit = (data: User) => {
     if (user) {
-      updateUser(data);
+      updateUser({
+        input: {
+          username: usernameLocal, data
+        }
+      });
     } else {
-      postUser(data);
+      createUser({
+        input: data
+      });
     }
     reset();
   };
@@ -264,6 +142,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
           color="green"
           onClick={() => navigate(-1)}
           role="button"
+          className="my-2"
         />
         <Form
           className="row g-3 position-absolute top-50 start-50 translate-middle"
@@ -294,7 +173,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                 <Form.Label>Estado</Form.Label>
                 <Form.Select placeholder="Nombres" {...register("status")}>
                   {["ENABLE", "DISABLE"].map((s) => (
-                    <option value={s}>
+                    <option value={s} selected={user.status === s} key={crypto.randomUUID()}>
                       {s === "ENABLE" ? "Habilitado" : "Deshabilitado"}
                     </option>
                   ))}
@@ -370,10 +249,12 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                       className="position-absolute top-50 end-0 translate-middle img-fluid"
                       onClick={() => {
                         if (userType.length !== 0) {
-                          postUserType({
-                            name: userType[0]
-                              .toUpperCase()
-                              .concat(userType.slice(1)),
+                          createUserType({
+                            input: {
+                              name: userType[0]
+                                .toUpperCase()
+                                .concat(userType.slice(1)),
+                            }
                           });
                           setUserType("");
                         } else {
@@ -412,15 +293,15 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                       onClick={() => setShowEditUserType(true)}
                     />
                   </InputGroup.Text>
-                  <Form.Select {...register("type.name")} autoComplete="off">
+                  <Form.Select {...register("typeId")} autoComplete="off">
                     <option value={""} selected disabled>
                       Tipo
                     </option>
-                    <TypeOptions selected={user?.type?.name} />
+                    <TypeOptions typeId={user?.typeId} />
                   </Form.Select>
                 </InputGroup>
               )}
-              <Error>{errors.type?.name?.message}</Error>
+              <Error>{errors.typeId?.message}</Error>
             </Form.Group>
           </Col>
           <Col xs={12}>

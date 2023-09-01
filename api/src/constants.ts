@@ -4,7 +4,14 @@ export const AuthResponses = {
 export const AuthErrorMessage = {
   INVALID_USER: 'Nombre de usuario incorrecto',
   INVALID_PASSWORD: 'Contraseña incorrecta',
-  UNREGISTERED_USER: 'Usuario no registrado'
+  UNREGISTERED_USER: 'Usuario no registrado',
+  USER_DISABLE: 'Su cuenta de usuario se encuentra deshabilitada'
+}
+
+export const PermissionErrorMessage = {
+  READ_USER: "No tiene permisos para ver a los usuarios",
+  UPDATE_USER: 'No tiene permisos para modificar a este usuario',
+  DELETE_USER: 'No tiene permisos para eliminar a los usuarios'
 }
 
 export const TokenErrorMessage = {

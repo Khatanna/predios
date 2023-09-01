@@ -3,26 +3,17 @@ export type FormLoginValues = {
   password: string
 }
 
-
 export type Error = {
   message: string
 }
 
-export type GraphQLResponse<T> = {
-  data: T
-}
-
-export type GraphQLErrorResponse = {
-  errors: Error[]
-}
-
-export type APILoginResponse = {
+export type LoginResponse = {
   auth: {
     accessToken: string
     refreshToken: string
   }
 }
 
-export type APINewAccessTokenResponse = {
+export type GetNewAccessTokenResponse = {
   accessToken: string
 }

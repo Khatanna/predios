@@ -1,19 +1,19 @@
 {
   "permissions": [
     {
-      "name": "read",
+      "name": "read@property",
       "description": "Otorga permisos de (vista) sobre la entidad predio"
     },
     {
-      "name": "create",
+      "name": "create@property",
       "description": "Otorga permisos de (creacion) sobre la entidad predio"
     },
     {
-      "name": "delete",
+      "name": "delete@property",
       "description": "Otorga permisos de (eliminación) sobre la entidad predio"
     },
     {
-      "name": "update",
+      "name": "update@property",
       "description": "Otorga permisos de (edición) sobre la entidad predio"
     }
   ]
