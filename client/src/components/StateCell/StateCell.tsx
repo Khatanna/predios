@@ -12,11 +12,13 @@ const StateCell: React.FC<StateCellProps> = ({ status }) => {
         <>
           Habilitado <CircleFill color="green" />
         </>
-      ) : (
+      ) : status === "DISABLE" ? (
         <>
           Deshabilitado <CircleFill color="red" />
         </>
-      )}
+      ) : <>
+        Indefinido <CircleFill color="orange" />
+      </>}
     </div>
   );
 };

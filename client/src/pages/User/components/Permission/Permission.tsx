@@ -1,14 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { Button, Col, Form, Modal } from 'react-bootstrap';
 import { PlusCircle } from 'react-bootstrap-icons';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router';
-import { useAxios, useCustomMutation } from '../../../../hooks';
-import { Level, Resource } from '../../../PermissionsLayout/types.d';
+import { useCustomMutation } from '../../../../hooks';
+import { Level, Permission, Resource } from '../../../PermissionsLayout/types.d';
 import { levels, resources } from '../../../../utilities/constants';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 import { DataTablePermission } from '../../../PermissionsLayout/components/DataTablePermission';
+import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 
 const GET_PERMISSION_BY_USERNAME = `query ($username: String) {
 	data: getUserByUsername(username: $username) {
@@ -17,25 +18,10 @@ const GET_PERMISSION_BY_USERNAME = `query ($username: String) {
 			level
 			resource
 			description
+			status
 		}
 	}
 }`
-
-const useCustomQuery = (username: string) => {
-	const axios = useAxios();
-	const { data, isLoading, error } = useQuery(['getPermissionByUsername'], () => {
-		return axios.post('/', {
-			query: GET_PERMISSION_BY_USERNAME,
-			variables: {
-				username
-			}
-		})
-	});
-
-	return {
-		data, isLoading, error
-	}
-}
 
 interface FormValues {
 	resource: Resource
@@ -49,15 +35,18 @@ const CREATE_PERMISSION_FOR_USER_MUTATION = `mutation CreatePermission($input: U
 }`
 
 const Permission: React.FC = () => {
+	const queryClient = useQueryClient();
 	const { state } = useLocation();
 	const username: string = state.username;
 	const [show, setShow] = useState(false);
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
-	const [createPermission] = useCustomMutation<{ result: { created: boolean } }, { input: { username: string, data: { resource: string, level: string } } }>(CREATE_PERMISSION_FOR_USER_MUTATION, {
+	const [createPermission] = useCustomMutation<{ result: { updated: boolean } }, { input: { username: string, data: { resource: string, level: string } } }>(CREATE_PERMISSION_FOR_USER_MUTATION, {
 		onSuccess({ result }) {
-			if (result.created) {
+
+			if (result.updated) {
 				customSwalSuccess('Permisos otorgados', 'Se otorgaron permisos al usuario' + username)
+				queryClient.invalidateQueries(['getPermissionByUsername'])
 			}
 		},
 		onError(error) {
@@ -65,7 +54,7 @@ const Permission: React.FC = () => {
 		}
 	})
 
-	const { data } = useCustomQuery(username);
+	const { data, isLoading } = useCustomQuery<{ data: { permissions: Permission[] } }, { username: string }>(GET_PERMISSION_BY_USERNAME, ['getPermissionByUsername'], { username });
 	const { register, handleSubmit, reset } = useForm<FormValues>({
 		defaultValues: {
 			resource: Resource.DEFAULT,
@@ -74,13 +63,16 @@ const Permission: React.FC = () => {
 	});
 
 	const submit = (data: FormValues) => {
-		console.log(data.resource);
 		createPermission({ input: { username, data: { resource: data.resource, level: data.level[0] } } })
 		reset();
 	}
 
+	if (isLoading) {
+		return <div>Cargando...</div>
+	}
+
 	return <>
-		<DataTablePermission permissions={data?.data.data.data.permissions} />
+		<DataTablePermission permissions={data?.data.permissions ?? []} user={state} />
 
 		<Modal show={show} onHide={handleClose}>
 			<Modal.Header closeButton>

@@ -12,6 +12,7 @@ type Permission {
   resource: String!
   level: Level!
   users: [User]!
+  status: String
 }
 
 type PermissionOnUser {
@@ -53,6 +54,7 @@ input CreatePermissionInput {
 input UpdatePermissionInput {
   name: String
   description: String
+  status: String
   resource: String!
   level: Level!
 }

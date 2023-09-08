@@ -16,10 +16,10 @@ import { useAxios } from "../../../../hooks";
 import { Error } from "../../../Login/styled-components/Error";
 import type { User, UserType } from "../../models/types";
 import { useFetchCreateUserType, useFetchCreateUser, useFetchUpdateUser } from "../../hooks";
-import { Role } from "../../../../types.d";
+import { customSwalError } from "../../../../utilities/alerts";
 
 export interface FormCreateUserProps {
-  user?: Omit<User, 'createdAt'>;
+  user?: Omit<User, 'type' | 'createdAt' | 'permissions'>;
 }
 
 const schema = yup.object({
@@ -38,8 +38,9 @@ const schema = yup.object({
     .required("La contraseña es un campo obligatorio")
     .min(8, "La contraseña debe tener almenos 8 caracteres")
     .max(32, "La contraseña no debe tener mas de 32 caracteres"),
-  typeId: yup.string().required("El tipo es requerido").required(),
-  status: yup.string().required("El usuario debe tener un estado").required()
+  typeId: yup.string().required("El tipo es requerido"),
+  status: yup.string().required("El usuario debe tener un estado"),
+  role: yup.string().required("El rol de usuario es un campo necesario")
 });
 
 const TypeOptions = ({ typeId }: { typeId?: string }) => {
@@ -70,6 +71,28 @@ const TypeOptions = ({ typeId }: { typeId?: string }) => {
   );
 };
 
+const radios = [
+  {
+    value: "ENABLE",
+    label: "Habilitado"
+  },
+  {
+    value: "DISABLE",
+    label: "Deshabilitado"
+  }
+]
+
+const roles = [
+  {
+    value: "ADMIN",
+    label: "Administrador"
+  },
+  {
+    value: "USER",
+    label: "Usuario"
+  }
+]
+
 const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
   const navigate = useNavigate();
   const [showEditUserType, setShowEditUserType] = useState(false);
@@ -91,34 +114,38 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
       firstLastName: "",
       secondLastName: "",
       username: "",
-      password: user ? 'Inra12345' : '',
+      password: user ? 'Inra12345' : "",
       status: "ENABLE",
-      role: Role.USER,
-      typeId: '',
+      role: "USER",
+      typeId: "",
       ...user,
     },
     resolver: yupResolver(schema),
   });
 
   const handleSetCredentials = () => {
-    const [secondLastName, firstLastName, ...names] = getValues("names")
-      .trim()
-      .toLocaleLowerCase()
-      .split(/\s/)
-      .map((w) => w[0].toUpperCase().concat(w.slice(1)))
-      .reverse();
-    setValue("names", names.reverse().join(" "));
-    setValue("firstLastName", firstLastName, { shouldValidate: true });
-    setValue("secondLastName", secondLastName, { shouldValidate: true });
-    setValue(
-      "username",
-      names[0].concat(".", firstLastName).toLocaleLowerCase(),
-      { shouldValidate: true },
-    );
-    setValue("password", "Inra12345", { shouldValidate: true });
+    if (getValues('names').length === 0) {
+      customSwalError("Debe llenar correctamente los campos", "Error de validacion")
+    } else {
+      const words = getValues('names').trim().toUpperCase().split(/\s/);
+      if (words.length === 2) {
+        words.push(" ")
+      }
+      const [secondLastName, firstLastName, ...names] = words.reverse();
+
+      setValue("names", names.reverse().join(" "));
+      setValue("firstLastName", firstLastName, { shouldValidate: true });
+      setValue("secondLastName", secondLastName, { shouldValidate: true });
+      setValue(
+        "username",
+        names[0].concat(".", firstLastName).toLocaleLowerCase(),
+        { shouldValidate: true },
+      );
+      setValue("password", "Inra12345", { shouldValidate: true });
+    }
   };
 
-  const submit = (data: User) => {
+  const submit = (data: Omit<User, 'type' | 'createdAt' | 'permissions'>) => {
     if (user) {
       updateUser({
         input: {
@@ -148,7 +175,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
           className="row g-3 position-absolute top-50 start-50 translate-middle"
           onSubmit={handleSubmit(submit)}
         >
-          <Col xs={user ? 9 : 12}>
+          <Col xs={12}>
             <Form.Group>
               <Form.Label>Nombres</Form.Label>
               <div className="input-wrapper position-relative">
@@ -167,20 +194,6 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               <Error>{errors.names?.message}</Error>
             </Form.Group>
           </Col>
-          {user && (
-            <Col xs={3}>
-              <Form.Group>
-                <Form.Label>Estado</Form.Label>
-                <Form.Select placeholder="Nombres" {...register("status")}>
-                  {["ENABLE", "DISABLE"].map((s) => (
-                    <option value={s} selected={user.status === s} key={crypto.randomUUID()}>
-                      {s === "ENABLE" ? "Habilitado" : "Deshabilitado"}
-                    </option>
-                  ))}
-                </Form.Select>
-              </Form.Group>
-            </Col>
-          )}
           <Col xs={12} md={6}>
             <Form.Group>
               <Form.Label>Apellido paterno</Form.Label>
@@ -302,6 +315,26 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                 </InputGroup>
               )}
               <Error>{errors.typeId?.message}</Error>
+            </Form.Group>
+          </Col>
+          <Col xs={6}>
+            <Form.Group >
+              <Form.Label>Estado del usuario</Form.Label>
+              <div className="d-flex flex-row gap-3 justify-content-between">
+                {radios.map(({ value, label }) => (
+                  <Form.Check {...register("status")} value={value} type="radio" label={label} />
+                ))}
+              </div>
+            </Form.Group>
+          </Col>
+          <Col xs={6}>
+            <Form.Group >
+              <Form.Label>Rol del usuario</Form.Label>
+              <div className="d-flex flex-row gap-3 justify-content-between">
+                {roles.map(({ value, label }) => (
+                  <Form.Check {...register("role")} value={value} type="radio" label={label} />
+                ))}
+              </div>
             </Form.Group>
           </Col>
           <Col xs={12}>

@@ -1,5 +1,11 @@
 export const resources: { [index: string]: string } = {
-  USER: 'Usuarios'
+  USER: 'Usuarios',
+  PERMISSION: 'Permisos',
+  BENEFICIARY: 'Beneficiario',
+  PROPERTY: 'Predio',
+  CITY: 'Departamento',
+  PROVINCE: 'Province',
+  MUNICIPALITY: 'Municipio'
 }
 
 export const levels: { [index: string]: string } = {

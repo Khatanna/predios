@@ -7,7 +7,7 @@ export enum Role {
 
 export type UserAuthenticate = {
   username: string;
-  permissions: Permission[]
+  permissions: Record<string, Pick<Permission, 'resource' | 'level'>>
   role: Role
 }
 

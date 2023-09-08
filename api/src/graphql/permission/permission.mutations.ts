@@ -8,7 +8,7 @@ import { throwPrismaError } from "../../utilities/throwPrismaError";
 const prisma = new PrismaClient();
 type Args = { input: Permission }
 
-export const createPermission = async (_parent: any, { input: { name, description, resource, level } }: Args) => {
+export const createPermission = async (_parent: any, { input: { name, description, resource, level, status } }: Args) => {
   try {
     console.log({ name, description, resource, level })
     const permission = await prisma.permission.create({
@@ -16,7 +16,8 @@ export const createPermission = async (_parent: any, { input: { name, descriptio
         name,
         description,
         resource,
-        level
+        level,
+        status
       }
     })
 
@@ -38,7 +39,7 @@ export const createPermission = async (_parent: any, { input: { name, descriptio
   }
 };
 
-export const updatePermission = async (_parent: any, { input: { name, description, resource, level } }: Args) => {
+export const updatePermission = async (_parent: any, { input: { name, description, resource, level, status } }: Args) => {
   try {
     const permission = await prisma.permission.update({
       where: {
@@ -48,7 +49,7 @@ export const updatePermission = async (_parent: any, { input: { name, descriptio
         }
       },
       data: {
-        name, description
+        name, description, status
       }
     })
 

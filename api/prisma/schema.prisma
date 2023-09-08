@@ -1,5 +1,7 @@
 generator client {
   provider = "prisma-client-js"
+
+  binaryTargets = ["debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -37,8 +39,8 @@ enum Resource {
   PERMISSION    @map("permiso")
   USERTYPE      @map("tipo_de_usuario")
 
-  TYPE         @map("tipo")
-  SUB_CARPERTA @map("sub_carpeta")
+  TYPE          @map("tipo")
+  SUB_DIRECTORY @map("sub_carpeta")
 }
 
 enum Role {
@@ -98,6 +100,7 @@ model Permission {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   users       User[]
+  status      Status          @default(ENABLE) @map("estado")
 
   @@unique([resource, level])
   @@map("permiso")

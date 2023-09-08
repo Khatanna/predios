@@ -11,26 +11,25 @@ import { FormCreateUser } from "./pages/User/components/FormCreateUser";
 import { UserList } from "./pages/User/components/UserList";
 import { Spinner } from "react-bootstrap";
 import { PermissionsLayout } from "./pages/PermissionsLayout";
-import { FormCreatePermission } from "./pages/PermissionsLayout/FormCreatePermission";
+import { FormCreatePermission } from "./pages/PermissionsLayout/components/FormCreatePermission";
 import { Permission } from "./pages/User/components/Permission";
 
 function App() {
   const { accessToken, refreshToken, setAccessToken } = useAuth();
   const { mutate, isLoading } = useMutation({
-    mutationFn: () => {
-      if (!accessToken && refreshToken) {
-        return getNewAccessToken(refreshToken);
-      }
-      throw new Error("Algo salio mal, recarge la pagina")
+    mutationFn: (refreshToken: string) => {
+      return getNewAccessToken(refreshToken);
     },
     onSuccess(data) {
-      setAccessToken(data.data.data.accessToken);
+      setAccessToken(data?.data.data.accessToken);
     },
   })
 
   useEffect(() => {
-    mutate()
-  }, [mutate])
+    if (!accessToken && refreshToken) {
+      mutate(refreshToken)
+    }
+  }, [mutate, accessToken, refreshToken])
 
   if (isLoading) {
     return <div className="position-absolute top-50 start-50 translate-middle"><Spinner variant='success'></Spinner></div>

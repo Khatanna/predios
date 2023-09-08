@@ -7,4 +7,30 @@ $dark: #01402e;
 //   outline: 1px solid red;
 // }
 
-@import "bootstrap/scss/bootstrap.scss";
+@import "bootstrap/scss/bootstrap";
+
+$custom-chip-colors: (
+  USER: $blue-700,
+  PROVINCE: $green-700,
+  PROPERTY: $teal-700,
+  BENEFICIARY: $yellow-700,
+  PERMISSION: $orange-700,
+  CITY: $red-700,
+  MUNICIPALITY: $pink-700,
+  READ: $blue,
+  CREATE: $green,
+  UPDATE: $orange,
+  DELETE: $red
+);
+
+@each $type,
+$color in $custom-chip-colors {
+  .chip-#{$type} {
+    background-color: $color;
+  }
+
+  .chip-outline-#{$type} {
+    border: 1px solid $color;
+    color: black;
+  }
+}

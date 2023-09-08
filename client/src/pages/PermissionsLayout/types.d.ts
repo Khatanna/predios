@@ -10,7 +10,8 @@ export enum Level {
 
 export enum Resource {
   DEFAULT = "",
-  USER = "USER"
+  USER = "USER",
+  PERMISSION = "PERMISSION"
 }
 
 export type Permission = {
@@ -19,7 +20,8 @@ export type Permission = {
   resource: Resource
   level: Level
   users: User[]
-  createdAt: Date,
+  status: string
+  createdAt: Date
   updatedAt: Date
 }
 

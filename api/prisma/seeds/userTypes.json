@@ -1,0 +1,28 @@
+{
+  "userTypes": [
+    {
+      "id": "055c3d81-5421-4235-8eb8-78fab2fa51bd",
+      "name": "Indefinido"
+    },
+    {
+      "id": "6075c4d5-a8fc-4ee4-b16b-a842f0203bc8",
+      "name": "Juridico"
+    },
+    {
+      "id": "7e2d3bea-3c0c-41ea-8fe6-e9635887b696",
+      "name": "Sistemas"
+    },
+    {
+      "id": "9e105740-7681-4550-bc17-3a08ffd89804",
+      "name": "Pasante"
+    },
+    {
+      "id": "a54ec6aa-bc29-48d5-8770-14c2f7fcf9dc",
+      "name": "Administrativo"
+    },
+    {
+      "id": "ce04928c-16eb-4946-a49d-26894d527bc2",
+      "name": "Tecnico"
+    }
+  ]
+}

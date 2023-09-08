@@ -4,6 +4,8 @@ import { immer } from 'zustand/middleware/immer';
 import { devtools } from 'zustand/middleware';
 import jwtDecode from 'jwt-decode';
 import { produce } from 'immer';
+import { User } from '../pages/User/models/types';
+import { Permission } from '../pages/PermissionsLayout/types';
 
 interface State {
   isAuth: boolean;
@@ -30,12 +32,25 @@ export const useAuthStore = create(middlewares(
   (set) => ({
     ...initialState,
     setAccessToken(token) {
-      const tokenDecode: UserAuthenticate & { exp: number } = jwtDecode(token)!;
-      // console.log(tokenDecode)
+      const tokenDecode: User & { exp: number } = jwtDecode(token)!;
+
       set(
         produce((state) => {
           state.accessToken = token;
-          state.user = tokenDecode;
+          state.user = {
+            username: tokenDecode.username,
+            role: tokenDecode.role,
+            permissions: tokenDecode.permissions.reduce((acc: Record<string, Pick<Permission, 'resource' | 'level'>>, { resource, level }) => {
+              const key = resource.concat("@", level);
+              acc[key] = {
+                resource,
+                level
+              }
+
+              return acc;
+            }, {})
+          };
+
           state.isAuth = true;
           state.expirationAccessToken = tokenDecode.exp;
         })

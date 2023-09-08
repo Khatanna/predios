@@ -5,16 +5,18 @@ import { getNewAccessToken } from "../pages/Login/services";
 import Swal from "sweetalert2";
 
 const instance = axios.create({
-  baseURL: "http://localhost:3001",
-  headers: {
-    Language: "es",
-  },
+  baseURL: "https://172.18.0.202:3001",
+  // headers: {
+  //   Language: "es",
+  //   'Access-Control-Allow-Origin': "*"
+  // },
+  // withCredentials: true
 });
 
 export const useAxios = () => {
   const { accessToken, expirationAccessToken, expirationRefreshToken, refreshToken, logout } = useAuth();
   useEffect(() => {
-    if (!accessToken) {
+    if (!accessToken || !refreshToken) {
       return;
     }
     const request = instance.interceptors.request.use(

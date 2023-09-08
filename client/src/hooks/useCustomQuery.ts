@@ -3,19 +3,20 @@ import { useAxios } from ".";
 import { GraphQLErrorResponse, GraphQLResponse } from "../types";
 import { AxiosError } from "axios";
 
-export const useCustomQuery = <D>(
+export const useCustomQuery = <D, V = unknown>(
   query: string,
-  queryKey: string[]
+  queryKey: string[],
+  variables?: V
 ) => {
   const axios = useAxios();
   const { data, isLoading, error } = useQuery<GraphQLResponse<D>, AxiosError<GraphQLErrorResponse>>({
     queryKey,
-    queryFn: async (variables) => {
+    queryFn: async () => {
       const { data } = await axios.post<GraphQLResponse<D>>('/', {
         query,
         variables
       });
-
+      console.log(data)
       return data;
     }
   });

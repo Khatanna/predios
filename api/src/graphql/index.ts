@@ -1,5 +1,4 @@
 import { ApolloServer } from "@apollo/server";
-import { makeExecutableSchema } from '@graphql-tools/schema';
 import { resolvers as cityResolvers, typeDefs as cityTypeDefs } from "./city";
 import {
   resolvers as municipalityResolvers,
@@ -14,9 +13,9 @@ import {
   typeDefs as provinceTypeDefs,
 } from "./province";
 import { resolvers as userResolvers, typeDefs as userTypeDefs } from "./user";
-
 import { resolvers as authResolvers, typeDefs as authTypeDefs } from "./auth";
 import { resolvers as UserTypeResolvers, typeDefs as UserTypeTypeDefs } from './userType'
+// import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 
 export const server = new ApolloServer({
   typeDefs: [
@@ -37,4 +36,7 @@ export const server = new ApolloServer({
     municipalityResolvers,
     UserTypeResolvers,
   ],
+  // introspection: false,
+  // plugins: [ApolloServerPluginLandingPageDisabled()],
+
 });

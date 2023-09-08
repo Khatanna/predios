@@ -61,6 +61,7 @@ input CreateUserInput {
   password: String!
   typeId: String!
   status: String
+  role: Role!
 }
 
 input UpdateUserInput {

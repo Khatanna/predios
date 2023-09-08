@@ -3,10 +3,10 @@ import { Dropdown } from "react-bootstrap";
 import { ThreeDotsVertical } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import { User } from "../../models/types";
-import { useUsersStore } from "../../state/useUsersStore";
 import { useCustomMutation } from "../../../../hooks";
 import { customSwalError, customSwalSuccess } from "../../../../utilities/alerts";
 import Swal from "sweetalert2";
+import { useQueryClient } from "@tanstack/react-query";
 
 export type DropdownMenuProps = {
   user: Omit<User, 'createdAt'>;
@@ -21,13 +21,14 @@ const DELETE_USER_BY_USERNAME_MUTATION = `
 `;
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({ user }) => {
-  const { deleteUser } = useUsersStore();
+  const queryClient = useQueryClient();
   const [deleteUserByUsername] = useCustomMutation<{ result: { deleted: boolean; user: User } }, { username: string }>(DELETE_USER_BY_USERNAME_MUTATION,
     {
       onSuccess({ result }, { username }) {
         if (result.deleted) {
           customSwalSuccess("Usuario eliminado", `El usuario: (${username}) ha sido eliminado.`);
-          deleteUser(username);
+          queryClient.invalidateQueries(['getAllUsers'])
+          // deleteUser(username);
         } else {
           console.log("Error no manejado")
         }

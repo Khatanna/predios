@@ -1,8 +1,7 @@
 import { create, StateCreator } from "zustand";
-import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { produce } from 'immer';
-import { devtools, createJSONStorage } from 'zustand/middleware';
+import { devtools, createJSONStorage, persist } from 'zustand/middleware';
 import jwtDecode from "jwt-decode";
 
 interface State {

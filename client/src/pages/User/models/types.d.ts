@@ -1,5 +1,3 @@
-import { Role } from "../../../types";
-
 export type UserType = {
   id: string;
   name: string;
@@ -11,11 +9,12 @@ export type User = {
   secondLastName: string;
   username: string;
   password: string;
-  type?: UserType;
+  type: UserType;
   typeId: string;
   status: string;
   createdAt?: Date;
-  role?: Role
+  role: string;
+  permissions: Permission[]
 }
 
 export type APIGetAllUser = {
@@ -32,7 +31,7 @@ export interface UpdateUserResponse {
 export interface UpdateUserVariables {
   input: {
     username: string;
-    data: Omit<User, 'createdAt' | 'type'>
+    data: Omit<User, 'createdAt' | 'type' | 'permissions'>
   }
 }
 
@@ -53,5 +52,5 @@ export interface CreateUserResponse {
 }
 
 export interface CreateUserVariables {
-  input: Omit<User, 'createdAt' | 'type' | 'role'>
+  input: Omit<User, 'createdAt' | 'type' | 'permissions'>
 }

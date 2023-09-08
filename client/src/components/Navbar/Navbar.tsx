@@ -6,6 +6,7 @@ import { Nav } from "../Nav";
 import type { Route } from "../Nav/types";
 import { Role } from "../../types.d";
 import { PersonCircle } from "react-bootstrap-icons";
+import { useQueryClient } from "@tanstack/react-query";
 
 const routes: Route[] = [
   {
@@ -34,16 +35,21 @@ const routes: Route[] = [
   },
 ];
 
-const NavbarComponent: React.FC = () => {
-  const { logout, isAuth, user } = useAuth();
+const role = {
+  "ADMIN": "Administrador",
+  "USER": "Usuario",
+  "UNDEFINED": "Indefinido"
+}
 
+const NavbarComponent: React.FC = () => {
+  const queryClient = useQueryClient();
+  const { logout, isAuth, user } = useAuth();
   if (!isAuth) {
     return <Navigate to={"/auth"} />;
   }
 
   return (
     <>
-      {JSON.stringify(user?.permissions)}
       <Navbar expand="sm" sticky="top" bg="body-tertiary">
         <Container fluid>
           <Navbar.Brand>
@@ -58,13 +64,21 @@ const NavbarComponent: React.FC = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse>
             <Nav routes={routes} />
-            <div className="text-primary me-3 fw-bold">
-              {user?.username}
+            <div className="text-center me-2 px-4 lh-sm border border-1 rounded-pill">
+              <div className="text-success fw-bold">
+                {user?.username}
+              </div>
+              <div className="text-warning fw-bolder">
+                {role[user?.role ?? 'UNDEFINED']}
+              </div>
             </div>
             <Dropdown align={'end'} role="button">
-              <Dropdown.Toggle as={PersonCircle} fontSize={24}></Dropdown.Toggle>
+              <Dropdown.Toggle as={PersonCircle} fontSize={32}></Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item onClick={logout} >
+                <Dropdown.Item onClick={() => {
+                  queryClient.clear();
+                  logout()
+                }} >
                   🔐 Cerrar sesión
                 </Dropdown.Item>
               </Dropdown.Menu>

@@ -1,38 +1,15 @@
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
-import { useCreatePermission, useUpdatePermission } from '../hooks';
-import { Level, Permission, Resource } from '../types.d';
+import { useCreatePermission, useUpdatePermission } from '../../hooks';
+import { Level, Permission, Resource } from '../../types.d';
 import { ArrowLeftCircle } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router';
+import { levels, resources } from '../../../../utilities/constants';
+// import { useAuthStore } from '../../../../state/useAuthStore';
 
 interface FormCreatePermissionProps {
 	permission?: Pick<Permission, 'name' | 'description' | 'resource' | 'level'>
 }
-
-const levels: { level: Level, name: string }[] = [
-	{
-		level: Level.CREATE,
-		name: 'Escritura'
-	},
-	{
-		level: Level.READ,
-		name: 'Lectura',
-
-	},
-	{
-		level: Level.UPDATE,
-		name: 'Actualización',
-	}, {
-		level: Level.DELETE, name: 'Eliminación'
-	}
-]
-
-const resources: { name: string, resource: Resource }[] = [
-	{
-		name: 'Usuarios',
-		resource: Resource.USER
-	}
-]
 
 interface FormFields {
 	description: string;
@@ -43,6 +20,12 @@ interface FormFields {
 
 const FormCreatePermission: React.FC<FormCreatePermissionProps> = ({ permission }) => {
 	const navigate = useNavigate();
+	//const { user } = useAuthStore();
+
+	// if (!user?.permissions['PERMISSIONS@CREATE']) {
+	// 	return <>No tiene permisos</>
+	// }
+
 	const { register, handleSubmit } = useForm<FormFields>({
 		defaultValues: {
 			description: '',
@@ -90,7 +73,7 @@ const FormCreatePermission: React.FC<FormCreatePermissionProps> = ({ permission 
 						<Form.Select placeholder='Recurso' {...register('resource')} disabled={Boolean(permission)}>
 							<option value="" selected disabled>Recurso</option>
 
-							{resources.map(({ resource, name }) => (
+							{Object.entries(resources).map(([resource, name]) => (
 								<option value={resource} key={crypto.randomUUID()}>{name}</option>
 							))}
 						</Form.Select>
@@ -102,7 +85,7 @@ const FormCreatePermission: React.FC<FormCreatePermissionProps> = ({ permission 
 						<Form.Select placeholder='Nivel de acceso' {...register('level')} disabled={Boolean(permission)}>
 							<option value="" selected disabled>Nivel de acceso</option>
 
-							{levels.map(({ level, name }) => (
+							{Object.entries(levels).map(([level, name]) => (
 								<option value={level} key={crypto.randomUUID()}>{name}</option>
 							))}
 						</Form.Select>

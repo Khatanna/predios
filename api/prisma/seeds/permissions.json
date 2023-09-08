@@ -1,20 +1,172 @@
 {
   "permissions": [
     {
-      "name": "read@property",
-      "description": "Otorga permisos de (vista) sobre la entidad predio"
+      "name": "Lectura de usuarios",
+      "level": "READ",
+      "resource": "USER",
+      "description": "Permite ver la información de los usuarios."
     },
     {
-      "name": "create@property",
-      "description": "Otorga permisos de (creacion) sobre la entidad predio"
+      "name": "Creación de usuarios",
+      "level": "CREATE",
+      "resource": "USER",
+      "description": "Permite crear nuevos usuarios en el sistema."
     },
     {
-      "name": "delete@property",
-      "description": "Otorga permisos de (eliminación) sobre la entidad predio"
+      "name": "Actualización de usuarios",
+      "level": "UPDATE",
+      "resource": "USER",
+      "description": "Permite modificar la información de los usuarios existentes."
     },
     {
-      "name": "update@property",
-      "description": "Otorga permisos de (edición) sobre la entidad predio"
+      "name": "Eliminación de usuarios",
+      "level": "DELETE",
+      "resource": "USER",
+      "description": "Permite eliminar usuarios del sistema."
+    },
+    {
+      "name": "Lectura de permisos",
+      "level": "READ",
+      "resource": "PERMISSION",
+      "description": "Permite ver la información de los permisos del sistema."
+    },
+    {
+      "name": "Creación de permisos",
+      "level": "CREATE",
+      "resource": "PERMISSION",
+      "description": "Permite crear nuevos permisos en el sistema."
+    },
+    {
+      "name": "Actualización de permisos",
+      "level": "UPDATE",
+      "resource": "PERMISSION",
+      "description": "Permite modificar la información de los permisos existentes."
+    },
+    {
+      "name": "Eliminación de permisos",
+      "level": "DELETE",
+      "resource": "PERMISSION",
+      "description": "Permite eliminar permisos del sistema."
+    },
+    {
+      "name": "Lectura de predios",
+      "level": "READ",
+      "resource": "PROPERTY",
+      "description": "Permite ver la información de los predios."
+    },
+    {
+      "name": "Creación de predios",
+      "level": "CREATE",
+      "resource": "PROPERTY",
+      "description": "Permite crear nuevos predios en el sistema."
+    },
+    {
+      "name": "Actualización de predios",
+      "level": "UPDATE",
+      "resource": "PROPERTY",
+      "description": "Permite modificar la información de los predios existentes."
+    },
+    {
+      "name": "Eliminación de predios",
+      "level": "DELETE",
+      "resource": "PROPERTY",
+      "description": "Permite eliminar predios del sistema."
+    },
+    {
+      "name": "Lectura de beneficiarios",
+      "level": "READ",
+      "resource": "BENEFICIARY",
+      "description": "Permite ver la información de los beneficiarios."
+    },
+    {
+      "name": "Creación de beneficiarios",
+      "level": "CREATE",
+      "resource": "BENEFICIARY",
+      "description": "Permite crear nuevos beneficiarios en el sistema."
+    },
+    {
+      "name": "Actualización de beneficiarios",
+      "level": "UPDATE",
+      "resource": "BENEFICIARY",
+      "description": "Permite modificar la información de los beneficiarios existentes."
+    },
+    {
+      "name": "Eliminación de beneficiarios",
+      "level": "DELETE",
+      "resource": "BENEFICIARY",
+      "description": "Permite eliminar beneficiarios del sistema."
+    },
+    {
+      "name": "Lectura de los departamentos",
+      "level": "READ",
+      "resource": "CITY",
+      "description": "Permite ver la información de los departamentos."
+    },
+    {
+      "name": "Creación de departamentos",
+      "level": "CREATE",
+      "resource": "CITY",
+      "description": "Permite crear nuevos departamentos en el sistema."
+    },
+    {
+      "name": "Actualización de departamentos",
+      "level": "UPDATE",
+      "resource": "CITY",
+      "description": "Permite modificar la información de los departamentos existentes."
+    },
+    {
+      "name": "Eliminación de provincias",
+      "level": "DELETE",
+      "resource": "CITY",
+      "description": "Permite eliminar provincias del sistema."
+    },
+    {
+      "name": "Lectura de las provincias",
+      "level": "READ",
+      "resource": "PROVINCE",
+      "description": "Permite ver la información de los provincias."
+    },
+    {
+      "name": "Creación de provincias",
+      "level": "CREATE",
+      "resource": "PROVINCE",
+      "description": "Permite crear nuevas provincias en el sistema."
+    },
+    {
+      "name": "Actualización de provincias",
+      "level": "UPDATE",
+      "resource": "PROVINCE",
+      "description": "Permite modificar la información de las provincias existentes."
+    },
+    {
+      "name": "Eliminación de provincias",
+      "level": "DELETE",
+      "resource": "PROVINCE",
+      "description": "Permite eliminar provincias del sistema."
+    },
+    {
+      "name": "Lectura de los municipios",
+      "level": "READ",
+      "resource": "MUNICIPALITY",
+      "description": "Permite ver la información de los municipios."
+    },
+    {
+      "name": "Creación de municipios",
+      "level": "CREATE",
+      "resource": "MUNICIPALITY",
+      "description": "Permite crear nuevos municipios en el sistema."
+    },
+    {
+      "name": "Actualización de municipios",
+      "level": "UPDATE",
+      "resource": "MUNICIPALITY",
+      "description": "Permite modificar la información de las municipios existentes."
+    },
+    {
+      "name": "Eliminación de municipios",
+      "level": "DELETE",
+      "resource": "MUNICIPALITY",
+      "description": "Permite eliminar municipios del sistema."
     }
   ]
 }

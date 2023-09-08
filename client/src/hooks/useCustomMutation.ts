@@ -19,7 +19,6 @@ export const useCustomMutation = <D, V>(
         query,
         variables
       }, config)
-      console.log(data);
       return data;
     }, {
     onSuccess(data, variables, context) {

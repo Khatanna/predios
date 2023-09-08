@@ -17,7 +17,7 @@ export const allUsers = async (
   if (!context.user.permissions.some(p => p.level === 'READ') && !context.user.permissions.some(p => p.resource === 'USER')) {
     throw throwUnauthorizedError(PermissionErrorMessage.READ_USER);
   }
-
+  // console.log(context.user.permissions)
   return prisma.user.findMany({
     where: {
       NOT: {

@@ -78,7 +78,7 @@ export const updateUserByUsername = async (
   {
     input: {
       username,
-      data: { names, firstLastName, secondLastName, password, typeId, status },
+      data: { names, firstLastName, secondLastName, password, typeId, status, role },
     },
   }: GraphQLInput<{ username: string; data: User }>,
   context: BaseContext & { user?: User & { permissions: Permission[] } },
@@ -106,7 +106,8 @@ export const updateUserByUsername = async (
         connect: {
           id: typeId!
         },
-      }
+      },
+      role
     }
   });
 
