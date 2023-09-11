@@ -14,8 +14,10 @@ import {
 } from "./province";
 import { resolvers as userResolvers, typeDefs as userTypeDefs } from "./user";
 import { resolvers as authResolvers, typeDefs as authTypeDefs } from "./auth";
-import { resolvers as UserTypeResolvers, typeDefs as UserTypeTypeDefs } from './userType'
-// import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
+import {
+  resolvers as UserTypeResolvers,
+  typeDefs as UserTypeTypeDefs,
+} from "./userType";
 
 export const server = new ApolloServer({
   typeDefs: [
@@ -38,5 +40,4 @@ export const server = new ApolloServer({
   ],
   // introspection: false,
   // plugins: [ApolloServerPluginLandingPageDisabled()],
-
 });

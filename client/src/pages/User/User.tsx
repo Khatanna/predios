@@ -1,11 +1,10 @@
-import React from 'react';
-import { UserList } from './components/UserList';
+import React from "react";
+import { UserList } from "./components/UserList";
 
-export type UserProps = {
-}
+export type UserProps = {};
 
-const User: React.FC<UserProps> = ({ }) => {
-	return <UserList />
+const User: React.FC<UserProps> = ({}) => {
+  return <UserList />;
 };
 
 export default User;

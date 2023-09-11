@@ -3,6 +3,12 @@ enum Role {
   USER
 }
 
+type PermissionOnUser {
+  status: String!
+  permission: Permission
+  user: User
+}
+
 # Types
 type User {
   id: ID!
@@ -11,7 +17,7 @@ type User {
   secondLastName: String!
   username: String!
   password: String!
-  permissions: [Permission!]!
+  permissions: [PermissionOnUser]!
   createdAt: String!
   updatedAt: String!
   typeId: String
@@ -42,6 +48,11 @@ type Query {
   getUserByUsername(username: String): User
 }
 
+type UserUpdatePermission {
+  created: Boolean
+  permission: PermissionOnUser
+}
+
 # Mutations
 type Mutation {
   createUser(input: CreateUserInput): UserCreate
@@ -49,7 +60,9 @@ type Mutation {
   updateUserById(input: ForUpdateUserById): UserUpdate
   deleteUserById(id: ID): UserDelete
   deleteUserByUsername(username: String): UserDelete
-  createPermissionForUser(input: UpdatePermissionsUserByUsernameInput): UserUpdate
+  createPermissionForUser(
+    input: UpdatePermissionsUserByUsernameInput
+  ): UserUpdatePermission
 }
 
 # Input types

@@ -1,7 +1,7 @@
 export type UserType = {
   id: string;
   name: string;
-}
+};
 
 export type User = {
   names: string;
@@ -14,43 +14,43 @@ export type User = {
   status: string;
   createdAt?: Date;
   role: string;
-  permissions: Permission[]
-}
+  permissions: Permission[];
+};
 
 export type APIGetAllUser = {
-  allUsers: User[]
-}
+  allUsers: User[];
+};
 
 export interface UpdateUserResponse {
   result: {
-    updated: boolean
-    user: User
-  }
+    updated: boolean;
+    user: Omit<User, "createdAt" | "type" | "permissions">;
+  };
 }
 
 export interface UpdateUserVariables {
   input: {
     username: string;
-    data: Omit<User, 'createdAt' | 'type' | 'permissions'>
-  }
+    data: Omit<User, "createdAt" | "type" | "permissions">;
+  };
 }
 
 export interface CreateUserTypeResponse {
   result: {
     created: boolean;
-  }
+  };
 }
 
 export interface CreateUserTypeVariables {
-  input: Omit<UserType, 'id'>
+  input: Omit<UserType, "id">;
 }
 
 export interface CreateUserResponse {
   result: {
     created: boolean;
-  }
+  };
 }
 
 export interface CreateUserVariables {
-  input: Omit<User, 'createdAt' | 'type' | 'permissions'>
+  input: Omit<User, "createdAt" | "type" | "permissions">;
 }

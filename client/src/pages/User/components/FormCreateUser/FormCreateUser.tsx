@@ -1,5 +1,4 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import {
@@ -12,14 +11,18 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import * as yup from "yup";
-import { useAxios } from "../../../../hooks";
 import { Error } from "../../../Login/styled-components/Error";
 import type { User, UserType } from "../../models/types";
-import { useFetchCreateUserType, useFetchCreateUser, useFetchUpdateUser } from "../../hooks";
+import {
+  useFetchCreateUserType,
+  useFetchCreateUser,
+  useFetchUpdateUser,
+} from "../../hooks";
 import { customSwalError } from "../../../../utilities/alerts";
+import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 
 export interface FormCreateUserProps {
-  user?: Omit<User, 'type' | 'createdAt' | 'permissions'>;
+  user?: Omit<User, "type" | "createdAt" | "permissions">;
 }
 
 const schema = yup.object({
@@ -40,25 +43,25 @@ const schema = yup.object({
     .max(32, "La contraseña no debe tener mas de 32 caracteres"),
   typeId: yup.string().required("El tipo es requerido"),
   status: yup.string().required("El usuario debe tener un estado"),
-  role: yup.string().required("El rol de usuario es un campo necesario")
+  role: yup.string().required("El rol de usuario es un campo necesario"),
 });
 
+const GET_ALL_USER_TYPES_QUERY = `{
+  userTypes: getAllUserTypes {
+    id
+    name
+  }
+}`;
+
 const TypeOptions = ({ typeId }: { typeId?: string }) => {
-  const axios = useAxios();
-  const { data } = useQuery(["getAllTypes"], async () => {
-    return axios.post("/", {
-      query: `{
-				userTypes: getAllUserTypes {
-          id
-					name
-				}
-			}`,
-    });
-  });
+  const { data } = useCustomQuery<{ userTypes: UserType[] }>(
+    GET_ALL_USER_TYPES_QUERY,
+    ["getAllUserTypes"],
+  );
 
   return (
     <>
-      {data?.data.data.userTypes.map(({ id, name }: UserType) => (
+      {data?.userTypes.map(({ id, name }: UserType) => (
         <option
           value={id}
           key={crypto.randomUUID()}
@@ -71,36 +74,35 @@ const TypeOptions = ({ typeId }: { typeId?: string }) => {
   );
 };
 
-const radios = [
+const status = [
   {
     value: "ENABLE",
-    label: "Habilitado"
+    label: "Habilitado",
   },
   {
     value: "DISABLE",
-    label: "Deshabilitado"
-  }
-]
+    label: "Deshabilitado",
+  },
+];
 
 const roles = [
   {
     value: "ADMIN",
-    label: "Administrador"
+    label: "Administrador",
   },
   {
     value: "USER",
-    label: "Usuario"
-  }
-]
+    label: "Usuario",
+  },
+];
 
 const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
   const navigate = useNavigate();
   const [showEditUserType, setShowEditUserType] = useState(false);
   const [userType, setUserType] = useState("");
-  const usernameLocal = user ? user.username : '';
   const { createUserType } = useFetchCreateUserType();
-  const { updateUser } = useFetchUpdateUser();
   const { createUser } = useFetchCreateUser();
+
   const {
     register,
     setValue,
@@ -114,7 +116,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
       firstLastName: "",
       secondLastName: "",
       username: "",
-      password: user ? 'Inra12345' : "",
+      password: user ? "Inra12345" : "",
       status: "ENABLE",
       role: "USER",
       typeId: "",
@@ -122,14 +124,18 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
     },
     resolver: yupResolver(schema),
   });
+  const { updateUser } = useFetchUpdateUser(setValue);
 
   const handleSetCredentials = () => {
-    if (getValues('names').length === 0) {
-      customSwalError("Debe llenar correctamente los campos", "Error de validacion")
+    if (getValues("names").length === 0) {
+      customSwalError(
+        "Debe llenar correctamente los campos",
+        "Error de validacion",
+      );
     } else {
-      const words = getValues('names').trim().toUpperCase().split(/\s/);
+      const words = getValues("names").trim().toUpperCase().split(/\s/);
       if (words.length === 2) {
-        words.push(" ")
+        words.push(" ");
       }
       const [secondLastName, firstLastName, ...names] = words.reverse();
 
@@ -145,16 +151,17 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
     }
   };
 
-  const submit = (data: Omit<User, 'type' | 'createdAt' | 'permissions'>) => {
+  const submit = (data: Omit<User, "type" | "createdAt" | "permissions">) => {
     if (user) {
       updateUser({
         input: {
-          username: usernameLocal, data
-        }
+          username: user.username,
+          data,
+        },
       });
     } else {
       createUser({
-        input: data
+        input: data,
       });
     }
     reset();
@@ -185,11 +192,13 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                   onKeyDown={(e) => e.key === "Enter" && handleSetCredentials()}
                   autoComplete="off"
                 />
-                <CheckCircle
-                  role="button"
-                  className="position-absolute top-50 end-0 translate-middle img-fluid"
-                  onClick={handleSetCredentials}
-                />
+                {!user && (
+                  <CheckCircle
+                    role="button"
+                    className="position-absolute top-50 end-0 translate-middle img-fluid"
+                    onClick={handleSetCredentials}
+                  />
+                )}
               </div>
               <Error>{errors.names?.message}</Error>
             </Form.Group>
@@ -267,7 +276,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                               name: userType[0]
                                 .toUpperCase()
                                 .concat(userType.slice(1)),
-                            }
+                            },
                           });
                           setUserType("");
                         } else {
@@ -310,7 +319,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                     <option value={""} selected disabled>
                       Tipo
                     </option>
-                    <TypeOptions typeId={user?.typeId} />
+                    <TypeOptions typeId={getValues("typeId")} />
                   </Form.Select>
                 </InputGroup>
               )}
@@ -318,21 +327,35 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
             </Form.Group>
           </Col>
           <Col xs={6}>
-            <Form.Group >
+            <Form.Group>
               <Form.Label>Estado del usuario</Form.Label>
               <div className="d-flex flex-row gap-3 justify-content-between">
-                {radios.map(({ value, label }) => (
-                  <Form.Check {...register("status")} value={value} type="radio" label={label} />
+                {status.map(({ value, label }) => (
+                  <Form.Check
+                    {...register("status")}
+                    value={value}
+                    type="radio"
+                    label={label}
+                    key={crypto.randomUUID()}
+                    id={label}
+                  />
                 ))}
               </div>
             </Form.Group>
           </Col>
           <Col xs={6}>
-            <Form.Group >
+            <Form.Group>
               <Form.Label>Rol del usuario</Form.Label>
               <div className="d-flex flex-row gap-3 justify-content-between">
                 {roles.map(({ value, label }) => (
-                  <Form.Check {...register("role")} value={value} type="radio" label={label} />
+                  <Form.Check
+                    {...register("role")}
+                    value={value}
+                    type="radio"
+                    label={label}
+                    key={crypto.randomUUID()}
+                    id={label}
+                  />
                 ))}
               </div>
             </Form.Group>

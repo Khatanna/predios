@@ -1,44 +1,44 @@
-import { User } from "../User/models/types"
+import { User } from "../User/models/types";
 
 export enum Level {
   DEFAULT = "",
   CREATE = "CREATE",
   READ = "READ",
   UPDATE = "UPDATE",
-  DELETE = "DELETE"
+  DELETE = "DELETE",
 }
 
 export enum Resource {
   DEFAULT = "",
   USER = "USER",
-  PERMISSION = "PERMISSION"
+  PERMISSION = "PERMISSION",
 }
 
 export type Permission = {
-  name: string
-  description: string
-  resource: Resource
-  level: Level
-  users: User[]
-  status: string
-  createdAt: Date
-  updatedAt: Date
-}
+  name: string;
+  description: string;
+  resource: string;
+  level: string;
+  users: User[];
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export type CreatePermissionResponse = {
   data: {
-    created: boolean
-  }
-}
+    created: boolean;
+  };
+};
 
 export type CreatePermissionVariables = {
-  input: Pick<Permission, 'name' | 'description' | 'level' | 'resource'>
-}
+  input: Pick<Permission, "name" | "description" | "level" | "resource">;
+};
 
 export type UpdatePermissionResponse = {
   data: {
-    updated: boolean
-  }
-}
+    updated: boolean;
+  };
+};
 
-export type UpdatePermissionVariables = CreatePermissionVariables
+export type UpdatePermissionVariables = CreatePermissionVariables;

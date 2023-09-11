@@ -51,22 +51,48 @@ enum Role {
 }
 
 model User {
-  id             String       @id @default(uuid())
-  names          String?      @map("nombre") @db.VarChar(30)
-  firstLastName  String?      @map("apellido_paterno") @db.VarChar(50)
-  secondLastName String?      @map("apellido_materno") @db.VarChar(50)
-  username       String       @unique @map("nombre_de_usuario") @db.VarChar(20)
-  password       String       @map("contraseña") @db.MediumText
-  typeId         String?      @map("tipo_id")
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  id             String           @id @default(uuid())
+  names          String?          @map("nombre") @db.VarChar(30)
+  firstLastName  String?          @map("apellido_paterno") @db.VarChar(50)
+  secondLastName String?          @map("apellido_materno") @db.VarChar(50)
+  username       String           @unique @map("nombre_de_usuario") @db.VarChar(20)
+  password       String           @map("contraseña") @db.MediumText
+  typeId         String?          @map("tipo_id")
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
   session        Session?
-  permissions    Permission[]
-  type           UserType?    @relation(fields: [typeId], references: [id], onDelete: SetNull, onUpdate: SetNull)
-  status         Status       @default(ENABLE) @map("estado")
-  role           Role         @default(USER) @map("rol")
+  permissions    UserPermission[]
+  type           UserType?        @relation(fields: [typeId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  status         Status           @default(ENABLE) @map("estado")
+  role           Role             @default(USER) @map("rol")
 
   @@map("usuario")
+}
+
+model Permission {
+  id          String           @id @default(uuid())
+  name        String           @map("nombre")
+  level       LevelPermission  @map("nivel_de_acceso")
+  resource    Resource         @map("recurso")
+  description String           @map("descripcion")
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  users       UserPermission[]
+  status      Status           @default(ENABLE) @map("estado")
+
+  @@unique([resource, level])
+  @@map("permiso")
+}
+
+model UserPermission {
+  status       Status     @default(ENABLE) @map("estado")
+  userId       String
+  permissionId String
+  user         User       @relation(fields: [userId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@unique([userId, permissionId])
+  @@map("permiso_de_usuario")
 }
 
 model UserType {
@@ -89,21 +115,6 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("sesion")
-}
-
-model Permission {
-  id          String          @id @default(uuid())
-  name        String          @map("nombre")
-  level       LevelPermission @map("nivel_de_acceso")
-  resource    Resource        @map("recurso")
-  description String          @map("descripcion")
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  users       User[]
-  status      Status          @default(ENABLE) @map("estado")
-
-  @@unique([resource, level])
-  @@map("permiso")
 }
 
 model Property {

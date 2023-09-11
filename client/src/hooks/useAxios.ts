@@ -4,8 +4,10 @@ import { useAuth } from ".";
 import { getNewAccessToken } from "../pages/Login/services";
 import Swal from "sweetalert2";
 
+const baseURL = import.meta.env.VITE_API_URL;
+
 const instance = axios.create({
-  baseURL: "https://172.18.0.202:3001",
+  baseURL,
   // headers: {
   //   Language: "es",
   //   'Access-Control-Allow-Origin': "*"
@@ -14,7 +16,13 @@ const instance = axios.create({
 });
 
 export const useAxios = () => {
-  const { accessToken, expirationAccessToken, expirationRefreshToken, refreshToken, logout } = useAuth();
+  const {
+    accessToken,
+    expirationAccessToken,
+    expirationRefreshToken,
+    refreshToken,
+    logout,
+  } = useAuth();
   useEffect(() => {
     if (!accessToken || !refreshToken) {
       return;
@@ -25,15 +33,18 @@ export const useAxios = () => {
           expirationAccessToken &&
           expirationAccessToken < Math.floor(Date.now() / 1000)
         ) {
-          if (expirationRefreshToken && expirationRefreshToken < Math.floor(Date.now() / 1000)) {
+          if (
+            expirationRefreshToken &&
+            expirationRefreshToken < Math.floor(Date.now() / 1000)
+          ) {
             const token = await getNewAccessToken(refreshToken!);
             config.headers?.setAuthorization(token.data.data.accessToken);
           } else {
             Swal.fire({
-              icon: 'info',
-              title: 'Mensaje de sesión',
-              text: 'La sesión expiro'
-            })
+              icon: "info",
+              title: "Mensaje de sesión",
+              text: "La sesión expiro",
+            });
             logout();
             // Como no existe el refresh token significa que la sesion expiro
           }
@@ -56,7 +67,13 @@ export const useAxios = () => {
     return () => {
       instance.interceptors.request.eject(request);
     };
-  }, [accessToken, refreshToken, expirationAccessToken, expirationRefreshToken, logout]);
+  }, [
+    accessToken,
+    refreshToken,
+    expirationAccessToken,
+    expirationRefreshToken,
+    logout,
+  ]);
 
   return instance;
 };
