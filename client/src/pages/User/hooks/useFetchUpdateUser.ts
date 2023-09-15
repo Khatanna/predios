@@ -29,7 +29,6 @@ export const useFetchUpdateUser = (
   >(UDPATE_USER_MUTATION, {
     onSuccess({ result }) {
       if (result.user) {
-        console.log(result.user);
         for (const key in result.user) {
           setValue(
             key as keyof typeof result.user,

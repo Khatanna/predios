@@ -13,6 +13,7 @@ type Permission {
   level: Level!
   users: [User]!
   status: String
+  createdAt: String!
 }
 
 type PermissionOnUser {
@@ -41,6 +42,7 @@ type Query {
 type Mutation {
   createPermission(input: CreatePermissionInput): PermissionCreate
   updatePermission(input: UpdatePermissionInput): PermissionUpdate
+  updateStatePermission(input: UpdateStatePermissionInput): PermissionUpdate
 }
 
 # Input Types
@@ -57,4 +59,10 @@ input UpdatePermissionInput {
   status: String
   resource: String!
   level: Level!
+}
+
+input UpdateStatePermissionInput {
+  level: Level
+  resource: String
+  status: String
 }

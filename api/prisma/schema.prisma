@@ -1,7 +1,7 @@
 generator client {
   provider = "prisma-client-js"
 
-  binaryTargets = ["debian-openssl-3.0.x"]
+  // binaryTargets = ["debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -11,7 +11,7 @@ datasource db {
 
 enum Status {
   ENABLE  @map("habilitado")
-  DISABLE @map("inhabilitado")
+  DISABLE @map("deshabilitado")
 
   @@map("estado")
 }
@@ -33,21 +33,17 @@ enum Resource {
   PROVINCE     @map("provincia")
   MUNICIPALITY @map("municipio")
 
-  CLASIFICATION @map("clasificación")
-  ACTIVITY      @map("actividad")
-  OBSERVATION   @map("observación")
-  PERMISSION    @map("permiso")
-  USERTYPE      @map("tipo_de_usuario")
+  USER_PERMISSION @map("permiso_de_usuario")
+  CLASIFICATION   @map("clasificación")
+  ACTIVITY        @map("actividad")
+  OBSERVATION     @map("observación")
+  PERMISSION      @map("permiso")
+  USERTYPE        @map("tipo_de_usuario")
 
   TYPE          @map("tipo")
   SUB_DIRECTORY @map("sub_carpeta")
-}
 
-enum Role {
-  ADMIN @map("administrador")
-  USER  @map("usuario")
-
-  @@map("rol")
+  @@map("recurso")
 }
 
 model User {
@@ -57,16 +53,30 @@ model User {
   secondLastName String?          @map("apellido_materno") @db.VarChar(50)
   username       String           @unique @map("nombre_de_usuario") @db.VarChar(20)
   password       String           @map("contraseña") @db.MediumText
-  typeId         String?          @map("tipo_id")
+  typeId         String           @map("tipo_id")
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   session        Session?
   permissions    UserPermission[]
-  type           UserType?        @relation(fields: [typeId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  type           UserType         @relation(fields: [typeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   status         Status           @default(ENABLE) @map("estado")
-  role           Role             @default(USER) @map("rol")
+  records        Record[]
 
   @@map("usuario")
+}
+
+model DeletedUser {
+  id             String   @id @default(uuid())
+  names          String?  @map("nombre") @db.VarChar(30)
+  firstLastName  String?  @map("apellido_paterno") @db.VarChar(50)
+  secondLastName String?  @map("apellido_materno") @db.VarChar(50)
+  username       String   @unique @map("nombre_de_usuario") @db.VarChar(20)
+  typeId         String?  @map("tipo_id")
+  deletedAt      DateTime @default(now())
+  reason         String? // Puedes agregar un campo para registrar la razón de la eliminación.
+  status         Status   @default(ENABLE) @map("estado")
+
+  @@map("usuario_eliminado")
 }
 
 model Permission {
@@ -81,18 +91,33 @@ model Permission {
   status      Status           @default(ENABLE) @map("estado")
 
   @@unique([resource, level])
+  @@index([resource, level])
   @@map("permiso")
 }
 
 model UserPermission {
+  id           String     @id @default(uuid())
   status       Status     @default(ENABLE) @map("estado")
-  userId       String
-  permissionId String
+  userId       String     @map("usuario_id")
+  permissionId String     @map("permiso_id")
+  expires      Expires?
   user         User       @relation(fields: [userId], references: [id])
-  permission   Permission @relation(fields: [permissionId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id], onUpdate: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  // UserDeleted   UserDeleted? @relation(fields: [userDeletedId], references: [id])
+  // userDeletedId String?
 
   @@unique([userId, permissionId])
   @@map("permiso_de_usuario")
+}
+
+model Expires {
+  id               String         @id @default(uuid())
+  userPermissionId String         @unique @map("expira")
+  userPermission   UserPermission @relation(fields: [userPermissionId], references: [id], map: "expiracion")
+
+  @@map("expiracion")
 }
 
 model UserType {
@@ -153,16 +178,17 @@ model Property {
 
 enum ObervationType {
   TECHNICAL
+  LEGAL
   STANDARD
 }
 
 model Observation {
   id          String         @id @default(uuid())
-  observation String         @db.MediumText
-  type        ObervationType @default(STANDARD)
+  observation String         @map("observacion") @db.MediumText
+  type        ObervationType @default(STANDARD) @map("tipo")
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
-  propertyId  String
+  propertyId  String         @map("predio_id")
   property    Property       @relation(fields: [propertyId], references: [id])
 
   @@map("observacion")
@@ -174,13 +200,17 @@ model Beneficiary {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   properties Property[]
+
+  @@map("beneficiario")
 }
 
 model Reference {
   id         String   @id @default(uuid())
   name       String   @map("nombre") @db.VarChar(64)
-  propertyId String   @unique(map: "usuario_id")
+  propertyId String   @unique() @map("usuario_id")
   property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("referencia")
 }
@@ -189,27 +219,33 @@ model State {
   id          Int      @id @default(autoincrement())
   description String   @map("descripcion") @db.LongText
   order       String   @map("orden") @db.VarChar(16)
-  propertyId  String   @unique(map: "predio_id")
+  propertyId  String   @unique() @map("predio_id")
   property    Property @relation(fields: [propertyId], references: [id])
   stage       Stage?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("estado")
 }
 
 model Stage {
-  id      Int    @id @default(autoincrement())
-  name    String @unique(map: "nombre") @db.VarChar(32)
-  stateId Int    @unique
-  state   State  @relation(fields: [stateId], references: [id])
+  id        Int      @id @default(autoincrement())
+  name      String   @unique() @map("nombre") @db.VarChar(32)
+  stateId   Int      @unique
+  state     State    @relation(fields: [stateId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("etapa")
 }
 
 model SubDirectory {
   id         Int      @id @default(autoincrement())
-  name       String   @unique(map: "nombre") @db.VarChar(128)
-  propertyId String   @unique
+  name       String   @unique() @map("nombre") @db.VarChar(128)
+  propertyId String   @unique @map("predio_id")
   property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("sub_carpeta")
 }
@@ -217,8 +253,10 @@ model SubDirectory {
 model Type {
   id         Int      @id @default(autoincrement())
   name       String   @map("nombre") @db.VarChar(64)
-  propertyId String   @unique(map: "predio_id")
+  propertyId String   @unique() @map("predio_id")
   property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("tipo")
 }
@@ -226,8 +264,10 @@ model Type {
 model Activity {
   id         Int      @id @default(autoincrement())
   name       String   @map("nombre") @db.VarChar(64)
-  propertyId String   @unique(map: "predio_id")
+  propertyId String   @unique() @map("predio_id")
   property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("actividad")
 }
@@ -235,8 +275,10 @@ model Activity {
 model Clasification {
   id         Int      @id @default(autoincrement())
   name       String   @map("nombre") @db.VarChar(64)
-  propertyId String   @unique(map: "predio_id")
+  propertyId String   @unique() @map("predio_id")
   property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("clasificacion")
 }
@@ -244,8 +286,10 @@ model Clasification {
 model ResponsibleUnit {
   id         Int      @id @default(autoincrement())
   name       String   @map("nombre") @db.VarChar(64)
-  propertyId String   @unique(map: "predio_id")
+  propertyId String   @unique() @map("predio_id")
   property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("unidad_responsable")
 }
@@ -253,8 +297,10 @@ model ResponsibleUnit {
 model GroupedState {
   id         Int      @id @default(autoincrement())
   name       String   @unique @map("nombre") @db.VarChar(128)
-  propertyId String   @unique(map: "predio_id")
+  propertyId String   @unique() @map("predio_id")
   property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("estado_agrupado")
 }
@@ -298,14 +344,28 @@ model Municipality {
 
 model localization {
   id             Int          @id @default(autoincrement())
-  cityId         String       @unique(map: "departamento_id")
-  provinceId     String       @unique(map: "provincia_id")
-  municipalityId String       @unique(map: "municipio_id")
-  propertyId     String       @unique(map: "predio_id")
+  cityId         String       @unique() @map("departamento_id")
+  provinceId     String       @unique() @map("provincia_id")
+  municipalityId String       @unique() @map("municipio_id")
+  propertyId     String       @unique() @map("predio_id")
   property       Property     @relation(fields: [propertyId], references: [id])
   city           City         @relation(fields: [cityId], references: [id])
   province       Province     @relation(fields: [provinceId], references: [id])
   municipality   Municipality @relation(fields: [municipalityId], references: [id])
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@map("localizacion")
+}
+
+model Record {
+  id        Int      @id @default(autoincrement())
+  userId    String   @map("usuario_id")
+  user      User     @relation(fields: [userId], references: [id])
+  date      DateTime @map("fecha")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("historial")
 }

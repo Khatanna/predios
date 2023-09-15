@@ -10,11 +10,12 @@ export const customSwalError = (error: string, title: string) => {
   })
 }
 
-export const customSwalSuccess = (title: string, text: string) => {
+export const customSwalSuccess = (title: string, text: string, html?: string | HTMLElement) => {
   Swal.fire({
     icon: 'success',
     title,
     text,
+    html,
     confirmButtonText: 'Continuar',
     confirmButtonColor: 'green',
   })

@@ -17,6 +17,13 @@ const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [capsLock, setCapsLock] = useState(false);
 
+  const normalizeValues = () => {
+    return {
+      ...getValues(),
+      username: getValues('username').trim(),
+    }
+  }
+
   if (isLoading) {
     return <Spinner variant="primary" />;
   }
@@ -25,7 +32,7 @@ const LoginForm: React.FC = () => {
     <Col xs={11} sm={8} md={6} lg={4}>
       <h1 className="display-6 mb-3 border-bottom border-2">Iniciar sesión</h1>
       <Form
-        onSubmit={handleSubmit(() => login(getValues()))}
+        onSubmit={handleSubmit(() => login(normalizeValues()))}
         onKeyDown={(e) => setCapsLock(e.getModifierState("CapsLock"))}
       >
         <FloatingLabel

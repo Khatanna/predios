@@ -1,16 +1,14 @@
-import { GraphQLError } from "graphql";
-// import { Permission } from "../../types";
-import { Prisma, Permission, PrismaClient } from "@prisma/client";
-import { Code, Status } from "../../constants";
-import { throwPrismaError } from "../../utilities/throwPrismaError";
-
+import { Permission, PrismaClient } from "@prisma/client";
+import { Context } from "../../types";
+import { hasPermission } from "../../utilities";
 
 const prisma = new PrismaClient();
 type Args = { input: Permission }
 
-export const createPermission = async (_parent: any, { input: { name, description, resource, level, status } }: Args) => {
+export const createPermission = async (_parent: any, { input: { name, description, resource, level, status } }: Args, { prisma, userContext }: Context) => {
   try {
-    console.log({ name, description, resource, level })
+    hasPermission(userContext, "CREATE", "PERMISSION");
+
     const permission = await prisma.permission.create({
       data: {
         name,
@@ -26,21 +24,13 @@ export const createPermission = async (_parent: any, { input: { name, descriptio
       permission
     };
   } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      throw throwPrismaError(e);
-    }
-    console.log(e)
-    throw new GraphQLError("Error del servidor", {
-      extensions: {
-        code: Code.INTERNAL_SERVER_ERROR,
-        http: { status: Status.INTERNAL_SERVER_ERROR },
-      },
-    });
+    throw e
   }
 };
 
-export const updatePermission = async (_parent: any, { input: { name, description, resource, level, status } }: Args) => {
+export const updatePermission = async (_parent: any, { input: { name, description, resource, level, status } }: Args, { prisma, userContext }: Context) => {
   try {
+    hasPermission(userContext, "UPDATE", "PERMISSION")
     const permission = await prisma.permission.update({
       where: {
         resource_level: {
@@ -58,15 +48,30 @@ export const updatePermission = async (_parent: any, { input: { name, descriptio
       permission
     }
   } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      throw throwPrismaError(e);
-    }
-    console.log(e)
-    throw new GraphQLError("Error del servidor", {
-      extensions: {
-        code: Code.INTERNAL_SERVER_ERROR,
-        http: { status: Status.INTERNAL_SERVER_ERROR },
+    throw e
+  }
+}
+
+export const updateStatePermission = async (_parent: any, { input: { resource, level, status } }: Args, { prisma, userContext }: Context) => {
+  try {
+    hasPermission(userContext, "UPDATE", "PERMISSION")
+    const permission = await prisma.permission.update({
+      where: {
+        resource_level: {
+          resource,
+          level
+        }
       },
-    });
+      data: {
+        status
+      }
+    })
+
+    return {
+      updated: Boolean(permission),
+      permission
+    }
+  } catch (e) {
+    throw e;
   }
 }

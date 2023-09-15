@@ -49,6 +49,30 @@
       "description": "Permite eliminar permisos del sistema."
     },
     {
+      "name": "Lectura de los permisos de usuario",
+      "level": "READ",
+      "resource": "USER_PERMISSION",
+      "description": "Permite ver la información de los municipios."
+    },
+    {
+      "name": "Creación de permisos de usuario",
+      "level": "CREATE",
+      "resource": "USER_PERMISSION",
+      "description": "Permite crear nuevos permisos de usuario en el sistema."
+    },
+    {
+      "name": "Actualización de permisos de usuario",
+      "level": "UPDATE",
+      "resource": "USER_PERMISSION",
+      "description": "Permite modificar la información de los permisos de usuario existentes."
+    },
+    {
+      "name": "Eliminación de los permisos de usuario",
+      "level": "DELETE",
+      "resource": "USER_PERMISSION",
+      "description": "Permite eliminar los permisos de usuario del sistema."
+    },
+    {
       "name": "Lectura de predios",
       "level": "READ",
       "resource": "PROPERTY",

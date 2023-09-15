@@ -1,20 +1,12 @@
-export type UserType = {
-  name: string;
-};
+import { BaseContext } from '@apollo/server';
+import type { User, Permission, Status, PrismaClient, Prisma } from '@prisma/client';
 
-export type User = {
-  names: string;
-  firstLastName: string;
-  secondLastName: string;
-  username: string;
-  password: string;
-  status: string;
-  type: UserType;
-  permissions: Permission[]
-};
-
-export type Permission = {
-  name: string,
-  description: string,
-  users: User[]
+type UserContext = {
+  userContext?: User & { permissions: { status: Status, permission: Pick<Permission, 'resource' | 'level' | 'status'> }[] }
 }
+
+type PrismaContext = {
+  prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>
+}
+
+export type Context = BaseContext & UserContext & PrismaContext

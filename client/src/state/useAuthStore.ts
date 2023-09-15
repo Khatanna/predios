@@ -1,11 +1,10 @@
-import { create, StateCreator } from "zustand";
-import { UserAuthenticate } from "../types";
-import { immer } from "zustand/middleware/immer";
-import { devtools } from "zustand/middleware";
-import jwtDecode from "jwt-decode";
 import { produce } from "immer";
+import jwtDecode from "jwt-decode";
+import { create, StateCreator } from "zustand";
+import { devtools } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 import { User } from "../pages/User/models/types";
-import { Permission } from "../pages/PermissionsLayout/types";
+import { UserAuthenticate } from "../types";
 
 interface State {
   isAuth: boolean;
@@ -41,26 +40,6 @@ export const useAuthStore = create(
           state.accessToken = token;
           state.user = {
             username: tokenDecode.username,
-            role: tokenDecode.role,
-            permissions: tokenDecode.permissions.reduce(
-              (
-                acc: Record<
-                  string,
-                  Pick<Permission, "resource" | "level" | "status">
-                >,
-                { resource, level, status },
-              ) => {
-                const key = resource.concat("@", level);
-                acc[key] = {
-                  resource,
-                  level,
-                  status,
-                };
-
-                return acc;
-              },
-              {},
-            ),
           };
 
           state.isAuth = true;

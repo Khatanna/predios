@@ -4,7 +4,7 @@ import type { LoginResponse, FormLoginValues } from "../models/types";
 import { customSwalError } from '../../../utilities/alerts';
 
 const LOGIN_QUERY = `
-	query Query($username: String, $password: String)	{
+	mutation Login($username: String, $password: String)	{
 		auth: login(username: $username, password: $password) {
       accessToken
       refreshToken

@@ -1,19 +1,5 @@
 import { User } from "../User/models/types";
 
-export enum Level {
-  DEFAULT = "",
-  CREATE = "CREATE",
-  READ = "READ",
-  UPDATE = "UPDATE",
-  DELETE = "DELETE",
-}
-
-export enum Resource {
-  DEFAULT = "",
-  USER = "USER",
-  PERMISSION = "PERMISSION",
-}
-
 export type Permission = {
   name: string;
   description: string;
@@ -21,7 +7,7 @@ export type Permission = {
   level: string;
   users: User[];
   status: string;
-  createdAt: Date;
+  createdAt: string;
   updatedAt: Date;
 };
 

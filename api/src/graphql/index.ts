@@ -18,7 +18,13 @@ import {
   resolvers as UserTypeResolvers,
   typeDefs as UserTypeTypeDefs,
 } from "./userType";
-
+import { Prisma } from "@prisma/client";
+import { GraphQLError } from "graphql/error";
+import { unwrapResolverError } from '@apollo/server/errors';
+import { throwPrismaError } from "../utilities/throwPrismaError";
+import { throwUnauthorizedError } from "../utilities";
+import { getError } from "../utilities/getError";
+import { Code, Status } from "../constants";
 export const server = new ApolloServer({
   typeDefs: [
     permissionTypeDefs,
@@ -40,4 +46,38 @@ export const server = new ApolloServer({
   ],
   // introspection: false,
   // plugins: [ApolloServerPluginLandingPageDisabled()],
+  formatError(formattedError, error) {
+    // console.log(error)
+    if (unwrapResolverError(error) instanceof Error) {
+      console.log("error normal")
+    }
+
+    if (unwrapResolverError(error) instanceof Prisma.PrismaClientKnownRequestError) {
+      // const e = (unwrapResolverError(error) as Prisma.PrismaClientKnownRequestError)
+      // console.dir(e.message)
+      throw throwPrismaError((unwrapResolverError(error) as Prisma.PrismaClientKnownRequestError))
+    }
+
+    if (unwrapResolverError(error) instanceof Prisma.PrismaClientInitializationError) {
+      const e = (unwrapResolverError(error) as Prisma.PrismaClientInitializationError)
+
+      const errorMessage = getError(e.message)[e.errorCode ?? e.message.includes(`Can't reach database server at`) ? 'P1001' : 'default'];
+      throw new GraphQLError(
+        errorMessage,
+        {
+          extensions: {
+            code: Code.BAD_REQUEST,
+            http: { status: Status.BAD_REQUEST },
+          },
+        },
+      );
+    }
+
+    if (error instanceof GraphQLError) {
+      console.log(error)
+      throw throwUnauthorizedError(error.message)
+    }
+
+    return formattedError
+  },
 });

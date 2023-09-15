@@ -24,7 +24,6 @@ async function main() {
     skipDuplicates: true,
   });
 
-  // console.log(users)
   await prisma.user.createMany({
     data: users.map(
       ({
@@ -42,11 +41,16 @@ async function main() {
         password,
         typeId,
       }),
-    ),
+    )
   });
-  await prisma.permission.createMany({
-    data: permissions,
-  });
+
+  const permissionsID: string[] = []
+  for (const permission of permissions) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const { id } = await prisma.permission.create({ data: permission });
+    console.log("permiso creado")
+    permissionsID.push(id);
+  }
 
   await prisma.user.create({
     data: {
@@ -55,12 +59,18 @@ async function main() {
       secondLastName: "Valencia",
       username: "carlos.chambi",
       password: bcrypt.hashSync("Inra12345", 10),
-      role: "ADMIN",
+      type: {
+        connect: {
+          name: 'Pasante'
+        }
+      }
     },
   });
 
-  (await prisma.permission.findMany({ select: { id: true } })).forEach(
-    async ({ id }) => {
+  for (const username of ["carlos.chambi", "hilda.valencia"]) {
+    for (const id of permissionsID) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log("permiso asignado a: " + username)
       await prisma.userPermission.create({
         data: {
           permission: {
@@ -70,13 +80,13 @@ async function main() {
           },
           user: {
             connect: {
-              username: "carlos.chambi",
+              username,
             },
           },
         },
       });
-    },
-  );
+    }
+  }
 
   cities.forEach(async (city: any) => {
     await prisma.city.create({

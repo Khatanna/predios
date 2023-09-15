@@ -1,19 +1,9 @@
-import { Prisma, Permission, User, PrismaClient } from "@prisma/client";
+import { LevelPermission, Prisma, PrismaClient, Resource, Status as StatusDB, User } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { GraphQLError } from "graphql";
+import { Context } from "../../types";
 import {
-  AuthResponses,
-  Code,
-  PermissionErrorMessage,
-  Status,
-} from "../../constants";
-import { BaseContext } from "@apollo/server";
-import {
-  throwUnAuthenticateError,
-  throwUnauthorizedError,
+  hasPermission
 } from "../../utilities";
-// import type { User } from "../../types";
-const prisma = new PrismaClient();
 
 type GraphQLInput<T> = { input: T };
 
@@ -22,8 +12,10 @@ export const createUser = async (
   {
     input: { names, firstLastName, secondLastName, username, password, typeId },
   }: GraphQLInput<User>,
+  { prisma, userContext }: Context
 ) => {
   try {
+    hasPermission(userContext, "CREATE", "USER")
     const user = await prisma.user.create({
       data: {
         names,
@@ -41,43 +33,8 @@ export const createUser = async (
 
     return { created: Boolean(user), user };
   } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      throw new GraphQLError(
-        e.code === "P2002" ? "Este usuario ya existe" : e.message,
-        {
-          extensions: {
-            code: Code.INTERNAL_SERVER_ERROR,
-            http: { status: Status.INTERNAL_SERVER_ERROR },
-          },
-        },
-      );
-    }
-
-    throw new GraphQLError("Error del servidor", {
-      extensions: {
-        code: Code.INTERNAL_SERVER_ERROR,
-        http: { status: Status.INTERNAL_SERVER_ERROR },
-      },
-    });
+    throw e;
   }
-};
-export const updateUserById = async (
-  _parent: any,
-  {
-    data: { id, data },
-  }: { data: { id: string; data: Prisma.UserUpdateInput } },
-) => {
-  const user = await prisma.user.update({
-    where: {
-      id,
-    },
-    data,
-  });
-
-  return {
-    updated: Boolean(user),
-    user,
-  };
 };
 
 export const updateUserByUsername = async (
@@ -92,74 +49,76 @@ export const updateUserByUsername = async (
         password,
         typeId,
         status,
-        role,
       },
     },
   }: GraphQLInput<{ username: string; data: User }>,
-  context: BaseContext & { user?: User & { permissions: Permission[] } },
+  { prisma, userContext }: Context,
 ) => {
-  if (!context.user)
-    throw throwUnAuthenticateError(AuthResponses.UNAUTHENTICATED);
-
-  if (
-    !context.user.permissions.some((p) => p.level === "UPDATE") ||
-    !context.user.permissions.some((p) => p.resource === "USER")
-  ) {
-    throw throwUnauthorizedError(PermissionErrorMessage.UPDATE_USER);
-  }
-  console.log(context.user.permissions);
-
-  const user = await prisma.user.update({
-    where: {
-      username,
-    },
-    data: {
-      names,
-      firstLastName,
-      secondLastName,
-      username, // TODO construir el username
-      password: bcrypt.hashSync(password, 10),
-      status,
-      type: {
-        connect: {
-          id: typeId!,
+  try {
+    hasPermission(userContext, "UPDATE", "USER")
+    const user = await prisma.user.update({
+      where: {
+        username,
+      },
+      data: {
+        names,
+        firstLastName,
+        secondLastName,
+        username, // TODO construir el username
+        password: bcrypt.hashSync(password, 10),
+        status,
+        type: {
+          connect: {
+            id: typeId!,
+          },
         },
       },
-      role,
-    },
-  });
+    });
 
-  return {
-    updated: Boolean(user),
-    user,
-  };
+    return {
+      updated: Boolean(user),
+      user,
+    };
+  } catch (e) {
+    throw e
+  }
 };
 
-export const deleteUserById = async (_: any, { id }: { id: string }) => {
-  const user = await prisma.user.delete({
-    where: {
-      id,
+export const updateStateUserByUsername = async (
+  _parent: any,
+  {
+    input: {
+      username,
+      data
     },
-  });
+  }: GraphQLInput<{ username: string; data: Pick<User, 'status'> }>,
+  { prisma, userContext }: Context
+) => {
+  try {
+    hasPermission(userContext, "UPDATE", "USER")
+    const user = await prisma.user.update({
+      where: {
+        username,
+      },
+      data
+    });
 
-  return { deleted: Boolean(user), user };
+    return {
+      updated: Boolean(user),
+      user,
+    };
+  } catch (e) {
+    throw e
+  }
 };
 
 export const deleteUserByUsername = async (
   _: any,
   { username }: { username: string },
-  context: BaseContext & { user?: User & { permissions: Permission[] } },
+  { prisma, userContext }: Context
 ) => {
-  if (!context.user)
-    throw throwUnAuthenticateError(AuthResponses.UNAUTHENTICATED);
-
-  if (
-    !context.user.permissions.some((p) => p.level === "DELETE") ||
-    !context.user.permissions.some((p) => p.resource === "USER")
-  ) {
-    throw throwUnauthorizedError(PermissionErrorMessage.DELETE_USER);
-  }
   try {
+    hasPermission(userContext, "DELETE", "USER")
     const user = await prisma.user.delete({
       where: {
         username,
@@ -167,25 +126,7 @@ export const deleteUserByUsername = async (
     });
     return { deleted: Boolean(user), user };
   } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      console.log(e.code);
-      throw new GraphQLError(
-        e.code === "P2025" ? "Usuario no encontrado" : e.message,
-        {
-          extensions: {
-            code: Code.BAD_REQUEST,
-            http: { status: Status.BAD_REQUEST },
-          },
-        },
-      );
-    }
-
-    throw new GraphQLError("Error del servidor", {
-      extensions: {
-        code: Code.INTERNAL_SERVER_ERROR,
-        http: { status: Status.INTERNAL_SERVER_ERROR },
-      },
-    });
+    throw e
   }
 };
 
@@ -195,50 +136,120 @@ export const createPermissionForUser = async (
     input: { username, data },
   }: GraphQLInput<{
     username: string;
-    data: Pick<Permission, "resource" | "level">[];
+    data: { resource: string, levels: string[] }[];
   }>,
+  { prisma, userContext }: Context
 ) => {
   try {
-    const permission = await prisma.userPermission.create({
-      data: {
-        user: {
-          connect: {
-            username,
+    hasPermission(userContext, "CREATE", "USER_PERMISSION")
+    const elements = data.flatMap(({ resource, levels }) =>
+      levels.map(level => prisma.userPermission.create({
+        data: {
+          user: {
+            connect: {
+              username,
+            },
+          },
+          permission: {
+            connect: {
+              resource_level: {
+                resource: resource as Resource,
+                level: level as LevelPermission
+              }
+            }
           },
         },
-        permission: {
-          connect: {
-            resource_level: data[0],
-          },
-        },
-      },
-    });
+        select: {
+          permission: true
+        }
+      }))
+    )
+    const permissions = await prisma.$transaction(elements);
 
     return {
-      created: Boolean(permission),
-      permission,
+      created: true,
+      permissions
     };
   } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      console.log(e.code);
-      throw new GraphQLError(
-        e.code === "P2025"
-          ? "Este permiso no existe, asegurese de haberlo creado"
-          : e.message,
-        {
-          extensions: {
-            code: Code.BAD_REQUEST,
-            http: { status: Status.BAD_REQUEST },
-          },
-        },
-      );
-    }
+    throw e
+  }
+};
 
-    throw new GraphQLError("Error del servidor", {
-      extensions: {
-        code: Code.INTERNAL_SERVER_ERROR,
-        http: { status: Status.INTERNAL_SERVER_ERROR },
+export const updateStateOfPermissionUserByUsername = async (
+  _parent: any,
+  {
+    input: { username, data: { resource, level, status } },
+  }: GraphQLInput<{
+    username: string;
+    data: { resource: Resource, level: LevelPermission, status: StatusDB };
+  }>,
+  { prisma, userContext }: Context
+) => {
+  try {
+    hasPermission(userContext, "UPDATE", "USER_PERMISSION")
+    const userPermission = await prisma.userPermission.findFirst({
+      where: {
+        user: {
+          username
+        },
+        permission: {
+          level,
+          resource
+        },
+      }
+    })
+    const updated = await prisma.userPermission.update({
+      where: {
+        id: userPermission?.id
       },
-    });
+      data: {
+        status
+      }
+    })
+    return {
+      updated: Boolean(updated),
+      permission: updated
+    };
+  } catch (e) {
+    throw e
+  }
+};
+
+export const deletePermissionOfUserByUsername = async (
+  _parent: any,
+  {
+    input: { username, data: { resource, level, status } },
+  }: GraphQLInput<{
+    username: string;
+    data: { resource: Resource, level: LevelPermission, status: StatusDB };
+  }>,
+  { prisma, userContext }: Context
+) => {
+  try {
+    hasPermission(userContext, "DELETE", "USER_PERMISSION")
+    const userPermission = await prisma.userPermission.findFirst({
+      where: {
+        user: {
+          username
+        },
+        permission: {
+          level,
+          resource
+        },
+      }
+    })
+
+    const permission = await prisma.userPermission.delete({
+      where: {
+        id: userPermission!.id
+      }
+    })
+
+    return {
+      deleted: Boolean(permission),
+      permission
+    };
+  } catch (e) {
+    throw e
   }
 };

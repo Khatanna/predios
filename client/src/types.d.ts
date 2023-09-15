@@ -1,17 +1,9 @@
-import { Permission } from "./pages/PermissionsLayout/types";
-
-export enum Role {
-  ADMIN = "ADMIN",
-  USER = "USER",
-}
-
 export type UserAuthenticate = {
   username: string;
-  permissions: Record<
-    string,
-    Pick<Permission, "resource" | "level" | "status">
-  >;
-  role: Role;
+  // permissions: Record<
+  //   string,
+  //   Pick<Permission, "resource" | "level" | "status">
+  // >;
 };
 
 export type GraphQLResponse<T> = {

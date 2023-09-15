@@ -20,21 +20,38 @@ const DELETE_USER_BY_USERNAME_MUTATION = `
   }
 `;
 
+const DISABLE_USER_MUTATION = `
+  mutation UpdateStateUserByUsername ($input: UpdateUserByUsernameInput) {
+    result: updateStateUserByUsername(input: $input) {
+      updated
+    }
+  }
+`
+
 const DropdownMenu: React.FC<DropdownMenuProps> = ({ user }) => {
   const queryClient = useQueryClient();
+  const [disableUser] = useCustomMutation<{ result: { updated: boolean } }, { input: { username: string, data: Pick<User, 'status'> } }>(DISABLE_USER_MUTATION, {
+    onSuccess({ result }) {
+      if (result.updated) {
+        queryClient.invalidateQueries(['getAllUsers'])
+      }
+    },
+    onError(error, { input: { username } }) {
+      customSwalError(error, `Error al deshabilitar al usuario (${username})`);
+    },
+  })
   const [deleteUserByUsername] = useCustomMutation<{ result: { deleted: boolean; user: User } }, { username: string }>(DELETE_USER_BY_USERNAME_MUTATION,
     {
       onSuccess({ result }, { username }) {
         if (result.deleted) {
           customSwalSuccess("Usuario eliminado", `El usuario: (${username}) ha sido eliminado.`);
           queryClient.invalidateQueries(['getAllUsers'])
-          // deleteUser(username);
         } else {
           console.log("Error no manejado")
         }
       },
       onError(error, { username }) {
-        customSwalError(error, `Error al eliminar  al usuario (${username})`);
+        customSwalError(error, `Error al eliminar al usuario (${username})`);
       },
     })
 
@@ -42,7 +59,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ user }) => {
     Swal.fire({
       icon: 'question',
       title: '¿Esta seguro de eliminar a este usuario?',
-      text: 'Una vez eliminado al usuario no se podra recuperar',
+      text: 'Una vez eliminado al usuario no se podra recuperar 😉',
       footer: `Usuario: ${user.username}`,
       showDenyButton: true,
       confirmButtonText: 'Eliminar',
@@ -56,6 +73,16 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ user }) => {
     })
   }
 
+  const handleStatusOfUser = () => {
+    disableUser({
+      input: {
+        username: user.username,
+        data: {
+          status: user.status === "ENABLE" ? "DISABLE" : "ENABLE"
+        }
+      }
+    })
+  }
   return (
     <Dropdown align={"end"}>
       <Dropdown.Toggle as={ThreeDotsVertical} variant="link" role="button" />
@@ -69,6 +96,9 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ user }) => {
         </Dropdown.Item>
         <Dropdown.Item onClick={handleDelete}>
           🗑 Eliminar
+        </Dropdown.Item>
+        <Dropdown.Item onClick={handleStatusOfUser}>
+          {user.status === "ENABLE" ? "⛔ Deshabilitar" : "✔ Habilitar"}
         </Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>

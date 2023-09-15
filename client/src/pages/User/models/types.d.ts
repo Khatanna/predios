@@ -12,9 +12,7 @@ export type User = {
   type: UserType;
   typeId: string;
   status: string;
-  createdAt?: Date;
-  role: string;
-  permissions: Permission[];
+  createdAt: string;
 };
 
 export type APIGetAllUser = {

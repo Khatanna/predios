@@ -1,7 +1,9 @@
 import { AxiosError, AxiosRequestConfig } from "axios";
-import { useAxios } from ".";
-import { MutateOptions, UseMutateFunction, useMutation } from "@tanstack/react-query";
+import { useStore } from 'zustand'
+import { MutateOptions, UseMutateFunction, UseMutationResult, useMutation } from "@tanstack/react-query";
 import { GraphQLErrorResponse, GraphQLResponse } from "../types";
+import { useContext } from "react";
+import { AxiosContext } from "../state/AxiosContext";
 
 export const useCustomMutation = <D, V>(
   query: string,
@@ -9,16 +11,19 @@ export const useCustomMutation = <D, V>(
   config?: AxiosRequestConfig
 ): [
     UseMutateFunction<GraphQLResponse<D>, AxiosError<GraphQLErrorResponse>, V>,
-    { isLoading: boolean, error: AxiosError<GraphQLErrorResponse> | null }
+    UseMutationResult<GraphQLResponse<D>, AxiosError<GraphQLErrorResponse>, V>
   ] => {
-  const axios = useAxios()
-  const { mutate, isLoading, error } = useMutation<GraphQLResponse<D>, AxiosError<GraphQLErrorResponse>, V>(
-    async (variables) => {
+  const store = useContext(AxiosContext)
+  if (!store) throw new Error("Sin contexto en las peticiones POST");
+  const { axios } = useStore(store);
 
+  const mutation = useMutation<GraphQLResponse<D>, AxiosError<GraphQLErrorResponse>, V>(
+    async (variables) => {
       const { data } = await axios.post<GraphQLResponse<D>>('/', {
         query,
         variables
       }, config)
+
       return data;
     }, {
     onSuccess(data, variables, context) {
@@ -30,10 +35,10 @@ export const useCustomMutation = <D, V>(
     onError(error, variables, context) {
       console.log(error)
       if (handler && handler.onError) {
-        handler.onError(error.response?.data.errors[0].message ?? 'Ocurrio un error', variables, context)
+        handler.onError(error.response?.data.errors[0].message ?? error.message, variables, context)
       }
     }
   })
 
-  return [mutate, { isLoading, error }]
+  return [mutation.mutate, mutation]
 }
