@@ -58,6 +58,11 @@ type UserPermissionDelete {
   permission: PermissionOnUser
 }
 
+type UserStatusChangeMany {
+  users: [User!]
+  count: Int
+}
+
 # Mutations
 type Mutation {
   createUser(input: CreateUserInput): UserCreate
@@ -65,6 +70,7 @@ type Mutation {
   updateUserById(input: ForUpdateUserById): UserUpdate
   updateStateUserByUsername(input: UpdateUserByUsernameInput): UserUpdate
   updateStateOfPermissionUserByUsername(input: UpdateStateOfPermissionUserByUsernameInput): UserPermissionUpdate
+  updateStateUsersByUsername(input: UpdateStateOfPermissionUsersByUsernameInput): UserStatusChangeMany
   deleteUserById(id: ID): UserDelete
   deleteUserByUsername(username: String): UserDelete
   deletePermissionOfUserByUsername(input: DeletePermissionOfUserByUsernameInput): UserPermissionDelete
@@ -127,6 +133,11 @@ input UpdatePermissionsUserByUsernameInput {
 input UpdateStateOfPermissionUserByUsernameInput {
   username: String!
   data: PermissionInput
+}
+
+input UpdateStateOfPermissionUsersByUsernameInput {
+  usernames: [String]!
+  status: String!
 }
 
 input DeletePermissionOfUserByUsernameInput {

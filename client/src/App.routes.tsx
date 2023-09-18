@@ -11,6 +11,7 @@ import { PermissionsLayout } from "./pages/PermissionsLayout";
 import { FormCreatePermission } from "./pages/PermissionsLayout/components/FormCreatePermission";
 import { Permission } from "./pages/User/components/Permission";
 import { createAxiosStore, AxiosContext } from "./state/AxiosContext";
+import { RecordPage } from "./pages/RecordPage";
 
 function App() {
   const axios = useAxios()
@@ -47,7 +48,7 @@ function App() {
             </Route>
             <Route path="/admin">
               <Route index Component={Admin} />
-              {/* <Route path="usertype" Component={Usertype} /> */}
+              <Route path="records" Component={RecordPage} />
               <Route path="permissions">
                 <Route path="all" Component={PermissionsLayout} />
                 <Route path="create" Component={FormCreatePermission} />

@@ -1,0 +1,34 @@
+type Beneficiary { 
+  id: ID!
+  name: String
+  createdAt: String
+  updatedAt: String
+  properties: [Property]!
+}
+
+type Query {
+  getAllBeneficiaries: [Beneficiary]
+}
+
+type BeneficiaryCreated {
+  created: Boolean
+  beneficiary: Beneficiary
+}
+
+type BeneficiaryDeleted {
+  deleted: Boolean
+  beneficiary: Beneficiary
+}
+
+type Mutation {
+  createBeneficiary(input: CreateBeneficiaryInput): BeneficiaryCreated
+  deleteBeneficiary(input: DeleteBeneficiaryInput): BeneficiaryDeleted
+}
+
+input CreateBeneficiaryInput {
+  name: String!
+}
+
+input DeleteBeneficiaryInput {
+  name: String!
+}

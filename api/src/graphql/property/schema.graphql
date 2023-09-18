@@ -1,0 +1,79 @@
+# Migrate Types
+type Observation {
+  id: ID!
+  observation: String
+  type: String
+  createdAt: String
+  updatedAt: String
+  property: Property
+}
+
+type Activity {id: ID!}
+
+type Clasification {id: ID!}
+
+type State {id: ID!}
+
+type GroupedState {id: ID!}
+
+type Localization {id: ID!}
+
+type SubDirectory {id: ID!}
+
+type Type {id: ID!}
+
+type ResponsibleUnit {id: ID!}
+
+type Reference {id: ID!}
+
+type Beneficiary {
+  id: ID!
+  name: String
+  createdAt: String
+  updatedAt: String
+  properties: [Property]  
+}
+# Types
+type Property {
+  id: ID!
+  name: String!
+  area: String
+  expertiseOfArea: String
+  plots: Int
+  bodies: Int
+  sheets: Int
+  code: String
+  codeOfSearch: String
+  agrupationIdentifier: String
+  secondState: String
+  polygone: String
+  observations: [Observation]
+  beneficiaries: [Beneficiary]
+  activity: Activity
+  clasification: Clasification
+  state: State
+  groupedState: GroupedState
+  city: City
+  province: Province
+  municipality: Municipality
+  subDirectory: SubDirectory
+  users: [User]
+  type: Type
+  responsibleUnit: ResponsibleUnit
+  reference: Reference
+  createdAt: String
+  updatedAt: String
+}
+
+# Queries
+type Query {
+  getAllProperties: [Property]
+  # permissionsWithUsers: [PermissionWithUser!]!
+}
+
+# Mutations
+# type Mutation {
+# }
+
+# Input Types
+

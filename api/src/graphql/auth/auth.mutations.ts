@@ -69,11 +69,9 @@ export const getNewAccessToken = async (
   { prisma }: Context,
 ) => {
   try {
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findFirstOrThrow({
       where: {
-        session: {
-          token: refreshToken,
-        },
+        token: refreshToken,
       },
       select: {
         username: true,
@@ -89,6 +87,6 @@ export const getNewAccessToken = async (
     );
     return accessToken;
   } catch (e) {
-    throw handleJWTError(e);
+    throw e
   }
 };

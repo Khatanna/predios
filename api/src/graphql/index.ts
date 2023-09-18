@@ -22,6 +22,14 @@ import {
   resolvers as recordResolvers,
   typeDefs as recordTypeDefs,
 } from "./record";
+import {
+  resolvers as propertyResolvers,
+  typeDefs as propertyTypeDefs
+} from './property'
+import {
+  resolvers as beneficiaryResolvers,
+  typeDefs as beneficiaryTypeDefs
+} from './beneficiary'
 import { Prisma } from "@prisma/client";
 import { GraphQLError } from "graphql/error";
 import { unwrapResolverError } from "@apollo/server/errors";
@@ -39,6 +47,8 @@ export const server = new ApolloServer({
     municipalityTypeDefs,
     userTypeTypeDefs,
     recordTypeDefs,
+    propertyTypeDefs,
+    beneficiaryTypeDefs
   ],
   resolvers: [
     permissionResolvers,
@@ -49,6 +59,8 @@ export const server = new ApolloServer({
     municipalityResolvers,
     userTypeResolvers,
     recordResolvers,
+    propertyResolvers,
+    beneficiaryResolvers
   ],
   // introspection: false,
   // plugins: [ApolloServerPluginLandingPageDisabled()],
@@ -62,7 +74,7 @@ export const server = new ApolloServer({
       unwrapResolverError(error) instanceof Prisma.PrismaClientKnownRequestError
     ) {
       // const e = (unwrapResolverError(error) as Prisma.PrismaClientKnownRequestError)
-      // console.dir(e.message)
+      console.dir(unwrapResolverError(error))
       throw throwPrismaError(
         unwrapResolverError(error) as Prisma.PrismaClientKnownRequestError,
       );

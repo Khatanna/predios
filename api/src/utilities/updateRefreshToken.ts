@@ -10,21 +10,7 @@ export const updateRefreshToken = (
       username,
     },
     data: {
-      session: {
-        upsert: {
-          where: {
-            user: {
-              username,
-            },
-          },
-          update: {
-            token,
-          },
-          create: {
-            token,
-          },
-        },
-      },
+      token,
     },
   });
 };

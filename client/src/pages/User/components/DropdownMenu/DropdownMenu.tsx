@@ -1,5 +1,5 @@
 import React from "react";
-import { Dropdown } from "react-bootstrap";
+import { Dropdown, Spinner } from "react-bootstrap";
 import { ThreeDotsVertical } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import { User } from "../../models/types";
@@ -30,7 +30,7 @@ const DISABLE_USER_MUTATION = `
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({ user }) => {
   const queryClient = useQueryClient();
-  const [disableUser] = useCustomMutation<{ result: { updated: boolean } }, { input: { username: string, data: Pick<User, 'status'> } }>(DISABLE_USER_MUTATION, {
+  const [disableUser, { isLoading }] = useCustomMutation<{ result: { updated: boolean } }, { input: { username: string, data: Pick<User, 'status'> } }>(DISABLE_USER_MUTATION, {
     onSuccess({ result }) {
       if (result.updated) {
         queryClient.invalidateQueries(['getAllUsers'])
@@ -83,6 +83,11 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ user }) => {
       }
     })
   }
+
+  if (isLoading) {
+    return <Spinner size="sm" variant="warning" />
+  }
+
   return (
     <Dropdown align={"end"}>
       <Dropdown.Toggle as={ThreeDotsVertical} variant="link" role="button" />

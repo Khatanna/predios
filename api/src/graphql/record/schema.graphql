@@ -3,7 +3,10 @@ type Record {
   id: ID!
   resource: String!
   operation: String!
+  description: String
+  ip: String
   user: User
+  action: Level
   result: String
   createdAt: String!
   updatedAt: String!
@@ -11,7 +14,7 @@ type Record {
 
 # Queries
 type Query {
-  viewRecords: [Record!]
+  getAllRecords: [Record!]
 }
 
 # Mutations

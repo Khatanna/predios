@@ -31,6 +31,10 @@ const routes: Route[] = [
       },
     ],
   },
+  {
+    path: "admin/records",
+    name: "Historial"
+  }
 ];
 
 const NavbarComponent: React.FC = () => {

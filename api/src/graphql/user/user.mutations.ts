@@ -1,6 +1,7 @@
 import {
   LevelPermission,
   Resource,
+  Status,
   Status as StatusDB,
   User,
 } from "@prisma/client";
@@ -254,3 +255,26 @@ export const deletePermissionOfUserByUsername = async (
     throw e;
   }
 };
+
+export const updateStateUsersByUsername = async (_parent: any, { input: { usernames, status } }: { input: { usernames: string[], status: Status } }, { prisma, userContext }: Context) => {
+  try {
+    hasPermission(userContext, 'UPDATE', "USER")
+    const users = await prisma.$transaction(usernames.map((username) => {
+      return prisma.user.update({
+        where: {
+          username
+        },
+        data: {
+          status
+        }
+      })
+    }))
+
+    return {
+      users: users,
+      count: users.length
+    }
+  } catch (e) {
+    throw e;
+  }
+}

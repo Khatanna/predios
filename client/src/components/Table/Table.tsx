@@ -1,18 +1,12 @@
 import { useCallback, useMemo } from "react";
-import { ArrowDownShort, DistributeVertical } from "react-bootstrap-icons";
+import { Spinner } from "react-bootstrap";
+import { ArrowDownShort } from "react-bootstrap-icons";
 import DataTable, {
-  TableProps,
-  ContextMessage,
+  TableProps
 } from "react-data-table-component";
 
-const messages: ContextMessage = {
-  message: "",
-  plural: "",
-  singular: "",
-};
-
 const Table = <T extends NonNullable<unknown>>(
-  props: TableProps<T> & { name: string },
+  props: TableProps<T> & { name: string; },
 ) => {
   const paginationComponentOptions = useMemo(() => {
     const showName = props.name[0].toUpperCase() + props.name.slice(1);
@@ -37,7 +31,7 @@ const Table = <T extends NonNullable<unknown>>(
 
     return props.columns;
   }, [props.columns, props.name]);
-  // const customContext = c > <div>{c}</div>;
+
   return (
     <DataTable
       {...props}
@@ -48,6 +42,7 @@ const Table = <T extends NonNullable<unknown>>(
       className="overflow-visible"
       pointerOnHover={props.pointerOnHover ?? true}
       highlightOnHover
+      selectableRowsHighlight
       onColumnOrderChange={(nextOrder) => {
         localStorage.setItem(
           `columns@user_permission`,
@@ -55,20 +50,18 @@ const Table = <T extends NonNullable<unknown>>(
         );
       }}
       subHeader={Boolean(props.subHeaderComponent)}
-      progressComponent={
-        <div>cargando {props.name}...</div> /* mejor un spinner */
-      }
+      progressComponent={<div className="mt-5">
+        <Spinner variant="success" />
+      </div>}
       sortIcon={<ArrowDownShort color="green" />}
       paginationComponentOptions={paginationComponentOptions}
       noDataComponent="No hay registros por ahora"
       persistTableHead
-      selectableRows
-      // contextMessage={{
-      //   message: props.name,
-      //   plural: "seleccionados |",
-      //   singular: "seleccionado |",
-      // }}
-
+      contextMessage={{
+        message: "seleccionados",
+        plural: "Elementos",
+        singular: "Elementos",
+      }}
       title={`Lista de ${props.name}`}
     />
   );

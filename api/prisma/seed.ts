@@ -16,7 +16,7 @@ const { cities }: { cities: City[] } = getData("locations");
 const { permissions }: { permissions: Permission[] } = getData("permissions");
 const { users }: { users: User[] } = getData("users");
 const { userTypes }: { userTypes: UserType[] } = getData("userTypes");
-
+const delay = 150;
 console.log("initializing seed");
 async function main() {
   await prisma.userType.createMany({
@@ -46,7 +46,7 @@ async function main() {
 
   const permissionsID: string[] = []
   for (const permission of permissions) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, delay));
     const { id } = await prisma.permission.create({ data: permission });
     console.log("permiso creado")
     permissionsID.push(id);
@@ -69,7 +69,7 @@ async function main() {
 
   for (const username of ["carlos.chambi", "hilda.valencia"]) {
     for (const id of permissionsID) {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, delay));
       console.log("permiso asignado a: " + username)
       await prisma.userPermission.create({
         data: {
@@ -88,15 +88,16 @@ async function main() {
     }
   }
 
-  cities.forEach(async (city: any) => {
+  for (const city of cities) {
     await prisma.city.create({
       data: {
         name: city.name,
       },
     });
 
-    city.provinces.forEach(async (province: any) => {
-      await prisma.province.create({
+    /// @ts-ignore
+    await prisma.$transaction(city.provinces.map((province: any) => {
+      return prisma.province.create({
         data: {
           name: province.name,
           city: { connect: { name: city.name } },
@@ -108,8 +109,95 @@ async function main() {
           code: province.code,
         },
       });
-    });
-  });
+    }))
+  }
+
+  await prisma.property.create({
+    data: {
+      beneficiaries: {
+        connectOrCreate: [
+          { where: { name: "Roberto Torrez" }, create: { name: "Roberto Torrez" } },
+          { where: { name: "Yola Blanco" }, create: { name: "Yola Blanco" } },
+          { where: { name: "Eleuterio Torrez Aguilar" }, create: { name: "Eleuterio Torrez Aguilar" } },
+          { where: { name: "Maria Nemecia Mujica" }, create: { name: "Maria Nemecia Mujica" } },
+          { where: { name: "Julia Libertad Aguilar" }, create: { name: "Julia Libertad Aguilar" } },
+          { where: { name: "Flia. Saucedo Choque" }, create: { name: "Flia. Saucedo Choque" } },
+          { where: { name: "Graciela Mamani Callisaya" }, create: { name: "Graciela Mamani Callisaya" } },
+          { where: { name: "Exalta Mamani" }, create: { name: "Exalta Mamani" } },
+        ]
+      },
+      plots: 8,
+      activity: {
+        connectOrCreate: {
+          where: { name: 'Agricola' },
+          create: { name: 'Agricola' }
+        }
+      },
+      type: {
+        connectOrCreate: {
+          where: { name: 'Comunitario' },
+          create: { name: 'Comunitario' }
+        }
+      },
+      clasification: {
+        connectOrCreate: {
+          where: { name: 'Pequeña' },
+          create: { name: 'Pequeña' }
+        }
+      },
+      bodies: 5,
+      name: "Comunidad Sullcata",
+      area: "8.9420",
+      expertiseOfArea: "8.942",
+      code: "500570",
+      codeOfSearch: "DEP161",
+      polygone: "Indefinido",
+      observations: {
+        createMany: {
+          data: [
+            { type: 'STANDARD', observation: '5 FOLDERS SOLO FLIP SIN FOLDER,CONFLICTO  DERECHO PROPIETARIO , SE ENCUENTRA EN   TRATAMIENTO CONCLUIDO  PARA SU PROSECUCION MEDIANTE PROCEDIMIENTO' },
+            { type: 'TECHNICAL', observation: 'PARA PROCEDIMIENTO COMUN DE SANEAMIENTO, ACTUALMENTE EN SEGUIMIENTO POR LAS PARTES INTERESADAS' }
+          ]
+        }
+      },
+      groupedState: {
+        connectOrCreate: {
+          where: {
+            name: 'Proceso departamental'
+          },
+          create: {
+            name: 'Proceso departamental'
+          }
+        }
+      },
+      city: {
+        connect: {
+          name: 'La Paz'
+        }
+      },
+      province: {
+        connect: {
+          name: 'Ingavi'
+        }
+      },
+      municipality: {
+        connect: {
+          name: 'Guaqui'
+        }
+      },
+      reference: {
+        connectOrCreate: {
+          where: {
+            name: 'Verificado',
+          },
+          create: {
+            name: 'Verificado',
+          }
+        }
+      },
+      secondState: 'POL.',
+    },
+  })
 }
 
 main()

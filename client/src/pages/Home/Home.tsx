@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Col, Form, FormControlProps, Row } from 'react-bootstrap';
-import { useForm, UseFormRegister } from 'react-hook-form';
-import pencil from 'bootstrap-icons/icons/pencil.svg'
-import pencilFill from 'bootstrap-icons/icons/pencil-fill.svg'
-import pencilSquare from 'bootstrap-icons/icons/pencil-square.svg';
-import check from 'bootstrap-icons/icons/check-circle.svg';
+import { Col, Form, Row } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
 
 export type HomeProps = {
 }
@@ -13,118 +9,117 @@ type FormProps = {
 	[index: string]: string
 }
 
-const CustomInput = ({ placeholder, register, name, ...rest }: FormControlProps & { register: UseFormRegister<FormProps>; name: string }) => {
-	const [edit, setEdit] = useState(false);
-	const [showEdit, setShowEdit] = useState(false);
-	const [labelValue, setLabelValue] = useState(placeholder)
-	const [showInputEdit, setShowInputEdit] = useState(false);
-	const [showMenu, setShowMenu] = useState(false);
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		console.log(e)
-		setLabelValue(e.target.value)
-	}
+// const CustomInput = ({ placeholder, register, name, ...rest }: FormControlProps & { register: UseFormRegister<FormProps>; name: string }) => {
+// 	const [edit, setEdit] = useState(false);
+// 	const [showEdit, setShowEdit] = useState(false);
+// 	const [labelValue, setLabelValue] = useState(placeholder)
+// 	const [showInputEdit, setShowInputEdit] = useState(false);
+// 	const [showMenu, setShowMenu] = useState(false);
+// 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+// 		console.log(e)
+// 		setLabelValue(e.target.value)
+// 	}
 
-	return <Form.Group>
-		<div className={`input-wrapper position-relative ${showInputEdit ? 'show' : 'd-none'}`}  >
-			<Form.Control value={labelValue} onChange={handleChange} size='sm' className='my-1' />
-			<img
-				src={check}
-				role='button'
-				alt='check'
-				className='position-absolute top-50 end-0 translate-middle'
-				onClick={() => setShowInputEdit(false)}
-			/>
-		</div>
-		<Form.Label onMouseOver={() => {
-			setShowEdit(true)
-		}}
+// 	return <Form.Group>
+// 		<div className={`input-wrapper position-relative ${showInputEdit ? 'show' : 'd-none'}`}  >
+// 			<Form.Control value={labelValue} onChange={handleChange} size='sm' className='my-1' />
+// 			<img
+// 				src={check}
+// 				role='button'
+// 				alt='check'
+// 				className='position-absolute top-50 end-0 translate-middle'
+// 				onClick={() => setShowInputEdit(false)}
+// 			/>
+// 		</div>
+// 		<Form.Label onMouseOver={() => {
+// 			setShowEdit(true)
+// 		}}
 
-			onMouseOut={() => {
-				setShowEdit(false);
-			}} className={!showInputEdit ? 'show' : 'd-none'} >
-			{labelValue} {showEdit && <img src={pencilSquare} onClick={() => setShowInputEdit(!showInputEdit)} />}
-		</Form.Label>
-		<div className='input-wrapper position-relative'>
-			<Form.Control
-				aria-label={labelValue}
-				placeholder={labelValue}
-				disabled={!edit}
-				size='sm'
-				{...register(name)}
-				{...rest}
-				onContextMenu={(e) => {
-					e.preventDefault()
-					console.log("click derecho")
-					setShowMenu(true)
-				}}
+// 			onMouseOut={() => {
+// 				setShowEdit(false);
+// 			}} className={!showInputEdit ? 'show' : 'd-none'} >
+// 			{labelValue} {showEdit && <img src={pencilSquare} onClick={() => setShowInputEdit(!showInputEdit)} />}
+// 		</Form.Label>
+// 		<div className='input-wrapper position-relative'>
+// 			<Form.Control
+// 				aria-label={labelValue}
+// 				placeholder={labelValue}
+// 				disabled={!edit}
+// 				size='sm'
+// 				{...register(name)}
+// 				{...rest}
+// 				onContextMenu={(e) => {
+// 					e.preventDefault()
+// 					console.log("click derecho")
+// 					setShowMenu(true)
+// 				}}
 
-			// onBlur={() => setEdit(false)}
-			/>
-			<img
-				src={edit ? pencil : pencilFill}
-				role='button'
-				alt='name'
-				className='position-absolute top-50 end-0 translate-middle'
-				onClick={() => setEdit(!edit)}
-			/>
-			<div
-				className={`position-absolute z-1 top-50 end-0 translate-middle-x ${showMenu ? 'show' : 'd-none'}`}
-				onMouseLeave={() => setShowMenu(false)}
-			>
-				<ul className='list-unstyled bg-body-tertiary border rounded-1' >
-					<li style={{ cursor: 'pointer' }} className='mx-2'>
-						<small>
-							Editar campo
-						</small>
-					</li>
-					<li style={{ cursor: 'pointer' }} className='mx-2'>
-						<small>
-							Editar nombre
-						</small>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</Form.Group>
-}
+// 			// onBlur={() => setEdit(false)}
+// 			/>
+// 			<img
+// 				src={edit ? pencil : pencilFill}
+// 				role='button'
+// 				alt='name'
+// 				className='position-absolute top-50 end-0 translate-middle'
+// 				onClick={() => setEdit(!edit)}
+// 			/>
+// 			<div
+// 				className={`position-absolute z-1 top-50 end-0 translate-middle-x ${showMenu ? 'show' : 'd-none'}`}
+// 				onMouseLeave={() => setShowMenu(false)}
+// 			>
+// 				<ul className='list-unstyled bg-body-tertiary border rounded-1' >
+// 					<li style={{ cursor: 'pointer' }} className='mx-2'>
+// 						<small>
+// 							Editar campo
+// 						</small>
+// 					</li>
+// 					<li style={{ cursor: 'pointer' }} className='mx-2'>
+// 						<small>
+// 							Editar nombre
+// 						</small>
+// 					</li>
+// 				</ul>
+// 			</div>
+// 		</div>
+// 	</Form.Group>
+// }
 
 
 const Home: React.FC<HomeProps> = ({ }) => {
-	const [edit, setEdit] = useState(true);
-	const { register } = useForm<FormProps>({
-		defaultValues: {
-			name: '',
-			code: '',
-			beneficiary: '',
-			city: '',
-			province: '',
-			municipality: '',
-			plots: '',
-			state: '',
-			area: '',
-			expertiseOfArea: '',
-			type: '',
-			subDirectory: '',
-			activity: '',
-			clasification: '',
-			bodies: '',
-			sheets: '',
-			codeOfSearch: '',
-			responsibleUnit: '',
-			observation: '',
-			secondState: '',
-			agrupacionIdentifier: '',
-			groupedState: '',
-			legal: '',
-			technical: '',
-			reference: '',
-			technicalObservation: '',
-			polygone: ''
-		}
-	});
+	// const { register } = useForm<FormProps>({
+	// 	defaultValues: {
+	// 		name: '',
+	// 		code: '',
+	// 		beneficiary: '',
+	// 		city: '',
+	// 		province: '',
+	// 		municipality: '',
+	// 		plots: '',
+	// 		state: '',
+	// 		area: '',
+	// 		expertiseOfArea: '',
+	// 		type: '',
+	// 		subDirectory: '',
+	// 		activity: '',
+	// 		clasification: '',
+	// 		bodies: '',
+	// 		sheets: '',
+	// 		codeOfSearch: '',
+	// 		responsibleUnit: '',
+	// 		observation: '',
+	// 		secondState: '',
+	// 		agrupacionIdentifier: '',
+	// 		groupedState: '',
+	// 		legal: '',
+	// 		technical: '',
+	// 		reference: '',
+	// 		technicalObservation: '',
+	// 		polygone: ''
+	// 	}
+	// });
 
 	return <Form className='row d-flex mt-1'>
-		<Col xs={9}>
+		{/* <Col xs={9}>
 			<Row>
 				<Col xs={6}>
 					<CustomInput
@@ -431,9 +426,9 @@ const Home: React.FC<HomeProps> = ({ }) => {
 					</div>
 				</Col>
 			</Row>
-		</Col>
+		</Col> */}
 
-		<Col xs={3} className='border-start border-success'>
+		{/* <Col xs={3} className='border-start border-success'>
 			<Row>
 				<Col xs={12}>
 					<Form.Group>
@@ -541,7 +536,7 @@ const Home: React.FC<HomeProps> = ({ }) => {
 					</Form.Group>
 				</Col>
 			</Row>
-		</Col>
+		</Col> */}
 	</Form>;
 };
 
