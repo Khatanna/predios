@@ -21,19 +21,18 @@ $custom-chip-colors: (
   READ: $blue,
   CREATE: $green,
   UPDATE: $orange,
-  DELETE: $red
+  DELETE: $red,
 );
 
-@each $type,
-$color in $custom-chip-colors {
+@each $type, $color in $custom-chip-colors {
   .chip-#{$type} {
-    font-size: .8rem;
+    font-size: 0.8rem;
     text-align: center;
     background-color: $color;
   }
 
   .chip-outline-#{$type} {
-    font-size: .8rem;
+    font-size: 0.8rem;
     text-align: center;
     border: 1px solid $color;
     color: black;

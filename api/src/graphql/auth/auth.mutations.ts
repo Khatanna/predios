@@ -1,45 +1,20 @@
-import { PrismaClient } from "@prisma/client";
 import { verify } from "jsonwebtoken";
 import { AuthErrorMessage, LifeTimeToken } from "../../constants";
 import { Context } from "../../types";
 import {
   handleJWTError,
   mapUserForToken,
+  updateRefreshToken,
   verifyPassword,
   verifyUsername,
 } from "../../utilities";
 import { generateToken } from "../../utilities/generateToken";
 import { throwLoginError } from "../../utilities/throwLoginError";
 
-const updateRefreshToken = (username: string, token: string, prisma: PrismaClient) => {
-  return prisma.user.update({
-    where: {
-      username,
-    },
-    data: {
-      session: {
-        upsert: {
-          where: {
-            user: {
-              username,
-            },
-          },
-          update: {
-            token,
-          },
-          create: {
-            token,
-          },
-        },
-      },
-    },
-  });
-};
-
 export const login = async (
   _parent: any,
-  input: { username: string, password: string },
-  { prisma }: Context
+  input: { username: string; password: string },
+  { prisma }: Context,
 ) => {
   const { username, password } = input;
   try {
@@ -84,7 +59,7 @@ export const login = async (
 
     throw throwLoginError(AuthErrorMessage.UNREGISTERED_USER);
   } catch (e) {
-    throw e
+    throw e;
   }
 };
 
@@ -93,7 +68,6 @@ export const getNewAccessToken = async (
   { refreshToken }: { refreshToken: string },
   { prisma }: Context,
 ) => {
-  console.log("obteniendo nuevo token")
   try {
     const user = await prisma.user.findFirst({
       where: {
@@ -106,10 +80,7 @@ export const getNewAccessToken = async (
       },
     });
 
-    verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN_SECRET!,
-    );
+    verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
 
     const accessToken = generateToken(
       user!,

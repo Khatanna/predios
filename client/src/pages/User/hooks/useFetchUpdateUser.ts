@@ -13,7 +13,6 @@ const UDPATE_USER_MUTATION = `
         secondLastName
         username
         status
-        role
         typeId
       }
     }

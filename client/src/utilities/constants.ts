@@ -6,7 +6,7 @@ export const resources = {
   CITY: "Departamento",
   PROVINCE: "Provincia",
   MUNICIPALITY: "Municipio",
-  USER_PERMISSION: "Permisos de usuario"
+  USER_PERMISSION: "Permisos de usuario",
 } as const;
 
 export const levels = {
@@ -14,4 +14,9 @@ export const levels = {
   READ: "Lectura",
   UPDATE: "Actualización",
   DELETE: "Eliminación",
+} as const;
+
+export const status = {
+  ENABLE: "Habilitado",
+  DISABLE: "Deshabilitado",
 } as const;

@@ -1,0 +1,22 @@
+# Types
+type Record {
+  id: ID!
+  resource: String!
+  operation: String!
+  user: User
+  result: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+# Queries
+type Query {
+  viewRecords: [Record!]
+}
+
+# Mutations
+# type Mutation {
+
+# }
+
+# Input types

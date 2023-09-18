@@ -177,9 +177,11 @@ model Property {
 }
 
 enum ObervationType {
-  TECHNICAL
-  LEGAL
-  STANDARD
+  TECHNICAL @map("tecnico")
+  LEGAL     @map("juridico")
+  STANDARD  @map("estandar")
+
+  @@map("tipo_de_observación")
 }
 
 model Observation {
@@ -360,10 +362,13 @@ model localization {
 }
 
 model Record {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   userId    String   @map("usuario_id")
   user      User     @relation(fields: [userId], references: [id])
-  date      DateTime @map("fecha")
+  operation String   @map("operacion")
+  resource  String   @map("recurso")
+  result    Json     @map("resultado")
+  ip        String   @map("direccion_ip")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

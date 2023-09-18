@@ -15,12 +15,16 @@ import {
 import { resolvers as userResolvers, typeDefs as userTypeDefs } from "./user";
 import { resolvers as authResolvers, typeDefs as authTypeDefs } from "./auth";
 import {
-  resolvers as UserTypeResolvers,
-  typeDefs as UserTypeTypeDefs,
+  resolvers as userTypeResolvers,
+  typeDefs as userTypeTypeDefs,
 } from "./userType";
+import {
+  resolvers as recordResolvers,
+  typeDefs as recordTypeDefs,
+} from "./record";
 import { Prisma } from "@prisma/client";
 import { GraphQLError } from "graphql/error";
-import { unwrapResolverError } from '@apollo/server/errors';
+import { unwrapResolverError } from "@apollo/server/errors";
 import { throwPrismaError } from "../utilities/throwPrismaError";
 import { throwUnauthorizedError } from "../utilities";
 import { getError } from "../utilities/getError";
@@ -33,7 +37,8 @@ export const server = new ApolloServer({
     cityTypeDefs,
     provinceTypeDefs,
     municipalityTypeDefs,
-    UserTypeTypeDefs,
+    userTypeTypeDefs,
+    recordTypeDefs,
   ],
   resolvers: [
     permissionResolvers,
@@ -42,42 +47,53 @@ export const server = new ApolloServer({
     cityResolvers,
     provinceResolvers,
     municipalityResolvers,
-    UserTypeResolvers,
+    userTypeResolvers,
+    recordResolvers,
   ],
   // introspection: false,
   // plugins: [ApolloServerPluginLandingPageDisabled()],
   formatError(formattedError, error) {
     // console.log(error)
     if (unwrapResolverError(error) instanceof Error) {
-      console.log("error normal")
+      console.log("error normal");
     }
 
-    if (unwrapResolverError(error) instanceof Prisma.PrismaClientKnownRequestError) {
+    if (
+      unwrapResolverError(error) instanceof Prisma.PrismaClientKnownRequestError
+    ) {
       // const e = (unwrapResolverError(error) as Prisma.PrismaClientKnownRequestError)
       // console.dir(e.message)
-      throw throwPrismaError((unwrapResolverError(error) as Prisma.PrismaClientKnownRequestError))
-    }
-
-    if (unwrapResolverError(error) instanceof Prisma.PrismaClientInitializationError) {
-      const e = (unwrapResolverError(error) as Prisma.PrismaClientInitializationError)
-
-      const errorMessage = getError(e.message)[e.errorCode ?? e.message.includes(`Can't reach database server at`) ? 'P1001' : 'default'];
-      throw new GraphQLError(
-        errorMessage,
-        {
-          extensions: {
-            code: Code.BAD_REQUEST,
-            http: { status: Status.BAD_REQUEST },
-          },
-        },
+      throw throwPrismaError(
+        unwrapResolverError(error) as Prisma.PrismaClientKnownRequestError,
       );
     }
 
-    if (error instanceof GraphQLError) {
-      console.log(error)
-      throw throwUnauthorizedError(error.message)
+    if (
+      unwrapResolverError(error) instanceof
+      Prisma.PrismaClientInitializationError
+    ) {
+      const e = unwrapResolverError(
+        error,
+      ) as Prisma.PrismaClientInitializationError;
+
+      const errorMessage = getError(e.message)[
+        e.errorCode ?? e.message.includes(`Can't reach database server at`)
+          ? "P1001"
+          : "default"
+      ];
+      throw new GraphQLError(errorMessage, {
+        extensions: {
+          code: Code.BAD_REQUEST,
+          http: { status: Status.BAD_REQUEST },
+        },
+      });
     }
 
-    return formattedError
+    if (error instanceof GraphQLError) {
+      console.log(error);
+      throw throwUnauthorizedError(error.message);
+    }
+
+    return formattedError;
   },
 });

@@ -20,6 +20,7 @@ import {
 } from "../../hooks";
 import { customSwalError } from "../../../../utilities/alerts";
 import { useCustomQuery } from "../../../../hooks/useCustomQuery";
+import { status } from "../../../../utilities/constants";
 
 export interface FormCreateUserProps {
   user?: Omit<User, "type" | "createdAt" | "permissions">;
@@ -43,7 +44,6 @@ const schema = yup.object({
     .max(32, "La contraseña no debe tener mas de 32 caracteres"),
   typeId: yup.string().required("El tipo es requerido"),
   status: yup.string().required("El usuario debe tener un estado"),
-  role: yup.string().required("El rol de usuario es un campo necesario"),
 });
 
 const GET_ALL_USER_TYPES_QUERY = `{
@@ -74,28 +74,6 @@ const TypeOptions = ({ typeId }: { typeId?: string }) => {
   );
 };
 
-const status = [
-  {
-    value: "ENABLE",
-    label: "Habilitado",
-  },
-  {
-    value: "DISABLE",
-    label: "Deshabilitado",
-  },
-];
-
-const roles = [
-  {
-    value: "ADMIN",
-    label: "Administrador",
-  },
-  {
-    value: "USER",
-    label: "Usuario",
-  },
-];
-
 const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
   const navigate = useNavigate();
   const [showEditUserType, setShowEditUserType] = useState(false);
@@ -118,7 +96,6 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
       username: "",
       password: user ? "Inra12345" : "",
       status: "ENABLE",
-      role: "USER",
       typeId: "",
       ...user,
     },
@@ -182,7 +159,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
           className="row g-3 position-absolute top-50 start-50 translate-middle"
           onSubmit={handleSubmit(submit)}
         >
-          <Col xs={12}>
+          <Col xs={7}>
             <Form.Group>
               <Form.Label>Nombres</Form.Label>
               <div className="input-wrapper position-relative">
@@ -201,6 +178,23 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                 )}
               </div>
               <Error>{errors.names?.message}</Error>
+            </Form.Group>
+          </Col>
+          <Col xs={5}>
+            <Form.Group>
+              <Form.Label>Estado del usuario</Form.Label>
+              <div className="d-flex flex-row gap-3 justify-content-between border border-1 p-1 rounded-2">
+                {Object.entries(status).map(([key, value]) => (
+                  <Form.Check
+                    {...register("status")}
+                    value={key}
+                    type="radio"
+                    label={value}
+                    key={crypto.randomUUID()}
+                    id={key}
+                  />
+                ))}
+              </div>
             </Form.Group>
           </Col>
           <Col xs={12} md={6}>
@@ -326,43 +320,9 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               <Error>{errors.typeId?.message}</Error>
             </Form.Group>
           </Col>
-          <Col xs={6}>
-            <Form.Group>
-              <Form.Label>Estado del usuario</Form.Label>
-              <div className="d-flex flex-row gap-3 justify-content-between">
-                {status.map(({ value, label }) => (
-                  <Form.Check
-                    {...register("status")}
-                    value={value}
-                    type="radio"
-                    label={label}
-                    key={crypto.randomUUID()}
-                    id={label}
-                  />
-                ))}
-              </div>
-            </Form.Group>
-          </Col>
-          <Col xs={6}>
-            <Form.Group>
-              <Form.Label>Rol del usuario</Form.Label>
-              <div className="d-flex flex-row gap-3 justify-content-between">
-                {roles.map(({ value, label }) => (
-                  <Form.Check
-                    {...register("role")}
-                    value={value}
-                    type="radio"
-                    label={label}
-                    key={crypto.randomUUID()}
-                    id={label}
-                  />
-                ))}
-              </div>
-            </Form.Group>
-          </Col>
           <Col xs={12}>
             <Button
-              className="float-end w-100"
+              className="float-end w-100 text-white"
               type="submit"
               variant="success"
               disabled={showEditUserType}

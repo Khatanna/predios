@@ -1,18 +1,17 @@
-import { GraphQLArgs } from "graphql";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
 export const allUsers = async (
   _parent: any,
-  _args: GraphQLArgs,
+  _args: any,
   { prisma, userContext }: Context,
 ) => {
   try {
-    hasPermission(userContext, "READ", "USER")
+    hasPermission(userContext, "READ", "USER");
     return prisma.user.findMany({
       where: {
         NOT: {
-          username: userContext!.username
+          username: userContext!.username,
         },
       },
       include: {
@@ -27,13 +26,17 @@ export const allUsers = async (
       },
     });
   } catch (e) {
-    throw e
+    throw e;
   }
 };
 
-export const getUserById = async (_: any, { id }: { id: string }, { prisma, userContext }: Context) => {
+export const getUserById = async (
+  _: any,
+  { id }: { id: string },
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, "READ", "USER")
+    hasPermission(userContext, "READ", "USER");
 
     const user = await prisma.user.findUnique({
       where: { id },
@@ -42,18 +45,17 @@ export const getUserById = async (_: any, { id }: { id: string }, { prisma, user
 
     return user;
   } catch (e) {
-    throw e
+    throw e;
   }
 };
 
 export const getUserByUsername = async (
   _: any,
   { username }: { username: string },
-  { prisma, userContext }: Context
+  { prisma, userContext }: Context,
 ) => {
   try {
-    hasPermission(userContext, "READ", "USER")
-    hasPermission(userContext, "READ", "USER_PERMISSION")
+    hasPermission(userContext, "READ", "USER_PERMISSION");
 
     return prisma.user.findUnique({
       where: { username },
@@ -62,11 +64,11 @@ export const getUserByUsername = async (
           include: {
             permission: true,
             user: true,
-          }
+          },
         },
       },
     });
   } catch (e) {
-    throw e
+    throw e;
   }
 };

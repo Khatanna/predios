@@ -15,7 +15,7 @@ const columns: TableColumn<User>[] = [
     selector: (_row, index) => (index || 0) + 1,
     sortable: true,
     sortFunction: (a, b) => Number(a.createdAt) - Number(b.createdAt),
-    width: "80px"
+    width: "80px",
   },
   {
     name: "Nombre de usuario",
@@ -25,27 +25,33 @@ const columns: TableColumn<User>[] = [
   },
   {
     name: "Nombres",
-    selector: (row) => row.names.split(/\s/).map(w => w[0] + w.slice(1).toLocaleLowerCase()).join(' '),
+    selector: (row) =>
+      row.names
+        .split(/\s/)
+        .map((w) => w[0] + w.slice(1).toLocaleLowerCase())
+        .join(" "),
     sortable: true,
     reorder: true,
   },
   {
     name: "Apellido Paterno",
-    selector: (row) => row.firstLastName[0] + row.firstLastName.slice(1).toLocaleLowerCase(),
+    selector: (row) =>
+      row.firstLastName[0] + row.firstLastName.slice(1).toLocaleLowerCase(),
     sortable: true,
     reorder: true,
   },
   {
     name: "Apellido Materno",
-    selector: (row) => row.secondLastName[0] + row.secondLastName.slice(1).toLocaleLowerCase(),
+    selector: (row) =>
+      row.secondLastName[0] + row.secondLastName.slice(1).toLocaleLowerCase(),
     sortable: true,
-    reorder: true
+    reorder: true,
   },
   {
     name: "Tipo",
     selector: (row) => row.type.name,
     sortable: true,
-    reorder: true
+    reorder: true,
   },
   {
     name: "Estado",
@@ -58,18 +64,26 @@ const columns: TableColumn<User>[] = [
     button: true,
     allowOverflow: true,
   },
-]
+];
 
-const SubHeaderComponent: React.FC<{ filterText: string, setFilterText: React.Dispatch<React.SetStateAction<string>> }> = ({ filterText, setFilterText }) => {
+const SubHeaderComponent: React.FC<{
+  filterText: string;
+  setFilterText: React.Dispatch<React.SetStateAction<string>>;
+}> = ({ filterText, setFilterText }) => {
   return (
     <div className="d-flex justify-content-between align-items-center gap-3">
-
-      <input onChange={e => {
-        setFilterText(e.target.value.toLowerCase())
-      }} value={filterText} placeholder="Buscar..." className="form-control" autoComplete="off" />
+      <input
+        onChange={(e) => {
+          setFilterText(e.target.value.toLowerCase());
+        }}
+        value={filterText}
+        placeholder="Buscar..."
+        className="form-control"
+        autoComplete="off"
+      />
     </div>
   );
-}
+};
 
 const GET_ALL_USERS_QUERY = `
   query AllUsers {
@@ -89,12 +103,20 @@ const GET_ALL_USERS_QUERY = `
 `;
 
 const UserList: React.FC = () => {
-  const { isLoading, error, data } = useCustomQuery<{ allUsers: User[] }>(GET_ALL_USERS_QUERY, ['getAllUsers']);
+  const { isLoading, error, data } = useCustomQuery<{ allUsers: User[] }>(
+    GET_ALL_USERS_QUERY,
+    ["getAllUsers"],
+  );
   const navigate = useNavigate();
-  const [filterText, setFilterText] = useState('');
+  const [filterText, setFilterText] = useState("");
   const subHeaderComponent = useMemo(() => {
-    return <SubHeaderComponent filterText={filterText} setFilterText={setFilterText} />
-  }, [filterText])
+    return (
+      <SubHeaderComponent
+        filterText={filterText}
+        setFilterText={setFilterText}
+      />
+    );
+  }, [filterText]);
 
   if (error) {
     return (
@@ -104,17 +126,38 @@ const UserList: React.FC = () => {
     );
   }
 
-  return <Table
-    name="usuarios"
-    columns={columns}
-    data={data?.allUsers.filter(
-      item => item.names.toLowerCase().includes(filterText) || item.firstLastName.toLowerCase().includes(filterText) || item.secondLastName.toLowerCase().includes(filterText) || item.username.toLowerCase().includes(filterText) || item.names.toLowerCase().concat(" ", item.firstLastName.toLowerCase(), " ", item.secondLastName.toLowerCase()).includes(filterText)
-    ) ?? []}
-    progressPending={isLoading}
-    onRowDoubleClicked={(row) => navigate('../edit', { state: row })}
-    actions={<Link to={"/users/create"} ><PersonAdd role="button" size={"30"} /></Link>}
-    subHeaderComponent={subHeaderComponent}
-  />
+  return (
+    <Table
+      name="usuarios"
+      columns={columns}
+      data={
+        data?.allUsers.filter(
+          (item) =>
+            item.names.toLowerCase().includes(filterText) ||
+            item.firstLastName.toLowerCase().includes(filterText) ||
+            item.secondLastName.toLowerCase().includes(filterText) ||
+            item.username.toLowerCase().includes(filterText) ||
+            item.names
+              .toLowerCase()
+              .concat(
+                " ",
+                item.firstLastName.toLowerCase(),
+                " ",
+                item.secondLastName.toLowerCase(),
+              )
+              .includes(filterText),
+        ) ?? []
+      }
+      progressPending={isLoading}
+      onRowDoubleClicked={(row) => navigate("../edit", { state: row })}
+      actions={
+        <Link to={"/users/create"}>
+          <PersonAdd role="button" size={"30"} />
+        </Link>
+      }
+      subHeaderComponent={subHeaderComponent}
+    />
+  );
 };
 
 export default UserList;

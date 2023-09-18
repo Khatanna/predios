@@ -1,13 +1,12 @@
-import { startStandaloneServer } from "@apollo/server/standalone";
+import { expressMiddleware } from "@apollo/server/express4";
+import cors from "cors";
 import { config } from "dotenv";
+import express from "express";
+import fs from "fs";
+import https from "https";
+import path from "path";
 import { server } from "./graphql";
 import { graphqlContext as context } from "./utilities";
-import express from "express";
-import { expressMiddleware } from "@apollo/server/express4";
-import https from "https";
-import fs from "fs";
-import path from "path";
-import cors from "cors";
 config();
 async function main() {
   await server.start();
