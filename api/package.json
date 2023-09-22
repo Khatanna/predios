@@ -25,9 +25,12 @@
     "express": "4.18.2",
     "graphql": "16.7.1",
     "graphql-middleware": "6.1.35",
+    "graphql-subscriptions": "2.0.0",
+    "graphql-ws": "5.14.0",
     "ip": "1.1.8",
     "jsonwebtoken": "9.0.1",
-    "prisma": "5.0.0"
+    "prisma": "5.0.0",
+    "ws": "8.14.2"
   },
   "devDependencies": {
     "@faker-js/faker": "8.0.2",
@@ -37,6 +40,7 @@
     "@types/jest": "29.5.3",
     "@types/jsonwebtoken": "9.0.2",
     "@types/supertest": "2.0.12",
+    "@types/ws": "8.5.5",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "dotenv": "16.3.1",
     "eslint": "8.45.0",

@@ -1,0 +1,18 @@
+type Type { 
+  id: ID! 
+  name: String
+  createdAt: String
+  updatedAt: String
+}
+
+type Query {
+  getAllTypes: [Type]!
+}
+
+type Mutation {
+  createType(input: CreateTypeInput): Type 
+}
+
+input CreateTypeInput {
+  name: String
+}

@@ -191,6 +191,30 @@
       "level": "DELETE",
       "resource": "MUNICIPALITY",
       "description": "Permite eliminar municipios del sistema."
+    },
+    {
+      "name": "Lectura de las actividades",
+      "level": "READ",
+      "resource": "ACTIVITY",
+      "description": "Permite ver la información de las actividades."
+    },
+    {
+      "name": "Creación de actividades",
+      "level": "CREATE",
+      "resource": "ACTIVITY",
+      "description": "Permite crear nuevas actividades en el sistema."
+    },
+    {
+      "name": "Actualización de actividades",
+      "level": "UPDATE",
+      "resource": "ACTIVITY",
+      "description": "Permite modificar la información de las actividades existentes."
+    },
+    {
+      "name": "Eliminación de actividades",
+      "level": "DELETE",
+      "resource": "ACTIVITY",
+      "description": "Permite eliminar actividades del sistema."
     }
   ]
 }

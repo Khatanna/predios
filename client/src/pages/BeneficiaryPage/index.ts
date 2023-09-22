@@ -1,0 +1,1 @@
+export { default as BeneficiaryPage } from './BeneficiaryPage';

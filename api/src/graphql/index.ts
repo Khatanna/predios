@@ -1,71 +1,76 @@
 import { ApolloServer } from "@apollo/server";
-import { resolvers as cityResolvers, typeDefs as cityTypeDefs } from "./city";
-import {
-  resolvers as municipalityResolvers,
-  typeDefs as municipalityTypeDefs,
-} from "./municipality";
-import {
-  resolvers as permissionResolvers,
-  typeDefs as permissionTypeDefs,
-} from "./permission";
-import {
-  resolvers as provinceResolvers,
-  typeDefs as provinceTypeDefs,
-} from "./province";
-import { resolvers as userResolvers, typeDefs as userTypeDefs } from "./user";
-import { resolvers as authResolvers, typeDefs as authTypeDefs } from "./auth";
-import {
-  resolvers as userTypeResolvers,
-  typeDefs as userTypeTypeDefs,
-} from "./userType";
-import {
-  resolvers as recordResolvers,
-  typeDefs as recordTypeDefs,
-} from "./record";
-import {
-  resolvers as propertyResolvers,
-  typeDefs as propertyTypeDefs
-} from './property'
-import {
-  resolvers as beneficiaryResolvers,
-  typeDefs as beneficiaryTypeDefs
-} from './beneficiary'
-import { Prisma } from "@prisma/client";
-import { GraphQLError } from "graphql/error";
+import fs from 'fs';
+import path from 'path'
 import { unwrapResolverError } from "@apollo/server/errors";
-import { throwPrismaError } from "../utilities/throwPrismaError";
-import { throwUnauthorizedError } from "../utilities";
-import { getError } from "../utilities/getError";
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { Prisma } from "@prisma/client";
+import cors from 'cors';
+import express from 'express';
+import { useServer } from 'graphql-ws/lib/use/ws';
+import { GraphQLError } from "graphql/error";
+import https from 'https';
+import { WebSocketServer } from 'ws';
 import { Code, Status } from "../constants";
+import { prisma, pubSub, throwUnauthorizedError } from "../utilities";
+import { getError } from "../utilities/getError";
+import { throwPrismaError } from "../utilities/throwPrismaError";
+import { schema } from "./schema";
+
+export const app = express();
+export const httpsServer = https.createServer(
+  {
+    key: fs.readFileSync(path.join(__dirname, "../key.pem")),
+    cert: fs.readFileSync(path.join(__dirname, "../cert.pem")),
+  },
+  app);
+
+app.use(
+  cors({
+    origin: [
+      "https://172.18.0.202:4153",
+      "https://172.18.0.202:5173",
+      "https://localhost:5173",
+    ],
+    credentials: true,
+    methods: ["POST"],
+  })
+)
+app.use(express.json())
+const wsServer = new WebSocketServer({
+  server: httpsServer,
+  path: '/',
+
+})
+
+const serverCleanup = useServer({
+  schema,
+  onConnect(ctx) {
+    // console.log("usuarios conectado: ", ctx)
+  },
+  // retirar prisma para conservar la seguridad
+  context: () => {
+    return {
+      prisma, pubSub
+    }
+  }
+}, wsServer)
 export const server = new ApolloServer({
-  typeDefs: [
-    permissionTypeDefs,
-    userTypeDefs,
-    authTypeDefs,
-    cityTypeDefs,
-    provinceTypeDefs,
-    municipalityTypeDefs,
-    userTypeTypeDefs,
-    recordTypeDefs,
-    propertyTypeDefs,
-    beneficiaryTypeDefs
-  ],
-  resolvers: [
-    permissionResolvers,
-    userResolvers,
-    authResolvers,
-    cityResolvers,
-    provinceResolvers,
-    municipalityResolvers,
-    userTypeResolvers,
-    recordResolvers,
-    propertyResolvers,
-    beneficiaryResolvers
+  schema,
+  plugins: [
+    ApolloServerPluginDrainHttpServer({ httpServer: httpsServer }),
+    {
+      async serverWillStart() {
+        return {
+          async drainServer() {
+            await serverCleanup.dispose()
+          }
+        }
+      }
+    }
   ],
   // introspection: false,
   // plugins: [ApolloServerPluginLandingPageDisabled()],
   formatError(formattedError, error) {
-    // console.log(error)
     if (unwrapResolverError(error) instanceof Error) {
       console.log("error normal");
     }
@@ -73,8 +78,6 @@ export const server = new ApolloServer({
     if (
       unwrapResolverError(error) instanceof Prisma.PrismaClientKnownRequestError
     ) {
-      // const e = (unwrapResolverError(error) as Prisma.PrismaClientKnownRequestError)
-      console.dir(unwrapResolverError(error))
       throw throwPrismaError(
         unwrapResolverError(error) as Prisma.PrismaClientKnownRequestError,
       );

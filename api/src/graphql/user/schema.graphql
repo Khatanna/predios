@@ -16,6 +16,7 @@ type User {
   permissions: [PermissionOnUser]!
   createdAt: String!
   updatedAt: String!
+  connection: String!
   typeId: String
   type: UserType
   status: String!
@@ -36,11 +37,25 @@ type UserUpdate {
   user: User
 }
 
+type getUserPagination {
+  nextCursor: String
+  prevCursor: String
+  user: User
+}
+
+type UsersPaginate {
+  nextCursor: String
+  prevCursor: String
+  total: Int
+  users: [User]!
+}
+
 # Queries
 type Query {
-  allUsers: [User!]!
+  getAllUsers(nextCursor: String, prevCursor: String, numberOfResults: Int, filterText: String): UsersPaginate
   getUserById(id: ID): User
   getUserByUsername(username: String): User
+  getUser(nextCursor: String, prevCursor: String): getUserPagination
 }
 
 type UserUpdatePermission {

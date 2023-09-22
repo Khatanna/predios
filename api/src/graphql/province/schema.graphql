@@ -1,4 +1,5 @@
 type Province {
   name: String
+  code: String
   municipalitys: [Municipality]
 }

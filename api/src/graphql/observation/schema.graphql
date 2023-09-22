@@ -1,0 +1,28 @@
+enum ObservationType {
+  TECHNICAL
+  LEGAL
+  STANDARD
+}
+
+type Observation { 
+  id: ID!
+  observation: String!
+  type: ObservationType!
+  createdAt: String
+  updatedAt: String
+  property: Property!
+}
+
+type Query {
+  getAllObservations: [Observation]!
+}
+
+type Mutation {
+  createObservation(input: CreateObservationInput): Observation 
+}
+
+input CreateObservationInput {
+  observation: String!
+  type: ObservationType!
+  propertyId: String
+}

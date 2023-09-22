@@ -1,0 +1,19 @@
+type Activity { 
+  id: ID!
+  name: String
+  properties: [Property]!
+  createdAt: String
+  updatedAt: String
+}
+
+type Query {
+  getAllActivities: [Activity]!
+}
+
+type Mutation {
+  createActivity(input: CreateActivityInput): Activity
+}
+
+input CreateActivityInput {
+  name: String
+}

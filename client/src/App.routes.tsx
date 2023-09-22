@@ -1,38 +1,28 @@
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
-import { Home } from "./pages/Home";
-import { Login } from "./pages/Login";
-import { useAuth, useAxios } from "./hooks";
-import { useEffect, useRef } from "react";
-import { Admin } from "./pages/Admin";
-import { FormCreateUser } from "./pages/User/components/FormCreateUser";
-import { UserList } from "./pages/User/components/UserList";
-import { PermissionsLayout } from "./pages/PermissionsLayout";
-import { FormCreatePermission } from "./pages/PermissionsLayout/components/FormCreatePermission";
-import { Permission } from "./pages/User/components/Permission";
-import { createAxiosStore, AxiosContext } from "./state/AxiosContext";
+import { AxiosProvider } from "./context/AxiosContext";
+import { ActivityPage } from "./pages/ActivityPage";
+import { AdminPage } from "./pages/AdminPage";
+import { BeneficiaryPage } from "./pages/BeneficiaryPage";
+import { HomePage } from "./pages/HomePage";
+import { LoginPage } from "./pages/LoginPage";
+import { NotFoundPage } from "./pages/NotFoundPage";
+import { PermissionPage } from "./pages/PermissionPage";
+import { FormCreatePermission } from "./pages/PermissionPage/components/FormCreatePermission";
+import { PropertyPage } from "./pages/PropertyPage";
 import { RecordPage } from "./pages/RecordPage";
+import { FormCreateUser } from "./pages/UserPage/components/FormCreateUser";
+import { Permission } from "./pages/UserPage/components/Permission";
+import { UserList } from "./pages/UserPage/components/UserList";
 
 function App() {
-  const axios = useAxios()
-  const store = useRef(createAxiosStore(axios)).current
-
-  const { accessToken, refreshToken, getNewAccessToken } = useAuth();
-
-  useEffect(() => {
-    if (!accessToken && refreshToken) {
-      getNewAccessToken()
-    }
-  }, [accessToken, refreshToken, getNewAccessToken])
-
   return (
-    <AxiosContext.Provider value={store}>
-      <BrowserRouter >
-        <Routes >
+    <BrowserRouter >
+      <AxiosProvider>
+        <Routes>
           <Route path="/" Component={Navbar}>
-            <Route index Component={Home} />
+            <Route index Component={HomePage} />
             <Route path="/users">
-              {/*<Route index Component={User} />*/}
               <Route path="all" Component={UserList} />
               <Route path="create" Component={FormCreateUser} />
               <Route
@@ -47,10 +37,10 @@ function App() {
               </Route>
             </Route>
             <Route path="/admin">
-              <Route index Component={Admin} />
+              <Route index Component={AdminPage} />
               <Route path="records" Component={RecordPage} />
               <Route path="permissions">
-                <Route path="all" Component={PermissionsLayout} />
+                <Route path="all" Component={PermissionPage} />
                 <Route path="create" Component={FormCreatePermission} />
                 <Route path="edit" Component={() => {
                   const { state } = useLocation()
@@ -58,14 +48,19 @@ function App() {
                   return <FormCreatePermission permission={state} />
                 }}></Route>
               </Route>
+              <Route path="properties" Component={PropertyPage} />
+              <Route path="activities" Component={ActivityPage} />
+              <Route path="beneficiaries" Component={BeneficiaryPage} />
             </Route>
           </Route>
           <Route path="/auth">
-            <Route index Component={Login} />
+            <Route index Component={LoginPage} />
           </Route>
+
+          <Route path="*" Component={NotFoundPage}></Route>
         </Routes>
-      </BrowserRouter>
-    </AxiosContext.Provider>
+      </AxiosProvider >
+    </BrowserRouter >
   );
 }
 

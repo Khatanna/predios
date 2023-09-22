@@ -15,6 +15,11 @@ enum Status {
   @@map("estado")
 }
 
+enum StatusConnection {
+  ONLINE  @map("en linea")
+  OFFLINE @map("desconectado")
+}
+
 enum LevelPermission {
   CREATE @map("escritura")
   READ   @map("lectura")
@@ -45,6 +50,14 @@ enum Resource {
   @@map("recurso")
 }
 
+enum ObservationType {
+  TECHNICAL @map("tecnico")
+  LEGAL     @map("juridico")
+  STANDARD  @map("estandar")
+
+  @@map("tipo_de_observación")
+}
+
 model User {
   id             String           @id @default(uuid())
   names          String?          @map("nombre") @db.VarChar(30)
@@ -59,6 +72,7 @@ model User {
   permissions    UserPermission[]
   type           UserType         @relation(fields: [typeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   status         Status           @default(ENABLE) @map("estado")
+  connection     StatusConnection @default(OFFLINE) @map("estado_de_conexion")
   records        Record[]
   property       Property?        @relation(fields: [propertyId], references: [id])
   propertyId     String?
@@ -102,8 +116,8 @@ model UserPermission {
   userId       String     @map("usuario_id")
   permissionId String     @map("permiso_id")
   expires      Expires?
-  user         User       @relation(fields: [userId], references: [id])
-  permission   Permission @relation(fields: [permissionId], references: [id], onUpdate: Cascade)
+  user         User       @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   // UserDeleted   UserDeleted? @relation(fields: [userDeletedId], references: [id])
@@ -133,51 +147,49 @@ model UserType {
 }
 
 model Property {
-  id                   String           @id @default(uuid())
-  name                 String           @default("Indefinido") @map("nombre") @db.MediumText
-  area                 String           @map("superficie")
-  expertiseOfArea      String           @map("superficie_de_pericia") // evaluar varias areas
-  // technicalObservation String           @default("Sin observación") @map("observacion_tecnica") @db.MediumText
-  // podemos poner mas observaciones
-  plots                Int              @default(0) @map("parcelas")
-  bodies               Int              @default(0) @map("cuerpos")
-  sheets               Int              @default(0) @map("fojas")
-  code                 String?          @unique @default("Sin codigo definido") @map("codigo") @db.VarChar(128) // es nullable pero tambie es unico
-  codeOfSearch         String           @default("Sin codigo de busqueda definido") @map("codigo_de_busqueda") @db.VarChar(128)
-  agrupationIdentifier String           @default("Sin Id de agrupación definido") @map("id_de_agrupacion_social") @db.VarChar(64)
-  secondState          String           @default("Sin estado definido") @map("estado_2") @db.VarChar(128)
-  polygone             String           @map("poligono") @db.VarChar(32) // OJO
+  id                   String        @id @default(uuid())
+  name                 String        @map("nombre") @db.MediumText
+  area                 String        @map("superficie")
+  expertiseOfArea      String        @map("superficie_de_pericia") // evaluar varias areas
+  plots                Int           @default(0) @map("parcelas")
+  bodies               Int           @default(0) @map("cuerpos")
+  sheets               Int           @default(0) @map("fojas")
+  code                 String?       @unique @default("Sin codigo definido") @map("codigo") @db.VarChar(128) // es nullable pero tambie es unico
+  codeOfSearch         String        @default("Sin codigo de busqueda definido") @map("codigo_de_busqueda") @db.VarChar(128)
+  agrupationIdentifier String        @default("Sin Id de agrupación definido") @map("id_de_agrupacion_social") @db.VarChar(64)
+  secondState          String        @default("Sin estado definido") @map("estado_2") @db.VarChar(128)
+  polygone             String        @map("poligono") @db.VarChar(32) // OJO
   observations         Observation[]
   beneficiaries        Beneficiary[]
-  activity             Activity?
-  clasification        Clasification?
-  state                State?
-  groupedState         GroupedState?
-  // localization         Localization?
-  subDirectory         SubDirectory?
   users                User[]
-  type                 Type?
-  responsibleUnit      ResponsibleUnit?
-  reference            Reference?
-  cityId               String           @unique() @map("departamento_id")
-  provinceId           String           @unique() @map("provincia_id")
-  municipalityId       String           @unique() @map("municipio_id")
-  city                 City             @relation(fields: [cityId], references: [id])
-  province             Province         @relation(fields: [provinceId], references: [id])
-  municipality         Municipality     @relation(fields: [municipalityId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  cityId         String       @unique() @map("departamento_id")
+  provinceId     String       @unique() @map("provincia_id")
+  municipalityId String       @unique() @map("municipio_id")
+  city           City         @relation(fields: [cityId], references: [id])
+  province       Province     @relation(fields: [provinceId], references: [id])
+  municipality   Municipality @relation(fields: [municipalityId], references: [id])
+  activity       Activity?    @relation(fields: [activityId], references: [id])
+  activityId     String?
+  type           Type?        @relation(fields: [typeId], references: [id])
+  typeId         String?
+
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  clasification     Clasification?   @relation(fields: [clasificationId], references: [id])
+  clasificationId   String?
+  state             State?           @relation(fields: [stateId], references: [id])
+  stateId           String?
+  groupedState      GroupedState?    @relation(fields: [groupedStateId], references: [id])
+  groupedStateId    String?
+  reference         Reference?       @relation(fields: [referenceId], references: [id])
+  referenceId       String?
+  responsibleUnit   ResponsibleUnit? @relation(fields: [responsibleUnitId], references: [id])
+  responsibleUnitId String?
+  subDirectory      SubDirectory?    @relation(fields: [subDirectoryId], references: [id])
+  subDirectoryId    String?
 
   @@map("predio")
-}
-
-enum ObservationType {
-  TECHNICAL @map("tecnico")
-  LEGAL     @map("juridico")
-  STANDARD  @map("estandar")
-
-  @@map("tipo_de_observación")
 }
 
 model Observation {
@@ -203,25 +215,24 @@ model Beneficiary {
 }
 
 model Reference {
-  id         String   @id @default(uuid())
-  name       String   @unique @map("nombre") @db.VarChar(64)
-  propertyId String   @unique() @map("usuario_id")
-  property   Property @relation(fields: [propertyId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id         String     @id @default(uuid())
+  name       String     @unique @map("nombre") @db.VarChar(64)
+  properties Property[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 
   @@map("referencia")
 }
 
 model State {
-  id         String   @id @default(uuid())
-  name       String   @map("nombre")
-  order      String   @map("orden") @db.VarChar(16)
-  propertyId String   @unique() @map("predio_id")
-  property   Property @relation(fields: [propertyId], references: [id])
-  stage      Stage?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id         String     @id @default(uuid())
+  name       String     @unique @map("nombre")
+  order      String     @map("orden") @db.VarChar(16)
+  properties Property[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  stage      Stage?     @relation(fields: [stageId], references: [id])
+  stageId    String?
 
   @@map("estado")
 }
@@ -229,8 +240,7 @@ model State {
 model Stage {
   id        String   @id @default(uuid())
   name      String   @unique() @map("nombre") @db.VarChar(32)
-  stateId   String   @unique
-  state     State    @relation(fields: [stateId], references: [id])
+  states    State[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -238,67 +248,62 @@ model Stage {
 }
 
 model SubDirectory {
-  id         String   @id @default(uuid())
-  name       String   @unique() @map("nombre") @db.VarChar(128)
-  propertyId String   @unique @map("predio_id")
-  property   Property @relation(fields: [propertyId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id         String     @id @default(uuid())
+  name       String     @unique() @map("nombre") @db.VarChar(128)
+  properties Property[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 
   @@map("sub_carpeta")
 }
 
 model Type {
-  id         String   @id @default(uuid())
-  name       String   @unique @map("nombre") @db.VarChar(64)
-  propertyId String   @unique() @map("predio_id")
-  property   Property @relation(fields: [propertyId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id   String @id @default(uuid())
+  name String @unique @map("nombre") @db.VarChar(64)
+
+  properties Property[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 
   @@map("tipo")
 }
 
 model Activity {
-  id         String   @id @default(uuid())
-  name       String   @unique @map("nombre") @db.VarChar(64)
-  propertyId String   @unique() @map("predio_id")
-  property   Property @relation(fields: [propertyId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id         String     @id @default(uuid())
+  name       String     @unique @map("nombre") @db.VarChar(64)
+  properties Property[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 
   @@map("actividad")
 }
 
 model Clasification {
-  id         String   @id @default(uuid())
-  name       String   @unique @map("nombre") @db.VarChar(64)
-  propertyId String   @unique() @map("predio_id")
-  property   Property @relation(fields: [propertyId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id         String     @id @default(uuid())
+  name       String     @unique @map("nombre") @db.VarChar(64)
+  properties Property[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 
   @@map("clasificacion")
 }
 
 model ResponsibleUnit {
-  id         String   @id @default(uuid())
-  name       String   @unique @map("nombre") @db.VarChar(64)
-  propertyId String   @unique() @map("predio_id")
-  property   Property @relation(fields: [propertyId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id         String     @id @default(uuid())
+  name       String     @unique @map("nombre") @db.VarChar(64)
+  properties Property[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 
   @@map("unidad_responsable")
 }
 
 model GroupedState {
-  id         String   @id @default(uuid())
-  name       String   @unique @map("nombre") @db.VarChar(128)
-  propertyId String   @unique() @map("predio_id")
-  property   Property @relation(fields: [propertyId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id         String     @id @default(uuid())
+  name       String     @unique @map("nombre") @db.VarChar(128)
+  properties Property[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 
   @@map("estado_agrupado")
 }
@@ -315,15 +320,15 @@ model City {
 }
 
 model Province {
-  id            String         @id @default(uuid())
-  code          String         @unique @map("codigo") @db.VarChar(32)
-  name          String         @unique @map("nombre") @db.VarChar(32)
-  cityId        String         @map("departamento_id")
-  city          City           @relation(fields: [cityId], references: [id])
-  municipalitys Municipality[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  Property      Property[]
+  id             String         @id @default(uuid())
+  code           String         @unique @map("codigo") @db.VarChar(32)
+  name           String         @unique @map("nombre") @db.VarChar(32)
+  cityId         String         @map("departamento_id")
+  city           City           @relation(fields: [cityId], references: [id])
+  municipalities Municipality[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  properties     Property[]
 
   @@map("provincia")
 }

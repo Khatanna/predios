@@ -101,7 +101,7 @@ async function main() {
         data: {
           name: province.name,
           city: { connect: { name: city.name } },
-          municipalitys: {
+          municipalities: {
             createMany: {
               data: province.municipalities.map((m: any) => ({ name: m.name })),
             },
@@ -196,6 +196,47 @@ async function main() {
         }
       },
       secondState: 'POL.',
+      state: {
+        connectOrCreate: {
+          where: {
+            name: 'Conflicto'
+          },
+          create: {
+            name: 'Conflicto',
+            order: 'Sin definir',
+            stage: {
+              connectOrCreate: {
+                where: {
+                  name: 'Campo'
+                },
+                create: {
+                  name: 'Campo'
+                }
+              }
+            }
+          },
+        }
+      },
+      responsibleUnit: {
+        connectOrCreate: {
+          where: {
+            name: 'Conflictos'
+          },
+          create: {
+            name: 'Conflictos'
+          }
+        }
+      },
+      subDirectory: {
+        connectOrCreate: {
+          where: {
+            name: 'Conflictos'
+          },
+          create: {
+            name: 'Conflictos'
+          }
+        }
+      }
     },
   })
 }

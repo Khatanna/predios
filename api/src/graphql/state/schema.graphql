@@ -1,0 +1,23 @@
+type State { 
+  id: ID!
+  name: String
+  order: String
+  properties: [Property]!
+  stage: Stage!
+  createdAt: String
+  updatedAt: String
+}
+
+type Query {
+  getAllStates: [State]!
+}
+
+type Mutation {
+  createState(input: CreateStateInput): State
+}
+
+input CreateStateInput {
+  name: String
+  order: String
+  stageId: String
+}

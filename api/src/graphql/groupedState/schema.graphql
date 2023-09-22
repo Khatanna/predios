@@ -1,0 +1,20 @@
+type GroupedState { 
+  id: ID!
+  name: String
+  properties: [Property]!
+  createdAt: String
+  updatedAt: String
+}
+
+type Query {
+  getAllGroupedStates: [GroupedState]!
+}
+
+type Mutation {
+  createGroupedState(input: CreateGroupedStateInput): GroupedState
+}
+
+input CreateGroupedStateInput { 
+  name: String
+}
+

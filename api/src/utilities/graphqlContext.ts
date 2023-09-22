@@ -4,10 +4,11 @@ import { AuthResponses } from "../constants";
 import { getUserWithAccessToken } from "./getUserWithAcessToken";
 import { isOperationAuthLess } from "./isOperationAuthLess";
 import { throwUnAuthenticateError } from "./throwUnAuthenticateError";
+import { PubSub } from 'graphql-subscriptions';
 import ip from "ip";
 
-const prisma = new PrismaClient();
-
+export const prisma = new PrismaClient();
+export const pubSub = new PubSub();
 const actions: Record<string, LevelPermission> = {
   findMany: 'READ',
   findUnique: 'READ',
@@ -51,10 +52,10 @@ export const graphqlContext = async ({
   const token = req.headers.authorization;
   const operation = req.headers.operation!;
   if (isOperationAuthLess(operation)) {
-    return { prisma };
+    return { prisma, pubSub };
   }
   if (token) {
-    const user = getUserWithAccessToken(token) as User;
+    const user = getUserWithAccessToken(token) as Pick<User, 'username' | 'status'>;
     if (!user) {
       throw throwUnAuthenticateError(AuthResponses.UNAUTHENTICATED);
     }
@@ -63,14 +64,14 @@ export const graphqlContext = async ({
       prisma: prisma.$extends({
         query: {
           $allModels: {
-            create: (options) => createRecord(options as typeof options, user.username),
+            create: (options) => createRecord(options, user.username),
             createMany: (options) => createRecord(options, user.username),
             update: (options) => createRecord(options, user.username),
             updateMany: (options) => createRecord(options, user.username),
             delete: (options) => createRecord(options, user.username),
             deleteMany: (options) => createRecord(options, user.username),
           },
-        },
+        }
       }),
       userContext: await prisma.user.findUnique({
         where: {
@@ -93,6 +94,7 @@ export const graphqlContext = async ({
           },
         },
       }),
+      pubSub
     };
   }
 

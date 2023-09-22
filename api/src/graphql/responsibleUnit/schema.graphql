@@ -1,0 +1,19 @@
+type ResponsibleUnit { 
+  id: ID! 
+  name: String
+  properties: [Property]!
+  createdAt: String
+  updatedAt: String
+}
+
+type Query {
+  getAllResponsibleUnits: [ResponsibleUnit]!
+}
+
+type Mutation {
+  createResponsibleUnit(input: CreateResponsibleUnitInput): ResponsibleUnit
+}
+
+input CreateResponsibleUnitInput {
+  name: String
+}

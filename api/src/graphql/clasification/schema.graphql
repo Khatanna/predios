@@ -1,0 +1,19 @@
+type Clasification { 
+  id: ID! 
+  name: String
+  properties: [Property]!
+  createdAt: String
+  updatedAt: String
+}
+
+type Query {
+  getAllClasifications: [Clasification]!
+}
+
+type Mutation {
+  createClasification(input: CreateClasificationinput): Clasification
+}
+
+input CreateClasificationinput {
+  name: String
+}

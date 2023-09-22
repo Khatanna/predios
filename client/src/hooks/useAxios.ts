@@ -12,12 +12,10 @@ export const useAxios = () => {
     accessToken,
     refreshToken,
     expirationAccessToken,
-    getNewAccessToken
+    getNewAccessToken,
   } = useAuth();
 
   useEffect(() => {
-    console.log("useAxios render")
-
     const request = instance.interceptors.request.use(
       (config) => {
         if (accessToken) {
@@ -57,7 +55,7 @@ export const useAxios = () => {
     accessToken,
     refreshToken,
     expirationAccessToken,
-    getNewAccessToken
+    getNewAccessToken,
   ]);
 
   return instance;

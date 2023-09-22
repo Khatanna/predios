@@ -132,7 +132,7 @@ export const createPermissionForUser = async (
     username: string;
     data: { resource: string; levels: string[] }[];
   }>,
-  { prisma, userContext }: Context,
+  { prisma, userContext, pubSub }: Context,
 ) => {
   try {
     hasPermission(userContext, "CREATE", "USER_PERMISSION");
@@ -161,7 +161,14 @@ export const createPermissionForUser = async (
       ),
     );
     const permissions = await prisma.$transaction(elements);
-
+    await pubSub.publish('USER_PERMISSION_STATUS_UPDATED', {
+      userPermissionStatusUpdated: data.flatMap(({ resource, levels }) =>
+        levels.map(level => ({
+          resource,
+          level
+        }))
+      ).reduce((acc: string[], { level, resource }) => [...acc, level.concat("_", resource)], [])
+    })
     return {
       created: true,
       permissions,
@@ -182,7 +189,7 @@ export const updateStateOfPermissionUserByUsername = async (
     username: string;
     data: { resource: Resource; level: LevelPermission; status: StatusDB };
   }>,
-  { prisma, userContext }: Context,
+  { prisma, userContext, pubSub }: Context,
 ) => {
   try {
     hasPermission(userContext, "UPDATE", "USER_PERMISSION");
@@ -204,7 +211,15 @@ export const updateStateOfPermissionUserByUsername = async (
       data: {
         status,
       },
+      include: {
+        permission: true,
+      }
     });
+
+    await pubSub.publish('USER_PERMISSION_STATUS_UPDATED', {
+      userPermissionStatusUpdated: [level.concat("_", resource)]
+    })
+
     return {
       updated: Boolean(updated),
       permission: updated,
@@ -219,13 +234,13 @@ export const deletePermissionOfUserByUsername = async (
   {
     input: {
       username,
-      data: { resource, level, status },
+      data: { resource, level },
     },
   }: GraphQLInput<{
     username: string;
-    data: { resource: Resource; level: LevelPermission; status: StatusDB };
+    data: { resource: Resource; level: LevelPermission };
   }>,
-  { prisma, userContext }: Context,
+  { prisma, userContext, pubSub }: Context,
 ) => {
   try {
     hasPermission(userContext, "DELETE", "USER_PERMISSION");
@@ -247,6 +262,9 @@ export const deletePermissionOfUserByUsername = async (
       },
     });
 
+    await pubSub.publish('USER_PERMISSION_STATUS_UPDATED', {
+      userPermissionStatusUpdated: [level.concat("_", resource)]
+    })
     return {
       deleted: Boolean(permission),
       permission,

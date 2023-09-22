@@ -1,13 +1,17 @@
-import { useCallback, useMemo } from "react";
-import { Spinner } from "react-bootstrap";
+import { useEffect, useMemo } from "react";
+import { Form, Spinner } from "react-bootstrap";
 import { ArrowDownShort } from "react-bootstrap-icons";
 import DataTable, {
   TableProps
 } from "react-data-table-component";
+import { createTableStore } from "../../state/useTableStore";
 
 const Table = <T extends NonNullable<unknown>>(
   props: TableProps<T> & { name: string; },
 ) => {
+  const tableStore = createTableStore({ dense: !!props.dense })
+  const dense = tableStore.getState().dense
+  const setDense = tableStore.getState().setDense
   const paginationComponentOptions = useMemo(() => {
     const showName = props.name[0].toUpperCase() + props.name.slice(1);
     return {
@@ -15,27 +19,32 @@ const Table = <T extends NonNullable<unknown>>(
       rangeSeparatorText: "de",
       selectAllRowsItem: true,
       selectAllRowsItemText: "Todos",
+
     };
   }, [props.name]);
 
-  const getOrderedColumns = useCallback(() => {
-    const data = localStorage.getItem(`columns@${props.name}`);
+  // const getOrderedColumns = useCallback(() => {
+  //   const data = localStorage.getItem(`columns@${props.name}`);
 
-    if (data) {
-      const columns: string[] = JSON.parse(data);
-      const rest = props.columns.filter((c) => !c.name);
-      return columns
-        .map((name) => props.columns.find((column) => column.name === name)!)
-        .concat(rest);
-    }
+  //   if (data) {
+  //     const columns: string[] = JSON.parse(data);
+  //     const rest = props.columns.filter((c) => !c.name);
+  //     return columns
+  //       .map((name) => props.columns.find((column) => column.name === name)!)
+  //       .concat(rest);
+  //   }
 
-    return props.columns;
-  }, [props.columns, props.name]);
+  //   return props.columns;
+  // }, [props.columns, props.name]);
+
+  useEffect(() => {
+    console.log("render table")
+  }, [])
 
   return (
     <DataTable
       {...props}
-      columns={getOrderedColumns()}
+      columns={props.columns.map(c => ({ ...c, sortable: true }))}
       striped
       pagination
       responsive
@@ -62,7 +71,21 @@ const Table = <T extends NonNullable<unknown>>(
         plural: "Elementos",
         singular: "Elementos",
       }}
-      title={`Lista de ${props.name}`}
+      dense={dense}
+      title={<div className="">
+        <div>
+          {`Lista de ${props.name}`}
+        </div>
+        <div className="fs-6 mt-2">
+          <Form.Check
+            type="switch"
+            id="dense-switch"
+            label="Comprimir"
+            checked={dense}
+            onChange={() => setDense(!dense)}
+          />
+        </div>
+      </div>}
     />
   );
 };

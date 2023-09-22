@@ -7,6 +7,7 @@ enum Level {
 }
 # Types
 type Permission {
+  id: ID!
   name: String!
   description: String!
   resource: String!
@@ -50,6 +51,7 @@ input CreatePermissionInput {
   name: String
   description: String
   resource: String!
+  status: String
   level: Level!
 }
 

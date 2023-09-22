@@ -5,6 +5,7 @@ type TokenResponse {
 
 type Mutation {
     login(username: String, password: String): TokenResponse
+    logout(username: String, token: String): Boolean
     getNewAccessToken(refreshToken: String): String
 }
 

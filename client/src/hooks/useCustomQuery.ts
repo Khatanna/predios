@@ -1,24 +1,27 @@
-import { useQuery, QueryKey } from "@tanstack/react-query";
-import { useStore } from 'zustand';
-import { GraphQLErrorResponse, GraphQLResponse } from "../types";
+import { QueryKey, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useContext } from "react";
-import { AxiosContext } from "../state/AxiosContext";
+import { AxiosContext } from "../context/AxiosContext";
+import { GraphQLErrorResponse, GraphQLResponse } from "../types";
 
-export const useCustomQuery = <D, V = unknown>(
+export const useCustomQuery = <D>(
   query: string,
   queryKey: QueryKey,
-  variables?: V
+  options?: {
+    onSuccess: (data: D) => void
+  }
 ) => {
-  const store = useContext(AxiosContext)
-  if (!store) throw new Error("Sin contexto");
-  const { axios } = useStore(store);
-  const { data, isLoading, error } = useQuery<GraphQLResponse<D>, AxiosError<GraphQLErrorResponse>>(queryKey, async () => {
+  const axios = useContext(AxiosContext)
+  if (!axios) throw new Error("Sin contexto");
+  const { data, isLoading, error, ...rest } = useQuery<GraphQLResponse<D>, AxiosError<GraphQLErrorResponse>>(queryKey, async (variables) => {
     const { data } = await axios.post<GraphQLResponse<D>>('/', {
       query,
-      variables
+      variables: variables.queryKey.length >= 2 ? variables.queryKey.at(-1) : null
     });
-    console.log(data)
+
+    if (options?.onSuccess) {
+      options.onSuccess(data.data);
+    }
     return data;
   }, {
     retry: 2,
@@ -28,6 +31,7 @@ export const useCustomQuery = <D, V = unknown>(
   return {
     data: data?.data,
     isLoading,
-    error: error?.response?.data.errors[0].message
+    error: error?.response?.data.errors[0].message,
+    ...rest
   }
 }

@@ -10,6 +10,5 @@ export * from "./throwLoginError";
 export * from "./throwPrismaError";
 export * from "./throwUnAuthenticateError";
 export * from "./throwUnauthorizedError";
-export * from "./updateRefreshToken";
 export * from "./verifyPassword";
 export * from "./verifyUsername";

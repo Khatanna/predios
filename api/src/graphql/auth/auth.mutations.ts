@@ -1,10 +1,8 @@
 import { verify } from "jsonwebtoken";
 import { AuthErrorMessage, LifeTimeToken } from "../../constants";
-import { Context } from "../../types";
+import { PrismaContext, PubSubContext } from "../../types";
 import {
-  handleJWTError,
   mapUserForToken,
-  updateRefreshToken,
   verifyPassword,
   verifyUsername,
 } from "../../utilities";
@@ -14,11 +12,11 @@ import { throwLoginError } from "../../utilities/throwLoginError";
 export const login = async (
   _parent: any,
   input: { username: string; password: string },
-  { prisma }: Context,
+  { prisma, pubSub }: PrismaContext & PubSubContext,
 ) => {
-  const { username, password } = input;
   try {
-    const user = await prisma.user.findUnique({
+    const { username, password } = input;
+    const user = await prisma.user.findUniqueOrThrow({
       where: {
         username,
       },
@@ -26,47 +24,83 @@ export const login = async (
         username: true,
         password: true,
         status: true,
+        connection: true
+      }
+    });
+    if (user.status === "DISABLE") {
+      throw throwLoginError(AuthErrorMessage.USER_DISABLE);
+    }
+
+    if (!verifyUsername(username, user.username)) {
+      throw throwLoginError(AuthErrorMessage.UNREGISTERED_USER);
+    }
+
+    if (!verifyPassword(password, user.password)) {
+      throw throwLoginError(AuthErrorMessage.INVALID_PASSWORD);
+    }
+    const userUpdated = await prisma.user.update({
+      where: {
+        username: user.username
+      },
+      data: {
+        connection: 'ONLINE'
+      }
+    })
+    const accessToken = generateToken(
+      mapUserForToken(userUpdated, ["password", 'status']),
+      process.env.ACCESS_TOKEN_SECRET!,
+      LifeTimeToken.day,
+    );
+    const refreshToken = generateToken(
+      mapUserForToken(userUpdated, ["password", 'status']),
+      process.env.REFRESH_TOKEN_SECRET!,
+      LifeTimeToken.week,
+    );
+
+    const { token } = await prisma.user.update({
+      where: {
+        username,
+      },
+      data: {
+        token: refreshToken,
       },
     });
 
-    if (user) {
-      if (user.status === "DISABLE") {
-        throw throwLoginError(AuthErrorMessage.USER_DISABLE);
-      }
-
-      if (!verifyUsername(username, user.username)) {
-        throw throwLoginError(AuthErrorMessage.UNREGISTERED_USER);
-      }
-
-      if (!verifyPassword(password, user.password)) {
-        throw throwLoginError(AuthErrorMessage.INVALID_PASSWORD);
-      }
-
-      const accessToken = generateToken(
-        mapUserForToken(user, ["password"]),
-        process.env.ACCESS_TOKEN_SECRET!,
-        LifeTimeToken.day,
-      );
-      const refreshToken = generateToken(
-        mapUserForToken(user, ["password"]),
-        process.env.REFRESH_TOKEN_SECRET!,
-        LifeTimeToken.week,
-      );
-
-      await updateRefreshToken(username, refreshToken, prisma);
-      return { accessToken, refreshToken };
-    }
-
-    throw throwLoginError(AuthErrorMessage.UNREGISTERED_USER);
+    await pubSub.publish('USER_CONNECTED', {
+      userConnected: true
+    })
+    return { accessToken, refreshToken: token };
+    // throw throwLoginError(AuthErrorMessage.UNREGISTERED_USER);
   } catch (e) {
     throw e;
   }
 };
 
+export const logout = async (_parent: any, { username, token }: { username: string; token: string }, { prisma, pubSub }: PrismaContext & PubSubContext) => {
+  try {
+    const user = await prisma.user.update({
+      where: {
+        username,
+        token
+      },
+      data: {
+        connection: 'OFFLINE',
+        token: undefined
+      }
+    })
+
+    pubSub.publish('USER_CONNECTED', {
+      userConnected: true
+    })
+    return Boolean(user);
+  } catch (e) {
+    throw e;
+  }
+}
 export const getNewAccessToken = async (
   _parent: any,
   { refreshToken }: { refreshToken: string },
-  { prisma }: Context,
+  { prisma }: PrismaContext,
 ) => {
   try {
     const user = await prisma.user.findFirstOrThrow({
@@ -75,6 +109,7 @@ export const getNewAccessToken = async (
       },
       select: {
         username: true,
+        connection: true,
       },
     });
 

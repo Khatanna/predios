@@ -3,7 +3,7 @@ import jwtDecode from "jwt-decode";
 import { create, StateCreator } from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { User } from "../pages/User/models/types";
+import { User } from "../pages/UserPage/models/types";
 import { UserAuthenticate } from "../types";
 
 interface State {
@@ -40,6 +40,7 @@ export const useAuthStore = create(
           state.accessToken = token;
           state.user = {
             username: tokenDecode.username,
+            connection: tokenDecode.connection
           };
 
           state.isAuth = true;

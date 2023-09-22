@@ -1,21 +1,19 @@
 import { AxiosError, AxiosRequestConfig } from "axios";
-import { useStore } from 'zustand'
-import { MutateOptions, UseMutateFunction, UseMutationResult, useMutation } from "@tanstack/react-query";
+import { MutationOptions, UseMutateFunction, UseMutationResult, useMutation } from "@tanstack/react-query";
 import { GraphQLErrorResponse, GraphQLResponse } from "../types";
 import { useContext } from "react";
-import { AxiosContext } from "../state/AxiosContext";
+import { AxiosContext } from "../context/AxiosContext";
 
 export const useCustomMutation = <D, V>(
   query: string,
-  handler?: MutateOptions<D, string, V>,
-  config?: AxiosRequestConfig
+  handler?: MutationOptions<D, string, V, unknown>,
+  config?: AxiosRequestConfig,
 ): [
     UseMutateFunction<GraphQLResponse<D>, AxiosError<GraphQLErrorResponse>, V>,
     UseMutationResult<GraphQLResponse<D>, AxiosError<GraphQLErrorResponse>, V>
   ] => {
-  const store = useContext(AxiosContext)
-  if (!store) throw new Error("Sin contexto en las peticiones POST");
-  const { axios } = useStore(store);
+  const axios = useContext(AxiosContext)
+  if (!axios) throw new Error("Sin contexto en las peticiones POST");
 
   const mutation = useMutation<GraphQLResponse<D>, AxiosError<GraphQLErrorResponse>, V>(
     async (variables) => {
@@ -25,20 +23,26 @@ export const useCustomMutation = <D, V>(
       }, config)
 
       return data;
-    }, {
-    onSuccess(data, variables, context) {
-      console.log(data)
-      if (handler && handler.onSuccess) {
-        handler.onSuccess(data.data, variables, context);
-      }
     },
-    onError(error, variables, context) {
-      console.log(error)
-      if (handler && handler.onError) {
-        handler.onError(error.response?.data.errors[0].message ?? error.message, variables, context)
-      }
-    }
-  })
+    {
+      onSuccess(data, variables, context) {
+        console.log(data)
+        if (handler && handler.onSuccess) {
+          handler.onSuccess(data.data, variables, context);
+        }
+      },
+      onError(error, variables, context) {
+        console.log(error)
+        if (handler && handler.onError) {
+          handler.onError(error.response?.data.errors[0].message ?? error.message, variables, context)
+        }
+      },
+      onMutate(variables) {
+        if (handler && handler.onMutate) {
+          handler.onMutate(variables)
+        }
+      },
+    })
 
   return [mutation.mutate, mutation]
 }

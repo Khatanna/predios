@@ -1,0 +1,7 @@
+type Subscription {
+  userPermissionStatusUpdated: [String]
+}
+
+type Subscription {
+  userConnected: Boolean
+}

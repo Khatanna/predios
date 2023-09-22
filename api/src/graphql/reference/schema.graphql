@@ -1,0 +1,19 @@
+type Reference { 
+  id: ID!
+  name: String
+  properties: [Property]!
+  createdAt: String
+  updatedAt: String
+}
+
+type Query {
+  getAllReferences: [Reference]!
+}
+
+type Mutation {
+  createReference(input: CreateReferenceInput): Reference
+}
+
+input CreateReferenceInput {
+  name: String
+}

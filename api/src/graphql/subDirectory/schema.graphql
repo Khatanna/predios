@@ -1,0 +1,19 @@
+type SubDirectory { 
+  id: ID!
+  name: String
+  properties: [Property]!
+  createdAt: String
+  updatedAt: String
+}
+
+type Query {
+  getAllSubDirectories: [SubDirectory]!
+}
+
+type Mutation {
+  createSubDirectory(input: CreateSubDirectoryInput): SubDirectory
+}
+
+input CreateSubDirectoryInput {
+  name: String
+}

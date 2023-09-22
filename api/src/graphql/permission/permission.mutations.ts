@@ -6,7 +6,7 @@ type Args = { input: Permission };
 
 export const createPermission = async (
   _parent: any,
-  { input: { name, description, resource, level, status } }: Args,
+  { input: { name, description, resource, level } }: Args,
   { prisma, userContext }: Context,
 ) => {
   try {
@@ -18,7 +18,6 @@ export const createPermission = async (
         description,
         resource,
         level,
-        status,
       },
     });
 

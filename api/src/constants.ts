@@ -34,6 +34,16 @@ export const PermissionErrorMessage = {
   UPDATE_USER_PERMISSION: 'No tiene permiso para modificar permisos de usuario',
   DELETE_USER_PERMISSION: 'No tiene permiso para eliminar permisos de usuario',
 
+  READ_ACTIVITY: "No tiene permiso para ver las actividades",
+  CREATE_ACTIVITY: "No tiene permiso para crear nuevas actividades",
+  UPDATE_ACTIVITY: 'No tiene permiso para modificar actividades',
+  DELETE_ACTIVITY: 'No tiene permiso para eliminar actividades',
+
+  READ_OBSERVATION: "No tiene permiso para ver las observaciones",
+  CREATE_OBSERVATION: "No tiene permiso para crear nuevas observaciones",
+  UPDATE_OBSERVATION: 'No tiene permiso para modificar observaciones',
+  DELETE_OBSERVATION: 'No tiene permiso para eliminar observaciones',
+
   DISABLE_GLOBAL: "El permiso ha sido deshabilitado por el administrador",
   DISABLE_FOR_YOU: "Es administrador ha deshabilitado su acceso a este permiso"
 } as const
