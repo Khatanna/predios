@@ -2,7 +2,7 @@ import React from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { ThreeDotsVertical } from 'react-bootstrap-icons';
 import { useCustomMutation } from '../../../../hooks';
-import { Permission } from '../../../PermissionsLayout/types';
+import { Permission } from '../../../PermissionPage/models/types';
 import { User } from '../../models/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { customSwalError } from '../../../../utilities/alerts';

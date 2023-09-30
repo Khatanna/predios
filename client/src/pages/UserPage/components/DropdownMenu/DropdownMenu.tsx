@@ -1,13 +1,12 @@
 import React from "react";
 import { Dropdown, Spinner } from "react-bootstrap";
-import { ThreeDotsVertical } from "react-bootstrap-icons";
-import { Link } from "react-router-dom";
+import { DropdownMenu as DropdownMenuComponent } from "../../../../components/DropdownMenu";
 import { User } from "../../models/types";
 import { useCustomMutation } from "../../../../hooks";
 import { customSwalError, customSwalSuccess } from "../../../../utilities/alerts";
 import Swal from "sweetalert2";
-import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useUsersStore } from "../../state/useUsersStore";
+import { Link } from "react-router-dom";
 
 export type DropdownMenuProps = {
   user: Omit<User, 'createdAt'>;
@@ -92,23 +91,20 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ user }) => {
   }
 
   return (
-    <Dropdown align={"end"}>
-      <Dropdown.Toggle as={ThreeDotsVertical} variant="link" role="button" />
-      <Dropdown.Menu>
-        <Dropdown.Item to={`../edit`} state={user} as={Link}>
-          ✏ Editar
-        </Dropdown.Item>
-        <Dropdown.Item to={`../permissions`} state={user} as={Link}>
-          📑 Permisos
-        </Dropdown.Item>
-        <Dropdown.Item onClick={handleStatusOfUser}>
-          {user.status === "ENABLE" ? "⛔ Deshabilitar" : "✔ Habilitar"}
-        </Dropdown.Item>
-        <Dropdown.Item onClick={handleDelete}>
-          🗑 Eliminar
-        </Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
+    <DropdownMenuComponent align={'end'}>
+      <Dropdown.Item to={`edit`} state={user} as={Link}>
+        ✏ Editar
+      </Dropdown.Item>
+      <Dropdown.Item to={`permissions`} state={user} as={Link}>
+        📑 Permisos
+      </Dropdown.Item>
+      <Dropdown.Item onClick={handleStatusOfUser}>
+        {user.status === "ENABLE" ? "⛔ Deshabilitar" : "✔ Habilitar"}
+      </Dropdown.Item>
+      <Dropdown.Item onClick={handleDelete}>
+        🗑 Eliminar
+      </Dropdown.Item>
+    </DropdownMenuComponent>
   );
 };
 

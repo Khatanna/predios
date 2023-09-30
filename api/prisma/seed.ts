@@ -16,7 +16,7 @@ const { cities }: { cities: City[] } = getData("locations");
 const { permissions }: { permissions: Permission[] } = getData("permissions");
 const { users }: { users: User[] } = getData("users");
 const { userTypes }: { userTypes: UserType[] } = getData("userTypes");
-const delay = 150;
+const delay = 5;
 console.log("initializing seed");
 async function main() {
   await prisma.userType.createMany({
@@ -67,7 +67,7 @@ async function main() {
     },
   });
 
-  for (const username of ["carlos.chambi", "hilda.valencia"]) {
+  for (const username of ["carlos.chambi"]) {
     for (const id of permissionsID) {
       await new Promise((resolve) => setTimeout(resolve, delay));
       console.log("permiso asignado a: " + username)

@@ -1,3 +1,62 @@
 {
-  "properties": []
+  "properties": [
+    {
+      "name": "Comunidad Sullcata",
+      "area": "8.9420",
+      "expertiseOfArea": "8.942",
+      "plots": 8,
+      "bodies": 5,
+      "sheets": 0,
+      "code": "500570",
+      "codeOfSearch": "DEP161",
+      "agrupationIdentifier": null,
+      "secondState": "POL.",
+      "polygone": null,
+      "observations": [
+        {
+          "type": "STANDARD",
+          "observation": "5 FOLDERS SOLO FLIP SIN FOLDER,CONFLICTO  DERECHO PROPIETARIO , SE ENCUENTRA EN   TRATAMIENTO CONCLUIDO  PARA SU PROSECUCION MEDIANTE PROCEDIMIENTO"
+        },
+        {
+          "type": "TECHNICAL",
+          "observation": "PARA PROCEDIMIENTO COMUN DE SANEAMIENTO, ACTUALMENTE EN SEGUIMIENTO POR LAS PARTES INTERESADAS"
+        }
+      ],
+      "beneficiaries": [
+        {
+          "name": "Roberto Torrez"
+        },
+        {
+          "name": "Yola Blanco"
+        },
+        {
+          "name": "Eleuterio Torrez Aguilar"
+        },
+        {
+          "name": "Maria Nemecia Mujica"
+        },
+        {
+          "name": "Julia Libertad Aguilar"
+        },
+        {
+          "name": "Flia. Saucedo Choque"
+        },
+        {
+          "name": "Graciela Mamani Callisaya"
+        },
+        {
+          "name": "Exalta Mamani"
+        }
+      ],
+      "activity": {
+        "name": "Agricola"
+      },
+      "clasification": {
+        "name": "Pequeña"
+      },
+      "state": {
+        "name": "Conflicto"
+      }
+    }
+  ]
 }

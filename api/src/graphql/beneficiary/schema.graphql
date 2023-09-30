@@ -7,7 +7,7 @@ type Beneficiary {
 }
 
 type Query {
-  getAllBeneficiaries: [Beneficiary]
+  getAllBeneficiaries(name: String): [Beneficiary]!
 }
 
 type BeneficiaryCreated {

@@ -6,3 +6,8 @@ type City {
 type Query {
   getAllCities: [City!]!
 }
+
+type Mutation {
+  createCity(name: String): City
+  updateCity(name: String, newName: String): City
+}

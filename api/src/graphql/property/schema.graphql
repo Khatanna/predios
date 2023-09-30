@@ -1,6 +1,7 @@
 # Types
 type Property {
   id: ID!
+  registryNumber: Int
   name: String!
   area: String
   expertiseOfArea: String
@@ -22,7 +23,8 @@ type Property {
   province: Province
   municipality: Municipality
   subDirectory: SubDirectory
-  users: [User]!
+  technical: User
+  legal: User
   type: Type
   responsibleUnit: ResponsibleUnit
   reference: Reference
@@ -39,6 +41,7 @@ type getPropertyWithCursor {
 type Query {
   getAllProperties: [Property]
   getProperty(nextCursor: String): getPropertyWithCursor
+  getPropertyById(id: String): Property
   # permissionsWithUsers: [PermissionWithUser!]!
 }
 

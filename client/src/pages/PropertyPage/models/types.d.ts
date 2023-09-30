@@ -11,8 +11,7 @@ import { ResponsibleUnit } from "../../ResponsibleUnitPage/models/types"
 import { State } from "../../StatePage/models/types"
 import { SubDirectory } from "../../SubDirectoryPage/models/types"
 import { Type } from "../../TypePage/models/types"
-import { User } from "../../User/models/types"
-// import { ResponsibleUnit } from "../../ResponsibleUnitPage/models/types"
+import { User } from "../../UserPage/models/types"
 
 export interface Property {
   id: string
@@ -28,8 +27,7 @@ export interface Property {
   secondState?: string
   polygone?: string
   observations: Observation[]
-  beneficiaries: Beneficiary[]
-  users: User[]
+  beneficiaries: Partial<Beneficiary>[]
   city?: City
   province?: Province
   municipality?: Municipality
@@ -41,7 +39,8 @@ export interface Property {
   type?: Type
   responsibleUnit?: ResponsibleUnit
   subDirectory?: SubDirectory
-
+  technical: User
+  legal: User
   createdAt: string
   updatedAt: string
 }

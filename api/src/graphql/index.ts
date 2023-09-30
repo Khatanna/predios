@@ -27,12 +27,13 @@ export const httpsServer = https.createServer(
 app.use(
   cors({
     origin: [
-      "https://172.18.0.202:4153",
+      "https://172.18.0.202:4173",
       "https://172.18.0.202:5173",
       "https://localhost:5173",
+      // "https://localhost:4173",
     ],
     credentials: true,
-    methods: ["POST"],
+    // methods: ["POST", "OPTION", "GET"],
   })
 )
 app.use(express.json())

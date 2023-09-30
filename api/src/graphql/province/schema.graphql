@@ -1,5 +1,11 @@
 type Province {
   name: String
   code: String
-  municipalitys: [Municipality]
+  municipalities: [Municipality]
+  createdAt: String
+  updatedAt: String
+}
+
+type Query {
+  getAllProvinces(city: String): [Province]!
 }

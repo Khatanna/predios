@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (!accessToken && refreshToken) {
-      getNewAccessToken()
+      getNewAccessToken({ refreshToken })
     }
   }, [accessToken, refreshToken, getNewAccessToken])
 

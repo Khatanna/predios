@@ -3,7 +3,7 @@ import { useCustomMutation } from '../../../hooks/useCustomMutation';
 import type { LoginResponse, FormLoginValues } from "../models/types";
 import { customSwalError } from '../../../utilities/alerts';
 
-const LOGIN_QUERY = `
+const LOGIN_MUTATION = `
 	mutation Login($username: String, $password: String)	{
 		auth: login(username: $username, password: $password) {
       accessToken
@@ -14,7 +14,7 @@ const LOGIN_QUERY = `
 
 export const useFetchLogin = () => {
   const { setRefreshToken, setAccessToken } = useAuth()
-  const [login, { isLoading }] = useCustomMutation<LoginResponse, FormLoginValues>(LOGIN_QUERY, {
+  const [login, { isLoading }] = useCustomMutation<LoginResponse, FormLoginValues>(LOGIN_MUTATION, {
     onSuccess({ auth: { accessToken, refreshToken } }) {
       setRefreshToken(refreshToken);
       setAccessToken(accessToken);

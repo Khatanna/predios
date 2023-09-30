@@ -1,19 +1,15 @@
-import { useEffect, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Form, Spinner } from "react-bootstrap";
 import { ArrowDownShort } from "react-bootstrap-icons";
 import DataTable, {
   TableProps
 } from "react-data-table-component";
-import { createTableStore } from "../../state/useTableStore";
 
 const Table = <T extends NonNullable<unknown>>(
-  props: TableProps<T> & { name: string; },
+  { name, ...props }: TableProps<T> & { name: string; },
 ) => {
-  const tableStore = createTableStore({ dense: !!props.dense })
-  const dense = tableStore.getState().dense
-  const setDense = tableStore.getState().setDense
   const paginationComponentOptions = useMemo(() => {
-    const showName = props.name[0].toUpperCase() + props.name.slice(1);
+    const showName = name[0].toUpperCase() + name.slice(1);
     return {
       rowsPerPageText: `${showName} por página`,
       rangeSeparatorText: "de",
@@ -21,7 +17,8 @@ const Table = <T extends NonNullable<unknown>>(
       selectAllRowsItemText: "Todos",
 
     };
-  }, [props.name]);
+  }, [name]);
+  const [dense, setDense] = useState(props.dense);
 
   // const getOrderedColumns = useCallback(() => {
   //   const data = localStorage.getItem(`columns@${props.name}`);
@@ -36,10 +33,6 @@ const Table = <T extends NonNullable<unknown>>(
 
   //   return props.columns;
   // }, [props.columns, props.name]);
-
-  useEffect(() => {
-    console.log("render table")
-  }, [])
 
   return (
     <DataTable
@@ -72,9 +65,9 @@ const Table = <T extends NonNullable<unknown>>(
         singular: "Elementos",
       }}
       dense={dense}
-      title={<div className="">
+      title={<div >
         <div>
-          {`Lista de ${props.name}`}
+          {`Lista de ${name}`}
         </div>
         <div className="fs-6 mt-2">
           <Form.Check

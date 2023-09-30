@@ -1,29 +1,41 @@
+import { Suspense, lazy } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import { Navbar } from "./components/Navbar";
 import { AxiosProvider } from "./context/AxiosContext";
-import { ActivityPage } from "./pages/ActivityPage";
-import { AdminPage } from "./pages/AdminPage";
-import { BeneficiaryPage } from "./pages/BeneficiaryPage";
-import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
-import { NotFoundPage } from "./pages/NotFoundPage";
-import { PermissionPage } from "./pages/PermissionPage";
 import { FormCreatePermission } from "./pages/PermissionPage/components/FormCreatePermission";
-import { PropertyPage } from "./pages/PropertyPage";
-import { RecordPage } from "./pages/RecordPage";
+import { Property } from "./pages/PropertyPage/components/Property";
 import { FormCreateUser } from "./pages/UserPage/components/FormCreateUser";
-import { Permission } from "./pages/UserPage/components/Permission";
-import { UserList } from "./pages/UserPage/components/UserList";
+import { PropertyList } from './pages/PropertyPage/components/PropertyList';
+import { LocalizationPage } from './pages/LocalizationPage';
+import { LocalizationList } from './pages/LocalizationPage/components/LocalizationList';
+import { CityPage } from './pages/CityPage';
+import { PropertyForm } from './pages/PropertyPage/components/PropertyForm';
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"))
+const Permission = lazy(() => import("./pages/UserPage/components/Permission/Permission"))
+const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
+const ActivityPage = lazy(() => import("./pages/ActivityPage/ActivityPage"));
+const BeneficiaryPage = lazy(() => import("./pages/BeneficiaryPage/BeneficiaryPage"));
+const PermissionPage = lazy(() => import('./pages/PermissionPage/PermissionPage'))
+const PropertyPage = lazy(() => import('./pages/PropertyPage/PropertyPage'))
+const RecordPage = lazy(() => import('./pages/RecordPage/RecordPage'))
+const UserList = lazy(() => import('./pages/UserPage/components/UserList/UserList'));
+const NavBar = lazy(() => import('./components/Navbar/Navbar'))
+
+const LazyComponent = ({ Component }: { Component: React.ComponentType<NonNullable<unknown>> }) => {
+  return <Suspense fallback={<div>Cargando modulo...</div>}>
+    <Component />
+  </Suspense>
+}
 
 function App() {
   return (
     <BrowserRouter >
       <AxiosProvider>
         <Routes>
-          <Route path="/" Component={Navbar}>
-            <Route index Component={HomePage} />
+          <Route path="/" element={<LazyComponent Component={NavBar} />}>
+            <Route index element={<LazyComponent Component={HomePage} />} />
             <Route path="/users">
-              <Route path="all" Component={UserList} />
+              <Route index element={<LazyComponent Component={UserList} />} />
               <Route path="create" Component={FormCreateUser} />
               <Route
                 path="edit"
@@ -33,14 +45,13 @@ function App() {
                   return <FormCreateUser user={state} />
                 }}
               />
-              <Route path="permissions" Component={Permission}>
-              </Route>
+              <Route path="permissions" element={<LazyComponent Component={Permission} />} />
             </Route>
             <Route path="/admin">
-              <Route index Component={AdminPage} />
-              <Route path="records" Component={RecordPage} />
+              {/* <Route index Component={AdminPage} /> */}
+              <Route path="records" element={<LazyComponent Component={RecordPage} />} />
               <Route path="permissions">
-                <Route path="all" Component={PermissionPage} />
+                <Route index element={<LazyComponent Component={PermissionPage} />} />
                 <Route path="create" Component={FormCreatePermission} />
                 <Route path="edit" Component={() => {
                   const { state } = useLocation()
@@ -48,16 +59,26 @@ function App() {
                   return <FormCreatePermission permission={state} />
                 }}></Route>
               </Route>
-              <Route path="properties" Component={PropertyPage} />
-              <Route path="activities" Component={ActivityPage} />
-              <Route path="beneficiaries" Component={BeneficiaryPage} />
+              <Route path="properties" element={<LazyComponent Component={PropertyPage} />} >
+                <Route index Component={PropertyList}></Route>
+                <Route path='create' Component={PropertyForm}></Route>
+                <Route path=':id' Component={Property}></Route>
+              </Route>
+              <Route path="activities" element={<LazyComponent Component={ActivityPage} />} />
+              <Route path="beneficiaries" element={<LazyComponent Component={BeneficiaryPage} />} />
+              <Route path='localizations' element={<LazyComponent Component={LocalizationPage} />}>
+                <Route index Component={LocalizationList}></Route>
+              </Route>
+              <Route path='cities' element={<LazyComponent Component={CityPage} />}></Route>
+              <Route path='provinces'></Route>
+              <Route path='municipalities'></Route>
             </Route>
           </Route>
           <Route path="/auth">
             <Route index Component={LoginPage} />
           </Route>
 
-          <Route path="*" Component={NotFoundPage}></Route>
+          <Route path="*" element={<LazyComponent Component={NotFoundPage} />}></Route>
         </Routes>
       </AxiosProvider >
     </BrowserRouter >

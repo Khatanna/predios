@@ -5,8 +5,7 @@ import { getUserWithAccessToken } from "./getUserWithAcessToken";
 import { isOperationAuthLess } from "./isOperationAuthLess";
 import { throwUnAuthenticateError } from "./throwUnAuthenticateError";
 import { PubSub } from 'graphql-subscriptions';
-import ip from "ip";
-
+import dns from 'dns';
 export const prisma = new PrismaClient();
 export const pubSub = new PubSub();
 const actions: Record<string, LevelPermission> = {
@@ -24,13 +23,13 @@ const actions: Record<string, LevelPermission> = {
   findUniqueOrThrow: 'READ',
 }
 
-const createRecord = async ({ model, args, operation, query }: any, username: string) => {
+const createRecord = async ({ model, args, operation, query }: any, username: string, ip?: string) => {
   const result = await query(args);
   if (model !== 'Record') {
     await prisma.record.create({
       data: {
         description: "Consulta simple",
-        ip: ip.address(),
+        ip: ip?.split(":").at(-1) ?? 'Sin definir',
         action: actions[operation],
         operation,
         resource: model === "UserPermission" ? "USER_PERMISSION" : model.toLocaleUpperCase() as Resource,
@@ -64,12 +63,12 @@ export const graphqlContext = async ({
       prisma: prisma.$extends({
         query: {
           $allModels: {
-            create: (options) => createRecord(options, user.username),
-            createMany: (options) => createRecord(options, user.username),
-            update: (options) => createRecord(options, user.username),
-            updateMany: (options) => createRecord(options, user.username),
-            delete: (options) => createRecord(options, user.username),
-            deleteMany: (options) => createRecord(options, user.username),
+            create: (options) => createRecord(options, user.username, req.socket.remoteAddress),
+            createMany: (options) => createRecord(options, user.username, req.socket.remoteAddress),
+            update: (options) => createRecord(options, user.username, req.socket.remoteAddress),
+            updateMany: (options) => createRecord(options, user.username, req.socket.remoteAddress),
+            delete: (options) => createRecord(options, user.username, req.socket.remoteAddress),
+            deleteMany: (options) => createRecord(options, user.username, req.socket.remoteAddress),
           },
         }
       }),

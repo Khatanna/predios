@@ -7,8 +7,7 @@ import JsonView from '@uiw/react-json-view';
 import { lightTheme } from '@uiw/react-json-view/light';
 import { Chip } from '../../components/Chip';
 import { levels, resources } from '../../utilities/constants';
-export type RecordPageProps = {
-}
+
 const columns: TableColumn<Record>[] = [
 	{
 		name: 'Nro',
@@ -68,7 +67,7 @@ query {
   }
 }
 `
-const RecordPage: React.FC<RecordPageProps> = ({ }) => {
+const RecordPage: React.FC = () => {
 	const { data, error, isLoading } = useCustomQuery<{ records: Record[] }>(GET_ALL_RECORDS_QUERY, ['getAllRecords'])
 
 	if (isLoading) {
@@ -86,16 +85,17 @@ const RecordPage: React.FC<RecordPageProps> = ({ }) => {
 		name='historial'
 		columns={columns}
 		data={data?.records ?? []}
-	// expandOnRowClicked
-	// expandableRowsComponent={(props) => {
-	// 	return <div className='container'>
-	// 		<div className='row'>
-	// 			<div className='col-12'>
-	// 				<JsonView value={JSON.parse(props.data.result)} collapsed style={lightTheme} />
-	// 			</div>
-	// 		</div>
-	// 	</div>
-	// }}
+		expandOnRowClicked
+		expandableRows
+		expandableRowsComponent={(props) => {
+			return <div className='container'>
+				<div className='row'>
+					<div className='col-12'>
+						<JsonView value={JSON.parse(props.data.result)} collapsed style={lightTheme} />
+					</div>
+				</div>
+			</div>
+		}}
 	/>
 };
 

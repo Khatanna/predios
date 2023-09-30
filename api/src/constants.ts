@@ -44,6 +44,11 @@ export const PermissionErrorMessage = {
   UPDATE_OBSERVATION: 'No tiene permiso para modificar observaciones',
   DELETE_OBSERVATION: 'No tiene permiso para eliminar observaciones',
 
+  READ_TYPE: "No tiene permiso para ver a los tipos de predio",
+  CREATE_TYPE: "No tiene permiso para crear nuevos tipos de predio",
+  UPDATE_TYPE: 'No tiene permiso para modificar los tipos de predio',
+  DELETE_TYPE: 'No tiene permiso para eliminar tipos de predio',
+
   DISABLE_GLOBAL: "El permiso ha sido deshabilitado por el administrador",
   DISABLE_FOR_YOU: "Es administrador ha deshabilitado su acceso a este permiso"
 } as const

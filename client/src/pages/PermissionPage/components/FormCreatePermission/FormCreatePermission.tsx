@@ -2,10 +2,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useCreatePermission, useUpdatePermission } from "../../hooks";
 import { Permission } from "../../models/types";
-import { ArrowLeftCircle } from "react-bootstrap-icons";
-import { useNavigate } from "react-router";
 import { levels, resources } from "../../../../utilities/constants";
-// import { useAuthStore } from '../../../../state/useAuthStore';
 
 interface FormCreatePermissionProps {
   permission?: Pick<Permission, "name" | "description" | "resource" | "level" | 'status'>;
@@ -33,8 +30,6 @@ const status = [
 const FormCreatePermission: React.FC<FormCreatePermissionProps> = ({
   permission,
 }) => {
-  const navigate = useNavigate();
-
   const { register, handleSubmit } = useForm<FormFields>({
     defaultValues: {
       description: "",

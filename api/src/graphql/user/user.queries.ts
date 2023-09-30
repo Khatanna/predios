@@ -83,7 +83,7 @@ export const getAllUsers = async (
       },
       take: nextCursor ? numberOfResults : prevCursor ? numberOfResults * -1 : numberOfResults,
     });
-    console.log(users.map(u => u.username))
+    // console.log(users.map(u => u.username))
     const prevUserCursor = await prisma.user.findFirst({
       where: {
         NOT: {
@@ -227,6 +227,76 @@ export const getUser = async (_parent: any, { nextCursor, prevCursor }: { nextCu
       prevCursor: prevUserCursor ? prevUserCursor.id : null,
       user
     }
+  } catch (e) {
+    throw e;
+  }
+}
+
+export const getUsers = async (_parent: any, { type, filterText }: { type: string, filterText: string }, { prisma, userContext }: Context) => {
+  try {
+    console.log({ type, filterText })
+    hasPermission(userContext, 'READ', 'USER')
+    const filterTextParts = filterText && filterText.includes(" ") ? filterText.trim().split(" ") : []
+    const result = await prisma.user.findMany({
+      take: 10,
+      where: {
+        type: {
+          name: type,
+        },
+        OR: filterText ? [
+          {
+            names: {
+              contains: filterText.trim(),
+            },
+          },
+          {
+            firstLastName: {
+              contains: filterText.trim()
+            }
+          },
+          {
+            secondLastName: {
+              contains: filterText.trim()
+            }
+          },
+          {
+            username: {
+              contains: filterText.trim()
+            }
+          },
+          {
+            OR: filterTextParts.length === 2 ? [
+              {
+                names: {
+                  contains: filterTextParts[0]
+                },
+                firstLastName: {
+                  contains: filterTextParts[1]
+                }
+              }
+            ] : []
+          },
+          {
+            OR: filterTextParts.length === 3 ? [
+              {
+                names: {
+                  contains: filterTextParts[0]
+                },
+                firstLastName: {
+                  contains: filterTextParts[1]
+                },
+                secondLastName: {
+                  contains: filterTextParts[2]
+                }
+              }
+            ] : []
+          }
+        ] : undefined
+      }
+    })
+    console.log(result.map(u => u.username))
+
+    return result;
   } catch (e) {
     throw e;
   }

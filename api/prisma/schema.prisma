@@ -46,6 +46,7 @@ enum Resource {
 
   TYPE          @map("tipo")
   SUB_DIRECTORY @map("sub_carpeta")
+  RECORD        @map("historial")
 
   @@map("recurso")
 }
@@ -54,30 +55,52 @@ enum ObservationType {
   TECHNICAL @map("tecnico")
   LEGAL     @map("juridico")
   STANDARD  @map("estandar")
+  // GENERAL y quitamos STANDARD y LEGAL
 
   @@map("tipo_de_observación")
 }
 
 model User {
-  id             String           @id @default(uuid())
-  names          String?          @map("nombre") @db.VarChar(30)
-  firstLastName  String?          @map("apellido_paterno") @db.VarChar(50)
-  secondLastName String?          @map("apellido_materno") @db.VarChar(50)
-  username       String           @unique @map("nombre_de_usuario") @db.VarChar(20)
-  password       String           @map("contraseña") @db.MediumText
-  typeId         String           @map("tipo_id")
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  token          String?          @db.MediumText
+  id             String                @id @default(uuid())
+  names          String?               @map("nombre") @db.VarChar(30)
+  firstLastName  String?               @map("apellido_paterno") @db.VarChar(50)
+  secondLastName String?               @map("apellido_materno") @db.VarChar(50)
+  username       String                @unique @map("nombre_de_usuario") @db.VarChar(20)
+  password       String                @map("contraseña") @db.MediumText
+  typeId         String                @map("tipo_id")
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  token          String?               @db.MediumText
   permissions    UserPermission[]
-  type           UserType         @relation(fields: [typeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  status         Status           @default(ENABLE) @map("estado")
-  connection     StatusConnection @default(OFFLINE) @map("estado_de_conexion")
+  type           UserType              @relation(fields: [typeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  status         Status                @default(ENABLE) @map("estado")
+  connection     StatusConnection      @default(OFFLINE) @map("estado_de_conexion")
   records        Record[]
-  property       Property?        @relation(fields: [propertyId], references: [id])
-  propertyId     String?
+  technicians    TechnicalOnProperty[]
+  legal          LegalOnProperty[]
 
   @@map("usuario")
+}
+
+model TechnicalOnProperty {
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String   @unique @map("predio_id")
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   @map("tecnico_id")
+
+  @@unique([propertyId, userId])
+  @@map("tecnicos_por_predio")
+}
+
+model LegalOnProperty {
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String   @unique @map("predio_id")
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("juridico_id")
+
+  @@unique([propertyId, userId])
+  @@map("juridicos_por_predio")
 }
 
 model DeletedUser {
@@ -147,49 +170,59 @@ model UserType {
 }
 
 model Property {
-  id                   String        @id @default(uuid())
-  name                 String        @map("nombre") @db.MediumText
-  area                 String        @map("superficie")
-  expertiseOfArea      String        @map("superficie_de_pericia") // evaluar varias areas
-  plots                Int           @default(0) @map("parcelas")
-  bodies               Int           @default(0) @map("cuerpos")
-  sheets               Int           @default(0) @map("fojas")
-  code                 String?       @unique @default("Sin codigo definido") @map("codigo") @db.VarChar(128) // es nullable pero tambie es unico
-  codeOfSearch         String        @default("Sin codigo de busqueda definido") @map("codigo_de_busqueda") @db.VarChar(128)
-  agrupationIdentifier String        @default("Sin Id de agrupación definido") @map("id_de_agrupacion_social") @db.VarChar(64)
-  secondState          String        @default("Sin estado definido") @map("estado_2") @db.VarChar(128)
-  polygone             String        @map("poligono") @db.VarChar(32) // OJO
+  id                   String               @id @default(uuid())
+  registryNumber       Int                  @unique @default(autoincrement()) @map("numero_de_registro")
+  name                 String               @map("nombre") @db.MediumText
+  area                 String               @map("superficie")
+  expertiseOfArea      String               @map("superficie_de_pericia")
+  plots                Int                  @default(0) @map("parcelas")
+  bodies               Int                  @default(0) @map("cuerpos")
+  sheets               Int                  @default(0) @map("fojas")
+  code                 String?              @unique @default("Sin codigo definido") @map("codigo") @db.VarChar(128)
+  codeOfSearch         String               @default("Sin codigo de busqueda definido") @map("codigo_de_busqueda") @db.VarChar(128)
+  agrupationIdentifier String               @default("Sin Id de agrupación definido") @map("id_de_agrupacion_social") @db.VarChar(64)
+  secondState          String               @default("Sin estado definido") @map("estado_2") @db.VarChar(128)
+  polygone             String               @map("poligono") @db.VarChar(32) // OJO
   observations         Observation[]
   beneficiaries        Beneficiary[]
-  users                User[]
-
-  cityId         String       @unique() @map("departamento_id")
-  provinceId     String       @unique() @map("provincia_id")
-  municipalityId String       @unique() @map("municipio_id")
-  city           City         @relation(fields: [cityId], references: [id])
-  province       Province     @relation(fields: [provinceId], references: [id])
-  municipality   Municipality @relation(fields: [municipalityId], references: [id])
-  activity       Activity?    @relation(fields: [activityId], references: [id])
-  activityId     String?
-  type           Type?        @relation(fields: [typeId], references: [id])
-  typeId         String?
-
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-  clasification     Clasification?   @relation(fields: [clasificationId], references: [id])
-  clasificationId   String?
-  state             State?           @relation(fields: [stateId], references: [id])
-  stateId           String?
-  groupedState      GroupedState?    @relation(fields: [groupedStateId], references: [id])
-  groupedStateId    String?
-  reference         Reference?       @relation(fields: [referenceId], references: [id])
-  referenceId       String?
-  responsibleUnit   ResponsibleUnit? @relation(fields: [responsibleUnitId], references: [id])
-  responsibleUnitId String?
-  subDirectory      SubDirectory?    @relation(fields: [subDirectoryId], references: [id])
-  subDirectoryId    String?
+  cityId               String               @unique() @map("departamento_id")
+  provinceId           String               @unique() @map("provincia_id")
+  municipalityId       String               @unique() @map("municipio_id")
+  city                 City                 @relation(fields: [cityId], references: [id])
+  province             Province             @relation(fields: [provinceId], references: [id])
+  municipality         Municipality         @relation(fields: [municipalityId], references: [id])
+  activity             Activity?            @relation(fields: [activityId], references: [id])
+  activityId           String?              @map("actividad_id")
+  type                 Type?                @relation(fields: [typeId], references: [id], map: "tipo")
+  typeId               String?              @map("tipo_id")
+  createdAt            DateTime             @default(now()) @map("fecha_de_creación")
+  updatedAt            DateTime             @updatedAt @map("fecha_de_actualización")
+  clasification        Clasification?       @relation(fields: [clasificationId], references: [id])
+  clasificationId      String?              @map("clasificación_id")
+  state                State?               @relation(fields: [stateId], references: [id])
+  stateId              String?              @map("estado_id")
+  groupedState         GroupedState?        @relation(fields: [groupedStateId], references: [id])
+  groupedStateId       String?              @map("estado_agrupado_id")
+  reference            Reference?           @relation(fields: [referenceId], references: [id])
+  referenceId          String?              @map("referencia_id")
+  responsibleUnit      ResponsibleUnit?     @relation(fields: [responsibleUnitId], references: [id])
+  responsibleUnitId    String?              @map("unidad_resonsable_id")
+  subDirectory         SubDirectory?        @relation(fields: [subDirectoryId], references: [id])
+  subDirectoryId       String?              @map("sub_carpeta_id")
+  fileNumber           FileNumber?
+  technical            TechnicalOnProperty?
+  legal                LegalOnProperty?
 
   @@map("predio")
+}
+
+model FileNumber {
+  id         String   @id @default(uuid())
+  number     String   @unique
+  propertyId String   @unique
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  @@map("numero_de_expediente")
 }
 
 model Observation {
@@ -353,7 +386,7 @@ model Record {
   operation   String          @map("operacion")
   action      LevelPermission @map("tipo_de_action")
   resource    Resource        @map("recurso")
-  result      Json            @map("resultado")
+  result      String          @map("resultado") @db.LongText
   ip          String          @map("direccion_ip")
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt

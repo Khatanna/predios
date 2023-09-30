@@ -49,8 +49,7 @@ export const useUsersStore = create<State & Actions>()(middlewares((set) => ({
     })
     set({
       users: usersMap,
-      total,
-      currentCount: users.length
+      total
     })
   },
   getNextPage({ page, nextCursor }) {

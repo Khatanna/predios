@@ -23,8 +23,8 @@ export const useAuth = () => {
     reset();
   };
 
-  const { mutate: getNewAccessToken } = useMutation<AxiosResponse<{ accessToken: string }>, AxiosError<GraphQLErrorResponse>>({
-    async mutationFn() {
+  const { mutate: getNewAccessToken } = useMutation<AxiosResponse<{ accessToken: string }>, AxiosError<GraphQLErrorResponse>, { refreshToken: string }>({
+    async mutationFn({ refreshToken }) {
       return (await axios.post(
         baseURL,
         {

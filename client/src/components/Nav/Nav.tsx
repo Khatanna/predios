@@ -10,11 +10,11 @@ const routes: Route[] = [
     name: "Inicio",
   },
   {
-    path: "/users/all",
+    path: "/users",
     name: "Usuarios",
   },
   {
-    path: "/admin/permissions/all",
+    path: "/admin/permissions",
     name: "Permisos",
   },
   {
@@ -48,19 +48,23 @@ const routes: Route[] = [
     ]
   },
   {
-    path: '/admin/localizations',
+    path: '/admin',
     name: 'Ubicaciones',
     children: [
       {
-        path: '/admin/localizations/cities',
+        path: '/admin/localizations',
+        name: 'Ver todos',
+      },
+      {
+        path: '/admin/cities',
         name: 'Departamentos'
       },
       {
-        path: '/admin/localizations/provinces',
+        path: '/admin/provinces',
         name: 'Provincias'
       },
       {
-        path: '/admin/localizations/municipalities',
+        path: '/admin/municipalities',
         name: 'Municipios'
       }
     ]

@@ -166,17 +166,33 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
     }
   };
 
-  const submit = (data: UserForForm) => {
+  const submit = ({ firstLastName, names, password, secondLastName, status, typeId, username }: UserForForm) => {
     if (user) {
       updateUser({
         input: {
           username: user.username,
-          data,
+          data: {
+            username,
+            firstLastName,
+            secondLastName,
+            names,
+            password,
+            typeId,
+            status,
+          }
         },
       });
     } else {
       createUser({
-        input: data,
+        input: {
+          username,
+          firstLastName,
+          secondLastName,
+          names,
+          password,
+          typeId,
+          status,
+        },
       });
     }
     reset();

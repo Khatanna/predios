@@ -126,12 +126,12 @@ const UserList: React.FC = () => {
 
   return (
     <Table
-      name="usuarios"
+      name='usuarios'
       columns={columns}
       selectableRows
       data={Object.values(users)}
       progressPending={isLoading}
-      onRowDoubleClicked={(row) => navigate("../permissions", { state: row })}
+      onRowDoubleClicked={(row) => navigate("permissions", { state: row })}
       actions={
         <Icon placement="left" label="Crear un nuevo usuario">
           <Link to={"/users/create"}>
@@ -149,7 +149,7 @@ const UserList: React.FC = () => {
         persistSelectedOnPageChange: true,
         persistSelectedOnSort: true,
       }}
-      paginationPerPage={currentCount}
+      // paginationPerPage={currentCount}
       onChangeRowsPerPage={(numberOfResults) => {
         console.log(numberOfResults)
         changeRowsPerPage(numberOfResults)

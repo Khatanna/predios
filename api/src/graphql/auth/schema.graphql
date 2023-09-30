@@ -9,4 +9,3 @@ type Mutation {
     getNewAccessToken(refreshToken: String): String
 }
 
-# posibly not required mutation in this schema (?

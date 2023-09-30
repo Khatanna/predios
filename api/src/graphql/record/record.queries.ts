@@ -10,6 +10,7 @@ export const getAllRecords = async (
     // hasPermission(userContext, "READ", "RECORD");
     return prisma.record.findMany({
       include: { user: { include: { type: true, permissions: true } } },
+      orderBy: { createdAt: 'desc' }
     });
   } catch (e) {
     throw e;

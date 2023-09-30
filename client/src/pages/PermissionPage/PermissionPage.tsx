@@ -90,8 +90,8 @@ const PermissionsLayout: React.FC = () => {
 		progressPending={isLoading}
 		actions={
 			<Icon placement='left' label='Crear nuevos permisos' >
-				<Link to={'../create'}>
-					<FileEarmarkLock size={32} />
+				<Link to={'create'}>
+					<FileEarmarkLock size={30} />
 				</Link>
 			</Icon>
 		}

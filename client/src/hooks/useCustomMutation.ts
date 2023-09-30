@@ -18,7 +18,7 @@ export const useCustomMutation = <D, V>(
   const mutation = useMutation<GraphQLResponse<D>, AxiosError<GraphQLErrorResponse>, V>(
     async (variables) => {
       const { data } = await axios.post<GraphQLResponse<D>>('/', {
-        query,
+        query: query,
         variables
       }, config)
 

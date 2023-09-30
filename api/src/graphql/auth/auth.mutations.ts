@@ -44,20 +44,25 @@ export const login = async (
       },
       data: {
         connection: 'ONLINE'
+      },
+      select: {
+        username: true,
+        status: true,
+        connection: true
       }
     })
     const accessToken = generateToken(
-      mapUserForToken(userUpdated, ["password", 'status']),
+      userUpdated,
       process.env.ACCESS_TOKEN_SECRET!,
       LifeTimeToken.day,
     );
     const refreshToken = generateToken(
-      mapUserForToken(userUpdated, ["password", 'status']),
+      userUpdated,
       process.env.REFRESH_TOKEN_SECRET!,
       LifeTimeToken.week,
     );
 
-    const { token } = await prisma.user.update({
+    await prisma.user.update({
       where: {
         username,
       },
@@ -69,7 +74,7 @@ export const login = async (
     await pubSub.publish('USER_CONNECTED', {
       userConnected: true
     })
-    return { accessToken, refreshToken: token };
+    return { accessToken, refreshToken };
     // throw throwLoginError(AuthErrorMessage.UNREGISTERED_USER);
   } catch (e) {
     throw e;
@@ -103,7 +108,7 @@ export const getNewAccessToken = async (
   { prisma }: PrismaContext,
 ) => {
   try {
-    const user = await prisma.user.findFirstOrThrow({
+    const user = await prisma.user.findFirst({
       where: {
         token: refreshToken,
       },
@@ -113,10 +118,13 @@ export const getNewAccessToken = async (
       },
     });
 
+    if (!user) {
+      throw new Error('El token de sesión no ha sido encontrado vuelva a iniciar sesión')
+    }
     verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
 
     const accessToken = generateToken(
-      user!,
+      user,
       process.env.ACCESS_TOKEN_SECRET!,
       LifeTimeToken.day,
     );

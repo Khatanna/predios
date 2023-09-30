@@ -1,0 +1,8 @@
+type TechnicalOnProperty { 
+  property: Property
+  user: User
+}
+
+type Query {
+  getAllTecnicians: [TechnicalOnProperty]
+}

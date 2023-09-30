@@ -3,7 +3,7 @@ import { createClient } from "graphql-ws";
 import { useEffect } from "react";
 import { Col, Container, Dropdown, Navbar, Row } from "react-bootstrap";
 import { ArrowLeftShort, PersonCircle } from "react-bootstrap-icons";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useAuth, useCustomMutation } from "../../hooks";
 import { customSwalError, customSwalSuccess } from "../../utilities/alerts";
@@ -12,24 +12,15 @@ import { Nav } from "../Nav";
 import { StateCell } from "../StateCell";
 import { AuthProvider } from "../../context/AuthContext";
 
-const WS_QUERY = `
-    subscription Subscription {
-      userPermissionStatusUpdated
-    }
-  `
+// const WS_QUERY = `
+//     subscription Subscription {
+//       userPermissionStatusUpdated
+//     }
+//   `
 const WS_URL = import.meta.env.VITE_WS_URL as string;
 const client = createClient({
   url: WS_URL
 })
-
-// Remplazar con constante y con los nombre de las queries para que consoliden
-const map: Record<string, string> = {
-  READ_USER: 'getAllUsers',
-  CREATE_USER_PERMISSION: 'getAllUsers',
-  DELETE_USER_PERMISSION: 'getAllUsers',
-  READ_USER_PERMISSION: 'getPermissionByUsername',
-  READ_PERMISSION: 'getAllPermissions',
-}
 
 const LOGOUT = `
   mutation Logout($username: String, $token: String) {

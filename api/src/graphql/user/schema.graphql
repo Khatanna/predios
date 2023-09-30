@@ -53,6 +53,7 @@ type UsersPaginate {
 # Queries
 type Query {
   getAllUsers(nextCursor: String, prevCursor: String, numberOfResults: Int, filterText: String): UsersPaginate
+  getUsers(type: String, filterText: String): [User]!
   getUserById(id: ID): User
   getUserByUsername(username: String): User
   getUser(nextCursor: String, prevCursor: String): getUserPagination

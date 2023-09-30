@@ -62,6 +62,14 @@ import {
   typeDefs as userTypeTypeDefs,
 } from "./userType";
 import {
+  typeDefs as technicalOnPropertyTypeDefs,
+  resolvers as technicalOnPropertyResolvers
+} from './technicalOnProperty'
+import {
+  typeDefs as legalOnPropertyTypeDefs,
+  resolvers as legalOnPropertyResolvers
+} from './legalOnProperty'
+import {
   resolvers as subscriptionsResolvers,
   typeDefs as subscriptionsTypeDefs
 } from './subscriptions'
@@ -88,7 +96,9 @@ export const schema = makeExecutableSchema({
     referenceTypeDefs,
     responsibleUnitTypeDefs,
     subDirectoryTypeDefs,
-    subscriptionsTypeDefs
+    subscriptionsTypeDefs,
+    technicalOnPropertyTypeDefs,
+    legalOnPropertyTypeDefs
   ],
   resolvers: [
     permissionResolvers,
@@ -111,6 +121,8 @@ export const schema = makeExecutableSchema({
     referenceResolvers,
     responsibleUnitResolvers,
     subDirectoryResolvers,
-    subscriptionsResolvers
+    subscriptionsResolvers,
+    technicalOnPropertyResolvers,
+    legalOnPropertyResolvers
   ],
 });

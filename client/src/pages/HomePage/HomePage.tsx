@@ -67,15 +67,6 @@ const GET_PROPERTY_WITH_CURSOR = `
 				state {
 					name
 				}
-				users {
-					id
-					names
-					firstLastName
-					secondLastName
-					type {
-						name
-					}
-				}
 			}
 		}
 	}
