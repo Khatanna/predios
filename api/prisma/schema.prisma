@@ -218,11 +218,11 @@ model Property {
 
 model FileNumber {
   id         String   @id @default(uuid())
-  number     String   @unique
-  propertyId String   @unique
+  number     String   @unique @map("numero_de_expediente")
+  propertyId String   @unique @map("predio_id")
   property   Property @relation(fields: [propertyId], references: [id])
 
-  @@map("numero_de_expediente")
+  @@map("expediente")
 }
 
 model Observation {
