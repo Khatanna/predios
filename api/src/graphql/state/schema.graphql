@@ -13,10 +13,12 @@ type Query {
 }
 
 type Mutation {
-  createState(input: CreateStateInput): State
+  createState(input: StateInput): State
+  updateState(name: String, input: StateInput): State
+  deleteState(name: String): State
 }
 
-input CreateStateInput {
+input StateInput {
   name: String
   order: String
   stageId: String

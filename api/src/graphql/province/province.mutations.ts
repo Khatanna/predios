@@ -49,3 +49,22 @@ export const updateProvince = (
     throw e;
   }
 };
+export const deleteProvince = (
+  _parent: any,
+  {
+    name
+  }: { name: string },
+  { prisma, userContext }: Context,
+) => {
+  try {
+    hasPermission(userContext, "DELETE", "PROVINCE");
+
+    return prisma.province.delete({
+      where: {
+        name
+      }
+    });
+  } catch (e) {
+    throw e;
+  }
+};

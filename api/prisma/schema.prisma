@@ -30,23 +30,24 @@ enum LevelPermission {
 }
 
 enum Resource {
-  USER         @map("usuario")
-  PROPERTY     @map("predio")
-  BENEFICIARY  @map("beneficiario")
-  CITY         @map("departamento")
-  PROVINCE     @map("provincia")
-  MUNICIPALITY @map("municipio")
-
+  USER            @map("usuario")
+  PROPERTY        @map("predio")
+  BENEFICIARY     @map("beneficiario")
+  CITY            @map("departamento")
+  PROVINCE        @map("provincia")
+  MUNICIPALITY    @map("municipio")
   USER_PERMISSION @map("permiso_de_usuario")
   CLASIFICATION   @map("clasificación")
   ACTIVITY        @map("actividad")
+  STATE           @map("estado")
+  LEGAL           @map("juridico")
+  TECHNICAL       @map("tecnico")
   OBSERVATION     @map("observación")
   PERMISSION      @map("permiso")
   USERTYPE        @map("tipo_de_usuario")
-
-  TYPE          @map("tipo")
-  SUB_DIRECTORY @map("sub_carpeta")
-  RECORD        @map("historial")
+  TYPE            @map("tipo")
+  SUBDIRECTORY    @map("subcarpeta")
+  RECORD          @map("historial")
 
   @@map("recurso")
 }
@@ -357,7 +358,7 @@ model Province {
   code           String         @unique @map("codigo") @db.VarChar(32)
   name           String         @unique @map("nombre") @db.VarChar(32)
   cityId         String         @map("departamento_id")
-  city           City           @relation(fields: [cityId], references: [id])
+  city           City           @relation(fields: [cityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   municipalities Municipality[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
@@ -370,7 +371,7 @@ model Municipality {
   id         String     @id @default(uuid())
   name       String     @unique @map("nombre") @db.VarChar(32)
   provinceId String     @map("provincia_id")
-  province   Province   @relation(fields: [provinceId], references: [id])
+  province   Province   @relation(fields: [provinceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   Property   Property[]

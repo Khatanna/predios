@@ -30,3 +30,16 @@ export const updateCity = (_parent: any, { name, newName }: { name: string, newN
     throw e;
   }
 };
+export const deleteCity = (_parent: any, { name }: { name: string }, { prisma, userContext }: Context) => {
+  try {
+    hasPermission(userContext, 'DELETE', 'CITY')
+
+    return prisma.city.delete({
+      where: {
+        name
+      }
+    })
+  } catch (e) {
+    throw e;
+  }
+};

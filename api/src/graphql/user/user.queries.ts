@@ -294,7 +294,7 @@ export const getUsers = async (_parent: any, { type, filterText }: { type: strin
         ] : undefined
       }
     })
-    console.log(result.map(u => u.username))
+    // console.log(result.map(u => u.username))
 
     return result;
   } catch (e) {

@@ -3,7 +3,7 @@ import { createClient } from "graphql-ws";
 import { useEffect } from "react";
 import { Col, Container, Dropdown, Navbar, Row } from "react-bootstrap";
 import { ArrowLeftShort, PersonCircle } from "react-bootstrap-icons";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useAuth, useCustomMutation } from "../../hooks";
 import { customSwalError, customSwalSuccess } from "../../utilities/alerts";
@@ -30,7 +30,8 @@ const LOGOUT = `
 const NavbarComponent: React.FC = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { logout, user, refreshToken } = useAuth();
+  const { logout, user, refreshToken, isAuth } = useAuth();
+
   const [logoutOfBackend] = useCustomMutation<{ logout: boolean }, { username: string, token: string }>(LOGOUT, {
     onSuccess({ logout }) {
       if (logout) {
@@ -101,9 +102,13 @@ const NavbarComponent: React.FC = () => {
     }
   }, [queryClient])
 
+  if (!isAuth) {
+    return <Navigate to={"/auth"} />;
+  }
+
   return (
-    <AuthProvider>
-      <Navbar expand="sm" sticky="top" bg="body-tertiary">
+    <>
+      <Navbar expand="sm" sticky="top" bg="body-tertiary" className="shadow-sm">
         <Container fluid>
           <Navbar.Brand>
             <img
@@ -152,7 +157,7 @@ const NavbarComponent: React.FC = () => {
         </Row>
         <Outlet />
       </Container>
-    </AuthProvider>
+    </>
   );
 };
 

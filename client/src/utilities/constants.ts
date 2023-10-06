@@ -8,7 +8,9 @@ export const resources = {
   MUNICIPALITY: "Municipio",
   USER_PERMISSION: "Permisos de usuario",
   ACTIVITY: "Actividades de predio",
-  OBSERVATION: "Observaciones de predio",
+  OBSERVATION: "Observaciones",
+  SUBDIRECTORY: "Subcarpeta",
+  STATE: "Estado de predio"
 } as const;
 
 export const levels = {

@@ -1,13 +1,12 @@
 import { Container, Row } from 'react-bootstrap';
 import { Navigate } from 'react-router';
+import { useAuthStore } from '../../state/useAuthStore';
 import { LoginForm } from './components/LoginForm';
-import { useAuth } from '../../hooks';
 
 const LoginPage: React.FC = () => {
-	const { isAuth } = useAuth();
-
+	const { isAuth } = useAuthStore();
 	if (isAuth) {
-		return <Navigate to={"/"} />
+		return <Navigate to={"../"} />
 	}
 
 	return <Container fluid>

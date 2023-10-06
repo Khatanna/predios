@@ -215,6 +215,54 @@
       "level": "DELETE",
       "resource": "ACTIVITY",
       "description": "Permite eliminar actividades del sistema."
+    },
+    {
+      "name": "Lectura de los estados de predios",
+      "level": "READ",
+      "resource": "STATE",
+      "description": "Permite ver la información de los estados de predio."
+    },
+    {
+      "name": "Creación de estados de predios",
+      "level": "CREATE",
+      "resource": "STATE",
+      "description": "Permite crear estados de predio en el sistema."
+    },
+    {
+      "name": "Actualización de estados de predios",
+      "level": "UPDATE",
+      "resource": "STATE",
+      "description": "Permite modificar la información de los estados de predio existentes."
+    },
+    {
+      "name": "Eliminación de estados de predios",
+      "level": "DELETE",
+      "resource": "STATE",
+      "description": "Permite eliminar los estados de predio del sistema."
+    },
+    {
+      "name": "Lectura de las subcarpetas",
+      "level": "READ",
+      "resource": "SUBDIRECTORY",
+      "description": "Permite ver la información de las subcarpetas."
+    },
+    {
+      "name": "Creación de subcarpetas en el sistema",
+      "level": "CREATE",
+      "resource": "SUBDIRECTORY",
+      "description": "Permite crear nuevas subcarpetas en el sistema."
+    },
+    {
+      "name": "Actualización de subcarpetas",
+      "level": "UPDATE",
+      "resource": "SUBDIRECTORY",
+      "description": "Permite modificar la información de las subcarpetas existentes en el sistema."
+    },
+    {
+      "name": "Eliminación de subcarpetas",
+      "level": "DELETE",
+      "resource": "SUBDIRECTORY",
+      "description": "Permite eliminar las subcarpetas exsitentes del sistema."
     }
   ]
 }

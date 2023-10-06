@@ -11,9 +11,7 @@ type Query {
 }
 
 type Mutation {
-  createSubDirectory(input: CreateSubDirectoryInput): SubDirectory
-}
-
-input CreateSubDirectoryInput {
-  name: String
+  createSubdirectory(name: String): SubDirectory
+  updateSubdirectory(currentName: String, newName: String): SubDirectory
+  deleteSubdirectory(name: String): SubDirectory
 }

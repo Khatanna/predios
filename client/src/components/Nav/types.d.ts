@@ -1,5 +1,6 @@
 export type Route = {
-  path: string
-  name: string,
-  children?: Route[]
+  path: string;
+  name: string;
+  icon?: React.ReacNode;
+  children?: Route[];
 }

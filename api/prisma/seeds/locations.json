@@ -393,7 +393,23 @@
     },
     {
       "name": "Santa Cruz",
-      "provinces": []
+      "provinces": [
+        {
+          "name": "Chiquitos",
+          "municipalities": [
+            {
+              "name": "San José de Chiquitos"
+            },
+            {
+              "name": "Pailón"
+            },
+            {
+              "name": "Roboré"
+            }
+          ],
+          "code": "8001"
+        }
+      ]
     }
   ]
 }
