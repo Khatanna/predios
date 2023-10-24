@@ -110,7 +110,6 @@ const UserList: React.FC = () => {
     getNextPage,
     getPreviousPage,
     changeRowsPerPage,
-    currentCount
   } = useUsersStore();
   const { isLoading, error, data } = useFetchUsers();
   const navigate = useNavigate();

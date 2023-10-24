@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { Table } from '../../components/Table';
 import { TableColumn } from 'react-data-table-component';
 import { useCustomQuery } from '../../hooks/useCustomQuery';
@@ -7,6 +7,7 @@ import JsonView from '@uiw/react-json-view';
 import { lightTheme } from '@uiw/react-json-view/light';
 import { Chip } from '../../components/Chip';
 import { levels, resources } from '../../utilities/constants';
+import { Form } from 'react-bootstrap';
 
 const columns: TableColumn<Record>[] = [
 	{
@@ -38,7 +39,7 @@ const columns: TableColumn<Record>[] = [
 	},
 	{
 		name: 'Acción',
-		cell: (row) => <Chip text={levels[row.action as keyof typeof levels]} background={row.action} key={crypto.randomUUID()} />
+		cell: (row) => <Chip text={levels[row.action as keyof typeof levels]} background={row.action} key={crypto.randomUUID()} outline />
 	},
 	{
 		name: 'Recurso',
@@ -51,8 +52,8 @@ const columns: TableColumn<Record>[] = [
 ]
 
 const GET_ALL_RECORDS_QUERY = `
-query {
-  records: getAllRecords {
+query GetAllRecords($resource: String){
+  records: getAllRecords(resource: $resource) {
     id
     operation
     resource
@@ -67,8 +68,23 @@ query {
   }
 }
 `
+
+const SubHeaderFilter: React.FC<{ resource: keyof typeof resources | undefined, onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void }> = ({ resource, onChange }) => {
+	return <>
+		<Form>
+			<Form.Select onChange={onChange}>
+				<option selected={!resource}>Todos</option>
+				{Object.entries(resources).map(([k, v]) => (
+					<option value={k} selected={resource === k}>{v}</option>
+				))}
+			</Form.Select>
+		</Form>
+	</>
+}
+
 const RecordPage: React.FC = () => {
-	const { data, error, isLoading } = useCustomQuery<{ records: Record[] }>(GET_ALL_RECORDS_QUERY, ['getAllRecords'])
+	const [resource, setResource] = useState<keyof typeof resources | undefined>();
+	const { data, error, isLoading } = useCustomQuery<{ records: Record[] }>(GET_ALL_RECORDS_QUERY, ['getAllRecords', { resource }])
 
 	if (isLoading) {
 		return <div>cargando...</div>
@@ -82,11 +98,16 @@ const RecordPage: React.FC = () => {
 	// 	{JSON.stringify(data?.records)}
 	// </div>;
 	return <Table
-		name='historial'
+		name={'historial'}
 		columns={columns}
 		data={data?.records ?? []}
 		expandOnRowClicked
 		expandableRows
+		subHeader
+		subHeaderComponent={<SubHeaderFilter resource={resource} onChange={(e) => {
+			const resource = e.target.value as keyof typeof resources
+			setResource(e.target.value === 'Todos' ? undefined : resource)
+		}} />}
 		expandableRowsComponent={(props) => {
 			return <div className='container'>
 				<div className='row'>

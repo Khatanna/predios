@@ -10,6 +10,14 @@ $dark: #01402e;
 @import "bootstrap/scss/bootstrap";
 
 $custom-chip-colors: (
+  ACTIVITY: $blue-500,
+  OBSERVATION: $green-500,
+  STATE: $orange-500,
+  SUBDIRECTORY: $teal-500,
+  RESPONSIBLEUNIT: $red-500,
+  TYPE: $yellow-500,
+  TRACKING: $teal-500,
+  CLASIFICATION: $pink-500,
   USER: $blue-700,
   PROVINCE: $green-700,
   PROPERTY: $teal-700,
@@ -17,15 +25,13 @@ $custom-chip-colors: (
   PERMISSION: $orange-700,
   CITY: $red-700,
   MUNICIPALITY: $pink-700,
-  USER_PERMISSION: $green-700,
-  ACTIVITY: $blue-500,
-  OBSERVATION: $green-500,
-  STATE: $orange-500,
-  SUBDIRECTORY: $teal-500,
+  USERPERMISSION: $green-700,
   READ: $blue,
   CREATE: $green,
   UPDATE: $orange,
   DELETE: $red,
+  GROUPEDSTATE: $blue-800,
+  REFERENCE: $red-800
 );
 
 @each $type,

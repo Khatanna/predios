@@ -6,11 +6,17 @@ export const resources = {
   CITY: "Departamento",
   PROVINCE: "Provincia",
   MUNICIPALITY: "Municipio",
-  USER_PERMISSION: "Permisos de usuario",
+  USERPERMISSION: "Permisos de usuario",
   ACTIVITY: "Actividades de predio",
   OBSERVATION: "Observaciones",
   SUBDIRECTORY: "Subcarpeta",
-  STATE: "Estado de predio"
+  STATE: "Estado de predio",
+  RESPONSIBLEUNIT: "Unidad responsable",
+  TYPE: "Tipo de predio",
+  CLASIFICATION: "Clasificación",
+  GROUPEDSTATE: "Estado agrupado",
+  REFERENCE: "Referencia",
+  TRACKING: "Seguimiento"
 } as const;
 
 export const levels = {

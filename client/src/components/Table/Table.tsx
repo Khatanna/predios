@@ -65,7 +65,7 @@ const Table = <T extends NonNullable<unknown>>(
         singular: "Elementos",
       }}
       dense={dense}
-      title={<div >
+      title={<div>
         <div>
           {`Lista de ${name}`}
         </div>

@@ -10,7 +10,7 @@ interface State {
   total: number;
   currentPage: number;
   numberOfResults: number;
-  filterText?: string;
+  filterText: string;
   usersDeleted: Record<string, User>;
   users: Record<string, User>
   currentCount: number,
@@ -34,7 +34,7 @@ const initialState: State = {
   usersDeleted: {},
   users: {},
   currentCount: 0,
-
+  filterText: ''
 }
 const middlewares = (
   f: StateCreator<State & Actions, [["zustand/immer", State & Actions]]>,

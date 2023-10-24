@@ -1,1 +1,0 @@
-export { default as ProvinceSelect } from './ProvinceSelect';

@@ -1,0 +1,1 @@
+export { default as TypeFormUpdate } from './TypeFormUpdate';

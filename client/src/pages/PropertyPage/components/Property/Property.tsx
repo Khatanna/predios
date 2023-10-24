@@ -8,6 +8,7 @@ const GET_PROPERTY_BY_ID_QUERY = `
 query GetPropertyById($id: String) {
 	property: getPropertyById(id: $id) {
 		name
+		registryNumber
 		code
 		codeOfSearch
 		plots
@@ -19,10 +20,20 @@ query GetPropertyById($id: String) {
 		secondState
 		agrupationIdentifier
 		technical {
-			names
+			user {
+				names
+				firstLastName
+				secondLastName
+				username
+			}
 		}
 		legal {
-			names
+		 	user {
+				names
+				firstLastName
+				secondLastName
+				username
+		 	}
 		}
 		groupedState {
 			name
@@ -33,17 +44,9 @@ query GetPropertyById($id: String) {
 		}
 		city {
 			name
-			provinces {
-				name
-				code
-			}
 		}
 		province {
 			name
-			code
-			municipalities {
-					name
-			}
 		}
 		municipality {
 			name
@@ -74,6 +77,21 @@ query GetPropertyById($id: String) {
 		state {
 			name
 		}
+		trackings {
+			observation
+			numberOfNote
+			dateOfInit
+			dateOfEnd
+			state {
+				name
+			}
+			responsible {
+				names
+				firstLastName
+				secondLastName
+				username
+			}
+		}
 	}
 }`
 
@@ -86,7 +104,6 @@ const Property: React.FC = () => {
 	}
 
 	return <>
-		{/* {JSON.stringify(data?.property.province)} */}
 		<PropertyForm property={data?.property} />
 	</>
 };

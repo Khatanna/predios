@@ -1,16 +1,13 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createClient } from "graphql-ws";
 import { useEffect } from "react";
-import { Col, Container, Dropdown, Navbar, Row } from "react-bootstrap";
-import { ArrowLeftShort, PersonCircle } from "react-bootstrap-icons";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { Col, Container, Navbar, Row } from "react-bootstrap";
+import { Navigate, Outlet } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { useAuth, useCustomMutation } from "../../hooks";
-import { customSwalError, customSwalSuccess } from "../../utilities/alerts";
-import { StatusConnection } from "../../utilities/constants";
+import { useAuth } from "../../hooks";
+import { Avatar } from "../Avatar";
+import { BackButton } from "../BackButton";
 import { Nav } from "../Nav";
-import { StateCell } from "../StateCell";
-import { AuthProvider } from "../../context/AuthContext";
 
 // const WS_QUERY = `
 //     subscription Subscription {
@@ -22,34 +19,11 @@ const client = createClient({
   url: WS_URL
 })
 
-const LOGOUT = `
-  mutation Logout($username: String, $token: String) {
-    logout(username: $username, token: $token)
-  }
-`
 const NavbarComponent: React.FC = () => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const { logout, user, refreshToken, isAuth } = useAuth();
+  const { isAuth } = useAuth();
 
-  const [logoutOfBackend] = useCustomMutation<{ logout: boolean }, { username: string, token: string }>(LOGOUT, {
-    onSuccess({ logout }) {
-      if (logout) {
-        customSwalSuccess('Mensaje de sesión', 'Se ha cerrado la sesión correctamente')
-      }
-    },
-    onError(error) {
-      customSwalError("Ocurrio un error al intentar cerrar la sesión", error);
-    },
-  }, { headers: { operation: 'Logout' } })
-
-  const handleLogout = () => {
-    if (user && refreshToken) {
-      logoutOfBackend({ username: user.username, token: refreshToken })
-      queryClient.clear();
-      logout()
-    }
-  }
+  // Llevar a nivel context con su provider para manejar todo los socket y subscripciones
   useEffect(() => {
     client.on('connected', () => {
       console.log("conectados");
@@ -122,37 +96,14 @@ const NavbarComponent: React.FC = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse>
             <Nav />
-            <div className="mx-4 align-items-center d-flex flex-column ">
-              <div className="text-success fw-bold">{user?.username}</div>
-              <StateCell status={user?.connection} values={StatusConnection} />
-            </div>
-            <Dropdown align={"end"} role="button">
-              <Dropdown.Toggle
-                as={PersonCircle}
-                fontSize={32}
-              />
-              <Dropdown.Menu>
-                <Dropdown.Item
-                  onClick={handleLogout}
-                >
-                  🔐 Cerrar sesión
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+            <Avatar />
           </Navbar.Collapse>
         </Container>
       </Navbar>
       <Container as={"main"} fluid>
         <Row>
           <Col xs={1}>
-            <div className="d-flex align-items-center text-primary" onClick={() => navigate(-1)} role="button">
-              <ArrowLeftShort
-                size={"28"}
-                title="Volver"
-              >
-              </ArrowLeftShort>
-              Volver
-            </div>
+            <BackButton />
           </Col>
         </Row>
         <Outlet />
