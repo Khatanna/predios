@@ -5,11 +5,15 @@ type City {
 
 type Query {
   getAllCities: [City!]!
-  # getCity(city: String): City
+  getCity(name: String): City
 }
 
 type Mutation {
   createCity(name: String): City
-  updateCity(name: String, newName: String): City
+  updateCity(name: String, item: CityInput): City
   deleteCity(name: String): City
+}
+
+input CityInput {
+  name: String
 }

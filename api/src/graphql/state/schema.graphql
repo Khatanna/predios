@@ -10,6 +10,7 @@ type State {
 
 type Query {
   getAllStates: [State]!
+  getState(name: String): State
 }
 
 type Mutation {
@@ -21,5 +22,5 @@ type Mutation {
 input StateInput {
   name: String
   order: String
-  stageId: String
+  stageName: String
 }

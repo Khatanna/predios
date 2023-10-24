@@ -51,25 +51,25 @@
     {
       "name": "Lectura de los permisos de usuario",
       "level": "READ",
-      "resource": "USER_PERMISSION",
+      "resource": "USERPERMISSION",
       "description": "Permite ver la información de los municipios."
     },
     {
       "name": "Creación de permisos de usuario",
       "level": "CREATE",
-      "resource": "USER_PERMISSION",
+      "resource": "USERPERMISSION",
       "description": "Permite crear nuevos permisos de usuario en el sistema."
     },
     {
       "name": "Actualización de permisos de usuario",
       "level": "UPDATE",
-      "resource": "USER_PERMISSION",
+      "resource": "USERPERMISSION",
       "description": "Permite modificar la información de los permisos de usuario existentes."
     },
     {
       "name": "Eliminación de los permisos de usuario",
       "level": "DELETE",
-      "resource": "USER_PERMISSION",
+      "resource": "USERPERMISSION",
       "description": "Permite eliminar los permisos de usuario del sistema."
     },
     {
@@ -262,6 +262,150 @@
       "name": "Eliminación de subcarpetas",
       "level": "DELETE",
       "resource": "SUBDIRECTORY",
+      "description": "Permite eliminar las subcarpetas exsitentes del sistema."
+    },
+    {
+      "name": "Lectura de las subcarpetas",
+      "level": "READ",
+      "resource": "REFERENCE",
+      "description": "Permite ver la información de las subcarpetas."
+    },
+    {
+      "name": "Creación de subcarpetas en el sistema",
+      "level": "CREATE",
+      "resource": "REFERENCE",
+      "description": "Permite crear nuevas subcarpetas en el sistema."
+    },
+    {
+      "name": "Actualización de subcarpetas",
+      "level": "UPDATE",
+      "resource": "REFERENCE",
+      "description": "Permite modificar la información de las subcarpetas existentes en el sistema."
+    },
+    {
+      "name": "Eliminación de subcarpetas",
+      "level": "DELETE",
+      "resource": "REFERENCE",
+      "description": "Permite eliminar las subcarpetas exsitentes del sistema."
+    },
+    {
+      "name": "Lectura de las subcarpetas",
+      "level": "READ",
+      "resource": "CLASIFICATION",
+      "description": "Permite ver la información de las subcarpetas."
+    },
+    {
+      "name": "Creación de subcarpetas en el sistema",
+      "level": "CREATE",
+      "resource": "CLASIFICATION",
+      "description": "Permite crear nuevas subcarpetas en el sistema."
+    },
+    {
+      "name": "Actualización de subcarpetas",
+      "level": "UPDATE",
+      "resource": "CLASIFICATION",
+      "description": "Permite modificar la información de las subcarpetas existentes en el sistema."
+    },
+    {
+      "name": "Eliminación de subcarpetas",
+      "level": "DELETE",
+      "resource": "CLASIFICATION",
+      "description": "Permite eliminar las subcarpetas exsitentes del sistema."
+    },
+    {
+      "name": "Lectura de las subcarpetas",
+      "level": "READ",
+      "resource": "TYPE",
+      "description": "Permite ver la información de las subcarpetas."
+    },
+    {
+      "name": "Creación de subcarpetas en el sistema",
+      "level": "CREATE",
+      "resource": "TYPE",
+      "description": "Permite crear nuevas subcarpetas en el sistema."
+    },
+    {
+      "name": "Actualización de subcarpetas",
+      "level": "UPDATE",
+      "resource": "TYPE",
+      "description": "Permite modificar la información de las subcarpetas existentes en el sistema."
+    },
+    {
+      "name": "Eliminación de subcarpetas",
+      "level": "DELETE",
+      "resource": "TYPE",
+      "description": "Permite eliminar las subcarpetas exsitentes del sistema."
+    },
+    {
+      "name": "Lectura de las subcarpetas",
+      "level": "READ",
+      "resource": "GROUPEDSTATE",
+      "description": "Permite ver la información de las subcarpetas."
+    },
+    {
+      "name": "Creación de subcarpetas en el sistema",
+      "level": "CREATE",
+      "resource": "GROUPEDSTATE",
+      "description": "Permite crear nuevas subcarpetas en el sistema."
+    },
+    {
+      "name": "Actualización de subcarpetas",
+      "level": "UPDATE",
+      "resource": "GROUPEDSTATE",
+      "description": "Permite modificar la información de las subcarpetas existentes en el sistema."
+    },
+    {
+      "name": "Eliminación de subcarpetas",
+      "level": "DELETE",
+      "resource": "GROUPEDSTATE",
+      "description": "Permite eliminar las subcarpetas exsitentes del sistema."
+    },
+    {
+      "name": "Lectura de las subcarpetas",
+      "level": "READ",
+      "resource": "RESPONSIBLEUNIT",
+      "description": "Permite ver la información de las subcarpetas."
+    },
+    {
+      "name": "Creación de subcarpetas en el sistema",
+      "level": "CREATE",
+      "resource": "RESPONSIBLEUNIT",
+      "description": "Permite crear nuevas subcarpetas en el sistema."
+    },
+    {
+      "name": "Actualización de subcarpetas",
+      "level": "UPDATE",
+      "resource": "RESPONSIBLEUNIT",
+      "description": "Permite modificar la información de las subcarpetas existentes en el sistema."
+    },
+    {
+      "name": "Eliminación de subcarpetas",
+      "level": "DELETE",
+      "resource": "RESPONSIBLEUNIT",
+      "description": "Permite eliminar las subcarpetas exsitentes del sistema."
+    },
+    {
+      "name": "Lectura de las subcarpetas",
+      "level": "READ",
+      "resource": "RECORD",
+      "description": "Permite ver la información de las subcarpetas."
+    },
+    {
+      "name": "Creación de subcarpetas en el sistema",
+      "level": "CREATE",
+      "resource": "RECORD",
+      "description": "Permite crear nuevas subcarpetas en el sistema."
+    },
+    {
+      "name": "Actualización de subcarpetas",
+      "level": "UPDATE",
+      "resource": "RECORD",
+      "description": "Permite modificar la información de las subcarpetas existentes en el sistema."
+    },
+    {
+      "name": "Eliminación de subcarpetas",
+      "level": "DELETE",
+      "resource": "RECORD",
       "description": "Permite eliminar las subcarpetas exsitentes del sistema."
     }
   ]

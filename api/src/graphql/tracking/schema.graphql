@@ -1,0 +1,11 @@
+type Tracking { 
+  id: ID! 
+  codeOfProperty: String
+  property: Property
+  state: State     
+  dateOfInit: String
+  dateOfEnd: String
+  responsible: User
+  observation: String
+  numberOfNote: String
+}

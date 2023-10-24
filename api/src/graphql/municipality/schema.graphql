@@ -8,10 +8,15 @@ type Municipality {
 type Query {
   getAllMunicipalities: [Municipality]!
   getMunicipalities(province: String) : [Municipality]!
+  getMunicipality(name: String): Municipality
 }
 
 type Mutation {
   createMunicipality(name: String, provinceName: String): Municipality
-  updateMunicipality(currentName: String, newName: String): Municipality 
+  updateMunicipality(name: String, item: MunicipalityInput): Municipality 
   deleteMunicipality(name: String): Municipality
+}
+
+input MunicipalityInput {
+  name: String
 }

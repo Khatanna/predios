@@ -29,10 +29,15 @@ export const PermissionErrorMessage = {
   UPDATE_PERMISSION: 'No tiene permiso para modificar permisos',
   DELETE_PERMISSION: 'No tiene permiso para eliminar permisos',
 
-  READ_USER_PERMISSION: "No tiene permiso para ver los permisos de usuario",
-  CREATE_USER_PERMISSION: "No tiene permiso para crear nuevos permisos de usuario",
-  UPDATE_USER_PERMISSION: 'No tiene permiso para modificar permisos de usuario',
-  DELETE_USER_PERMISSION: 'No tiene permiso para eliminar permisos de usuario',
+  READ_USERPERMISSION: "No tiene permiso para ver los permisos de usuario",
+  CREATE_USERPERMISSION: "No tiene permiso para crear nuevos permisos de usuario",
+  UPDATE_USERPERMISSION: 'No tiene permiso para modificar permisos de usuario',
+  DELETE_USERPERMISSION: 'No tiene permiso para eliminar permisos de usuario',
+
+  READ_RESPONSIBLEUNIT: "No tiene permiso para ver las unidades responsables de sistema",
+  CREATE_RESPONSIBLEUNIT: "No tiene permiso para crear nuevas unidades responsables en el sistema",
+  UPDATE_RESPONSIBLEUNIT: 'No tiene permiso para modificar las unidades responsables del sistema',
+  DELETE_RESPONSIBLEUNIT: 'No tiene permiso para eliminar las unidades responsables del sistema',
 
   READ_ACTIVITY: "No tiene permiso para ver las actividades",
   CREATE_ACTIVITY: "No tiene permiso para crear nuevas actividades",
@@ -48,6 +53,26 @@ export const PermissionErrorMessage = {
   CREATE_TYPE: "No tiene permiso para crear nuevos tipos de predio",
   UPDATE_TYPE: 'No tiene permiso para modificar los tipos de predio',
   DELETE_TYPE: 'No tiene permiso para eliminar tipos de predio',
+
+  READ_CLASIFICATION: "No tiene permiso para ver a las clasificaciones de predio",
+  CREATE_CLASIFICATION: "No tiene permiso para crear nuevas clasificaciones de predio",
+  UPDATE_CLASIFICATION: 'No tiene permiso para modificar las clasificaciones de predio',
+  DELETE_CLASIFICATION: 'No tiene permiso para eliminar las clasificaciones de predio',
+
+  READ_GROUPEDSTATE: "No tiene permiso para ver a los estados agrupados del sistema",
+  CREATE_GROUPEDSTATE: "No tiene permiso para crear nuevos estados agrupados en el sistema",
+  UPDATE_GROUPEDSTATE: 'No tiene permiso para modificar los estados agrupados en el sistema',
+  DELETE_GROUPEDSTATE: 'No tiene permiso para eliminar los estados agrupados en el sistema',
+
+  READ_REFERENCE: "No tiene permiso para ver a las referencias del sistema",
+  CREATE_REFERENCE: "No tiene permiso para crear nuevas referencias en el sistema",
+  UPDATE_REFERENCE: 'No tiene permiso para modificar las referencias en el sistema',
+  DELETE_REFERENCE: 'No tiene permiso para eliminar las referencias en el sistema',
+
+  READ_RECORD: "No tiene permiso para ver el historial del sistema",
+  CREATE_RECORD: "No tiene permiso para crear nuevos registros en el historial",
+  UPDATE_RECORD: 'No tiene permiso para modificar los registros en el historial del sistema',
+  DELETE_RECORD: 'No tiene permiso para eliminar los registro en el historial del sistema',
 
   DISABLE_GLOBAL: "El permiso ha sido deshabilitado por el administrador",
   DISABLE_FOR_YOU: "Es administrador ha deshabilitado su acceso a este permiso"

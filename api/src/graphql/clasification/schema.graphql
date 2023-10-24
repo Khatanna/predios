@@ -8,12 +8,15 @@ type Clasification {
 
 type Query {
   getAllClasifications: [Clasification]!
+  getClasification(name: String): Clasification
 }
 
 type Mutation {
-  createClasification(input: CreateClasificationinput): Clasification
+  createClasification(name: String): Clasification
+  updateClasification(name: String, item: ClasificationInput): Clasification
+  deleteClasification(name: String): Clasification
 }
 
-input CreateClasificationinput {
+input ClasificationInput {
   name: String
 }

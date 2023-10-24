@@ -1,3 +1,4 @@
+import { Municipality } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
@@ -19,17 +20,15 @@ export const createMunicipality = (_parent: any, { name, provinceName }: { name:
     throw e;
   }
 }
-export const updateMunicipality = (_parent: any, { currentName, newName }: { currentName: string, newName: string }, { userContext, prisma }: Context) => {
+export const updateMunicipality = (_parent: any, { name, item }: { name: string, item: Municipality }, { userContext, prisma }: Context) => {
   try {
     hasPermission(userContext, 'UPDATE', 'MUNICIPALITY');
 
     return prisma.municipality.update({
       where: {
-        name: currentName
+        name
       },
-      data: {
-        name: newName
-      }
+      data: item
     });
   } catch (e) {
     throw e;

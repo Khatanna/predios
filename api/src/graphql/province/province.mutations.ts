@@ -1,9 +1,10 @@
+import { Province } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
 export const createProvince = (
   _parent: any,
-  { name, code, cityName }: { name: string; code: string; cityName: string },
+  { input: { name, code, cityName } }: { input: Province & { cityName: string } },
   { prisma, userContext }: Context,
 ) => {
   try {
@@ -27,10 +28,9 @@ export const createProvince = (
 export const updateProvince = (
   _parent: any,
   {
-    currentName,
-    newName,
-    code,
-  }: { currentName: string; newName: string; code: string },
+    name,
+    item
+  }: { name: string; item: Province },
   { prisma, userContext }: Context,
 ) => {
   try {
@@ -38,12 +38,9 @@ export const updateProvince = (
 
     return prisma.province.update({
       where: {
-        name: currentName,
+        name,
       },
-      data: {
-        name: newName,
-        code,
-      },
+      data: item
     });
   } catch (e) {
     throw e;

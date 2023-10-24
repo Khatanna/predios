@@ -170,7 +170,7 @@ export const getUserByUsername = async (
   { prisma, userContext }: Context,
 ) => {
   try {
-    hasPermission(userContext, "READ", "USER_PERMISSION");
+    hasPermission(userContext, "READ", "USERPERMISSION");
 
     return prisma.user.findUnique({
       where: { username },

@@ -1,3 +1,4 @@
+import { City } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
@@ -14,7 +15,7 @@ export const createCity = (_parent: any, { name }: { name: string }, { prisma, u
     throw e;
   }
 };
-export const updateCity = (_parent: any, { name, newName }: { name: string, newName: string }, { prisma, userContext }: Context) => {
+export const updateCity = (_parent: any, { name, item }: { name: string, item: City }, { prisma, userContext }: Context) => {
   try {
     hasPermission(userContext, 'CREATE', 'CITY')
 
@@ -22,9 +23,7 @@ export const updateCity = (_parent: any, { name, newName }: { name: string, newN
       where: {
         name
       },
-      data: {
-        name: newName
-      }
+      data: item
     })
   } catch (e) {
     throw e;

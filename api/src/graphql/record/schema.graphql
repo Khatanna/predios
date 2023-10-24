@@ -14,7 +14,7 @@ type Record {
 
 # Queries
 type Query {
-  getAllRecords: [Record!]
+  getAllRecords(resource: String): [Record!]
 }
 
 # Mutations

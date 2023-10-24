@@ -8,12 +8,15 @@ type ResponsibleUnit {
 
 type Query {
   getAllResponsibleUnits: [ResponsibleUnit]!
+  getResponsibleUnit(name: String): ResponsibleUnit 
 }
 
 type Mutation {
-  createResponsibleUnit(input: CreateResponsibleUnitInput): ResponsibleUnit
+  createResponsibleUnit(name: String): ResponsibleUnit
+  updateResponsibleUnit(name: String, item: ResponsibleUnitInput): ResponsibleUnit
+  deleteResponsibleUnit(name: String): ResponsibleUnit
 }
 
-input CreateResponsibleUnitInput {
+input ResponsibleUnitInput {
   name: String
 }

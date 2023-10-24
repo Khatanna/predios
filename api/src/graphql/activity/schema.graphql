@@ -8,12 +8,15 @@ type Activity {
 
 type Query {
   getAllActivities: [Activity]!
+  getActivity(name: String): Activity
 }
 
 type Mutation {
-  createActivity(input: CreateActivityInput): Activity
+  createActivity(name: String): Activity
+  updateActivity(name: String, item: ActivityInput): Activity
+  deleteActivity(name: String): Activity
 }
 
-input CreateActivityInput {
+input ActivityInput {
   name: String
 }

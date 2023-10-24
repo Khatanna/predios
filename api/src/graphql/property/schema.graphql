@@ -1,4 +1,9 @@
 # Types
+type UserToProperty {
+property: Property
+    user: User
+}
+
 type Property {
   id: ID!
   registryNumber: Int
@@ -23,11 +28,12 @@ type Property {
   province: Province
   municipality: Municipality
   subDirectory: SubDirectory
-  technical: User
-  legal: User
+  technical: UserToProperty
+  legal: UserToProperty
   type: Type
   responsibleUnit: ResponsibleUnit
   reference: Reference
+  trackings: [Tracking]
   createdAt: String
   updatedAt: String
 }
@@ -46,8 +52,47 @@ type Query {
 }
 
 # Mutations
-# type Mutation {
-# }
+type Mutation {
+  createProperty(input: PropertyInput): Property
+}
+
+input TrackingInput {
+  stateName: String,
+  numberOfNote: String,
+  observation: String,
+  responsibleUsername: String,
+  dateOfInit: String,
+  dateOfEnd: String
+}
 
 # Input Types
+input PropertyInput {
+  name: String!
+  area: String
+  expertiseOfArea: String
+  plots: Int
+  bodies: Int
+  sheets: Int
+  code: String
+  codeOfSearch: String
+  agrupationIdentifier: String
+  secondState: String
+  polygone: String
+  # observations: [Observation]!
+  # beneficiaries: [Beneficiary]!
+  activityName: String
+  clasificationName: String
+  stateName: String
+  groupedStateName: String
+  cityName: String
+  provinceName: String
+  municipalityName: String
+  subDirectoryName: String
+  technicalUsername: String
+  legalUsername: String
+  typeName: String
+  responsibleUnitName: String
+  referenceName: String
+  trackings: [TrackingInput]
+}
 

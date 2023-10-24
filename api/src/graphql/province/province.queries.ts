@@ -26,6 +26,9 @@ export const getProvinces = (_parent: any, args: { city: string }, { prisma, use
             name: args.city
           }
         },
+        orderBy: {
+          code: 'asc'
+        },
         include: {
           city: true,
           municipalities: true
@@ -34,6 +37,24 @@ export const getProvinces = (_parent: any, args: { city: string }, { prisma, use
     }
 
     return [];
+  } catch (e) {
+    throw e;
+  }
+};
+export const getProvince = (_parent: any, { name }: { name: string }, { prisma, userContext }: Context) => {
+  try {
+    hasPermission(userContext, 'READ', 'PROVINCE')
+
+    return prisma.province.findUniqueOrThrow({
+      where: {
+        name
+      },
+      include: {
+        city: true,
+        municipalities: true
+      },
+    })
+
   } catch (e) {
     throw e;
   }

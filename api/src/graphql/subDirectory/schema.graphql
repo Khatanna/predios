@@ -8,10 +8,15 @@ type SubDirectory {
 
 type Query {
   getAllSubDirectories: [SubDirectory]!
+  getSubdirectory(name: String): SubDirectory
 }
 
 type Mutation {
   createSubdirectory(name: String): SubDirectory
-  updateSubdirectory(currentName: String, newName: String): SubDirectory
+  updateSubdirectory(name: String, item: SubdirectoryInput): SubDirectory
   deleteSubdirectory(name: String): SubDirectory
+}
+
+input SubdirectoryInput {
+  name: String
 }

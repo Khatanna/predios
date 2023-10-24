@@ -1,3 +1,4 @@
+import { SubDirectory } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
@@ -15,17 +16,15 @@ export const createSubdirectory = (_parent: any, { name }: { name: string }, { u
   }
 };
 
-export const updateSubdirectory = (_parent: any, { currentName, newName }: { currentName: string, newName: string }, { userContext, prisma }: Context) => {
+export const updateSubdirectory = (_parent: any, { name, item }: { name: string, item: SubDirectory }, { userContext, prisma }: Context) => {
   try {
     hasPermission(userContext, 'UPDATE', 'SUBDIRECTORY')
 
     return prisma.subDirectory.update({
       where: {
-        name: currentName
+        name
       },
-      data: {
-        name: newName
-      }
+      data: item
     })
   } catch (e) {
     throw e;

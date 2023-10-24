@@ -7,12 +7,15 @@ type Type {
 
 type Query {
   getAllTypes: [Type]!
+  getType(name: String): Type
 }
 
 type Mutation {
-  createType(input: CreateTypeInput): Type 
+  createType(name: String): Type 
+  updateType(name: String, item: TypeInput): Type
+  deleteType(name: String): Type
 }
 
-input CreateTypeInput {
+input TypeInput {
   name: String
 }

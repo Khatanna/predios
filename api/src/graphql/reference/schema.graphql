@@ -8,12 +8,15 @@ type Reference {
 
 type Query {
   getAllReferences: [Reference]!
+  getReference(name: String): Reference
 }
 
 type Mutation {
-  createReference(input: CreateReferenceInput): Reference
+  createReference(name: String): Reference
+  updateReference(name: String, item: ReferenceInput): Reference
+  deleteReference(name: String): Reference
 }
 
-input CreateReferenceInput {
+input ReferenceInput {
   name: String
 }

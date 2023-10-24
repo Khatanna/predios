@@ -135,7 +135,7 @@ export const createPermissionForUser = async (
   { prisma, userContext, pubSub }: Context,
 ) => {
   try {
-    hasPermission(userContext, "CREATE", "USER_PERMISSION");
+    hasPermission(userContext, "CREATE", "USERPERMISSION");
     const elements = data.flatMap(({ resource, levels }) =>
       levels.map((level) =>
         prisma.userPermission.create({
@@ -192,7 +192,7 @@ export const updateStateOfPermissionUserByUsername = async (
   { prisma, userContext, pubSub }: Context,
 ) => {
   try {
-    hasPermission(userContext, "UPDATE", "USER_PERMISSION");
+    hasPermission(userContext, "UPDATE", "USERPERMISSION");
     const userPermission = await prisma.userPermission.findFirst({
       where: {
         user: {
@@ -243,7 +243,7 @@ export const deletePermissionOfUserByUsername = async (
   { prisma, userContext, pubSub }: Context,
 ) => {
   try {
-    hasPermission(userContext, "DELETE", "USER_PERMISSION");
+    hasPermission(userContext, "DELETE", "USERPERMISSION");
     const userPermission = await prisma.userPermission.findFirst({
       where: {
         user: {

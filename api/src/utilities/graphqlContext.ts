@@ -32,7 +32,7 @@ const createRecord = async ({ model, args, operation, query }: any, username: st
         ip: ip?.split(":").at(-1) ?? 'Sin definir',
         action: actions[operation],
         operation,
-        resource: model === "UserPermission" ? "USER_PERMISSION" : model.toLocaleUpperCase() as Resource,
+        resource: model.toLocaleUpperCase() as Resource,
         user: {
           connect: {
             username

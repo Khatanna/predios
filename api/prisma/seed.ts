@@ -41,7 +41,8 @@ async function main() {
         password,
         typeId,
       }),
-    )
+    ),
+    skipDuplicates: true
   });
 
   const permissionsID: string[] = []
@@ -64,7 +65,7 @@ async function main() {
           name: 'Pasante'
         }
       }
-    },
+    }
   });
 
   for (const username of ["carlos.chambi"]) {

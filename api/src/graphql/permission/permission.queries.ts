@@ -9,6 +9,11 @@ export const getAllPermissions = async (_parent: any,
     hasPermission(userContext, "READ", "PERMISSION")
     return prisma.permission.findMany({
       include: { users: true },
+      where: {
+        NOT: {
+          resource: 'RECORD'
+        }
+      }
     });
   } catch (e) {
     throw e;
@@ -20,7 +25,6 @@ export const getPermissionByName = async (_parent: any, { name }: { name: string
     hasPermission(userContext, "READ", "PERMISSION")
     return prisma.permission.findMany({
       where: { name },
-      select: { name: true }
     })
   } catch (e) {
     throw e;

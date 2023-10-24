@@ -33,3 +33,17 @@ export const getMunicipalities = (_parent: any, { province }: { province?: strin
     throw e;
   }
 };
+
+export const getMunicipality = (_parent: any, { name }: { name: string }, { prisma, userContext }: Context) => {
+  try {
+    hasPermission(userContext, 'READ', 'MUNICIPALITY')
+
+    return prisma.municipality.findUniqueOrThrow({
+      where: {
+        name
+      }
+    })
+  } catch (e) {
+    throw e;
+  }
+};

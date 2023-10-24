@@ -1,14 +1,24 @@
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createState = (_parent: any, { name, order, stageId }: { name: string, order: string, stageId: string }, { userContext, prisma }: Context) => {
+export const createState = (_parent: any, { input: { name, order, stageName } }: { input: { name: string, order: string, stageName: string } }, { userContext, prisma }: Context) => {
+  console.log({
+    name,
+    order,
+    stageName
+  })
+
   try {
     hasPermission(userContext, 'CREATE', 'STATE')
     return prisma.state.create({
       data: {
         name,
         order,
-        stageId
+        stage: {
+          connect: {
+            name: stageName
+          }
+        }
       }
     })
   } catch (e) {
@@ -16,14 +26,22 @@ export const createState = (_parent: any, { name, order, stageId }: { name: stri
   }
 };
 
-export const updateState = (_parent: any, { name, data }: { name: string, data: { name: string, order: string, stageId: string } }, { userContext, prisma }: Context) => {
+export const updateState = (_parent: any, { name, input }: { name: string, input: { name: string, order: string, stageName: string } }, { userContext, prisma }: Context) => {
   try {
     hasPermission(userContext, 'UPDATE', 'STATE')
     return prisma.state.update({
       where: {
         name
       },
-      data
+      data: {
+        name: input.name,
+        order: input.order,
+        stage: {
+          connect: {
+            name: input.stageName
+          }
+        }
+      }
     })
   } catch (e) {
     throw e;

@@ -651,19 +651,6 @@
       "rol": "usuario"
     },
     {
-      "id": "4b4f130c-25e6-4f71-81c4-24864fd7b69f",
-      "names": "Carlos",
-      "firstLastName": "Chambi",
-      "secondLastName": "Valencia",
-      "username": "khatanna",
-      "password": "$2a$10$nlu7Dj/f4QyJfX.XNn83ZunDamLRJ4hIuhQQ9zGuJNFunlc7YmuNq",
-      "typeId": "9e105740-7681-4550-bc17-3a08ffd89804",
-      "createdAt": "2023-08-22 18:33:54.905",
-      "updatedAt": "2023-09-01 16:05:17.252",
-      "estado": "habilitado",
-      "rol": "administrador"
-    },
-    {
       "id": "4c023d67-b27b-41fd-8849-fc87538966c8",
       "names": "ABRAHAM HERIBERTO",
       "firstLastName": "LUNA",

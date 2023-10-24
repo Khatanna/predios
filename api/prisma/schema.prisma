@@ -36,7 +36,7 @@ enum Resource {
   CITY            @map("departamento")
   PROVINCE        @map("provincia")
   MUNICIPALITY    @map("municipio")
-  USER_PERMISSION @map("permiso_de_usuario")
+  USERPERMISSION  @map("permiso_de_usuario")
   CLASIFICATION   @map("clasificación")
   ACTIVITY        @map("actividad")
   STATE           @map("estado")
@@ -48,6 +48,10 @@ enum Resource {
   TYPE            @map("tipo")
   SUBDIRECTORY    @map("subcarpeta")
   RECORD          @map("historial")
+  RESPONSIBLEUNIT @map("unidad_responsable")
+  GROUPEDSTATE    @map("estado_agrupado")
+  REFERENCE       @map("referencia")
+  TRACKING        @map("seguimiento")
 
   @@map("recurso")
 }
@@ -79,6 +83,7 @@ model User {
   records        Record[]
   technicians    TechnicalOnProperty[]
   legal          LegalOnProperty[]
+  trackings      Tracking[]
 
   @@map("usuario")
 }
@@ -186,9 +191,9 @@ model Property {
   polygone             String               @map("poligono") @db.VarChar(32) // OJO
   observations         Observation[]
   beneficiaries        Beneficiary[]
-  cityId               String               @unique() @map("departamento_id")
-  provinceId           String               @unique() @map("provincia_id")
-  municipalityId       String               @unique() @map("municipio_id")
+  cityId               String               @map("departamento_id")
+  provinceId           String               @map("provincia_id")
+  municipalityId       String               @map("municipio_id")
   city                 City                 @relation(fields: [cityId], references: [id])
   province             Province             @relation(fields: [provinceId], references: [id])
   municipality         Municipality         @relation(fields: [municipalityId], references: [id])
@@ -213,8 +218,25 @@ model Property {
   fileNumber           FileNumber?
   technical            TechnicalOnProperty?
   legal                LegalOnProperty?
+  trackings            Tracking[]
 
   @@map("predio")
+}
+
+model Tracking {
+  id          String   @id @default(uuid())
+  property_id String   @map("predio_id")
+  property    Property @relation(fields: [property_id], references: [id])
+
+  state_id   String    @map("estado_id")
+  state      State     @relation(fields: [state_id], references: [id])
+  dateOfInit DateTime  @map("fecha_de_inicio")
+  dateOfEnd  DateTime? @map("fecha_de_finalización")
+
+  user_id      String @map("usuario_id")
+  responsible  User   @relation(fields: [user_id], references: [id])
+  observation  String @map("observación")
+  numberOfNote String @map("numero_de_nota")
 }
 
 model FileNumber {
@@ -267,6 +289,7 @@ model State {
   updatedAt  DateTime   @updatedAt
   stage      Stage?     @relation(fields: [stageId], references: [id])
   stageId    String?
+  trackings  Tracking[]
 
   @@map("estado")
 }

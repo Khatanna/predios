@@ -7,7 +7,7 @@ export const getAllProperties = async (_parent: any,
   { prisma, userContext }: Context,) => {
   try {
     hasPermission(userContext, "READ", "PROPERTY")
-    return prisma.property.findMany({
+    const result = await prisma.property.findMany({
       include: {
         beneficiaries: {
           include: {
@@ -46,10 +46,10 @@ export const getAllProperties = async (_parent: any,
           }
         },
         municipality: true,
-        technical: true,
-        legal: true,
       },
     });
+
+    return result;
   } catch (e) {
     throw e;
   }
@@ -103,8 +103,16 @@ export const getProperty = async (_parent: any, { nextCursor }: { nextCursor?: s
           }
         },
         municipality: true,
-        technical: true,
-        legal: true
+        technical: {
+          include: {
+            user: true
+          }
+        },
+        legal: {
+          include: {
+            user: true
+          }
+        },
       },
     });
 
@@ -116,11 +124,11 @@ export const getProperty = async (_parent: any, { nextCursor }: { nextCursor?: s
     throw e;
   }
 }
-export const getPropertyById = (_parent: any, { id }: { id: string }, { prisma, userContext }: Context) => {
+export const getPropertyById = async (_parent: any, { id }: { id: string }, { prisma, userContext }: Context) => {
   try {
     hasPermission(userContext, 'READ', 'PROPERTY');
 
-    return prisma.property.findUnique({
+    const property = await prisma.property.findUniqueOrThrow({
       where: {
         id
       },
@@ -162,10 +170,25 @@ export const getPropertyById = (_parent: any, { id }: { id: string }, { prisma, 
           }
         },
         municipality: true,
-        technical: true,
-        legal: true
+        technical: {
+          include: {
+            user: true
+          }
+        },
+        legal: {
+          include: {
+            user: true
+          }
+        },
+        trackings: {
+          include: {
+            responsible: true,
+            state: true
+          }
+        }
       },
     });
+    return property
   } catch (e) {
     throw e;
   }

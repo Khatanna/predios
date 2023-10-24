@@ -9,10 +9,17 @@ type Province {
 type Query {
   getAllProvinces: [Province]!
   getProvinces(city: String): [Province]!
+  getProvince(name: String): Province
 }
 
 type Mutation {
-  createProvince(name: String, code: String, cityName: String): Province
-  updateProvince(currentName: String, newName: String, code: String): Province
+  createProvince(input: ProvinceInput): Province
+  updateProvince(name: String, item: ProvinceInput): Province
   deleteProvince(name: String): Province
+}
+
+input ProvinceInput {
+  name: String
+  code: String
+  cityName: String
 }

@@ -8,13 +8,16 @@ type GroupedState {
 
 type Query {
   getAllGroupedStates: [GroupedState]!
+  getGroupedState(name: String): GroupedState
 }
 
 type Mutation {
-  createGroupedState(input: CreateGroupedStateInput): GroupedState
+  createGroupedState(name: String): GroupedState
+  updateGroupedState(name: String, item: GroupedStateInput): GroupedState
+  deleteGroupedState(name: String): GroupedState
 }
 
-input CreateGroupedStateInput { 
+input GroupedStateInput { 
   name: String
 }
 
