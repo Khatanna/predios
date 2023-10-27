@@ -8,12 +8,15 @@ type Stage {
 
 type Query {
   getAllStages: [Stage]!
+  getStage(name: String): Stage
 }
 
 type Mutation {
-  createStage(input: CreateStageInput): Stage
+  createStage(input: StageInput): Stage
+  updateStage(name: String, item: StageInput): Stage
+  deleteStage(name: String): Stage
 }
 
-input CreateStageInput {
+input StageInput {
   name: String
 }

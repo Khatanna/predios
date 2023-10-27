@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { FormUpdateProps } from '../../models/types';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 import { Clasification } from '../../../ClasificationPage/models/types';
-import { clasificationRepository } from '../../hooks/useRepository';
+import { useClasificationMutations } from '../../hooks/useRepository';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 
 const GET_CLASIFICATION_BY_NAME_QUERY = `
@@ -14,13 +14,12 @@ const GET_CLASIFICATION_BY_NAME_QUERY = `
 	}
 `
 
-const { useMutations } = clasificationRepository;
 const ClasificationFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 	const { data } = useCustomQuery<{ clasification: Clasification }>(GET_CLASIFICATION_BY_NAME_QUERY, ['getClasificationByName', { name: params?.name }])
 	const { register, handleSubmit } = useForm<Clasification>({
 		values: data?.clasification
 	})
-	const { mutationUpdate } = useMutations<{ clasification: Clasification }>();
+	const { mutationUpdate } = useClasificationMutations<{ clasification: Clasification }>();
 
 	return <Form onSubmit={handleSubmit(data => {
 		if (params) {

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 import { FormUpdateProps } from '../../models/types';
 import { Reference } from '../../../ReferencePage/models/types';
-import { referenceRespository } from '../../hooks/useRepository';
+import { useReferenceMutations } from '../../hooks/useRepository';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 
 const GET_REFERENCE_BY_NAME_QUERY = `
@@ -13,14 +13,12 @@ const GET_REFERENCE_BY_NAME_QUERY = `
 		}
 	}
 `
-
-const { useMutations } = referenceRespository;
 const ReferenceFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 	const { data } = useCustomQuery<{ reference: Reference }>(GET_REFERENCE_BY_NAME_QUERY, ['getReferenceByName', { name: params?.name }])
 	const { register, handleSubmit } = useForm<Reference>({
 		values: data?.reference
 	})
-	const { mutationUpdate } = useMutations<{ reference: Reference }>();
+	const { mutationUpdate } = useReferenceMutations<{ reference: Reference }>();
 	return <Form onSubmit={handleSubmit(data => {
 		if (params) {
 			mutationUpdate({ name: params.name, item: data }, {

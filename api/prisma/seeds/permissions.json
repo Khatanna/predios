@@ -4,7 +4,7 @@
       "name": "Lectura de usuarios",
       "level": "READ",
       "resource": "USER",
-      "description": "Permite ver la información de los usuarios."
+      "description": "Permite ver la información de los usuarios del sistema."
     },
     {
       "name": "Creación de usuarios",
@@ -16,13 +16,13 @@
       "name": "Actualización de usuarios",
       "level": "UPDATE",
       "resource": "USER",
-      "description": "Permite modificar la información de los usuarios existentes."
+      "description": "Permite modificar la información de los usuarios existentes en el sistema."
     },
     {
       "name": "Eliminación de usuarios",
       "level": "DELETE",
       "resource": "USER",
-      "description": "Permite eliminar usuarios del sistema."
+      "description": "Permite eliminar a los usuarios existentes en el sistema."
     },
     {
       "name": "Lectura de permisos",
@@ -40,19 +40,19 @@
       "name": "Actualización de permisos",
       "level": "UPDATE",
       "resource": "PERMISSION",
-      "description": "Permite modificar la información de los permisos existentes."
+      "description": "Permite modificar la información de los permisos existentes en el sistema."
     },
     {
       "name": "Eliminación de permisos",
       "level": "DELETE",
       "resource": "PERMISSION",
-      "description": "Permite eliminar permisos del sistema."
+      "description": "Permite eliminar los permisos del sistema."
     },
     {
       "name": "Lectura de los permisos de usuario",
       "level": "READ",
       "resource": "USERPERMISSION",
-      "description": "Permite ver la información de los municipios."
+      "description": "Permite ver la información de los permisos de usuarios en el sistema."
     },
     {
       "name": "Creación de permisos de usuario",
@@ -64,7 +64,7 @@
       "name": "Actualización de permisos de usuario",
       "level": "UPDATE",
       "resource": "USERPERMISSION",
-      "description": "Permite modificar la información de los permisos de usuario existentes."
+      "description": "Permite modificar la información de los permisos de usuarios existentes en el sistema."
     },
     {
       "name": "Eliminación de los permisos de usuario",
@@ -76,7 +76,7 @@
       "name": "Lectura de predios",
       "level": "READ",
       "resource": "PROPERTY",
-      "description": "Permite ver la información de los predios."
+      "description": "Permite ver la información de los predios del sistema."
     },
     {
       "name": "Creación de predios",
@@ -88,7 +88,7 @@
       "name": "Actualización de predios",
       "level": "UPDATE",
       "resource": "PROPERTY",
-      "description": "Permite modificar la información de los predios existentes."
+      "description": "Permite modificar la información de los predios existentes en el sistema."
     },
     {
       "name": "Eliminación de predios",
@@ -100,7 +100,7 @@
       "name": "Lectura de beneficiarios",
       "level": "READ",
       "resource": "BENEFICIARY",
-      "description": "Permite ver la información de los beneficiarios."
+      "description": "Permite ver la información de los beneficiarios del sistema."
     },
     {
       "name": "Creación de beneficiarios",
@@ -112,7 +112,7 @@
       "name": "Actualización de beneficiarios",
       "level": "UPDATE",
       "resource": "BENEFICIARY",
-      "description": "Permite modificar la información de los beneficiarios existentes."
+      "description": "Permite modificar la información de los beneficiarios existentes en el sistema."
     },
     {
       "name": "Eliminación de beneficiarios",
@@ -124,7 +124,7 @@
       "name": "Lectura de los departamentos",
       "level": "READ",
       "resource": "CITY",
-      "description": "Permite ver la información de los departamentos."
+      "description": "Permite ver la información de los departamentos del sistema."
     },
     {
       "name": "Creación de departamentos",
@@ -136,7 +136,7 @@
       "name": "Actualización de departamentos",
       "level": "UPDATE",
       "resource": "CITY",
-      "description": "Permite modificar la información de los departamentos existentes."
+      "description": "Permite modificar la información de los departamentos existentes en el sistema."
     },
     {
       "name": "Eliminación de provincias",
@@ -148,7 +148,7 @@
       "name": "Lectura de las provincias",
       "level": "READ",
       "resource": "PROVINCE",
-      "description": "Permite ver la información de los provincias."
+      "description": "Permite ver la información de los provincias del sistema."
     },
     {
       "name": "Creación de provincias",
@@ -160,7 +160,7 @@
       "name": "Actualización de provincias",
       "level": "UPDATE",
       "resource": "PROVINCE",
-      "description": "Permite modificar la información de las provincias existentes."
+      "description": "Permite modificar la información de las provincias existentes en el sistema."
     },
     {
       "name": "Eliminación de provincias",
@@ -172,7 +172,7 @@
       "name": "Lectura de los municipios",
       "level": "READ",
       "resource": "MUNICIPALITY",
-      "description": "Permite ver la información de los municipios."
+      "description": "Permite ver la información de los municipios del sistema."
     },
     {
       "name": "Creación de municipios",
@@ -184,7 +184,7 @@
       "name": "Actualización de municipios",
       "level": "UPDATE",
       "resource": "MUNICIPALITY",
-      "description": "Permite modificar la información de las municipios existentes."
+      "description": "Permite modificar la información de las municipios existentes en el sistema."
     },
     {
       "name": "Eliminación de municipios",
@@ -196,19 +196,19 @@
       "name": "Lectura de las actividades",
       "level": "READ",
       "resource": "ACTIVITY",
-      "description": "Permite ver la información de las actividades."
+      "description": "Permite ver la información de las actividades del sistema."
     },
     {
       "name": "Creación de actividades",
       "level": "CREATE",
       "resource": "ACTIVITY",
-      "description": "Permite crear nuevas actividades en el sistema."
+      "description": "Permite crear nuevas actividades en el sistema en el sistema."
     },
     {
       "name": "Actualización de actividades",
       "level": "UPDATE",
       "resource": "ACTIVITY",
-      "description": "Permite modificar la información de las actividades existentes."
+      "description": "Permite modificar la información de las actividades existentes en el sistema."
     },
     {
       "name": "Eliminación de actividades",
@@ -220,19 +220,19 @@
       "name": "Lectura de los estados de predios",
       "level": "READ",
       "resource": "STATE",
-      "description": "Permite ver la información de los estados de predio."
+      "description": "Permite ver la información de los estados de predio del sistema."
     },
     {
       "name": "Creación de estados de predios",
       "level": "CREATE",
       "resource": "STATE",
-      "description": "Permite crear estados de predio en el sistema."
+      "description": "Permite crear nuevos estados de predio en el sistema."
     },
     {
       "name": "Actualización de estados de predios",
       "level": "UPDATE",
       "resource": "STATE",
-      "description": "Permite modificar la información de los estados de predio existentes."
+      "description": "Permite modificar la información de los estados de predio existentes en el sistema."
     },
     {
       "name": "Eliminación de estados de predios",
@@ -241,172 +241,226 @@
       "description": "Permite eliminar los estados de predio del sistema."
     },
     {
-      "name": "Lectura de las subcarpetas",
+      "name": "Lectura de las ubicaciónes de carpetas",
       "level": "READ",
-      "resource": "SUBDIRECTORY",
-      "description": "Permite ver la información de las subcarpetas."
+      "resource": "FOLDERLOCATION",
+      "description": "Permite ver la información de las ubicaciónes de carpetas del sistema."
     },
     {
-      "name": "Creación de subcarpetas en el sistema",
+      "name": "Creación de ubicaciónes de carpetas",
       "level": "CREATE",
-      "resource": "SUBDIRECTORY",
-      "description": "Permite crear nuevas subcarpetas en el sistema."
+      "resource": "FOLDERLOCATION",
+      "description": "Permite crear nuevas ubicaciónes de carpetas en el sistema."
     },
     {
-      "name": "Actualización de subcarpetas",
+      "name": "Actualización de ubicaciónes de carpetas",
       "level": "UPDATE",
-      "resource": "SUBDIRECTORY",
-      "description": "Permite modificar la información de las subcarpetas existentes en el sistema."
+      "resource": "FOLDERLOCATION",
+      "description": "Permite modificar la información de las ubicaciónes de carpetas existentes en el sistema."
     },
     {
-      "name": "Eliminación de subcarpetas",
+      "name": "Eliminación de ubicaciónes de carpetas",
       "level": "DELETE",
-      "resource": "SUBDIRECTORY",
-      "description": "Permite eliminar las subcarpetas exsitentes del sistema."
+      "resource": "FOLDERLOCATION",
+      "description": "Permite eliminar las ubicaciónes de carpetas del sistema."
     },
     {
-      "name": "Lectura de las subcarpetas",
+      "name": "Lectura de las referencias de predio",
       "level": "READ",
       "resource": "REFERENCE",
-      "description": "Permite ver la información de las subcarpetas."
+      "description": "Permite ver la información de las referencia de predio del sistema."
     },
     {
-      "name": "Creación de subcarpetas en el sistema",
+      "name": "Creación de referencias de predio",
       "level": "CREATE",
       "resource": "REFERENCE",
-      "description": "Permite crear nuevas subcarpetas en el sistema."
+      "description": "Permite crear nuevas referencias de predio en el sistema."
     },
     {
-      "name": "Actualización de subcarpetas",
+      "name": "Actualización de referencias de predio",
       "level": "UPDATE",
       "resource": "REFERENCE",
-      "description": "Permite modificar la información de las subcarpetas existentes en el sistema."
+      "description": "Permite modificar la información de las referencias de predio existentes en el sistema."
     },
     {
-      "name": "Eliminación de subcarpetas",
+      "name": "Eliminación de referencias de predio",
       "level": "DELETE",
       "resource": "REFERENCE",
-      "description": "Permite eliminar las subcarpetas exsitentes del sistema."
+      "description": "Permite eliminar las referencias de predio existentes del sistema."
     },
     {
-      "name": "Lectura de las subcarpetas",
+      "name": "Lectura de las clasificaciones de predio",
       "level": "READ",
       "resource": "CLASIFICATION",
-      "description": "Permite ver la información de las subcarpetas."
+      "description": "Permite ver la información de las clasificaciones de predio del sistema."
     },
     {
-      "name": "Creación de subcarpetas en el sistema",
+      "name": "Creación de clasificaciones de predio",
       "level": "CREATE",
       "resource": "CLASIFICATION",
-      "description": "Permite crear nuevas subcarpetas en el sistema."
+      "description": "Permite crear nuevas clasificaciones en el sistema."
     },
     {
-      "name": "Actualización de subcarpetas",
+      "name": "Actualización de clasificaciones de predio",
       "level": "UPDATE",
       "resource": "CLASIFICATION",
-      "description": "Permite modificar la información de las subcarpetas existentes en el sistema."
+      "description": "Permite modificar la información de las clasificaciones existentes en el sistema."
     },
     {
-      "name": "Eliminación de subcarpetas",
+      "name": "Eliminación de clasificaciones de predio",
       "level": "DELETE",
       "resource": "CLASIFICATION",
-      "description": "Permite eliminar las subcarpetas exsitentes del sistema."
+      "description": "Permite eliminar las clasificaciones exsitentes del sistema."
     },
     {
-      "name": "Lectura de las subcarpetas",
+      "name": "Lectura de los tipos de predio",
       "level": "READ",
       "resource": "TYPE",
-      "description": "Permite ver la información de las subcarpetas."
+      "description": "Permite ver la información de los tipos de predio del sistema."
     },
     {
-      "name": "Creación de subcarpetas en el sistema",
+      "name": "Creación de tipos de predio en el sistema",
       "level": "CREATE",
       "resource": "TYPE",
-      "description": "Permite crear nuevas subcarpetas en el sistema."
+      "description": "Permite crear nuevas tipos de predio en el sistema."
     },
     {
-      "name": "Actualización de subcarpetas",
+      "name": "Actualización de tipos de predio",
       "level": "UPDATE",
       "resource": "TYPE",
-      "description": "Permite modificar la información de las subcarpetas existentes en el sistema."
+      "description": "Permite modificar la información de los tipos de predio existentes en el sistema."
     },
     {
-      "name": "Eliminación de subcarpetas",
+      "name": "Eliminación de tipos de predio",
       "level": "DELETE",
       "resource": "TYPE",
-      "description": "Permite eliminar las subcarpetas exsitentes del sistema."
+      "description": "Permite eliminar los tipos de predio del sistema."
     },
     {
-      "name": "Lectura de las subcarpetas",
+      "name": "Lectura de las estado agrupado",
       "level": "READ",
       "resource": "GROUPEDSTATE",
-      "description": "Permite ver la información de las subcarpetas."
+      "description": "Permite ver la información de los estados agrupados del sistema."
     },
     {
-      "name": "Creación de subcarpetas en el sistema",
+      "name": "Creación de estado agrupado en el sistema",
       "level": "CREATE",
       "resource": "GROUPEDSTATE",
-      "description": "Permite crear nuevas subcarpetas en el sistema."
+      "description": "Permite crear nuevos estados agrupados en el sistema."
     },
     {
-      "name": "Actualización de subcarpetas",
+      "name": "Actualización de estado agrupado",
       "level": "UPDATE",
       "resource": "GROUPEDSTATE",
-      "description": "Permite modificar la información de las subcarpetas existentes en el sistema."
+      "description": "Permite modificar la información de los estados agrupados existentes en el sistema."
     },
     {
-      "name": "Eliminación de subcarpetas",
+      "name": "Eliminación de estado agrupado",
       "level": "DELETE",
       "resource": "GROUPEDSTATE",
-      "description": "Permite eliminar las subcarpetas exsitentes del sistema."
+      "description": "Permite eliminar los estados agrupados del sistema."
     },
     {
-      "name": "Lectura de las subcarpetas",
+      "name": "Lectura de las unidades",
       "level": "READ",
-      "resource": "RESPONSIBLEUNIT",
-      "description": "Permite ver la información de las subcarpetas."
+      "resource": "UNIT",
+      "description": "Permite ver la información de las unidades del sistema."
     },
     {
-      "name": "Creación de subcarpetas en el sistema",
+      "name": "Creación de unidades",
       "level": "CREATE",
-      "resource": "RESPONSIBLEUNIT",
-      "description": "Permite crear nuevas subcarpetas en el sistema."
+      "resource": "UNIT",
+      "description": "Permite crear nuevas unidades en el sistema."
     },
     {
-      "name": "Actualización de subcarpetas",
+      "name": "Actualización de unidades",
       "level": "UPDATE",
-      "resource": "RESPONSIBLEUNIT",
-      "description": "Permite modificar la información de las subcarpetas existentes en el sistema."
+      "resource": "UNIT",
+      "description": "Permite modificar la información de las unidades existentes en el sistema."
     },
     {
-      "name": "Eliminación de subcarpetas",
+      "name": "Eliminación de unidades",
       "level": "DELETE",
-      "resource": "RESPONSIBLEUNIT",
-      "description": "Permite eliminar las subcarpetas exsitentes del sistema."
+      "resource": "UNIT",
+      "description": "Permite eliminar las unidades del sistema."
     },
     {
-      "name": "Lectura de las subcarpetas",
+      "name": "Lectura del historial",
       "level": "READ",
       "resource": "RECORD",
-      "description": "Permite ver la información de las subcarpetas."
+      "description": "Permite ver los registros del historial."
     },
     {
-      "name": "Creación de subcarpetas en el sistema",
+      "name": "Lectura de las etapas de estado",
+      "level": "READ",
+      "resource": "STAGE",
+      "description": "Permite ver la información de las etapas de estado del sistema."
+    },
+    {
+      "name": "Creación de etapas de estado",
       "level": "CREATE",
-      "resource": "RECORD",
-      "description": "Permite crear nuevas subcarpetas en el sistema."
+      "resource": "STAGE",
+      "description": "Permite crear nuevas etapas de estado en el sistema."
     },
     {
-      "name": "Actualización de subcarpetas",
+      "name": "Actualización de etapas de estado",
       "level": "UPDATE",
-      "resource": "RECORD",
-      "description": "Permite modificar la información de las subcarpetas existentes en el sistema."
+      "resource": "STAGE",
+      "description": "Permite modificar la información de las etapas de estado existentes en el sistema."
     },
     {
-      "name": "Eliminación de subcarpetas",
+      "name": "Eliminación de etapas de estado",
       "level": "DELETE",
-      "resource": "RECORD",
-      "description": "Permite eliminar las subcarpetas exsitentes del sistema."
+      "resource": "STAGE",
+      "description": "Permite eliminar las etapas de estado existentes del sistema."
+    },
+    {
+      "name": "Lectura de los seguimientos por predio",
+      "level": "READ",
+      "resource": "TRACKING",
+      "description": "Permite ver la información de los seguimientos por predio del sistema."
+    },
+    {
+      "name": "Creación de seguimientos por predio",
+      "level": "CREATE",
+      "resource": "TRACKING",
+      "description": "Permite crear nuevas seguimientos por predio en el sistema."
+    },
+    {
+      "name": "Actualización de seguimientos por predio",
+      "level": "UPDATE",
+      "resource": "TRACKING",
+      "description": "Permite modificar la información de los seguimientos por predio existentes en el sistema."
+    },
+    {
+      "name": "Eliminación de seguimientos por predio",
+      "level": "DELETE",
+      "resource": "TRACKING",
+      "description": "Permite eliminar los seguimientos por predio del sistema."
+    },
+    {
+      "name": "Lectura de las observaciones de predio",
+      "level": "READ",
+      "resource": "OBSERVATION",
+      "description": "Permite ver la información de las observaciones de predio del sistema."
+    },
+    {
+      "name": "Creación de",
+      "level": "CREATE",
+      "resource": "OBSERVATION",
+      "description": "Permite crear nuevas observaciones de predio en el sistema."
+    },
+    {
+      "name": "Actualización de",
+      "level": "UPDATE",
+      "resource": "OBSERVATION",
+      "description": "Permite modificar la información de las observaciones de predio existentes en el sistema."
+    },
+    {
+      "name": "Eliminación de",
+      "level": "DELETE",
+      "resource": "OBSERVATION",
+      "description": "Permite eliminar las observaciones de predio existentes del sistema."
     }
   ]
 }

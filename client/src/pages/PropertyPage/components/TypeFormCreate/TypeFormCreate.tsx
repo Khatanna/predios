@@ -1,24 +1,22 @@
 import { Row, Col, Form, Button } from 'react-bootstrap'
 import { useForm } from 'react-hook-form';
-import { typeRepository } from '../../hooks/useRepository';
+import { useTypeMutations } from '../../hooks/useRepository';
 import { Type } from '../../../TypePage/models/types';
 import { FormCreateProps } from '../../models/types';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 
-
-const { useMutations } = typeRepository
 const TypeFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
 	const { register, handleSubmit } = useForm<Type>();
-	const { mutationCreate } = useMutations<{ type: Type }>();
+	const { mutationCreate } = useTypeMutations<{ type: Type }>();
 	return <Form onSubmit={handleSubmit(data => {
-		mutationCreate(data, {
+		mutationCreate({ input: data }, {
 			onSuccess({ data: { type: { name } } }) {
 				customSwalSuccess(
 					"Tipo de predio creado",
 					`El tipo de predio ${name} se ha creado correctamente`,
 				);
 			},
-			onError(error, { name }) {
+			onError(error, { input: { name } }) {
 				customSwalError(
 					error.response!.data.errors[0].message,
 					`Ocurrio un error al intentar crear el tipo de predio ${name}`,

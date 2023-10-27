@@ -8,6 +8,9 @@ import { useAuth } from "../../hooks";
 import { Avatar } from "../Avatar";
 import { BackButton } from "../BackButton";
 import { Nav } from "../Nav";
+import { SeekerProvider } from "../../context/SeekerContext";
+import { useSeeker } from "../../hooks/useSeeker";
+import { SeekerModal } from "../SeekerModal";
 
 // const WS_QUERY = `
 //     subscription Subscription {
@@ -22,8 +25,8 @@ const client = createClient({
 const NavbarComponent: React.FC = () => {
   const queryClient = useQueryClient();
   const { isAuth } = useAuth();
+  const { isModalOpen } = useSeeker();
 
-  // Llevar a nivel context con su provider para manejar todo los socket y subscripciones
   useEffect(() => {
     client.on('connected', () => {
       console.log("conectados");
@@ -101,6 +104,7 @@ const NavbarComponent: React.FC = () => {
         </Container>
       </Navbar>
       <Container as={"main"} fluid>
+        {isModalOpen && <SeekerModal />}
         <Row>
           <Col xs={1}>
             <BackButton />

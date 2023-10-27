@@ -1,8 +1,8 @@
 
 import { readFileSync } from "fs";
 import { join } from "path";
-import * as Mutation from "./subDirectory.mutations";
-import * as Query from "./subDirectory.queries";
+import * as Mutation from "./folderLocation.mutations";
+import * as Query from "./folderLocation.queries";
 
 export const resolvers = {
   Query,

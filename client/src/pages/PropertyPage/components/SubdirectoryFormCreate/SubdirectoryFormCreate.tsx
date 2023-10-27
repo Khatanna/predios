@@ -2,19 +2,18 @@ import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { FormCreateProps } from '../../models/types';
 import { SubDirectory } from '../../../SubDirectoryPage/models/types';
-import { subdirectoryRepository } from '../../hooks/useRepository';
+import { useSubdirectoryMutations } from '../../hooks/useRepository';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 
-const { useMutations } = subdirectoryRepository;
 const SubdirectoryFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
 	const { register, handleSubmit } = useForm<SubDirectory>();
-	const { mutationCreate } = useMutations<{ subdirectory: SubDirectory }>();
+	const { mutationCreate } = useSubdirectoryMutations<{ subdirectory: SubDirectory }, Pick<SubDirectory, 'name'>>();
 	return <Form onSubmit={handleSubmit(data => {
-		mutationCreate(data, {
+		mutationCreate({ input: data }, {
 			onSuccess({ data: { subdirectory: { name } } }) {
 				customSwalSuccess("Subcarpeta creada correctamente", `La subcarpeta ${name} ha sido creada correctamente`);
 			},
-			onError(error, { name }) {
+			onError(error, { input: { name } }) {
 				customSwalError(
 					error.response!.data.errors[0].message,
 					`Ocurrio un error al intentar crear la subcarpeta ${name}`)
@@ -40,6 +39,6 @@ const SubdirectoryFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
 				</Button>
 			</Col>
 		</Row>
-	</Form>
+	</Form >
 }
 export default SubdirectoryFormCreate;

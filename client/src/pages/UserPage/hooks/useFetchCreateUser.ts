@@ -1,6 +1,7 @@
 import { useCustomMutation } from "../../../hooks";
 import { customSwalError, customSwalSuccess } from "../../../utilities/alerts";
-import { CreateUserResponse, UserForForm } from "../models/types";
+import { mutationMessages } from "../../../utilities/constants";
+import { User } from "../models/types";
 
 const CREATE_USER_MUTATION = ` 
   mutation CreateUser($input: CreateUserInput) {
@@ -11,16 +12,12 @@ const CREATE_USER_MUTATION = `
 `
 
 export const useFetchCreateUser = () => {
-  const [createUser] = useCustomMutation<CreateUserResponse, { input: UserForForm }>(CREATE_USER_MUTATION, {
-    onSuccess({ result }) {
-      if (result.created) {
-        customSwalSuccess("Usuario creado", "El usuario ha sido creado correctamente");
-      } else {
-        console.log("Error no manejado")
-      }
+  const [createUser] = useCustomMutation<{ user: User }, { input: Omit<User, 'id' | 'connection' | 'createdAt'> }>(CREATE_USER_MUTATION, {
+    onSuccess({ user: { username } }) {
+      customSwalSuccess(mutationMessages.CREATE_USER.title, mutationMessages.CREATE_USER.getSuccessMessage(username));
     },
-    onError(error) {
-      customSwalError(error, "Ocurrio un error al intentar crear un nuevo usuario")
+    onError(error, { input: { username } }) {
+      customSwalError(error, mutationMessages.CREATE_USER.getErrorMessage(username))
     },
   })
 

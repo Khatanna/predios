@@ -12,11 +12,12 @@ type Query {
 }
 
 type Mutation {
-  createMunicipality(name: String, provinceName: String): Municipality
+  createMunicipality(input: MunicipalityInput): Municipality
   updateMunicipality(name: String, item: MunicipalityInput): Municipality 
   deleteMunicipality(name: String): Municipality
 }
 
 input MunicipalityInput {
   name: String
+  provinceName: String
 }

@@ -3,7 +3,7 @@ import { Row, Col, Form, Button } from 'react-bootstrap';
 import { FormUpdateProps, Property } from '../../models/types';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 import { Type } from '../../../TypePage/models/types';
-import { typeRepository } from '../../hooks/useRepository';
+import { useTypeMutations } from '../../hooks/useRepository';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 
 const GET_TYPE_BY_NAME_QUERY = `
@@ -13,7 +13,6 @@ const GET_TYPE_BY_NAME_QUERY = `
     }
   }
 `
-const { useMutations } = typeRepository
 
 const TypeFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 	const { data } = useCustomQuery<{ type: Type }>(GET_TYPE_BY_NAME_QUERY, ['getTypeByName', { name: params?.name }])
@@ -21,7 +20,7 @@ const TypeFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 	const { register, handleSubmit } = useForm<Type>({
 		values: data?.type
 	});
-	const { mutationUpdate } = useMutations<{ type: Type }>();
+	const { mutationUpdate } = useTypeMutations<{ type: Type }>();
 	return <Form onSubmit={handleSubmit(data => {
 		if (params) {
 			mutationUpdate({

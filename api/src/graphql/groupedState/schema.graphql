@@ -12,7 +12,7 @@ type Query {
 }
 
 type Mutation {
-  createGroupedState(name: String): GroupedState
+  createGroupedState(input: GroupedStateInput): GroupedState
   updateGroupedState(name: String, item: GroupedStateInput): GroupedState
   deleteGroupedState(name: String): GroupedState
 }

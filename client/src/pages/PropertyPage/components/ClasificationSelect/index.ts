@@ -1,0 +1,1 @@
+export { default as ClasificationSelect } from './ClasificationSelect';

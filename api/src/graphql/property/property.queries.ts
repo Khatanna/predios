@@ -22,7 +22,7 @@ export const getAllProperties = async (_parent: any,
           }
         },
         type: true,
-        subDirectory: true,
+        folderLocation: true,
         groupedState: true,
         reference: true,
         responsibleUnit: true,
@@ -79,7 +79,7 @@ export const getProperty = async (_parent: any, { nextCursor }: { nextCursor?: s
           }
         },
         type: true,
-        subDirectory: true,
+        folderLocation: true,
         groupedState: true,
         reference: true,
         responsibleUnit: true,
@@ -146,7 +146,7 @@ export const getPropertyById = async (_parent: any, { id }: { id: string }, { pr
           }
         },
         type: true,
-        subDirectory: true,
+        folderLocation: true,
         groupedState: true,
         reference: true,
         responsibleUnit: true,
@@ -188,6 +188,84 @@ export const getPropertyById = async (_parent: any, { id }: { id: string }, { pr
         }
       },
     });
+    return property
+  } catch (e) {
+    throw e;
+  }
+}
+export const searchPropertyByAttribute = async (_parent: any, { query }: { query: string }, { prisma, userContext }: Context) => {
+  try {
+    hasPermission(userContext, 'READ', 'PROPERTY');
+    console.log({ query })
+    const property = await prisma.property.findFirst({
+      where: {
+        OR: [
+          {
+            code: query
+          },
+          {
+            agrupationIdentifier: query
+          }
+        ]
+      },
+      include: {
+        beneficiaries: {
+          include: {
+            properties: true
+          }
+        },
+        activity: true,
+        clasification: true,
+        observations: {
+          include: {
+            property: true
+          }
+        },
+        type: true,
+        folderLocation: true,
+        groupedState: true,
+        reference: true,
+        responsibleUnit: true,
+        state: {
+          include: {
+            stage: true
+          }
+        },
+        city: {
+          include: {
+            provinces: {
+              include: {
+                municipalities: true
+              }
+            },
+          }
+        },
+        province: {
+          include: {
+            municipalities: true
+          }
+        },
+        municipality: true,
+        technical: {
+          include: {
+            user: true
+          }
+        },
+        legal: {
+          include: {
+            user: true
+          }
+        },
+        trackings: {
+          include: {
+            responsible: true,
+            state: true
+          }
+        }
+      },
+    });
+
+    console.log(property?.id)
     return property
   } catch (e) {
     throw e;

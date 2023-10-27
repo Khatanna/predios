@@ -1,4 +1,6 @@
-import { Form, FormSelectProps } from 'react-bootstrap';
+import { Form, FormSelectProps, InputGroup } from 'react-bootstrap';
+import { DropdownMenuOfSelect } from '../DropdownMenuOfSelect';
+import { Options } from '../DropdownMenuOfSelect/DropdownMenuOfSelect';
 
 type Option = {
 	label: string
@@ -7,10 +9,14 @@ type Option = {
 
 export type EnhancedSelectProps = {
 	options?: Option[];
-	placeholder: string
+	placeholder: string;
+	disableOptions?: (value: string) => Partial<Options>;
+	onCreate?: () => void;
+	onEdit?: () => void;
+	onDelete?: () => void;
 } & FormSelectProps
 
-const EnhancedSelect: React.FC<EnhancedSelectProps> = ({ options = [], placeholder, ...props }) => {
+const EnhancedSelect: React.FC<EnhancedSelectProps> = ({ options = [], placeholder, disableOptions, onCreate, onEdit, onDelete, ...props }) => {
 	if (props.disabled) {
 		return <Form.Control
 			placeholder={placeholder || props.value as string}
@@ -20,14 +26,26 @@ const EnhancedSelect: React.FC<EnhancedSelectProps> = ({ options = [], placehold
 		/>
 	}
 
-	return <Form.Select {...props} style={{
-		color: props.value === 'undefined' ? 'gray' : 'black'
-	}}>
-		<option value="undefined" disabled style={{ color: 'gray' }}>{placeholder}</option>
-		{options.map(({ label, value }) => (
-			<option value={value} key={value}>{label}</option>
-		))}
-	</Form.Select>
+	return <InputGroup>
+		<Form.Select {...props}>
+			<option value="undefined" disabled style={{ color: 'gray' }}>{placeholder}</option>
+			{options.map(({ label, value }) => (
+				<option value={value} key={value}>{label}</option>
+			))}
+		</Form.Select>
+		<InputGroup.Text>
+			<DropdownMenuOfSelect
+				disableOptions={disableOptions ? disableOptions(props.value as string) : {
+					showCreate: props.value === 'undefined' || props.value !== 'undefined',
+					showDelete: props.value !== 'undefined',
+					showEdit: props.value !== 'undefined'
+				}}
+				onCreate={onCreate}
+				onEdit={onEdit}
+				onDelete={onDelete}
+			/>
+		</InputGroup.Text>
+	</InputGroup>
 }
 
 export default EnhancedSelect;

@@ -1,16 +1,16 @@
-import { Row, Col, Form, Button } from 'react-bootstrap'
+import { Row, Col, Form, Button, Alert, Spinner } from 'react-bootstrap'
 import { useForm, Controller } from 'react-hook-form';
 import { FormCreateProps } from '../../models/types';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 import { Stage } from '../../../StagePage/models/types';
-import { stateRepository } from '../../hooks/useRepository';
+import { useStageMutations, useStateMutations, useStageStore } from '../../hooks/useRepository';
 import { State } from '../../../StatePage/models/types';
 import { EnhancedSelect } from '../EnhancedSelect';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
+import { useModalStore } from '../../state/useModalStore';
+import { ExclamationTriangle } from 'react-bootstrap-icons';
 
-type InputState = {
-	input: Pick<State, 'name' | 'order'> & { stageName: string }
-}
+type InputState = Pick<State, 'name' | 'order' | 'stage'>
 
 const GET_ALL_STAGES_QUERY = `
   query getAllStages {
@@ -19,21 +19,28 @@ const GET_ALL_STAGES_QUERY = `
     }
   }
 `
-const { useMutations } = stateRepository;
 const StateFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
-	const { data } = useCustomQuery<{ stages: Stage[] }>(GET_ALL_STAGES_QUERY, ['getAllStages']);
-	const { register, handleSubmit, control } = useForm<State>();
-	const { mutationCreate } = useMutations<{ state: State }, InputState>();
+	const { register, handleSubmit, control, watch, getValues, resetField } = useForm<State>();
+	const { mutationCreate } = useStateMutations<{ state: State }, InputState>();
+	const { mutationDelete } = useStageMutations<{ stage: Stage }>();
+	const { items: stages, setItems: setStages } = useStageStore();
+	const stage = watch('stage.name');
+	const setModal = useModalStore(s => s.setModal);
+	const { error, isLoading } = useCustomQuery<{ stages: Stage[] }>(GET_ALL_STAGES_QUERY, ['getAllStages'], {
+		onSuccess({ stages }) {
+			setStages(stages)
+		}
+	});
 
 	return <Form onSubmit={handleSubmit(({ name, order, stage }) => {
-		mutationCreate({ input: { name, order, stageName: stage.name }, name }, {
+		mutationCreate({ input: { name, order, stage } }, {
 			onSuccess({ data: { state: { name } } }) {
 				customSwalSuccess(
 					"Nuevo Estado agregado",
 					`El estado ${name} se ha creado correctamente`,
 				);
 			},
-			onError(error, { name }) {
+			onError(error, { input: { name } }) {
 				customSwalError(
 					error.response!.data.errors[0].message,
 					`Ocurrio un error al intentar crear el estado ${name}`,
@@ -58,18 +65,61 @@ const StateFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
 				</Row>
 				<Row>
 					<Col>
-						<Controller
-							name="stage.name"
-							control={control}
-							defaultValue='undefined'
-							render={({ field }) => (
-								<EnhancedSelect
-									{...field}
-									placeholder='Etapa'
-									options={data?.stages.map(({ name }) => ({ label: name, value: name }))}
-								/>
-							)}
-						/>
+						{
+							isLoading ? <div className='d-flex justify-content-center '><Spinner variant='warning' /></div> : error ?
+								<Alert>
+									<Alert.Heading>
+										<div className='d-flex align-content-center gap-2'>
+											<ExclamationTriangle size={24} color='red' />
+											<div>
+												No tienes permisos
+											</div>
+										</div>
+									</Alert.Heading>
+									{error}
+								</Alert>
+								:
+								<Controller
+									name="stage.name"
+									control={control}
+									defaultValue='undefined'
+									render={({ field }) => (
+										<EnhancedSelect
+											{...field}
+											placeholder='Etapa'
+											options={stages.map(({ name }) => ({ label: name, value: name }))}
+											onCreate={() => {
+												setModal({ show: true, form: 'createStage', title: 'Crear etapa' });
+											}}
+											onEdit={() => {
+												setModal({ show: true, form: 'updateStage', title: 'Actualizar etapa', params: { name: stage } });
+											}}
+											onDelete={() => {
+												const stage = getValues('stage');
+
+												if (stage) {
+													mutationDelete(stage, {
+														onSuccess({ data: { stage: { name } } }) {
+															customSwalSuccess(
+																"Etapa eliminada",
+																`La etapa ${name} se ha eliminado correctamente`,
+															);
+														},
+														onError(error, { name }) {
+															customSwalError(
+																error.response!.data.errors[0].message,
+																`Ocurrio un error al intentar eliminar la etapa ${name}`,
+															);
+														},
+														onSettled() {
+															resetField('stage.name')
+														},
+													})
+												}
+											}}
+										/>
+									)}
+								/>}
 					</Col>
 				</Row>
 				<Row className='mt-3'>

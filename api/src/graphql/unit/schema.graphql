@@ -1,0 +1,22 @@
+type Unit { 
+  id: ID! 
+  name: String
+  properties: [Property]!
+  createdAt: String
+  updatedAt: String
+}
+
+type Query {
+  getAllUnits: [Unit]!
+  getUnit(name: String): Unit 
+}
+
+type Mutation {
+  createUnit(input: UnitInput): Unit
+  updateUnit(name: String, item: UnitInput): Unit
+  deleteUnit(name: String): Unit
+}
+
+input UnitInput {
+  name: String
+}

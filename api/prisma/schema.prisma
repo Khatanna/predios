@@ -30,28 +30,27 @@ enum LevelPermission {
 }
 
 enum Resource {
-  USER            @map("usuario")
-  PROPERTY        @map("predio")
-  BENEFICIARY     @map("beneficiario")
-  CITY            @map("departamento")
-  PROVINCE        @map("provincia")
-  MUNICIPALITY    @map("municipio")
-  USERPERMISSION  @map("permiso_de_usuario")
-  CLASIFICATION   @map("clasificación")
-  ACTIVITY        @map("actividad")
-  STATE           @map("estado")
-  LEGAL           @map("juridico")
-  TECHNICAL       @map("tecnico")
-  OBSERVATION     @map("observación")
-  PERMISSION      @map("permiso")
-  USERTYPE        @map("tipo_de_usuario")
-  TYPE            @map("tipo")
-  SUBDIRECTORY    @map("subcarpeta")
-  RECORD          @map("historial")
-  RESPONSIBLEUNIT @map("unidad_responsable")
-  GROUPEDSTATE    @map("estado_agrupado")
-  REFERENCE       @map("referencia")
-  TRACKING        @map("seguimiento")
+  USER           @map("usuario")
+  PROPERTY       @map("predio")
+  BENEFICIARY    @map("beneficiario")
+  CITY           @map("departamento")
+  PROVINCE       @map("provincia")
+  MUNICIPALITY   @map("municipio")
+  USERPERMISSION @map("permiso_de_usuario")
+  CLASIFICATION  @map("clasificación")
+  ACTIVITY       @map("actividad")
+  STATE          @map("estado")
+  STAGE          @map("etapa")
+  OBSERVATION    @map("observación")
+  PERMISSION     @map("permiso")
+  USERTYPE       @map("tipo_de_usuario")
+  TYPE           @map("tipo")
+  FOLDERLOCATION @map("ubicacion_de_carpeta")
+  RECORD         @map("historial")
+  UNIT           @map("unidad")
+  GROUPEDSTATE   @map("estado_agrupado")
+  REFERENCE      @map("referencia")
+  TRACKING       @map("seguimiento")
 
   @@map("recurso")
 }
@@ -211,14 +210,14 @@ model Property {
   groupedStateId       String?              @map("estado_agrupado_id")
   reference            Reference?           @relation(fields: [referenceId], references: [id])
   referenceId          String?              @map("referencia_id")
-  responsibleUnit      ResponsibleUnit?     @relation(fields: [responsibleUnitId], references: [id])
-  responsibleUnitId    String?              @map("unidad_resonsable_id")
-  subDirectory         SubDirectory?        @relation(fields: [subDirectoryId], references: [id])
-  subDirectoryId       String?              @map("sub_carpeta_id")
   fileNumber           FileNumber?
   technical            TechnicalOnProperty?
   legal                LegalOnProperty?
   trackings            Tracking[]
+  responsibleUnit      Unit?                @relation(fields: [unitId], references: [id])
+  unitId               String
+  folderLocation       FolderLocation?      @relation(fields: [folderLocationId], references: [id])
+  folderLocationId     String?
 
   @@map("predio")
 }
@@ -237,6 +236,26 @@ model Tracking {
   responsible  User   @relation(fields: [user_id], references: [id])
   observation  String @map("observación")
   numberOfNote String @map("numero_de_nota")
+}
+
+model Unit {
+  id         String     @id @default(uuid())
+  name       String     @unique @map("nombre") @db.VarChar(64)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  properties Property[]
+
+  @@map("unidad")
+}
+
+model FolderLocation {
+  id         String     @id @default(uuid())
+  name       String     @unique @map("nombre") @db.VarChar(64)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  properties Property[]
+
+  @@map("ubicacion_de_carpeta")
 }
 
 model FileNumber {
@@ -287,8 +306,8 @@ model State {
   properties Property[]
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  stage      Stage?     @relation(fields: [stageId], references: [id])
   stageId    String?
+  stage      Stage?     @relation(fields: [stageId], references: [id])
   trackings  Tracking[]
 
   @@map("estado")
@@ -297,21 +316,11 @@ model State {
 model Stage {
   id        String   @id @default(uuid())
   name      String   @unique() @map("nombre") @db.VarChar(32)
-  states    State[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  states    State[]
 
   @@map("etapa")
-}
-
-model SubDirectory {
-  id         String     @id @default(uuid())
-  name       String     @unique() @map("nombre") @db.VarChar(128)
-  properties Property[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-
-  @@map("sub_carpeta")
 }
 
 model Type {
@@ -343,16 +352,6 @@ model Clasification {
   updatedAt  DateTime   @updatedAt
 
   @@map("clasificacion")
-}
-
-model ResponsibleUnit {
-  id         String     @id @default(uuid())
-  name       String     @unique @map("nombre") @db.VarChar(64)
-  properties Property[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-
-  @@map("unidad_responsable")
 }
 
 model GroupedState {

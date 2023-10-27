@@ -3,7 +3,7 @@ import { Row, Col, Form, Button } from 'react-bootstrap';
 import { FormUpdateProps, Property } from '../../models/types';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 import { SubDirectory } from '../../../SubDirectoryPage/models/types';
-import { subdirectoryRepository } from '../../hooks/useRepository';
+import { useSubdirectoryMutations } from '../../hooks/useRepository';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 
 const GET_SUBDIRECTORY_BY_NAME_QUERY = `
@@ -14,12 +14,11 @@ const GET_SUBDIRECTORY_BY_NAME_QUERY = `
   }
 `
 
-const { useMutations } = subdirectoryRepository;
 const SubdirectoryFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 	const { data, isLoading } = useCustomQuery<{ subdirectory: SubDirectory }>(GET_SUBDIRECTORY_BY_NAME_QUERY, ['getSubdirectoryByName', { name: params?.name }]);
 	const { register, handleSubmit } = useForm<SubDirectory>({ values: data?.subdirectory });
 	const { resetField } = useFormContext<Property>();
-	const { mutationUpdate } = useMutations<{ subdirectory: SubDirectory }>();
+	const { mutationUpdate } = useSubdirectoryMutations<{ subdirectory: SubDirectory }>();
 
 	if (isLoading) {
 		return <div>Cargando...</div>

@@ -1,5 +1,4 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { PubSub } from "graphql-subscriptions";
 import {
   resolvers as activityResolvers,
   typeDefs as activityTypeDefs
@@ -44,15 +43,15 @@ import {
   resolvers as referenceResolvers, typeDefs as referenceTypeDefs
 } from './reference';
 import {
-  resolvers as responsibleUnitResolvers, typeDefs as responsibleUnitTypeDefs
-} from './responsibleUnit';
+  resolvers as unitResolvers, typeDefs as unitTypeDefs
+} from './unit';
 import {
   resolvers as stageResolvers, typeDefs as stageTypeDefs
 } from './stage';
 import {
   resolvers as stateResolvers, typeDefs as stateTypeDefs
 } from './state';
-import { resolvers as subDirectoryResolvers, typeDefs as subDirectoryTypeDefs } from './subDirectory';
+import { resolvers as folderLocationResolvers, typeDefs as folderLocationTypeDefs } from './folderLocation';
 import {
   resolvers as typeResolvers, typeDefs as typeTypeDefs
 } from './type';
@@ -98,8 +97,8 @@ export const schema = makeExecutableSchema({
     stageTypeDefs,
     groupedStateTypeDefs,
     referenceTypeDefs,
-    responsibleUnitTypeDefs,
-    subDirectoryTypeDefs,
+    unitTypeDefs,
+    folderLocationTypeDefs,
     subscriptionsTypeDefs,
     technicalOnPropertyTypeDefs,
     legalOnPropertyTypeDefs,
@@ -124,8 +123,8 @@ export const schema = makeExecutableSchema({
     stageResolvers,
     groupedStateResolvers,
     referenceResolvers,
-    responsibleUnitResolvers,
-    subDirectoryResolvers,
+    unitResolvers,
+    folderLocationResolvers,
     subscriptionsResolvers,
     technicalOnPropertyResolvers,
     legalOnPropertyResolvers,

@@ -2,7 +2,7 @@ import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { FormUpdateProps } from '../../models/types';
 import { GroupedState } from '../../../GroupedState/models/types';
-import { groupedStateRepository } from '../../hooks/useRepository';
+import { useGroupedStateMutations } from '../../hooks/useRepository';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 
@@ -14,14 +14,12 @@ const GET_GROUPED_STATE_BY_NAME_QUERY = `
 	}
 `
 
-const { useMutations } = groupedStateRepository
-
 const GroupedStateFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 	const { data } = useCustomQuery<{ groupedState: GroupedState }>(GET_GROUPED_STATE_BY_NAME_QUERY, ['getGroupedStateByName', { name: params?.name }])
 	const { register, handleSubmit } = useForm<GroupedState>({
 		values: data?.groupedState
 	});
-	const { mutationUpdate } = useMutations<{ groupedState: GroupedState }>();
+	const { mutationUpdate } = useGroupedStateMutations<{ groupedState: GroupedState }>();
 	return <Form onSubmit={handleSubmit(data => {
 		if (params) {
 			mutationUpdate({ name: params.name, item: data }, {

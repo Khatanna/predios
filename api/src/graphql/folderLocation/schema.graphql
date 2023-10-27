@@ -1,0 +1,22 @@
+type FolderLocation { 
+  id: ID!
+  name: String
+  properties: [Property]!
+  createdAt: String
+  updatedAt: String
+}
+
+type Query {
+  getAllFolderLocations: [FolderLocation]!
+  getFolderLocation(name: String): FolderLocation
+}
+
+type Mutation {
+  createFolderLocation(input: FolderLocationInput): FolderLocation
+  updateFolderLocation(name: String, item: FolderLocationInput): FolderLocation
+  deleteFolderLocation(name: String): FolderLocation
+}
+
+input FolderLocationInput {
+  name: String
+}

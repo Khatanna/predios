@@ -2,7 +2,7 @@ import { Municipality } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createMunicipality = (_parent: any, { name, provinceName }: { name: string, provinceName: string }, { userContext, prisma }: Context) => {
+export const createMunicipality = (_parent: any, { input: { name, provinceName } }: { input: { name: string, provinceName: string } }, { userContext, prisma }: Context) => {
   try {
     hasPermission(userContext, 'CREATE', 'MUNICIPALITY');
 

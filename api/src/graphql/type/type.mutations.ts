@@ -2,14 +2,12 @@ import { Type } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createType = (_parent: any, { name }: Pick<Type, 'name'>, { userContext, prisma }: Context) => {
+export const createType = (_parent: any, { input }: { input: Type }, { userContext, prisma }: Context) => {
   try {
     hasPermission(userContext, 'CREATE', 'TYPE');
 
     return prisma.type.create({
-      data: {
-        name
-      }
+      data: input
     })
   } catch (e) {
     throw e;

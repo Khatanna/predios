@@ -1,12 +1,10 @@
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useForm } from 'react-hook-form'
 import { FormUpdateProps } from '../../models/types';
-import { municipalityRepository } from '../../hooks/useRepository';
+import { useMunicipalityMutations } from '../../hooks/useRepository';
 import { Municipality } from '../../../MunicipalityPage/models/types';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
-
-const { useMutations } = municipalityRepository
 
 const GET_MUNICIPALITY_BY_NAME_QUERY = `
 	query GetMunicipalityByName($name: String){ 
@@ -23,7 +21,7 @@ const MunicipalityFormUpdate: React.FC<FormUpdateProps> = ({
 	const { register, handleSubmit } = useForm<Municipality>({
 		values: data?.municipality
 	});
-	const { mutationUpdate } = useMutations<{ municipality: Municipality }>();
+	const { mutationUpdate } = useMunicipalityMutations<{ municipality: Municipality }>();
 
 	return <Form onSubmit={handleSubmit((data) => {
 		if (params) {

@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { ModalProps, Modal } from 'react-bootstrap';
 import { CityFormCreate } from '../CityFormCreate';
 import { CityFormUpdate } from '../CityFormUpdate';
@@ -21,11 +22,13 @@ import { GroupedStateFormCreate } from '../GroupedStateFormCreate';
 import { GroupedStateFormUpdate } from '../GroupedStateFormUpdate';
 import { ReferenceFormCreate } from '../ReferenceFormCreate';
 import { ReferenceFormUpdate } from '../ReferenceFormUpdate';
+import { StageFormCreate } from '../StageFormCreate';
+import { StageFormUpdate } from '../StageFormUpdate';
 
 export type FormKey = keyof typeof forms
 
 export type ModalFormProps = {
-	form: FormKey, title: string, params?: Record<string, string>
+	form?: FormKey, title?: string, params?: Record<string, string>
 } & ModalProps
 
 const forms = {
@@ -50,19 +53,21 @@ const forms = {
 	createGroupedState: GroupedStateFormCreate,
 	updateGroupedState: GroupedStateFormUpdate,
 	createReference: ReferenceFormCreate,
-	updateReference: ReferenceFormUpdate
+	updateReference: ReferenceFormUpdate,
+	createStage: StageFormCreate,
+	updateStage: StageFormUpdate
 }
 
 const ModalForm: React.FC<ModalFormProps> = ({ title, form, params, ...props }) => {
-	const Formulary = forms[form];
+	const Formulary = forms[form!];
 
-	return <Modal {...props}>
+	return createPortal(<Modal {...props}>
 		<Modal.Header closeButton>
 			<Modal.Title>{title}</Modal.Title>
 		</Modal.Header>
 		<Modal.Body>
 			<Formulary onHide={props.onHide!} params={params} />
 		</Modal.Body>
-	</Modal>
+	</Modal>, document.getElementById("modal")!)
 }
 export default ModalForm;

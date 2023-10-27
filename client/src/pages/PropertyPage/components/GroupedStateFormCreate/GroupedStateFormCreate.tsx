@@ -2,23 +2,21 @@ import { Button, Col, Form, Row } from 'react-bootstrap';
 import { FormCreateProps } from '../../models/types';
 import { useForm } from 'react-hook-form';
 import { GroupedState } from '../../../GroupedState/models/types';
-import { groupedStateRepository } from '../../hooks/useRepository';
+import { useGroupedStateMutations } from '../../hooks/useRepository';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
-
-const { useMutations } = groupedStateRepository
 
 const GroupedStateFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
 	const { register, handleSubmit } = useForm<GroupedState>();
-	const { mutationCreate } = useMutations<{ groupedState: GroupedState }>();
+	const { mutationCreate } = useGroupedStateMutations<{ groupedState: GroupedState }>();
 	return <Form onSubmit={handleSubmit(data => {
-		mutationCreate(data, {
+		mutationCreate({ input: data }, {
 			onSuccess({ data: { groupedState: { name } } }) {
 				customSwalSuccess(
 					"Estado agrupado creado",
 					`El estado agrupado ${name} se ha creado correctamente`,
 				);
 			},
-			onError(error, { name }) {
+			onError(error, { input: { name } }) {
 				customSwalError(
 					error.response!.data.errors[0].message,
 					`Ocurrio un error al intentar crear el estado agrupado ${name}`,

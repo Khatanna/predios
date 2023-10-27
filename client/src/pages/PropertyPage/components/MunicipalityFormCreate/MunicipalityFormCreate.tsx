@@ -2,7 +2,7 @@ import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { FormUpdateProps } from '../../models/types';
 import { Municipality } from '../../../MunicipalityPage/models/types';
-import { municipalityRepository } from '../../hooks/useRepository';
+import { useMunicipalityMutations } from '../../hooks/useRepository';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 
 type MunicipalityInput = {
@@ -10,17 +10,17 @@ type MunicipalityInput = {
 	provinceName: string
 }
 
-const { useMutations } = municipalityRepository
-
 const MunicipalityFormCreate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 	const { register, handleSubmit } = useForm<Municipality>();
-	const { mutationCreate } = useMutations<{ municipality: Municipality }, MunicipalityInput>();
+	const { mutationCreate } = useMunicipalityMutations<{ municipality: Municipality }, MunicipalityInput>();
 
 	return <Form onSubmit={handleSubmit(({ name }) => {
 		if (params) {
 			mutationCreate({
-				name,
-				provinceName: params.provinceName
+				input: {
+					name,
+					provinceName: params.provinceName
+				}
 			}, {
 				onSuccess({ data: { municipality: { name } } }) {
 					customSwalSuccess(
@@ -28,7 +28,7 @@ const MunicipalityFormCreate: React.FC<FormUpdateProps> = ({ onHide, params }) =
 						`La municipio ${name} se ha creado correctamente`,
 					);
 				},
-				onError(error, { name }) {
+				onError(error, { input: { name } }) {
 					customSwalError(
 						error.response!.data.errors[0].message,
 						`Ocurrio un error al intentar crear el municipio ${name}`,

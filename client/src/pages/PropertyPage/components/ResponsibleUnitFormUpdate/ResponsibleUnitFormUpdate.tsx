@@ -3,7 +3,7 @@ import { Row, Col, Form, Button } from 'react-bootstrap';
 import { FormUpdateProps, Property } from '../../models/types';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 import { ResponsibleUnit } from '../../../ResponsibleUnitPage/models/types';
-import { responsibleUnitRepository } from '../../hooks/useRepository';
+import { useResponsibleUnitMutations } from '../../hooks/useRepository';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 
 const GET_RESPONSIBLE_UNIT_BY_NAME = `
@@ -13,14 +13,13 @@ const GET_RESPONSIBLE_UNIT_BY_NAME = `
     }
   }
 `
-const { useMutations } = responsibleUnitRepository;
 const ResponsibleUnitFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 	const { data } = useCustomQuery<{ responsibleUnit: ResponsibleUnit }>(GET_RESPONSIBLE_UNIT_BY_NAME, ['getResponsibleUnitByName', { name: params?.name }])
 	const { resetField } = useFormContext<Property>();
 	const { register, handleSubmit } = useForm<ResponsibleUnit>({
 		values: data?.responsibleUnit
 	});
-	const { mutationUpdate } = useMutations<{ responsibleUnit: ResponsibleUnit }>();
+	const { mutationUpdate } = useResponsibleUnitMutations<{ responsibleUnit: ResponsibleUnit }>();
 	return <Form onSubmit={handleSubmit(data => {
 		if (params) {
 			mutationUpdate({

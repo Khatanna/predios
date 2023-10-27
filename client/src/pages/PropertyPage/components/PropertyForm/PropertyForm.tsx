@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
 import {
   Activity as ActivityIcon,
@@ -12,70 +11,48 @@ import {
   Diagram3,
   EyeFill,
   Folder,
-  GeoAlt,
-  GlobeAmericas,
   Hash,
   Hexagon,
   Icon2Circle,
   Key,
   Link45deg,
   ListColumns,
-  Map,
   People,
   PeopleFill,
   PersonGear,
   PersonWorkspace,
   Search,
 } from "react-bootstrap-icons";
-import { Controller, FormProvider, useForm, useFieldArray } from "react-hook-form";
+import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { Icon } from "../../../../components/Icon";
+import { useCustomMutation } from '../../../../hooks';
 import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
-import { Activity } from "../../../ActivityPage/models/types";
-import { City } from "../../../CityPage/models/types";
-import { Clasification } from "../../../ClasificationPage/models/types";
 import { GroupedState } from "../../../GroupedState/models/types";
-import { Municipality } from "../../../MunicipalityPage/models/types";
-import { Province } from "../../../ProvincePage/models/types";
 import { Reference } from "../../../ReferencePage/models/types";
 import { ResponsibleUnit } from "../../../ResponsibleUnitPage/models/types";
-import { State } from "../../../StatePage/models/types";
-import { SubDirectory } from "../../../SubDirectoryPage/models/types";
-import { Type } from "../../../TypePage/models/types";
-import { User } from "../../../UserPage/models/types";
-import { activityRepository, cityRepository, clasificationRepository, groupedStateRepository, municipalityRepository, provinceRepository, referenceRespository, responsibleUnitRepository, stateRepository, subdirectoryRepository, typeRepository } from '../../hooks/useRepository';
-import { Property } from "../../models/types";
-import { CustomLabel } from "../CustomLabel";
-import { DropdownMenuOfSelect } from '../DropdownMenuOfSelect';
-import { EnhancedSelect } from '../EnhancedSelect';
-import ModalForm, { FormKey } from '../ModalForm/ModalForm';
-import { SelectUser } from '../SelectUser';
-import { useCustomMutation } from '../../../../hooks';
 import { Tracking } from '../../../TrackingPage/models/types';
+import { useGroupedStateMutations, useGroupedStateStore, useReferenceMutations, useReferenceStore } from '../../hooks/useRepository';
+import { Property } from "../../models/types";
+import { useModalStore } from '../../state/useModalStore';
+import { ActivitySelect } from "../ActivitySelect";
+import { ClasificationSelect } from "../ClasificationSelect";
+import { CustomLabel } from "../CustomLabel";
+import { EnhancedSelect } from '../EnhancedSelect';
+import { Localization } from '../Localization';
+import ModalForm from '../ModalForm/ModalForm';
+import { ResponsibleUnitSelect } from "../ResponsibleUnitSelect";
+import { SelectUser } from '../SelectUser';
+import { StateSelect } from "../StateSelect";
+import { SubdirectorySelect } from "../SubdirectorySelect";
+import { TypeSelect } from '../TypeSelect';
+
 export type PropertyFormProps = {
   property?: Property;
 };
 
 const GET_QUERY = `
 	query GetFields {
-		types: getAllTypes {
-			name
-		}
-		activities: getAllActivities {
-			name
-		}
-		clasifications: getAllClasifications {
-			name
-		}
-		states: getAllStates {
-			name
-		}
-		responsibleUnits: getAllResponsibleUnits {
-			name
-		}
-		subdirectories: getAllSubDirectories {
-			name
-		}
 		groupedStates: getAllGroupedStates {
 			name
 		}
@@ -86,54 +63,9 @@ const GET_QUERY = `
 `;
 
 interface ResponseAPI {
-  types: Type[];
-  activities: Activity[];
-  states: State[];
-  subdirectories: SubDirectory[];
-  responsibleUnits: ResponsibleUnit[];
-  clasifications: Clasification[];
   groupedStates: GroupedState[];
   references: Reference[];
-  tecnicians: User[];
-  legal: User[];
 }
-
-
-const GET_ALL_CITIES_QUERY = `
-  query GetAllCities {
-    cities: getAllCities {
-      name
-    }
-  }
-`;
-
-const GET_ALL_PROVINCES_BY_CITY_NAME = `
-  query GetProvincesByCityName ($city: String) {
-    provinces: getProvinces(city: $city) {
-      name
-    }
-  }
-`;
-
-const GET_MUNICIPALITIES_BY_PROVINCE_NAME = `
-	query GetMunicipalitiesByProvinceName($province: String) {
-		municipalities: getMunicipalities(province: $province) {
-			name
-		}
-	}
-`;
-
-const { useStore: useCityStore, useMutations: useCityMutations } = cityRepository;
-const { useStore: useProvinceStore, useMutations: useProvinceMutations } = provinceRepository
-const { useStore: useMunicipalityStore, useMutations: useMunicipalityMutations } = municipalityRepository;
-const { useStore: useStateStore, useMutations: useStateMutations } = stateRepository;
-const { useStore: useSubdirectoryStore, useMutations: useSubdirectoryMutations } = subdirectoryRepository
-const { useStore: useResponsibleUnitStore, useMutations: useResponsibleUnitMutations } = responsibleUnitRepository
-const { useStore: useTypeStore, useMutations: useTypeMutations } = typeRepository;
-const { useStore: useActivityStore, useMutations: useActivityMutations } = activityRepository
-const { useStore: useClasificationStore, useMutations: useClasificationMutations } = clasificationRepository
-const { useStore: useGroupedStateStore, useMutations: useGroupedStateMutations } = groupedStateRepository
-const { useStore: useReferenceStore, useMutations: useReferenceMutations } = referenceRespository
 
 const CREATE_PROPERTY_MUTATION = `
   mutation CreateProperty($input: PropertyInput) {
@@ -168,7 +100,6 @@ type PropertyInput = {
   }
 }
 
-// type PropertyFormType = Omit<Property, 'trackings'> & { trackings: Omit<Tracking, 'responsible'> & { responsible: { label: string; value: string } }[] }
 const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
   const { handleSubmit, register, ...methods } = useForm<Property>({
     defaultValues: property
@@ -177,88 +108,26 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
     control: methods.control,
     name: 'trackings',
   })
-  const { setItems: setCities, items: cities } = useCityStore();
-  const { setItems: setProvinces, items: provinces } = useProvinceStore();
-  const { setItems: setMunicipalities, items: municipalities } = useMunicipalityStore();
-  const { setItems: setTypes, items: types } = useTypeStore();
-  const { setItems: setStates, items: states } = useStateStore();
-  const { setItems: setSubdirectories, items: subdirectories } =
-    useSubdirectoryStore();
-  const { setItems: setActivities, items: activities } = useActivityStore();
-  const { setItems: setResposibleUnits, items: responsibleUnits } =
-    useResponsibleUnitStore();
-  const { setItems: setClasifications, items: clasifications } =
-    useClasificationStore();
+
   const { setItems: setReferences, items: references } = useReferenceStore();
   const { setItems: setGroupedStates, items: groupedStates } =
     useGroupedStateStore();
 
-  const city = methods.watch("city.name");
-  const province = methods.watch("province.name");
-  const municipality = methods.watch("municipality.name");
-  const subdirectory = methods.watch("subDirectory.name");
-  const responsibleUnit = methods.watch("responsibleUnit.name");
-  const activity = methods.watch("activity.name");
-  const type = methods.watch("type.name");
-  const state = methods.watch("state.name");
-  const clasification = methods.watch("clasification.name");
-  const groupedState = methods.watch('groupedState.name');
-  const reference = methods.watch('reference.name');
+  const [groupedState, reference] = methods.watch(['groupedState.name', 'reference.name']);
 
-  useCustomQuery<{ cities: City[] }>(
-    GET_ALL_CITIES_QUERY,
-    ["getAllCities"],
-    {
-      onSuccess({ cities }) {
-        setCities(cities);
-      },
-    },
-  );
-  useCustomQuery<{ provinces: Pick<Province, "name">[] }>(
-    GET_ALL_PROVINCES_BY_CITY_NAME,
-    ["getAllProvincesByCityName", { city }],
-    {
-      onSuccess({ provinces }) {
-        setProvinces(provinces);
-      },
-    },
-  );
-  useCustomQuery<{ municipalities: Pick<Municipality, "name">[] }>(
-    GET_MUNICIPALITIES_BY_PROVINCE_NAME,
-    ["getMunicipalitiesByProvinceName", { province }],
-    {
-      onSuccess({ municipalities }) {
-        setMunicipalities(municipalities);
-      },
-    },
-  );
   const { error } = useCustomQuery<ResponseAPI>(
     GET_QUERY,
-    ["getFieldForCreate"],
+    ["getFieldsForCreate"],
     {
       onSuccess({
-        types,
-        activities,
-        clasifications,
         references,
         groupedStates,
-        responsibleUnits,
-        states,
-        subdirectories,
       }) {
-        setStates(states);
-        setTypes(types);
-        setSubdirectories(subdirectories);
-        setActivities(activities);
-        setResposibleUnits(responsibleUnits);
-        setClasifications(clasifications);
         setReferences(references);
         setGroupedStates(groupedStates);
       },
     },
   );
-
-
   const [createProperty] = useCustomMutation<{ property: Property }, PropertyInput>(CREATE_PROPERTY_MUTATION)
 
   const submit = (data: Property) => {
@@ -300,17 +169,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
       }
     })
   };
-  const [modal, setModal] = useState<{ form: FormKey, title: string, show: boolean, params?: Record<string, string> }>();
+  const { setModal, ...modal } = useModalStore();
 
-  const { mutationDelete: mutationCityDelete } = useCityMutations<{ city: City }>();
-  const { mutationDelete: mutationProvinceDelete } = useProvinceMutations<{ province: Province }>();
-  const { mutationDelete: mutationMunicipalityDelete } = useMunicipalityMutations<{ municipality: Municipality }>();
-  const { mutationDelete: mutationStateDelete } = useStateMutations<{ state: State }>();
-  const { mutationDelete: mutationSubdirectoryDelete } = useSubdirectoryMutations<{ subdirectory: SubDirectory }>();
-  const { mutationDelete: mutationActivityDelete } = useActivityMutations<{ activity: Activity }>();
-  const { mutationDelete: mutationResponsibleUnitDelete } = useResponsibleUnitMutations<{ responsibleUnit: ResponsibleUnit }>();
-  const { mutationDelete: mutationTypeDelete } = useTypeMutations<{ type: Type }>();
-  const { mutationDelete: mutationClasificationDelete } = useClasificationMutations<{ clasification: Clasification }>();
   const { mutationDelete: mutationGroupedStateDelete } = useGroupedStateMutations<{ groupedState: GroupedState }>();
   const { mutationDelete: mutationReferenceDelete } = useReferenceMutations<{ reference: Reference }>();
 
@@ -325,7 +185,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
         handleSubmit={handleSubmit}
         register={register}
       >
-        {modal && <ModalForm centered onHide={() => setModal(undefined)} {...modal} />}
+        {modal.show && <ModalForm centered onHide={() => setModal({ form: undefined, show: false, params: undefined, title: undefined })} {...modal} />}
         {property && (
           <Icon label='Número de registro'>
             <div className='position-fixed bottom-0 text-white m-3 start-0 bg-success border rounded-circle px-3 py-2 fw-bold z-2'>{property.registryNumber}</div>
@@ -346,7 +206,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                         className="fw-bold"
                         as="textarea"
                         rows={2}
-                        disabled={!property}
                         placeholder="Nombre del predio"
                         {...register("name")}
                         autoComplete="off"
@@ -374,7 +233,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                     />
                     <Form.Control
                       size="sm"
-                      disabled={!property}
                       placeholder="Codigo"
                       {...register("code")}
                       autoComplete="off"
@@ -389,202 +247,13 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                     />
                     <Form.Control
                       size="sm"
-                      disabled={!property}
                       placeholder="Poligono"
                       {...register("polygone")}
                       autoComplete="off"
                     />
                   </Form.Group>
                 </Col>
-                <Col>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Departamento"
-                      icon={<GlobeAmericas color="orange" />}
-                    />
-                    <InputGroup>
-                      <Controller
-                        name="city.name"
-                        control={methods.control}
-                        defaultValue="undefined"
-                        render={(({ field }) => (
-                          <EnhancedSelect
-                            {...field}
-                            onChange={(e) => {
-                              field.onChange(e);
-                              methods.resetField('province.name', { defaultValue: 'undefined' });
-                              methods.resetField('municipality.name', { defaultValue: 'undefined' });
-                            }}
-                            disabled={cities.length === 0 || !property}
-                            size="sm"
-                            placeholder={"Departamento"}
-                            options={cities.map(({ name }) => ({ label: name, value: name }))}
-                          />
-                        ))}
-                      />
-                      {property && <InputGroup.Text>
-                        <DropdownMenuOfSelect
-                          disableOptions={{
-                            showEdit: city !== "undefined",
-                            showDelete: city !== "undefined"
-                          }}
-                          onCreate={() => {
-                            setModal({ form: 'createCity', title: 'Crear departamento', show: true })
-                          }}
-                          onEdit={() => {
-                            setModal({ form: 'updateCity', title: 'Actualizar departamento', show: true, params: { name: city } })
-                          }}
-                          onDelete={() => {
-                            const city = methods.getValues("city");
-                            if (city) {
-                              mutationCityDelete(city, {
-                                onSuccess({ data: { city: { name } } }) {
-                                  customSwalSuccess(
-                                    "Departamento eliminado",
-                                    `El departamento ${name} se ha eliminado correctamente`,
-                                  );
-                                },
-                                onError(error, { name }) {
-                                  customSwalError(
-                                    error.response!.data.errors[0].message,
-                                    `Ocurrio un error al intentar eliminar el departamento ${name}`,
-                                  );
-                                },
-                                onSettled() {
-                                  methods.resetField('city.name', { defaultValue: 'undefined' })
-                                }
-                              });
-                            }
-                          }}
-                        />
-                      </InputGroup.Text>}
-                    </InputGroup>
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Provincia"
-                      icon={<Map color="blue" />}
-                    />
-                    <InputGroup>
-                      <Controller
-                        name="province.name"
-                        control={methods.control}
-                        defaultValue="undefined"
-                        render={(({ field }) => (
-                          <EnhancedSelect
-                            {...field}
-                            onChange={(e) => {
-                              field.onChange(e);
-                              methods.resetField('municipality.name', { defaultValue: 'undefined' });
-                            }}
-                            disabled={city === "undefined" || provinces.length === 0}
-                            size="sm"
-                            placeholder={"Provincia"}
-                            options={provinces.map(({ name }) => ({ label: name, value: name }))}
-                          />
-                        ))}
-                      />
-                      {city !== "undefined" && <InputGroup.Text>
-                        <DropdownMenuOfSelect
-                          disableOptions={{
-                            showEdit: province !== "undefined",
-                            showDelete: province !== "undefined"
-                          }}
-                          onCreate={() => {
-                            setModal({ form: 'createProvince', title: 'Crear provincia', show: true, params: { cityName: city } })
-                          }}
-                          onEdit={() => {
-                            setModal({ form: 'updateProvince', title: 'Actualizar provincia', show: true, params: { name: province } })
-                          }}
-                          onDelete={() => {
-                            const province = methods.getValues("province");
-                            if (province) {
-                              mutationProvinceDelete(province, {
-                                onSuccess({ data: { province: { name } } }) {
-                                  customSwalSuccess(
-                                    "Provincia eliminada",
-                                    `La provincia ${name} se ha eliminado correctamente`,
-                                  );
-                                },
-                                onError(error, { name }) {
-                                  customSwalError(
-                                    error.response!.data.errors[0].message,
-                                    `Ocurrio un error al intentar eliminar la provincia ${name}`,
-                                  );
-                                },
-                                onSettled() {
-                                  methods.resetField('province.name', { defaultValue: 'undefined' })
-                                }
-                              });
-                            }
-                          }}
-                        />
-                      </InputGroup.Text>}
-                    </InputGroup>
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Municipio"
-                      icon={<GeoAlt color="purple" />}
-                    />
-                    <InputGroup>
-                      <Controller
-                        name="municipality.name"
-                        control={methods.control}
-                        defaultValue="undefined"
-                        render={(({ field }) => (
-                          <EnhancedSelect
-                            {...field}
-                            disabled={province === "undefined" || municipalities.length === 0}
-                            size="sm"
-                            placeholder="Municipio"
-                            options={municipalities.map(({ name }) => ({ label: name, value: name }))}
-                          />
-                        ))}
-                      />
-                      {province !== "undefined" && <InputGroup.Text>
-                        <DropdownMenuOfSelect
-                          disableOptions={{
-                            showEdit: municipality !== "undefined",
-                            showDelete: municipality !== "undefined"
-                          }}
-                          onCreate={() => {
-                            setModal({ form: 'createMunicipality', show: true, title: 'Crear municipio', params: { provinceName: province } })
-                          }}
-                          onEdit={() => {
-                            setModal({ form: 'updateMunicipality', show: true, title: 'Actualizar municipio', params: { name: municipality } })
-                          }}
-                          onDelete={() => {
-                            const municipality = methods.getValues("municipality");
-                            if (municipality) {
-                              mutationMunicipalityDelete(municipality, {
-                                onSuccess({ data: { municipality: { name } } }) {
-                                  customSwalSuccess(
-                                    "Municipío eliminado",
-                                    `El municipio ${name} se ha eliminado correctamente`,
-                                  );
-                                },
-                                onError(error, { name }) {
-                                  customSwalError(
-                                    error.response!.data.errors[0].message,
-                                    `Ocurrio un error al intentar eliminar el municipio ${name}`,
-                                  );
-                                },
-                                onSettled() {
-                                  methods.resetField('municipality.name', { defaultValue: 'undefined' })
-                                }
-                              });
-                            }
-                          }}
-                        />
-                      </InputGroup.Text>}
-                    </InputGroup>
-                  </Form.Group>
-                </Col>
+                <Localization />
               </Row>
               <Row className="border border-1 py-2 border-dark-subtle rounded-1">
                 <Col xs={3}>
@@ -627,13 +296,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                       <InputGroup.Text>Superficie</InputGroup.Text>
                       <Form.Control {...register("area")} size="sm" />
                       <InputGroup.Text>Pericia</InputGroup.Text>
-                      <Form.Control
-                        {...register("expertiseOfArea")}
-                        size="sm"
-                      />
-                      <InputGroup.Text className="fw-bold">
-                        [ha]
-                      </InputGroup.Text>
+                      <Form.Control {...register("expertiseOfArea")} size="sm" />
+                      <InputGroup.Text className="fw-bold">[ha]</InputGroup.Text>
                     </InputGroup>
                   </Form.Group>
                 </Col>
@@ -645,57 +309,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                       label="Estado"
                       icon={<DeviceSsd color="#ff5e00" />}
                     />
-                    <InputGroup>
-                      <Controller
-                        name="state.name"
-                        control={methods.control}
-                        defaultValue="undefined"
-                        render={(({ field }) => (
-                          <EnhancedSelect
-                            {...field}
-                            size="sm"
-                            placeholder={"Estado"}
-                            options={states.map(({ name }) => ({ label: name, value: name }))}
-                          />
-                        ))}
-                      />
-                      <InputGroup.Text>
-                        <DropdownMenuOfSelect
-                          disableOptions={{
-                            showEdit: state !== "undefined",
-                            showDelete: state !== "undefined"
-                          }}
-                          onCreate={() => {
-                            setModal({ form: 'createState', title: 'Crear Estado', show: true })
-                          }}
-                          onEdit={() => {
-                            setModal({ form: 'updateState', title: 'Actualizar Estado', show: true, params: { name: state } })
-                          }}
-                          onDelete={() => {
-                            const state = methods.getValues('state');
-                            if (state) {
-                              mutationStateDelete(state, {
-                                onSuccess({ data: { state: { name } } }) {
-                                  customSwalSuccess(
-                                    "Estado eliminado",
-                                    `El estado ${name} se ha eliminado correctamente`,
-                                  );
-                                },
-                                onError(error, { name }) {
-                                  customSwalError(
-                                    error.response!.data.errors[0].message,
-                                    `Ocurrio un error al intentar eliminar el departamento ${name}`,
-                                  );
-                                },
-                                onSettled() {
-                                  methods.resetField('state.name', { defaultValue: 'undefined' })
-                                }
-                              });
-                            }
-                          }}
-                        />
-                      </InputGroup.Text>
-                    </InputGroup>
+                    <StateSelect name='state.name' />
                   </Form.Group>
                 </Col>
                 <Col xs={3}>
@@ -704,51 +318,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                       label="Subcarpeta"
                       icon={<Folder color="orange" />}
                     />
-                    <InputGroup>
-                      <Controller
-                        name="subDirectory.name"
-                        control={methods.control}
-                        defaultValue="undefined"
-                        render={(({ field }) => (
-                          <EnhancedSelect
-                            {...field}
-                            size="sm"
-                            placeholder={"Subcarpeta"}
-                            options={subdirectories.map(({ name }) => ({ label: name, value: name }))}
-                          />
-                        ))}
-                      />
-                      <InputGroup.Text>
-                        <DropdownMenuOfSelect
-                          disableOptions={{
-                            showEdit: subdirectory !== "undefined",
-                            showDelete: subdirectory !== "undefined"
-                          }}
-                          onCreate={() => {
-                            setModal({ form: 'createSubdirectory', title: 'Crear Subcarpeta', show: true })
-                          }}
-                          onEdit={() => {
-                            setModal({ form: 'updateSubdirectory', title: 'Actualizar Subcarpeta', show: true, params: { name: subdirectory } })
-                          }}
-                          onDelete={() => {
-                            const subdirectory = methods.getValues('subDirectory');
-                            if (subdirectory) {
-                              mutationSubdirectoryDelete(subdirectory, {
-                                onSuccess({ data: { subdirectory: { name } } }) {
-                                  customSwalSuccess("Subcarpeta eliminada correctamente", `La subcarpeta con el nombre ${name} ha sido eliminada correctamente`);
-                                },
-                                onError(error, { name }) {
-                                  customSwalError(error.response!.data.errors[0].message, `Ocurrio un error al intentar eliminar la subcarpeta ${name}`)
-                                },
-                                onSettled() {
-                                  methods.resetField('subDirectory.name', { defaultValue: 'undefined' })
-                                }
-                              });
-                            }
-                          }}
-                        />
-                      </InputGroup.Text>
-                    </InputGroup>
+                    <SubdirectorySelect />
                   </Form.Group>
                 </Col>
                 <Col xs={3}>
@@ -757,57 +327,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                       label="Unidad responsable"
                       icon={<People color="#40d781" />}
                     />
-                    <InputGroup>
-                      <Controller
-                        name="responsibleUnit.name"
-                        control={methods.control}
-                        defaultValue="undefined"
-                        render={(({ field }) => (
-                          <EnhancedSelect
-                            {...field}
-                            size="sm"
-                            placeholder={"Unidad responsable"}
-                            options={responsibleUnits.map(({ name }) => ({ label: name, value: name }))}
-                          />
-                        ))}
-                      />
-                      <InputGroup.Text>
-                        <DropdownMenuOfSelect
-                          disableOptions={{
-                            showEdit: responsibleUnit !== "undefined",
-                            showDelete: responsibleUnit !== "undefined"
-                          }}
-                          onCreate={() => {
-                            setModal({ form: 'createResponsibleUnit', title: 'Crear unidad responsable', show: true })
-                          }}
-                          onEdit={() => {
-                            setModal({ form: 'updateResponsibleUnit', title: 'Actualizar unidad responsable', show: true, params: { name: responsibleUnit } })
-                          }}
-                          onDelete={() => {
-                            const responsibleUnit = methods.getValues('responsibleUnit');
-                            if (responsibleUnit) {
-                              mutationResponsibleUnitDelete(responsibleUnit, {
-                                onSuccess({ data: { responsibleUnit: { name } } }) {
-                                  customSwalSuccess(
-                                    "Unidad responsable eliminada",
-                                    `La unidad responsable ${name} se ha eliminado correctamente`,
-                                  );
-                                },
-                                onError(error, { name }) {
-                                  customSwalError(
-                                    error.response!.data.errors[0].message,
-                                    `Ocurrio un error al intentar eliminar la unidad responsable ${name}`,
-                                  );
-                                },
-                                onSettled() {
-                                  methods.resetField('responsibleUnit.name', { defaultValue: 'undefined' })
-                                }
-                              });
-                            }
-                          }}
-                        />
-                      </InputGroup.Text>
-                    </InputGroup>
+                    <ResponsibleUnitSelect />
                   </Form.Group>
                 </Col>
               </Row>
@@ -818,58 +338,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                       label="Tipo de predio"
                       icon={<ListColumns />}
                     />
-                    <InputGroup>
-                      <Controller
-                        name="type.name"
-                        control={methods.control}
-                        defaultValue="undefined"
-                        render={(({ field }) => (
-                          <EnhancedSelect
-                            {...field}
-                            size="sm"
-                            placeholder={"Tipo de predio"}
-                            options={types.map(({ name }) => ({ label: name, value: name }))}
-                          />
-                        ))}
-                      />
-                      <InputGroup.Text>
-                        <DropdownMenuOfSelect
-                          disableOptions={{
-                            showEdit: type !== "undefined",
-                            showDelete: type !== "undefined"
-                          }}
-                          onCreate={() => {
-                            setModal({ form: 'createType', title: 'Crear tipo de predio', show: true })
-                          }}
-                          onEdit={() => {
-                            setModal({ form: 'updateType', title: 'Actualizar tipo de predio', show: true, params: { name: type } })
-                          }}
-                          onDelete={() => {
-                            const type = methods.getValues('type');
-
-                            if (type) {
-                              mutationTypeDelete(type, {
-                                onSuccess({ data: { type: { name } } }) {
-                                  customSwalSuccess(
-                                    "Tipo de predio eliminado",
-                                    `El tipo de predio ${name} se ha eliminado correctamente`,
-                                  );
-                                },
-                                onError(error, { name }) {
-                                  customSwalError(
-                                    error.response!.data.errors[0].message,
-                                    `Ocurrio un error al intentar eliminar el tipo de predio ${name}`,
-                                  );
-                                },
-                                onSettled() {
-                                  methods.resetField('type.name', { defaultValue: 'undefined' })
-                                }
-                              });
-                            }
-                          }}
-                        />
-                      </InputGroup.Text>
-                    </InputGroup>
+                    <TypeSelect />
                   </Form.Group>
                 </Col>
                 <Col>
@@ -878,58 +347,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                       label="Actividad"
                       icon={<ActivityIcon color="red" />}
                     />
-                    <InputGroup>
-                      <Controller
-                        name="activity.name"
-                        control={methods.control}
-                        defaultValue="undefined"
-                        render={(({ field }) => (
-                          <EnhancedSelect
-                            {...field}
-                            size="sm"
-                            placeholder={"Actividad"}
-                            options={activities.map(({ name }) => ({ label: name, value: name }))}
-                          />
-                        ))}
-                      />
-                      <InputGroup.Text>
-                        <DropdownMenuOfSelect
-                          disableOptions={{
-                            showEdit: activity !== "undefined",
-                            showDelete: activity !== "undefined"
-                          }}
-                          onCreate={() => {
-                            setModal({ form: 'createActivity', title: 'Crear Actividad', show: true })
-                          }}
-                          onEdit={() => {
-                            setModal({ form: 'updateActivity', title: 'Actualizar Actividad', show: true, params: { name: activity } })
-                          }}
-                          onDelete={() => {
-                            const activity = methods.getValues('activity');
-
-                            if (activity) {
-                              mutationActivityDelete(activity, {
-                                onSuccess({ data: { activity: { name } } }) {
-                                  customSwalSuccess(
-                                    "Actividad eliminada",
-                                    `La actividad ${name} se ha eliminado correctamente`,
-                                  );
-                                },
-                                onError(error, { name }) {
-                                  customSwalError(
-                                    error.response!.data.errors[0].message,
-                                    `Ocurrio un error al intentar eliminar la actividad ${name}`,
-                                  );
-                                },
-                                onSettled() {
-                                  methods.resetField('activity.name', { defaultValue: 'undefined' })
-                                }
-                              });
-                            }
-                          }}
-                        />
-                      </InputGroup.Text>
-                    </InputGroup>
+                    <ActivitySelect />
                   </Form.Group>
                 </Col>
                 <Col>
@@ -938,58 +356,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                       label="Clasificación"
                       icon={<Diagram3 color="green" />}
                     />
-                    <InputGroup>
-                      <Controller
-                        name="clasification.name"
-                        control={methods.control}
-                        defaultValue="undefined"
-                        render={(({ field }) => (
-                          <EnhancedSelect
-                            {...field}
-                            size="sm"
-                            placeholder={"Clasificación"}
-                            options={clasifications.map(({ name }) => ({ label: name, value: name }))}
-                          />
-                        ))}
-                      />
-                      <InputGroup.Text>
-                        <DropdownMenuOfSelect
-                          disableOptions={{
-                            showEdit: clasification !== "undefined",
-                            showDelete: clasification !== "undefined"
-                          }}
-                          onCreate={() => {
-                            setModal({ form: 'createClasification', title: 'Crear Clasificación', show: true })
-                          }}
-                          onEdit={() => {
-                            setModal({ form: 'updateClasification', title: 'Actualizar Clasificación', show: true, params: { name: clasification } })
-                          }}
-                          onDelete={() => {
-                            const clasification = methods.getValues('clasification');
-
-                            if (clasification) {
-                              mutationClasificationDelete(clasification, {
-                                onSuccess({ data: { clasification: { name } } }) {
-                                  customSwalSuccess(
-                                    "Clasificación eliminada",
-                                    `La clasificación ${name} se ha eliminado correctamente`,
-                                  );
-                                },
-                                onError(error, { name }) {
-                                  customSwalError(
-                                    error.response!.data.errors[0].message,
-                                    `Ocurrio un error al intentar eliminar la clasificación ${name}`,
-                                  );
-                                },
-                                onSettled() {
-                                  methods.resetField('activity.name', { defaultValue: 'undefined' })
-                                }
-                              });
-                            }
-                          }}
-                        />
-                      </InputGroup.Text>
-                    </InputGroup>
+                    <ClasificationSelect />
                   </Form.Group>
                 </Col>
                 <Col xs={2}>
@@ -1014,7 +381,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                     <Form.Control
                       {...register("secondState")}
                       size="sm"
-                      placeholder="estado 2"
+                      placeholder="Estado 2"
                       autoComplete="off"
                     />
                   </Form.Group>
@@ -1040,26 +407,16 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                     label="Estado agrupado"
                     icon={<Box2 color="#864e16" />}
                   />
-                  <InputGroup>
-                    <Controller
-                      name="groupedState.name"
-                      control={methods.control}
-                      defaultValue="undefined"
-                      render={(({ field }) => (
-                        <EnhancedSelect
-                          {...field}
-                          size="sm"
-                          placeholder={"Estado agrupado"}
-                          options={groupedStates.map(({ name }) => ({ label: name, value: name }))}
-                        />
-                      ))}
-                    />
-                    <InputGroup.Text>
-                      <DropdownMenuOfSelect
-                        disableOptions={{
-                          showEdit: groupedState !== "undefined",
-                          showDelete: groupedState !== "undefined"
-                        }}
+                  <Controller
+                    name="groupedState.name"
+                    control={methods.control}
+                    defaultValue="undefined"
+                    render={(({ field }) => (
+                      <EnhancedSelect
+                        {...field}
+                        size="sm"
+                        placeholder={"Estado agrupado"}
+                        options={groupedStates.map(({ name }) => ({ label: name, value: name }))}
                         onCreate={() => {
                           setModal({ form: 'createGroupedState', title: 'Crear estado agrupado', show: true })
                         }}
@@ -1090,8 +447,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                           }
                         }}
                       />
-                    </InputGroup.Text>
-                  </InputGroup>
+                    ))}
+                  />
                 </Form.Group>
               </Row>
               <Row className="border border-1 py-2 border-dark-subtle rounded-1">
@@ -1141,26 +498,16 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                     label="Referencia"
                     icon={<Link45deg color="#7d7907" />}
                   />
-                  <InputGroup>
-                    <Controller
-                      name="reference.name"
-                      control={methods.control}
-                      defaultValue="undefined"
-                      render={(({ field }) => (
-                        <EnhancedSelect
-                          {...field}
-                          size="sm"
-                          placeholder={"Referencia"}
-                          options={references.map(({ name }) => ({ label: name, value: name }))}
-                        />
-                      ))}
-                    />
-                    <InputGroup.Text>
-                      <DropdownMenuOfSelect
-                        disableOptions={{
-                          showEdit: reference !== "undefined",
-                          showDelete: reference !== "undefined"
-                        }}
+                  <Controller
+                    name="reference.name"
+                    control={methods.control}
+                    defaultValue="undefined"
+                    render={(({ field }) => (
+                      <EnhancedSelect
+                        {...field}
+                        size="sm"
+                        placeholder={"Referencia"}
+                        options={references.map(({ name }) => ({ label: name, value: name }))}
                         onCreate={() => {
                           setModal({ form: 'createReference', title: 'Crear referencia', show: true })
                         }}
@@ -1191,35 +538,23 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                           }
                         }}
                       />
-                    </InputGroup.Text>
-                  </InputGroup>
+                    ))}
+                  />
                 </Form.Group>
               </Row>
             </Col>
             <Col className='d-flex flex-column gap-2' xs={12}>
               {fields.map((tracking, index) => (
-                < Row className="border border-1 py-2 border-dark-subtle rounded-1 position-relative" key={crypto.randomUUID()} >
+                <Row className="border border-1 py-2 border-dark-subtle rounded-1 position-relative" key={crypto.randomUUID()} >
                   <Col xs={3}>
                     <Form.Group>
                       <CustomLabel
                         label="Seguimiento Estado"
                         icon={<Link45deg color="#7d7907" />}
                       />
-                      <InputGroup>
-                        <Controller
-                          key={crypto.randomUUID()}
-                          name={`trackings.${index}.state.name`}
-                          defaultValue="undefined"
-                          render={(({ field }) => (
-                            <EnhancedSelect
-                              {...field}
-                              size='sm'
-                              placeholder={"Seguimiento Estado"}
-                              options={states.map(({ name }) => ({ label: name, value: name }))}
-                            />
-                          ))}
-                        />
-                      </InputGroup>
+                      <StateSelect
+                        name={`trackings.${index}.state.name`}
+                      />
                     </Form.Group>
                   </Col>
                   <Col>
@@ -1322,8 +657,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
             </Col>
           </Row>
         </Form>
-      </FormProvider >
-    </Container >
+      </FormProvider>
+    </Container>
   );
 };
 

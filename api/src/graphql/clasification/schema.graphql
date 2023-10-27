@@ -12,7 +12,7 @@ type Query {
 }
 
 type Mutation {
-  createClasification(name: String): Clasification
+  createClasification(input: ClasificationInput): Clasification
   updateClasification(name: String, item: ClasificationInput): Clasification
   deleteClasification(name: String): Clasification
 }

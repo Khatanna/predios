@@ -1,7 +1,7 @@
 # Types
 type UserToProperty {
-property: Property
-    user: User
+  property: Property
+  user: User
 }
 
 type Property {
@@ -27,11 +27,11 @@ type Property {
   city: City
   province: Province
   municipality: Municipality
-  subDirectory: SubDirectory
+  FolderLocation: FolderLocation
   technical: UserToProperty
   legal: UserToProperty
   type: Type
-  responsibleUnit: ResponsibleUnit
+  responsibleUnit: Unit
   reference: Reference
   trackings: [Tracking]
   createdAt: String
@@ -48,6 +48,7 @@ type Query {
   getAllProperties: [Property]
   getProperty(nextCursor: String): getPropertyWithCursor
   getPropertyById(id: String): Property
+  searchPropertyByAttribute(query: String): Property
   # permissionsWithUsers: [PermissionWithUser!]!
 }
 

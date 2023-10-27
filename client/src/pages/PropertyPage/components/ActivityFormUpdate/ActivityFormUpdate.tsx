@@ -3,7 +3,7 @@ import { useForm, useFormContext } from 'react-hook-form';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 import { Activity } from '../../../ActivityPage/models/types';
 import { Property } from '../../models/types';
-import { activityRepository } from '../../hooks/useRepository';
+import { useActivityMutations } from '../../hooks/useRepository';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 
 const GET_ACTIVITY_BY_NAME_QUERY = `
@@ -14,12 +14,11 @@ const GET_ACTIVITY_BY_NAME_QUERY = `
   }
 `
 
-const { useMutations } = activityRepository;
 const ActivityFormUpdate: React.FC<{ onHide: () => void, params?: Record<string, string> }> = ({ onHide, params }) => {
 	const { data, isLoading } = useCustomQuery<{ activity: Activity }>(GET_ACTIVITY_BY_NAME_QUERY, ['getActivityByName', { name: params?.name }]);
 	const { register, handleSubmit } = useForm<Activity>({ values: data?.activity });
 	const { resetField } = useFormContext<Property>();
-	const { mutationUpdate } = useMutations<{ activity: Activity }>();
+	const { mutationUpdate } = useActivityMutations<{ activity: Activity }>();
 
 	if (isLoading) {
 		return <div>Cargando...</div>

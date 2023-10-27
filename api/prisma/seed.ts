@@ -68,7 +68,7 @@ async function main() {
     }
   });
 
-  for (const username of ["carlos.chambi"]) {
+  for (const username of ["carlos.chambi", 'daniel.chipana']) {
     for (const id of permissionsID) {
       await new Promise((resolve) => setTimeout(resolve, delay));
       console.log("permiso asignado a: " + username)
@@ -228,7 +228,7 @@ async function main() {
           }
         }
       },
-      subDirectory: {
+      folderLocation: {
         connectOrCreate: {
           where: {
             name: 'Conflictos'

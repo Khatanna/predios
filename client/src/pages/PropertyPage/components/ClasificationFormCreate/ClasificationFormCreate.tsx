@@ -1,20 +1,19 @@
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { FormCreateProps } from '../../models/types';
-import { clasificationRepository } from '../../hooks/useRepository';
+import { useClasificationMutations } from '../../hooks/useRepository';
 import { Clasification } from '../../../ClasificationPage/models/types';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 
-const { useMutations } = clasificationRepository
 const ClasificationFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
 	const { register, handleSubmit } = useForm<Clasification>();
-	const { mutationCreate } = useMutations<{ clasification: Clasification }>();
+	const { mutationCreate } = useClasificationMutations<{ clasification: Clasification }>();
 	return <Form onSubmit={handleSubmit(data => {
-		mutationCreate(data, {
+		mutationCreate({ input: data }, {
 			onSuccess({ data: { clasification: { name } } }) {
 				customSwalSuccess("Clasificación creada", `La clasificacion ${name} ha sido creada correctamente`)
 			},
-			onError(error, { name }) {
+			onError(error, { input: { name } }) {
 				customSwalError(error.response!.data.errors[0].message, `Ocurrio un error al intentar crear la clasificación ${name}`)
 			},
 			onSettled() {

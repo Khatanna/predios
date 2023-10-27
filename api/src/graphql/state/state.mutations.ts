@@ -1,12 +1,13 @@
+import { State, Stage } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createState = (_parent: any, { input: { name, order, stageName } }: { input: { name: string, order: string, stageName: string } }, { userContext, prisma }: Context) => {
-  console.log({
-    name,
-    order,
-    stageName
-  })
+export const createState = (_parent: any, { input: { name, order, stage } }: { input: State & { stage: Stage } }, { userContext, prisma }: Context) => {
+  // console.log({
+  //   name,
+  //   order,
+  //   stage
+  // })
 
   try {
     hasPermission(userContext, 'CREATE', 'STATE')
@@ -15,9 +16,7 @@ export const createState = (_parent: any, { input: { name, order, stageName } }:
         name,
         order,
         stage: {
-          connect: {
-            name: stageName
-          }
+          connect: stage
         }
       }
     })
@@ -26,7 +25,7 @@ export const createState = (_parent: any, { input: { name, order, stageName } }:
   }
 };
 
-export const updateState = (_parent: any, { name, input }: { name: string, input: { name: string, order: string, stageName: string } }, { userContext, prisma }: Context) => {
+export const updateState = (_parent: any, { name, item }: { name: string, item: State & { stage: Stage } }, { userContext, prisma }: Context) => {
   try {
     hasPermission(userContext, 'UPDATE', 'STATE')
     return prisma.state.update({
@@ -34,12 +33,10 @@ export const updateState = (_parent: any, { name, input }: { name: string, input
         name
       },
       data: {
-        name: input.name,
-        order: input.order,
+        name: item.name,
+        order: item.order,
         stage: {
-          connect: {
-            name: input.stageName
-          }
+          connect: item.stage
         }
       }
     })

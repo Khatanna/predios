@@ -2,14 +2,12 @@ import { Activity } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createActivity = (_parent: any, { name }: { name: string }, { prisma, userContext }: Context) => {
+export const createActivity = (_parent: any, { input }: { input: Activity }, { prisma, userContext }: Context) => {
   try {
     hasPermission(userContext, 'CREATE', 'ACTIVITY');
 
     return prisma.activity.create({
-      data: {
-        name
-      }
+      data: input
     })
   } catch (e) {
     throw e;

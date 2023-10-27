@@ -15,12 +15,12 @@ type Query {
 
 type Mutation {
   createState(input: StateInput): State
-  updateState(name: String, input: StateInput): State
+  updateState(name: String, item: StateInput): State
   deleteState(name: String): State
 }
 
 input StateInput {
   name: String
   order: String
-  stageName: String
+  stage: StageInput
 }

@@ -30,7 +30,7 @@ export const createProperty = async (
       cityName,
       provinceName,
       municipalityName,
-      subDirectoryName,
+      folderLocationName,
       technicalUsername,
       legalUsername,
       typeName,
@@ -48,7 +48,7 @@ export const createProperty = async (
       cityName: string
       provinceName: string
       municipalityName: string
-      subDirectoryName: string
+      folderLocationName: string
       technicalUsername: string
       legalUsername: string
       typeName: string
@@ -130,9 +130,9 @@ export const createProperty = async (
             name: municipalityName
           }
         },
-        subDirectory: {
+        folderLocation: {
           connect: {
-            name: subDirectoryName
+            name: folderLocationName
           }
         },
         type: {

@@ -7,6 +7,7 @@ import { Municipality } from "../../MunicipalityPage/models/types"
 import { Province } from "../../ProvincePage/models/types"
 import { Reference } from "../../ReferencePage/models/types"
 import { ResponsibleUnit } from "../../ResponsibleUnitPage/models/types"
+import { Stage } from "../../StagePage/models/types"
 import { State } from "../../StatePage/models/types"
 import { SubDirectory } from "../../SubDirectoryPage/models/types"
 import { Type } from "../../TypePage/models/types"
@@ -24,21 +25,21 @@ const createMutations = <E extends { name: string }>({
 
   const useMutations = <
     R1,
-    V1 extends Pick<E, 'name'> & { item: E } = Pick<E, 'name'> & { item: E },
+    V1 extends { name: string } = { name: string },
     R2 extends R1 = R1,
-    V2 extends V1 = V1,
+    V2 extends Pick<E, 'name'> & { item: E } = Pick<E, 'name'> & { item: E },
     R3 extends R1 = R1,
     V3 extends E = E
   >() => {
     const { addItem, updateItem, deleteItem, rollback } = useStore();
 
     return {
-      mutationCreate: useCustomMutation<R1, Omit<V1, 'item'>>(createMutation, {
+      mutationCreate: useCustomMutation<R1, { input: V1 }>(createMutation, {
         onError() {
           rollback();
         },
-        onMutate(variables) {
-          addItem(variables)
+        onMutate({ input }) {
+          addItem(input)
         },
       })[0],
       mutationUpdate: useCustomMutation<R2, V2>(updateMutation, {
@@ -64,8 +65,8 @@ const createMutations = <E extends { name: string }>({
 }
 
 const CREATE_CITY_MUTATION = `
-	mutation CreateCity($name: String) {
-		city: createCity(name: $name) {
+	mutation CreateCity($input: CityInput) {
+		city: createCity(input: $input) {
 			name
 		}
 	}
@@ -112,8 +113,8 @@ const DELETE_PROVINCE_MUTATION = `
 `
 
 const CREATE_MUNICIPALITY_MUTATION = `
-  mutation CreateMunicipality($name: String, $provinceName: String) {
-    municipality: createMunicipality(name: $name, provinceName: $provinceName) {
+  mutation CreateMunicipality($input: MunicipalityInput) {
+    municipality: createMunicipality(input: $input) {
       name
     }
   }
@@ -144,8 +145,8 @@ const CREATE_STATE_MUTATION = `
 `
 
 const UPDATE_STATE_MUTATION = `
-  mutation UpdateState($name: String, $input: StateInput) {
-    state: updateState(name: $name, input: $input) {
+  mutation UpdateState($name: String, $item: StateInput) {
+    state: updateState(name: $name, item: $item) {
       name
     }
   }
@@ -160,8 +161,8 @@ const DELETE_STATE_MUTATION = `
 `
 
 const CREATE_SUBDIRECTORY_MUTATION = `
-  mutation CreateSubdirectory($name: String) {
-    subdirectory: createSubdirectory(name: $name) {
+  mutation CreateSubdirectory($input: SubdirectoryInput) {
+    subdirectory: createSubdirectory(input: $input) {
       name
     }
   }
@@ -184,8 +185,8 @@ const DELETE_SUBDIRECTORY_MUTATION = `
 `
 
 const CREATE_RESPONSIBLE_UNIT_MUTATION = `
-	mutation CreateResponsibleUnit($name: String) {
-		responsibleUnit: createResponsibleUnit(name: $name) {
+	mutation CreateResponsibleUnit($input: ResponsibleUnitInput) {
+		responsibleUnit: createResponsibleUnit(input: $input) {
 			name
 		}
 	}
@@ -208,8 +209,8 @@ const DELETE_RESPONSIBLE_UNIT_MUTATION = `
 `
 
 const CREATE_TYPE_MUTATION = `
-	mutation CreateType($name: String) {
-		type: createType(name: $name) {
+	mutation CreateType($input: TypeInput) {
+		type: createType(input: $input) {
 			name
 		}
 	}
@@ -232,8 +233,8 @@ const DELETE_TYPE_MUTATION = `
 `
 
 const CREATE_ACTIVITY_MUTATION = `
-	mutation CreateActivity($name: String) {
-		activity: createActivity(name: $name) {
+	mutation CreateActivity($input: ActivityInput) {
+		activity: createActivity(input: $input) {
 			name
 		}
 	}
@@ -256,8 +257,8 @@ const DELETE_ACTIVITY_MUTATION = `
 `
 
 const CREATE_CLASIFICATION_MUTATION = `
-	mutation CreateClasification($name: String) {
-		clasification: createClasification(name: $name) {
+	mutation CreateClasification($input: ClasificationInput) {
+		clasification: createClasification(input: $input) {
 			name
 		}
 	}
@@ -280,8 +281,8 @@ const DELETE_CLASIFICATION_MUTATION = `
 `
 
 const CREATE_GROUPED_STATE_MUTATION = `
-	mutation CreateGroupedState($name: String) {
-		groupedState: createGroupedState(name: $name) {
+	mutation CreateGroupedState($input: GroupedStateInput) {
+		groupedState: createGroupedState(input: $input) {
 			name
 		}
 	}
@@ -304,8 +305,8 @@ const DELETE_GROUPED_STATE_MUTATION = `
 `
 
 const CREATE_REFERENCE_MUTATION = `
-	mutation CreateReference($name: String) {
-		reference: createReference(name: $name) {
+	mutation CreateReference($input: ReferenceInput) {
+		reference: createReference(input: $input) {
 			name
 		}
 	}
@@ -327,68 +328,98 @@ const DELETE_REFERENCE_MUTATION = `
   }
 `
 
-export const cityRepository = createMutations<City>({
+const CREATE_STAGE_MUTATION = `
+	mutation CreateStage($input: StageInput) {
+		stage: createStage(input: $input) {
+			name
+		}
+	}
+`;
+
+const UPDATE_STAGE_MUTATION = `
+	mutation UpdateStage($name: String, $item: StageInput) {
+		stage: updateStage(name: $name, item: $item) {
+			name
+		}
+	}
+`;
+
+const DELETE_STAGE_MUTATION = `
+  mutation DeleteStage($name: String) {
+    stage: deleteStage(name: $name) {
+      name
+    }
+  }
+`
+
+export const { useStore: useCityStore, useMutations: useCityMutations } = createMutations<City>({
   createMutation: CREATE_CITY_MUTATION,
   updateMutation: UPDATE_CITY_MUTATION,
   deleteMutation: DELETE_CITY_MUTATION
 });
 
-export const provinceRepository = createMutations<Province>({
+export const { useStore: useProvinceStore, useMutations: useProvinceMutations } = createMutations<Province>({
   createMutation: CREATE_PROVINCE_MUTATION,
   updateMutation: UPDATE_PROVINCE_MUTATION,
   deleteMutation: DELETE_PROVINCE_MUTATION
 })
 
-export const municipalityRepository = createMutations<Municipality>({
+export const { useStore: useMunicipalityStore, useMutations: useMunicipalityMutations } = createMutations<Municipality>({
   createMutation: CREATE_MUNICIPALITY_MUTATION,
   updateMutation: UPDATE_MUNICIPALITY_MUTATION,
   deleteMutation: DELETE_MUNICIPALITY_MUTATION
 })
 
-export const stateRepository = createMutations<State>({
+export const { useStore: useStateStore, useMutations: useStateMutations } = createMutations<State>({
   createMutation: CREATE_STATE_MUTATION,
   updateMutation: UPDATE_STATE_MUTATION,
   deleteMutation: DELETE_STATE_MUTATION
 })
 
-export const subdirectoryRepository = createMutations<SubDirectory>({
+export const { useStore: useSubdirectoryStore, useMutations: useSubdirectoryMutations } = createMutations<SubDirectory>({
   createMutation: CREATE_SUBDIRECTORY_MUTATION,
   updateMutation: UPDATE_SUBDIRECTORY_MUTATION,
   deleteMutation: DELETE_SUBDIRECTORY_MUTATION
 })
 
-export const responsibleUnitRepository = createMutations<ResponsibleUnit>({
+export const { useStore: useResponsibleUnitStore, useMutations: useResponsibleUnitMutations } = createMutations<ResponsibleUnit>({
   createMutation: CREATE_RESPONSIBLE_UNIT_MUTATION,
   updateMutation: UPDATE_RESPONSIBLE_UNIT_MUTATION,
   deleteMutation: DELETE_RESPONSIBLE_UNIT_MUTATION
 });
 
-export const typeRepository = createMutations<Type>({
+export const { useStore: useTypeStore, useMutations: useTypeMutations } = createMutations<Type>({
   createMutation: CREATE_TYPE_MUTATION,
   updateMutation: UPDATE_TYPE_MUTATION,
   deleteMutation: DELETE_TYPE_MUTATION
 })
 
-export const activityRepository = createMutations<Activity>({
+export const { useStore: useActivityStore, useMutations: useActivityMutations } = createMutations<Activity>({
   createMutation: CREATE_ACTIVITY_MUTATION,
   updateMutation: UPDATE_ACTIVITY_MUTATION,
   deleteMutation: DELETE_ACTIVITY_MUTATION
 })
 
-export const clasificationRepository = createMutations<Clasification>({
+export const { useStore: useClasificationStore, useMutations: useClasificationMutations } = createMutations<Clasification>({
   createMutation: CREATE_CLASIFICATION_MUTATION,
   updateMutation: UPDATE_CLASIFICATION_MUTATION,
   deleteMutation: DELETE_CLASIFICATION_MUTATION
 })
 
-export const groupedStateRepository = createMutations<GroupedState>({
+export const { useStore: useGroupedStateStore, useMutations: useGroupedStateMutations } = createMutations<GroupedState>({
   createMutation: CREATE_GROUPED_STATE_MUTATION,
   updateMutation: UPDATE_GROUPED_STATE_MUTATION,
   deleteMutation: DELETE_GROUPED_STATE_MUTATION
 })
 
-export const referenceRespository = createMutations<Reference>({
+export const { useStore: useReferenceStore, useMutations: useReferenceMutations } = createMutations<Reference>({
   createMutation: CREATE_REFERENCE_MUTATION,
   updateMutation: UPDATE_REFERENCE_MUTATION,
   deleteMutation: DELETE_REFERENCE_MUTATION
+})
+
+export const { useStore: useStageStore, useMutations: useStageMutations } = createMutations<Stage>({
+  createMutation: CREATE_STAGE_MUTATION,
+  updateMutation: UPDATE_STAGE_MUTATION,
+  deleteMutation: DELETE_STAGE_MUTATION
 })

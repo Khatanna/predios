@@ -3,23 +3,16 @@ import { useForm, useFormContext } from 'react-hook-form';
 import { FormUpdateProps, Property } from '../../models/types';
 import { City } from '../../../CityPage/models/types';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
-import { cityRepository } from '../../hooks/useRepository';
+import { useCityMutations } from '../../hooks/useRepository';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
+import { mutationMessages } from '../../../../utilities/constants';
+import { GET_CITY_BY_NAME_QUERY } from '../../../../utilities/queries';
 
-const GET_CITY_BY_NAME_QUERY = `
-	query GetCityByName($name: String) {
-		city: getCity(name: $name) {
-			name
-		}
-	}
-`
-
-const { useMutations } = cityRepository;
 const CityFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
-	const { data, isLoading } = useCustomQuery<{ city: City }>(GET_CITY_BY_NAME_QUERY, ['getCityByName', { name: params?.name }]);
+	const { data, isLoading } = useCustomQuery<{ city: City }>(GET_CITY_BY_NAME_QUERY.query, [GET_CITY_BY_NAME_QUERY.key, { name: params?.name }]);
 	const { register, handleSubmit } = useForm<City>({ values: data?.city });
 	const { resetField } = useFormContext<Property>();
-	const { mutationUpdate } = useMutations<{ city: City }, { name: string, item: City }>();
+	const { mutationUpdate } = useCityMutations<{ city: City }, { name: string, item: City }>();
 
 	if (isLoading) {
 		return <div>Cargando...</div>
@@ -30,14 +23,14 @@ const CityFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 			mutationUpdate({ name: params.name, item: data }, {
 				onSuccess({ data: { city: { name } } }) {
 					customSwalSuccess(
-						"Departamento actualizado",
-						`El departamento ${name} se ha actualizado correctamente`,
+						mutationMessages.CREATE_CITY.title,
+						mutationMessages.CREATE_CITY.getSuccessMessage(name),
 					);
 				},
 				onError(error, { name }) {
 					customSwalError(
 						error.response!.data.errors[0].message,
-						`Ocurrio un error al intentar actualizar el departamento ${name}`,
+						titleMessages.CREATE_CITY.getErrorMessage(name),
 					);
 				},
 				onSettled() {
@@ -65,6 +58,5 @@ const CityFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 		</Row>
 	</Form>
 }
-
 
 export default CityFormUpdate;

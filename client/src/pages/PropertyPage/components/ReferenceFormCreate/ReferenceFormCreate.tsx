@@ -3,14 +3,13 @@ import { useForm } from 'react-hook-form';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 import { FormCreateProps } from '../../models/types';
 import { Reference } from '../../../ReferencePage/models/types';
-import { referenceRespository } from '../../hooks/useRepository';
+import { useReferenceMutations } from '../../hooks/useRepository';
 
-const { useMutations } = referenceRespository;
 const ReferenceFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
 	const { register, handleSubmit } = useForm<Reference>()
-	const { mutationCreate } = useMutations<{ reference: Reference }>();
+	const { mutationCreate } = useReferenceMutations<{ reference: Reference }>();
 	return <Form onSubmit={handleSubmit(data => {
-		mutationCreate(data, {
+		mutationCreate({ input: data }, {
 			onSuccess({ data: { reference: { name } } }) {
 				console.log({ name })
 				customSwalSuccess(
@@ -18,7 +17,7 @@ const ReferenceFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
 					`La referencia ${name} se ha creado correctamente`,
 				);
 			},
-			onError(error, { name }) {
+			onError(error, { input: { name } }) {
 				customSwalError(
 					error.response!.data.errors[0].message,
 					`Ocurrio un error al intentar crear la referencia ${name}`,

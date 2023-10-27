@@ -2,15 +2,14 @@ import { useForm } from 'react-hook-form';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { FormUpdateProps } from '../../models/types';
 import { Province } from '../../../ProvincePage/models/types';
-import { provinceRepository } from '../../hooks/useRepository';
+import { useProvinceMutations } from '../../hooks/useRepository';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 
 type ProvinceInput = Pick<Province, 'name' | 'code'> & { cityName: string }
 
-const { useMutations } = provinceRepository
 const ProvinceFormCreate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 	const { register, handleSubmit } = useForm<Province>();
-	const { mutationCreate } = useMutations<{ province: Province }, { input: ProvinceInput }>();
+	const { mutationCreate } = useProvinceMutations<{ province: Province }, ProvinceInput>();
 
 	return <Form onSubmit={handleSubmit(({ name, code }) => {
 		if (params) {
@@ -19,7 +18,7 @@ const ProvinceFormCreate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 					name,
 					code,
 					cityName: params.cityName
-				}, name
+				}
 			}, {
 				onSuccess({ data: { province: { name } } }) {
 					customSwalSuccess(
@@ -27,7 +26,7 @@ const ProvinceFormCreate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 						`La provincia ${name} se ha creado correctamente`,
 					);
 				},
-				onError(error, { name }) {
+				onError(error, { input: { name } }) {
 					customSwalError(
 						error.response!.data.errors[0].message,
 						`Ocurrio un error al intentar crear la provincia ${name}`,

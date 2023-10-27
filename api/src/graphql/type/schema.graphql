@@ -11,7 +11,7 @@ type Query {
 }
 
 type Mutation {
-  createType(name: String): Type 
+  createType(input: TypeInput): Type 
   updateType(name: String, item: TypeInput): Type
   deleteType(name: String): Type
 }

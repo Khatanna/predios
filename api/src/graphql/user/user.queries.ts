@@ -172,10 +172,19 @@ export const getUserByUsername = async (
   try {
     hasPermission(userContext, "READ", "USERPERMISSION");
 
-    return prisma.user.findUnique({
-      where: { username },
+    const result = await prisma.user.findUnique({
+      where: {
+        username
+      },
       include: {
         permissions: {
+          where: {
+            NOT: {
+              permission: {
+                resource: 'RECORD'
+              }
+            }
+          },
           include: {
             permission: true,
             user: true,
@@ -183,6 +192,8 @@ export const getUserByUsername = async (
         },
       },
     });
+
+    return result
   } catch (e) {
     throw e;
   }
@@ -290,12 +301,22 @@ export const getUsers = async (_parent: any, { type, filterText }: { type: strin
                 }
               }
             ] : []
+          },
+          {
+            OR: filterTextParts.length === 3 ? [
+              {
+                firstLastName: {
+                  contains: filterTextParts[1]
+                },
+                secondLastName: {
+                  contains: filterTextParts[2]
+                }
+              }
+            ] : []
           }
         ] : undefined
       }
     })
-    // console.log(result.map(u => u.username))
-
     return result;
   } catch (e) {
     throw e;

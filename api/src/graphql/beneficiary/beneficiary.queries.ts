@@ -25,7 +25,7 @@ export const getAllBeneficiaries = (_parent: any, args: { name?: string }, { pri
             type: true,
             responsibleUnit: true,
             state: true,
-            subDirectory: true,
+            folderLocation: true,
           }
         }
       },

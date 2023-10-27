@@ -2,14 +2,12 @@ import { Reference } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createReference = (_parent: any, { name }: Pick<Reference, 'name'>, { prisma, userContext }: Context) => {
+export const createReference = (_parent: any, { input }: { input: Reference }, { prisma, userContext }: Context) => {
   try {
     hasPermission(userContext, 'CREATE', 'REFERENCE');
 
     return prisma.reference.create({
-      data: {
-        name
-      }
+      data: input
     })
   } catch (e) {
     throw e;

@@ -11,6 +11,7 @@ import { LocalizationList } from './pages/LocalizationPage/components/Localizati
 import { CityPage } from './pages/CityPage';
 import { PropertyForm } from './pages/PropertyPage/components/PropertyForm';
 import { AuthProvider } from './context/AuthContext';
+import { SeekerProvider } from './context/SeekerContext';
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"))
 const Permission = lazy(() => import("./pages/UserPage/components/Permission/Permission"))
 const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
@@ -30,58 +31,60 @@ const LazyComponent = ({ Component }: { Component: React.ComponentType<NonNullab
 
 function App() {
   return (
-    <BrowserRouter >
+    <BrowserRouter>
       <AxiosProvider>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<LazyComponent Component={NavBar} />}>
-              <Route index element={<LazyComponent Component={HomePage} />} />
-              <Route path="/users">
-                <Route index element={<LazyComponent Component={UserList} />} />
-                <Route path="create" Component={FormCreateUser} />
-                <Route
-                  path="edit"
-                  Component={() => {
-                    const { state } = useLocation()
+          <SeekerProvider>
+            <Routes>
+              <Route path="/" element={<LazyComponent Component={NavBar} />}>
+                <Route index element={<LazyComponent Component={HomePage} />} />
+                <Route path="/users">
+                  <Route index element={<LazyComponent Component={UserList} />} />
+                  <Route path="create" Component={FormCreateUser} />
+                  <Route
+                    path="edit"
+                    Component={() => {
+                      const { state } = useLocation()
 
-                    return <FormCreateUser user={state} />
-                  }}
-                />
-                <Route path="permissions" element={<LazyComponent Component={Permission} />} />
+                      return <FormCreateUser user={state} />
+                    }}
+                  />
+                  <Route path="permissions" element={<LazyComponent Component={Permission} />} />
+                </Route>
+                <Route path="/admin">
+                  {/* <Route index Component={AdminPage} /> */}
+                  <Route path="records" element={<LazyComponent Component={RecordPage} />} />
+                  <Route path="permissions">
+                    <Route index element={<LazyComponent Component={PermissionPage} />} />
+                    <Route path="create" Component={FormCreatePermission} />
+                    <Route path="edit" Component={() => {
+                      const { state } = useLocation()
+
+                      return <FormCreatePermission permission={state} />
+                    }}></Route>
+                  </Route>
+                  <Route path="properties" element={<LazyComponent Component={PropertyPage} />} >
+                    <Route index Component={PropertyList}></Route>
+                    <Route path='create' Component={PropertyForm}></Route>
+                    <Route path=':id' Component={Property}></Route>
+                  </Route>
+                  <Route path="activities" element={<LazyComponent Component={ActivityPage} />} />
+                  <Route path="beneficiaries" element={<LazyComponent Component={BeneficiaryPage} />} />
+                  <Route path='localizations' element={<LazyComponent Component={LocalizationPage} />}>
+                    <Route index Component={LocalizationList}></Route>
+                  </Route>
+                  <Route path='cities' element={<LazyComponent Component={CityPage} />}></Route>
+                  <Route path='provinces'></Route>
+                  <Route path='municipalities'></Route>
+                </Route>
               </Route>
-              <Route path="/admin">
-                {/* <Route index Component={AdminPage} /> */}
-                <Route path="records" element={<LazyComponent Component={RecordPage} />} />
-                <Route path="permissions">
-                  <Route index element={<LazyComponent Component={PermissionPage} />} />
-                  <Route path="create" Component={FormCreatePermission} />
-                  <Route path="edit" Component={() => {
-                    const { state } = useLocation()
-
-                    return <FormCreatePermission permission={state} />
-                  }}></Route>
-                </Route>
-                <Route path="properties" element={<LazyComponent Component={PropertyPage} />} >
-                  <Route index Component={PropertyList}></Route>
-                  <Route path='create' Component={PropertyForm}></Route>
-                  <Route path=':id' Component={Property}></Route>
-                </Route>
-                <Route path="activities" element={<LazyComponent Component={ActivityPage} />} />
-                <Route path="beneficiaries" element={<LazyComponent Component={BeneficiaryPage} />} />
-                <Route path='localizations' element={<LazyComponent Component={LocalizationPage} />}>
-                  <Route index Component={LocalizationList}></Route>
-                </Route>
-                <Route path='cities' element={<LazyComponent Component={CityPage} />}></Route>
-                <Route path='provinces'></Route>
-                <Route path='municipalities'></Route>
+              <Route path="/auth">
+                <Route index Component={LoginPage} />
               </Route>
-            </Route>
-            <Route path="/auth">
-              <Route index Component={LoginPage} />
-            </Route>
 
-            <Route path="*" element={<LazyComponent Component={NotFoundPage} />}></Route>
-          </Routes>
+              <Route path="*" element={<LazyComponent Component={NotFoundPage} />}></Route>
+            </Routes>
+          </SeekerProvider>
         </AuthProvider>
       </AxiosProvider >
     </BrowserRouter >

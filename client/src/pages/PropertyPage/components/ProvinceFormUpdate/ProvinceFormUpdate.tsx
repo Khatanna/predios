@@ -3,7 +3,7 @@ import { Row, Col, Form, Button } from 'react-bootstrap';
 import { FormUpdateProps } from '../../models/types';
 import { Province } from '../../../ProvincePage/models/types';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
-import { provinceRepository } from '../../hooks/useRepository';
+import { useProvinceMutations } from '../../hooks/useRepository';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 
 const GET_PROVINCE_BY_NAME_QUERY = `
@@ -15,15 +15,13 @@ const GET_PROVINCE_BY_NAME_QUERY = `
 	}
 `
 
-const { useMutations } = provinceRepository;
-
 const ProvinceFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 	const { data } = useCustomQuery<{ province: Province }>(GET_PROVINCE_BY_NAME_QUERY, ['getProvinceByName', { name: params?.name }])
 
 	const { register, handleSubmit } = useForm<Province>({
 		values: data?.province
 	})
-	const { mutationUpdate } = useMutations<{ province: Province }>();
+	const { mutationUpdate } = useProvinceMutations<{ province: Province }>();
 
 	return <Form onSubmit={handleSubmit(data => {
 		if (params) {

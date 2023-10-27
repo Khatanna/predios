@@ -1,13 +1,12 @@
 import { Row, Col, Form, Button } from 'react-bootstrap';
-import { FormUpdateProps } from '../../models/types';
-import { useForm, Controller } from 'react-hook-form'
+import { FormUpdateProps, Property } from '../../models/types';
+import { useForm, Controller, useFormContext } from 'react-hook-form'
 import { State } from '../../../StatePage/models/types';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 import { EnhancedSelect } from '../EnhancedSelect';
 import { Stage } from '../../../StagePage/models/types';
-import { stateRepository } from '../../hooks/useRepository';
+import { useStateMutations } from '../../hooks/useRepository';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
-
 
 const GET_STATE_BY_NAME = `
   query GetStateByName($name: String) {
@@ -29,28 +28,18 @@ const GET_ALL_STAGES_QUERY = `
 	}
 `
 
-type InputState = {
-	input: Pick<State, 'name' | 'order'> & { stageName: string }
-}
-
-
-const { useMutations } = stateRepository;
 const StateFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 	const { data: state } = useCustomQuery<{ state: State }>(GET_STATE_BY_NAME, ['getStateByName', { name: params?.name }])
-
 	const { data } = useCustomQuery<{ stages: Stage[] }>(GET_ALL_STAGES_QUERY, ['getAllStages']);
 	const { register, handleSubmit, control } = useForm<State>({
 		values: state?.state
 	});
-	const { mutationUpdate } = useMutations<{ state: State }, { name: string } & InputState>();
+	const { mutationUpdate } = useStateMutations<{ state: State }>();
+	const { resetField } = useFormContext<Property>();
 	return <Form onSubmit={handleSubmit(data => {
 		if (params) {
 			mutationUpdate({
-				name: params.name, item: data, input: {
-					name: data.name,
-					order: data.order,
-					stageName: data.stage.name
-				}
+				name: params.name, item: data
 			}, {
 				onSuccess({ data: { state: { name } } }) {
 					customSwalSuccess(
@@ -66,6 +55,7 @@ const StateFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 				},
 				onSettled() {
 					onHide()
+					resetField('state.name', { defaultValue: 'undefined' })
 				},
 			})
 		}

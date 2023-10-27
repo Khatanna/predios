@@ -4,27 +4,12 @@ type UserType {
   users: [User!]!
 }
 
-type UserTypeCreate {
-  created: Boolean
-  userType: UserType
-}
-
-type UserTypeDelete {
-  deleted: Boolean
-  userType: UserType
-}
-
-type UserTypeUpdate {
-  updated: Boolean
-  userType: UserType
-}
-
 type Query {
   getAllUserTypes: [UserType!]
 }
 
 type Mutation {
-  createUserType(input: CreateTypeUserInput): UserTypeCreate
+  createUserType(input: CreateTypeUserInput): UserType
 }
 
 input CreateTypeUserInput {

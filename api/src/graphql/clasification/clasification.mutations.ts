@@ -2,14 +2,12 @@ import { Clasification } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createClasification = (_parent: any, { name }: Pick<Clasification, 'name'>, { prisma, userContext }: Context) => {
+export const createClasification = (_parent: any, { input }: { input: Clasification }, { prisma, userContext }: Context) => {
 
   try {
     hasPermission(userContext, 'CREATE', 'CLASIFICATION');
     return prisma.clasification.create({
-      data: {
-        name
-      }
+      data: input
     })
   } catch (e) {
     throw e;

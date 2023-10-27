@@ -12,7 +12,7 @@ type Query {
 }
 
 type Mutation {
-  createActivity(name: String): Activity
+  createActivity(input: ActivityInput): Activity
   updateActivity(name: String, item: ActivityInput): Activity
   deleteActivity(name: String): Activity
 }

@@ -22,21 +22,6 @@ type User {
   status: String!
 }
 
-type UserCreate {
-  created: Boolean
-  user: User
-}
-
-type UserDelete {
-  deleted: Boolean
-  user: User
-}
-
-type UserUpdate {
-  updated: Boolean
-  user: User
-}
-
 type getUserPagination {
   nextCursor: String
   prevCursor: String
@@ -81,14 +66,14 @@ type UserStatusChangeMany {
 
 # Mutations
 type Mutation {
-  createUser(input: CreateUserInput): UserCreate
-  updateUserByUsername(input: UpdateUserByUsernameInput): UserUpdate
-  updateUserById(input: ForUpdateUserById): UserUpdate
-  updateStateUserByUsername(input: UpdateUserByUsernameInput): UserUpdate
+  createUser(input: CreateUserInput): User
+  updateUserByUsername(input: UpdateUserByUsernameInput): User
+  updateUserById(input: ForUpdateUserById): User
+  updateStateUserByUsername(input: UpdateUserByUsernameInput): User
   updateStateOfPermissionUserByUsername(input: UpdateStateOfPermissionUserByUsernameInput): UserPermissionUpdate
   updateStateUsersByUsername(input: UpdateStateOfPermissionUsersByUsernameInput): UserStatusChangeMany
-  deleteUserById(id: ID): UserDelete
-  deleteUserByUsername(username: String): UserDelete
+  deleteUserById(id: ID): User
+  deleteUserByUsername(username: String): User
   deletePermissionOfUserByUsername(input: DeletePermissionOfUserByUsernameInput): UserPermissionDelete
   createPermissionForUser(
     input: UpdatePermissionsUserByUsernameInput
@@ -102,7 +87,7 @@ input CreateUserInput {
   secondLastName: String!
   username: String!
   password: String!
-  typeId: String!
+  type: UserTypeInput
   status: String
 }
 

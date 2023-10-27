@@ -8,7 +8,7 @@ type TextOptions = {
 	deleteText: string;
 }
 
-type Options = {
+export type Options = {
 	showCreate: boolean;
 	showEdit: boolean;
 	showDelete: boolean
@@ -17,23 +17,23 @@ type Options = {
 export type DropdownMenuOfSelectProps = {
 	textOptions?: Partial<TextOptions>
 	disableOptions?: Partial<Options>,
-	onCreate: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-	onEdit: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-	onDelete: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+	onCreate?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+	onEdit?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+	onDelete?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
 const DropdownMenuOfSelect: React.FC<DropdownMenuOfSelectProps> = ({ onCreate, onEdit, onDelete, disableOptions, textOptions }) => {
-	const { showCreate, showEdit, showDelete } = { showCreate: true, showEdit: true, showDelete: true, ...disableOptions };
+	const { showCreate, showEdit, showDelete } = { showCreate: !!onCreate, showEdit: !!onEdit, showDelete: !!onDelete, ...disableOptions };
 	const { createText, editText, deleteText } = { createText: "➕ Crear", editText: "✏ Editar", deleteText: "🗑 Eliminar", ...textOptions }
 
 	return <DropdownMenu as={DropdownButton}>
-		{showCreate && <Dropdown.Item onClick={onCreate}>
+		{onCreate && showCreate && <Dropdown.Item onClick={onCreate}>
 			{createText}
 		</Dropdown.Item>}
-		{showEdit && <Dropdown.Item onClick={onEdit}>
+		{onEdit && showEdit && <Dropdown.Item onClick={onEdit}>
 			{editText}
 		</Dropdown.Item>}
-		{showDelete && <Dropdown.Item onClick={onDelete}>
+		{onDelete && showDelete && <Dropdown.Item onClick={onDelete}>
 			{deleteText}
 		</Dropdown.Item>}
 	</DropdownMenu>
