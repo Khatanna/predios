@@ -1,25 +1,30 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useState } from "react";
-import { Alert, Button, Col, Form, InputGroup, Row, Spinner, FormSelectProps } from "react-bootstrap";
 import {
-  CheckCircle,
-  ExclamationTriangle,
-  PlusCircle,
-  XCircle,
-} from "react-bootstrap-icons";
+  Alert,
+  Button,
+  Col,
+  Form,
+  InputGroup,
+  Row,
+  Spinner,
+  FormSelectProps,
+} from "react-bootstrap";
+import { CheckCircle, ExclamationTriangle } from "react-bootstrap-icons";
 import { useForm, Controller } from "react-hook-form";
 import Swal from "sweetalert2";
 import * as yup from "yup";
 import { Error } from "../../../LoginPage/styled-components/Error";
-import type { User, UserType } from "../../models/types";
+import { User, UserInput, UserType } from "../../models/types";
+import { useFetchCreateUserType, useFetchCreateUser } from "../../hooks";
 import {
-  useFetchCreateUserType,
-  useFetchCreateUser,
-} from "../../hooks";
-import { customSwalError, customSwalSuccess } from "../../../../utilities/alerts";
+  customSwalError,
+  customSwalSuccess,
+} from "../../../../utilities/alerts";
 import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { mutationMessages, status } from "../../../../utilities/constants";
 import { useCustomMutation } from "../../../../hooks";
+import { Icon } from "../../../../components/Icon";
+import { EnhancedSelect } from "../../../PropertyPage/components/EnhancedSelect";
 
 export interface FormCreateUserProps {
   user?: User;
@@ -41,9 +46,11 @@ const schema = yup.object({
     .required("La contraseña es un campo obligatorio")
     .min(8, "La contraseña debe tener almenos 8 caracteres")
     .max(32, "La contraseña no debe tener mas de 32 caracteres"),
-  type: yup.object({
-    name: yup.string().required('el nombre del tipo es un campo requerido')
-  }).required('El tipo es un campo requerdio'),
+  type: yup
+    .object({
+      name: yup.string().required("el nombre del tipo es un campo requerido"),
+    })
+    .required("El tipo es un campo requerdio"),
   status: yup.string().required("El usuario debe tener un estado"),
 });
 
@@ -76,54 +83,38 @@ const SelectUserType: React.FC<FormSelectProps> = (props) => {
   );
 
   if (isLoading) {
-    return <div className="d-flex justify-content-center">
-      <Spinner variant='danger' />
-    </div>
+    return (
+      <div className="d-flex justify-content-center">
+        <Spinner variant="danger" />
+      </div>
+    );
   }
 
   if (error) {
-    return <Alert variant='warning' className="p-1 py-2 m-0">
-      <small>
-        <div className='d-flex align-items-center gap-2'>
-          <ExclamationTriangle size={16} color='red' />
-          <div>
-            No tienes permisos para ver los tipos de usuario
+    return (
+      <Alert variant="warning" className="p-1 py-2 m-0">
+        <small>
+          <div className="d-flex align-items-center gap-2">
+            <ExclamationTriangle size={16} color="red" />
+            <div>No tienes permisos para ver los tipos de usuario</div>
           </div>
-        </div>
-      </small>
-    </Alert>
+        </small>
+      </Alert>
+    );
   }
 
   return (
-    <InputGroup>
-      <InputGroup.Text>
-        <PlusCircle
-          style={{ cursor: "pointer" }}
-        />
-      </InputGroup.Text>
-      <Form.Select {...props}>
-        <option value={"undefined"} selected disabled>
-          Tipo
-        </option>
-        {data?.userTypes.map(({ id, name }: UserType) => (
-          <option
-            value={id}
-            key={crypto.randomUUID()}
-          >
-            {name}
-          </option>
-        ))}
-      </Form.Select>
-    </InputGroup>
+    <EnhancedSelect
+      placeholder="Tipo de usuario"
+      options={data?.userTypes}
+      onCreate={() => {}}
+    />
   );
 };
-
+ 
 const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
-  const [showEditUserType, setShowEditUserType] = useState(false);
-  const [userType, setUserType] = useState("");
-  const { createUserType } = useFetchCreateUserType();
+  // const { createUserType } = useFetchCreateUserType();
   const { createUser } = useFetchCreateUser();
-
   const {
     register,
     setValue,
@@ -131,40 +122,26 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
     handleSubmit,
     reset,
     control,
+    watch,
     formState: { errors },
-  } = useForm({
+  } = useForm<UserInput>({
     defaultValues: user,
-    resolver: yupResolver<Omit<User, 'id' | 'connection' | 'createdAt'>>(yup.object({
-      names: yup.string().required("El nombre es un campo obligatorio"),
-      username: yup
-        .string()
-        .required("El nombre de usuario es un campo obligatorio"),
-      firstLastName: yup
-        .string()
-        .required("El apellido paterno del usuario es un campo obligatorio"),
-      secondLastName: yup
-        .string()
-        .required("El apellido paterno del usuario es un campo obligatorio"),
-      password: yup
-        .string()
-        .required("La contraseña es un campo obligatorio")
-        .min(8, "La contraseña debe tener almenos 8 caracteres")
-        .max(32, "La contraseña no debe tener mas de 32 caracteres"),
-      type: yup.object({
-        id: yup.string().required(),
-        name: yup.string().required('el nombre del tipo es un campo requerido')
-      }).required('El tipo es un campo requerdio'),
-      status: yup.string().required("El usuario debe tener un estado"),
-    })),
+    resolver: yupResolver<UserInput>(schema),
   });
+  const names = watch("names");
   const [updateUser] = useCustomMutation<
     { user: User },
-    { input: { username: string, data: Omit<User, 'id' | 'connection' | 'createdAt'> } }
+    {
+      input: {
+        username: string;
+        data: UserInput;
+      };
+    }
   >(UDPATE_USER_MUTATION, {
     onSuccess({ user: { username } }) {
       customSwalSuccess(
         mutationMessages.UPDATE_USER.title,
-        mutationMessages.UPDATE_USER.getSuccessMessage(username)
+        mutationMessages.UPDATE_USER.getSuccessMessage(username),
       );
     },
     onError(error) {
@@ -200,12 +177,12 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
     }
   };
 
-  const submit = (data: Omit<User, 'id' | 'connection' | 'createdAt'>) => {
+  const submit = (data: Omit<User, "id" | "connection" | "createdAt">) => {
     if (user) {
       updateUser({
         input: {
           username: user.username,
-          data
+          data,
         },
       });
     } else {
@@ -218,7 +195,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
 
   return (
     <Row>
-      <Col xs={12} md={5}>
+      <Col xs={12} sm={11} md={10} lg={9} xl={8}>
         <Form
           className="row g-3 position-absolute top-50 start-50 translate-middle"
           onSubmit={handleSubmit(submit)}
@@ -226,95 +203,36 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
           <Col xs={7}>
             <Form.Group>
               <Form.Label>Nombres</Form.Label>
-              <div className="input-wrapper position-relative">
+              <InputGroup>
                 <Form.Control
                   placeholder="Nombres"
                   {...register("names")}
                   onKeyDown={(e) => e.key === "Enter" && handleSetCredentials()}
                   autoComplete="off"
                 />
-                {!user && (
-                  <CheckCircle
-                    role="button"
-                    className="position-absolute top-50 end-0 translate-middle img-fluid"
-                    onClick={handleSetCredentials}
-                  />
+                {!user && names?.length > 0 && (
+                  <Icon label="Autocompletar">
+                    <InputGroup.Text
+                      role="button"
+                      onClick={handleSetCredentials}
+                    >
+                      <CheckCircle color="green" />
+                    </InputGroup.Text>
+                  </Icon>
                 )}
-              </div>
+              </InputGroup>
               <Error>{errors.names?.message}</Error>
             </Form.Group>
           </Col>
           <Col xs={5}>
             <Form.Group>
               <Form.Label>Tipo</Form.Label>
-              {showEditUserType ? (
-                <div className="input-wrapper position-relative">
-                  <InputGroup>
-                    <InputGroup.Text>
-                      <XCircle
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setShowEditUserType(false)}
-                      />{" "}
-                    </InputGroup.Text>
-                    <Form.Control
-                      placeholder="Tipo"
-                      autoComplete="off"
-                      value={userType}
-                      onChange={(e) => setUserType(e.target.value)}
-                      className="bg-success-subtle"
-                    />
-                    <CheckCircle
-                      role="button"
-                      className="position-absolute top-50 end-0 translate-middle img-fluid"
-                      onClick={() => {
-                        if (userType.length !== 0) {
-                          createUserType({
-                            input: {
-                              name: userType[0]
-                                .toUpperCase()
-                                .concat(userType.slice(1)),
-                            },
-                          });
-                          setUserType("");
-                        } else {
-                          const Toast = Swal.mixin({
-                            toast: true,
-                            position: "top",
-                            showConfirmButton: false,
-                            timer: 3500,
-                            timerProgressBar: true,
-                            didOpen: (toast: HTMLElement) => {
-                              toast.addEventListener(
-                                "mouseenter",
-                                Swal.stopTimer,
-                              );
-                              toast.addEventListener(
-                                "mouseleave",
-                                Swal.resumeTimer,
-                              );
-                            },
-                          });
-
-                          Toast.fire({
-                            icon: "warning",
-                            title: "No se puede crear un tipo sin nombre",
-                          });
-                        }
-                      }}
-                    />
-                  </InputGroup>
-                </div>
-              ) : (
-                <Controller
-                  name="type.name"
-                  control={control}
-                  render={({ field }) => (
-                    <SelectUserType
-                      {...field}
-                    />
-                  )}
-                />
-              )}
+              <Controller
+                name="type.name"
+                control={control}
+                defaultValue={"undefined"}
+                render={({ field }) => <SelectUserType {...field} />}
+              />
               <Error>{errors.type?.name?.message}</Error>
             </Form.Group>
           </Col>
@@ -329,7 +247,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               <Error>{errors.firstLastName?.message}</Error>
             </Form.Group>
           </Col>
-          <Col xs={12} md={6}>
+          <Col sm={6}>
             <Form.Group>
               <Form.Label>Apellido materno</Form.Label>
               <Form.Control
@@ -340,7 +258,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               <Error>{errors.secondLastName?.message}</Error>
             </Form.Group>
           </Col>
-          <Col xs={12} md={4}>
+          <Col sm={4}>
             <Form.Group>
               <Form.Label>Nombre de usuario</Form.Label>
               <Form.Control
@@ -351,7 +269,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               <Error>{errors.username?.message}</Error>
             </Form.Group>
           </Col>
-          <Col xs={12} md={4}>
+          <Col sm={4}>
             <Form.Group>
               <Form.Label>Contraseña</Form.Label>
               <Form.Control
@@ -362,7 +280,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               <Error>{errors.password?.message}</Error>
             </Form.Group>
           </Col>
-          <Col>
+          <Col sm={4}>
             <Form.Group>
               <Form.Label>Estado del usuario</Form.Label>
               <div className="d-flex flex-row justify-content-around border border-1 p-1 rounded-2">
@@ -385,7 +303,6 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               className="float-end w-100 text-white"
               type="submit"
               variant="success"
-              disabled={showEditUserType}
             >
               {user ? "Actualizar" : "Crear"} usuario
             </Button>

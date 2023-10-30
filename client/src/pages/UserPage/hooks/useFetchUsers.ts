@@ -16,7 +16,6 @@ const GET_ALL_USERS_QUERY = `
         status
         connection
         createdAt
-        typeId
         type {
           name
         }
@@ -33,18 +32,26 @@ export const useFetchUsers = () => {
     numberOfResults,
     filterText,
   } = useUsersStore();
-  const { isLoading, error, data } = useCustomQuery<{ results: { nextCursor: string; prevCursor: string; total: number, users: User[] } }>(
+  const { isLoading, error, data } = useCustomQuery<{
+    results: {
+      nextCursor: string;
+      prevCursor: string;
+      total: number;
+      users: User[];
+    };
+  }>(
     GET_ALL_USERS_QUERY,
     ["getAllUsers", { numberOfResults, nextCursor, prevCursor, filterText }],
     {
       onSuccess({ results }) {
-        setInitialData({ users: results.users, total: results.total })
+        setInitialData({ users: results.users, total: results.total });
       },
-    }
+    },
   );
 
   return {
-    isLoading, error,
-    data
-  }
-}
+    isLoading,
+    error,
+    data,
+  };
+};

@@ -32,11 +32,10 @@ $custom-chip-colors: (
   DELETE: $red,
   GROUPEDSTATE: $blue-800,
   REFERENCE: $red-800,
-  TRACKING: $yellow-800
+  TRACKING: $yellow-800,
 );
 
-@each $type,
-$color in $custom-chip-colors {
+@each $type, $color in $custom-chip-colors {
   .chip-#{$type} {
     font-size: 0.8rem;
     text-align: center;

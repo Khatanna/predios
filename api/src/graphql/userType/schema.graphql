@@ -9,9 +9,9 @@ type Query {
 }
 
 type Mutation {
-  createUserType(input: CreateTypeUserInput): UserType
+  createUserType(input: UserTypeInput): UserType
 }
 
-input CreateTypeUserInput {
+input UserTypeInput {
   name: String!
 }

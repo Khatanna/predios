@@ -17,7 +17,6 @@ type User {
   createdAt: String!
   updatedAt: String!
   connection: String!
-  typeId: String
   type: UserType
   status: String!
 }
@@ -37,7 +36,12 @@ type UsersPaginate {
 
 # Queries
 type Query {
-  getAllUsers(nextCursor: String, prevCursor: String, numberOfResults: Int, filterText: String): UsersPaginate
+  getAllUsers(
+    nextCursor: String
+    prevCursor: String
+    numberOfResults: Int
+    filterText: String
+  ): UsersPaginate
   getUsers(type: String, filterText: String): [User]!
   getUserById(id: ID): User
   getUserByUsername(username: String): User
@@ -66,53 +70,36 @@ type UserStatusChangeMany {
 
 # Mutations
 type Mutation {
-  createUser(input: CreateUserInput): User
-  updateUserByUsername(input: UpdateUserByUsernameInput): User
-  updateUserById(input: ForUpdateUserById): User
-  updateStateUserByUsername(input: UpdateUserByUsernameInput): User
-  updateStateOfPermissionUserByUsername(input: UpdateStateOfPermissionUserByUsernameInput): UserPermissionUpdate
-  updateStateUsersByUsername(input: UpdateStateOfPermissionUsersByUsernameInput): UserStatusChangeMany
+  createUser(input: UserInput): User
+  updateUserByUsername(username: String, input: UserInput): User
+  updateUserById(id: ID, input: UserInput): User
+  updateStateUserByUsername(input: UserInput): User
+  updateStateOfPermissionUserByUsername(
+    input: UpdateStateOfPermissionUserByUsernameInput
+  ): UserPermissionUpdate
+  updateStateUsersByUsername(
+    input: UpdateStateOfPermissionUsersByUsernameInput
+  ): UserStatusChangeMany
   deleteUserById(id: ID): User
   deleteUserByUsername(username: String): User
-  deletePermissionOfUserByUsername(input: DeletePermissionOfUserByUsernameInput): UserPermissionDelete
+  deletePermissionOfUserByUsername(
+    input: DeletePermissionOfUserByUsernameInput
+  ): UserPermissionDelete
   createPermissionForUser(
     input: UpdatePermissionsUserByUsernameInput
   ): UserUpdatePermission
 }
 
 # Input types
-input CreateUserInput {
+input UserInput {
   names: String!
   firstLastName: String!
   secondLastName: String!
   username: String!
   password: String!
-  type: UserTypeInput
-  status: String
-}
-
-input UpdateUserInput {
-  names: String
-  firstLastName: String
-  secondLastName: String
-  username: String
-  password: String
-  typeId: String
-  status: String
   permissions: [CreatePermissionInput]
-  createdAt: String
-  updatedAt: String
-  type: CreateTypeUserInput
-}
-
-input ForUpdateUserById {
-  id: ID!
-  data: UpdateUserInput
-}
-
-input UpdateUserByUsernameInput {
-  username: String!
-  data: UpdateUserInput
+  type: UserTypeInput!
+  status: String!
 }
 
 input PermissionsInput {

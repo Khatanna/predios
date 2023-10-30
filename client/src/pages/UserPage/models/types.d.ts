@@ -4,7 +4,7 @@ export type UserType = {
 };
 
 export type User = {
-  id: string
+  id: string;
   names: string;
   firstLastName: string;
   secondLastName: string;
@@ -16,6 +16,7 @@ export type User = {
   connection: string;
 };
 
-export type APIGetAllUser = {
-  allUsers: User[];
-};
+export type UserTypeInput = Omit<UserInput, "id">;
+
+export type UserInput = Omit<User, "id" | "connection" | "createdAt" | "type"> &
+  UserTypeInput;

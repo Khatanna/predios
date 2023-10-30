@@ -1,20 +1,41 @@
 import { ApolloServer } from "@apollo/server";
-import fs from 'fs';
-import path from 'path'
+import fs from "fs";
+import path from "path";
 import { unwrapResolverError } from "@apollo/server/errors";
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { Prisma } from "@prisma/client";
-import cors from 'cors';
-import express from 'express';
-import { useServer } from 'graphql-ws/lib/use/ws';
+import cors from "cors";
+import express, { Express, RequestHandler } from "express";
+import { useServer } from "graphql-ws/lib/use/ws";
 import { GraphQLError } from "graphql/error";
-import https from 'https';
-import { WebSocketServer } from 'ws';
+import https from "https";
+import { WebSocketServer } from "ws";
 import { Code, Status } from "../constants";
 import { prisma, pubSub, throwUnauthorizedError } from "../utilities";
 import { getError } from "../utilities/getError";
 import { throwPrismaError } from "../utilities/throwPrismaError";
 import { schema } from "./schema";
+
+// interface IServer {
+//   init(): void
+// }
+// class Server implements IServer {
+//   private httpsServer: https.Server
+//   constructor(private app: Express) {
+//     // this.app.use(express.json());
+//     this.httpsServer = https.createServer(
+//       {
+//         key: fs.readFileSync(path.join(__dirname, "../key.pem")),
+//         cert: fs.readFileSync(path.join(__dirname, "../cert.pem")),
+//       },
+//       app,
+//     );
+//   }
+
+//   init() {
+//     this.app.listen();
+//   }
+// }
 
 export const app = express();
 export const httpsServer = https.createServer(
@@ -22,7 +43,8 @@ export const httpsServer = https.createServer(
     key: fs.readFileSync(path.join(__dirname, "../key.pem")),
     cert: fs.readFileSync(path.join(__dirname, "../cert.pem")),
   },
-  app);
+  app,
+);
 
 app.use(
   cors({
@@ -34,27 +56,30 @@ app.use(
     ],
     credentials: true,
     // methods: ["POST", "OPTION", "GET"],
-  })
-)
-app.use(express.json())
+  }),
+);
+app.use(express.json());
 const wsServer = new WebSocketServer({
   server: httpsServer,
-  path: '/',
+  path: "/",
+});
 
-})
-
-const serverCleanup = useServer({
-  schema,
-  onConnect(ctx) {
-    // console.log("usuarios conectado: ", ctx)
+const serverCleanup = useServer(
+  {
+    schema,
+    onConnect(ctx) {
+      // console.log("usuarios conectado: ", ctx)
+    },
+    // retirar prisma para conservar la seguridad
+    context: () => {
+      return {
+        prisma,
+        pubSub,
+      };
+    },
   },
-  // retirar prisma para conservar la seguridad
-  context: () => {
-    return {
-      prisma, pubSub
-    }
-  }
-}, wsServer)
+  wsServer,
+);
 export const server = new ApolloServer({
   schema,
   plugins: [
@@ -63,11 +88,11 @@ export const server = new ApolloServer({
       async serverWillStart() {
         return {
           async drainServer() {
-            await serverCleanup.dispose()
-          }
-        }
-      }
-    }
+            await serverCleanup.dispose();
+          },
+        };
+      },
+    },
   ],
   // introspection: false,
   // plugins: [ApolloServerPluginLandingPageDisabled()],
