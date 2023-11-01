@@ -1,4 +1,4 @@
-import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, InputGroup, ListGroup, Row } from "react-bootstrap";
 import {
   Activity as ActivityIcon,
   BodyText,
@@ -30,7 +30,7 @@ import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 import { GroupedState } from "../../../GroupedState/models/types";
 import { Reference } from "../../../ReferencePage/models/types";
-import { ResponsibleUnit } from "../../../ResponsibleUnitPage/models/types";
+// import { ResponsibleUnit } from "../../../ResponsibleUnitPage/models/types";
 import { Tracking } from '../../../TrackingPage/models/types';
 import { useGroupedStateMutations, useGroupedStateStore, useReferenceMutations, useReferenceStore } from '../../hooks/useRepository';
 import { Property } from "../../models/types";
@@ -112,7 +112,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
   const { setItems: setReferences, items: references } = useReferenceStore();
   const { setItems: setGroupedStates, items: groupedStates } =
     useGroupedStateStore();
-
   const [groupedState, reference] = methods.watch(['groupedState.name', 'reference.name']);
 
   const { error } = useCustomQuery<ResponseAPI>(
@@ -193,186 +192,213 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
         )}
         <Form onSubmit={handleSubmit(submit)} id="propertyForm">
           <Row className="d-flex flex-row gap-2">
-            <Col className="d-flex flex-column gap-2">
-              <Row className="border border-1 py-2 border-dark-subtle rounded-1">
+            <Col className="d-flex gap-2 flex-column">
+              <Row className="border border-1 py-2 border-dark-subtle rounded-1 align-items-end">
                 <Col>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Nombre del predio"
-                      icon={<BodyText color="#b3245b" />}
-                    />
-                    <InputGroup>
+                  <Row className="mb-1">
+                    <Form.Group>
+                      <CustomLabel
+                        label="Nombre del predio"
+                        icon={<BodyText color="#b3245b" />}
+                      />
+                      <InputGroup>
+                        <Form.Control
+                          className="fw-bold"
+                          as="textarea"
+                          rows={2}
+                          placeholder="Nombre del predio"
+                          {...register("name")}
+                          autoComplete="off"
+                        />
+                        {/* <InputGroup.Text>
+                          <div className="d-flex flex-column">
+                            <Icon label="observaciones">
+                              <EyeFill color="#bada2d" size={18} />
+                            </Icon>
+                            <Icon label="beneficiarios">
+                              <PeopleFill color="green" size={18} />
+                            </Icon>
+                          </div>
+                        </InputGroup.Text> */}
+                      </InputGroup>
+                    </Form.Group>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <InputGroup size="sm">
+                        <InputGroup.Text>
+                          <Hexagon color="purple" className="me-1" />
+                          <Form.Label column="sm">Poligono</Form.Label>
+                        </InputGroup.Text>
+                        <Form.Control
+                          size="sm"
+                          placeholder="Poligono"
+                          {...register("polygone")}
+                          autoComplete="off"
+                        />
+                        <InputGroup.Text>
+                          <Hash color="#d44da2" className="me-1" />
+                          <Form.Label column="sm">Nro. de expediente</Form.Label>
+                        </InputGroup.Text>
+                        <Form.Control size="sm" placeholder="Nro de expediente" />
+                      </InputGroup>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col xs={4}>
+                  <Row className="mb-1">
+                    <Form.Label column="sm">
+                      Codigo de busqueda:
+                    </Form.Label>
+                    <Col>
                       <Form.Control
-                        className="fw-bold"
-                        as="textarea"
-                        rows={2}
-                        placeholder="Nombre del predio"
-                        {...register("name")}
+                        {...register("codeOfSearch")}
+                        size="sm"
+                        className="text-danger fw-bold"
+                        placeholder="Codigo de busqueda"
                         autoComplete="off"
                       />
-                      <InputGroup.Text>
-                        <div className="d-flex flex-column">
-                          <Icon label="observaciones">
-                            <EyeFill color="#bada2d" size={18} />
-                          </Icon>
-                          <Icon label="beneficiarios">
-                            <PeopleFill color="green" size={18} />
-                          </Icon>
-                        </div>
-                      </InputGroup.Text>
-                    </InputGroup>
-                  </Form.Group>
+                    </Col>
+                  </Row>
+                  <Row className="mb-1">
+                    <Form.Label column='sm'>
+                      Codigo de predio:
+                    </Form.Label>
+                    <Col>
+                      <Form.Control
+                        size="sm"
+                        placeholder="Codigo de predio"
+                        {...register("code")}
+                        autoComplete="off"
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Form.Label column='sm'>
+                      ID Agrupación:
+                    </Form.Label>
+                    <Col>
+                      <Form.Group>
+                        <Form.Control
+                          {...register("agrupationIdentifier")}
+                          size="sm"
+                          placeholder="ID Agrupación"
+                          autoComplete="off"
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
               <Row className="border border-1 py-2 border-dark-subtle rounded-1">
-                <Col xs={2}>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Codigo P"
-                      icon={<Code color="green" />}
-                    />
-                    <Form.Control
-                      size="sm"
-                      placeholder="Codigo"
-                      {...register("code")}
-                      autoComplete="off"
-                    />
-                  </Form.Group>
-                </Col>
-                <Col xs={2}>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Poligono"
-                      icon={<Hexagon color="skyblue" />}
-                    />
-                    <Form.Control
-                      size="sm"
-                      placeholder="Poligono"
-                      {...register("polygone")}
-                      autoComplete="off"
-                    />
-                  </Form.Group>
-                </Col>
                 <Localization />
               </Row>
               <Row className="border border-1 py-2 border-dark-subtle rounded-1">
-                <Col xs={3}>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Codigo de busqueda"
-                      icon={<Search color="brown" />}
-                    />
-                    <Form.Control
-                      {...register("codeOfSearch")}
-                      size="sm"
-                      placeholder="Codigo de busqueda"
-                      autoComplete="off"
-                    />
-                  </Form.Group>
+                <Col xs={7}>
+                  <Row className="g-2">
+                    <Col xs={12}>
+                      <Form.Group>
+                        <CustomLabel
+                          label="Datos"
+                          icon={<Database color="#dc0e67" />}
+                        />
+                        <InputGroup size="sm">
+                          <InputGroup.Text>Parcelas</InputGroup.Text>
+                          <Form.Control {...register("plots")} size="sm" />
+                          <InputGroup.Text>Fojas</InputGroup.Text>
+                          <Form.Control {...register("sheets")} size="sm" />
+                          <InputGroup.Text>Cuerpos</InputGroup.Text>
+                          <Form.Control {...register("bodies")} size="sm" />
+                        </InputGroup>
+                      </Form.Group>
+                    </Col>
+                    <Col xs={12}>
+                      <Form.Group>
+                        <CustomLabel
+                          label="Datos de superficie"
+                          icon={<Compass color="#3aa0f4" />}
+                        />
+                        <InputGroup size="sm">
+                          <InputGroup.Text>Superficie</InputGroup.Text>
+                          <Form.Control {...register("area")} size="sm" />
+                          <InputGroup.Text>Pericia</InputGroup.Text>
+                          <Form.Control {...register("expertiseOfArea")} size="sm" />
+                          <InputGroup.Text className="fw-bold">[ha]</InputGroup.Text>
+                        </InputGroup>
+                      </Form.Group>
+                    </Col>
+                    <Col xs={6}>
+                      <Form.Group>
+                        <CustomLabel
+                          label="Actividad"
+                          icon={<ActivityIcon color="red" />}
+                        />
+                        <ActivitySelect />
+                      </Form.Group>
+                    </Col>
+                    <Col xs={6}>
+                      <Form.Group>
+                        <CustomLabel
+                          label="Clasificación"
+                          icon={<Diagram3 color="green" />}
+                        />
+                        <ClasificationSelect />
+                      </Form.Group>
+                    </Col>
+                    <Col xs={6}>
+                      <Form.Group>
+                        <CustomLabel
+                          label="Tipo de predio"
+                          icon={<ListColumns />}
+                        />
+                        <TypeSelect />
+                      </Form.Group>
+                    </Col>
+                    <Col xs={6}>
+                      <Form.Group>
+                        <CustomLabel
+                          label="Ubicación de carpeta"
+                          icon={<Folder color="orange" />}
+                        />
+                        <SubdirectorySelect />
+                      </Form.Group>
+                    </Col>
+                    <Col xs={6}>
+                      <Form.Group>
+                        <CustomLabel
+                          label="Unidad responsable"
+                          icon={<People color="#40d781" />}
+                        />
+                        <ResponsibleUnitSelect />
+                      </Form.Group>
+                    </Col>
+                    <Col xs={6}>
+                      <Form.Group>
+                        <CustomLabel
+                          label="Estado"
+                          icon={<DeviceSsd color="#ff5e00" />}
+                        />
+                        <StateSelect name='state.name' />
+                      </Form.Group>
+                    </Col>
+                  </Row>
                 </Col>
-                <Col>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Datos"
-                      icon={<Database color="#dc0e67" />}
-                    />
-                    <InputGroup size="sm">
-                      <InputGroup.Text>Parcelas</InputGroup.Text>
-                      <Form.Control {...register("plots")} size="sm" />
-                      <InputGroup.Text>Fojas</InputGroup.Text>
-                      <Form.Control {...register("sheets")} size="sm" />
-                      <InputGroup.Text>Cuerpos</InputGroup.Text>
-                      <Form.Control {...register("bodies")} size="sm" />
-                    </InputGroup>
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Datos de superficie"
-                      icon={<Compass color="#3aa0f4" />}
-                    />
-                    <InputGroup size="sm">
-                      <InputGroup.Text>Superficie</InputGroup.Text>
-                      <Form.Control {...register("area")} size="sm" />
-                      <InputGroup.Text>Pericia</InputGroup.Text>
-                      <Form.Control {...register("expertiseOfArea")} size="sm" />
-                      <InputGroup.Text className="fw-bold">[ha]</InputGroup.Text>
-                    </InputGroup>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row className="border border-1 py-2 border-dark-subtle rounded-1">
-                <Col>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Estado"
-                      icon={<DeviceSsd color="#ff5e00" />}
-                    />
-                    <StateSelect name='state.name' />
-                  </Form.Group>
-                </Col>
-                <Col xs={3}>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Subcarpeta"
-                      icon={<Folder color="orange" />}
-                    />
-                    <SubdirectorySelect />
-                  </Form.Group>
-                </Col>
-                <Col xs={3}>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Unidad responsable"
-                      icon={<People color="#40d781" />}
-                    />
-                    <ResponsibleUnitSelect />
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row className="border border-1 py-2 border-dark-subtle rounded-1">
-                <Col>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Tipo de predio"
-                      icon={<ListColumns />}
-                    />
-                    <TypeSelect />
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Actividad"
-                      icon={<ActivityIcon color="red" />}
-                    />
-                    <ActivitySelect />
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Clasificación"
-                      icon={<Diagram3 color="green" />}
-                    />
-                    <ClasificationSelect />
-                  </Form.Group>
-                </Col>
-                <Col xs={2}>
-                  <Form.Group>
-                    <CustomLabel
-                      label="Nro. de expediente"
-                      icon={<Hash color="#d44da2" />}
-                    />
-                    <Form.Control size="sm" placeholder="Nro de expediente" />
-                  </Form.Group>
+                <Col xs={5} className="overflow-scroll">
+                  <CustomLabel
+                    label="Beneficiarios"
+                    icon={<PeopleFill color="green" />}
+                  />
+                  <ListGroup>
+                    {property?.beneficiaries.map(b => (
+                      <ListGroup.Item key={b.id}>{b.name}</ListGroup.Item>
+                    ))}
+                  </ListGroup>
                 </Col>
               </Row>
             </Col>
-            <Col className="d-flex flex-column gap-2 justify-content-between" xs={3}>
-              <Row className="border border-1 py-2 border-dark-subtle rounded-1">
-                <Col xs={4}>
+            <Col xs={3}>
+              <Row className="border border-1 py-2 border-dark-subtle rounded-1 gap-2 h-100 align-content-start">
+                <Col xs={12}>
                   <Form.Group>
                     <CustomLabel
                       label="Estado 2"
@@ -386,73 +412,57 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                     />
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col xs={12}>
                   <Form.Group>
                     <CustomLabel
-                      label="Id de agrupación"
-                      icon={<Key color="#cac537" />}
+                      label="Estado agrupado"
+                      icon={<Box2 color="#864e16" />}
                     />
-                    <Form.Control
-                      {...register("agrupationIdentifier")}
-                      size="sm"
-                      placeholder="Id de agrupación"
-                      autoComplete="off"
+                    <Controller
+                      name="groupedState.name"
+                      control={methods.control}
+                      defaultValue="undefined"
+                      render={(({ field }) => (
+                        <EnhancedSelect
+                          {...field}
+                          size="sm"
+                          placeholder={"Estado agrupado"}
+                          options={groupedStates.map(({ name }) => ({ label: name, value: name }))}
+                          onCreate={() => {
+                            setModal({ form: 'createGroupedState', title: 'Crear estado agrupado', show: true })
+                          }}
+                          onEdit={() => {
+                            setModal({ form: 'updateGroupedState', title: 'Actualizar estado agrupado', show: true, params: { name: groupedState } })
+                          }}
+                          onDelete={() => {
+                            const groupedState = methods.getValues('groupedState');
+
+                            if (groupedState) {
+                              mutationGroupedStateDelete(groupedState, {
+                                onSuccess({ data: { groupedState: { name } } }) {
+                                  customSwalSuccess(
+                                    "Estado agrupado eliminado",
+                                    `El estado agrupado ${name} se ha eliminado correctamente`,
+                                  );
+                                },
+                                onError(error, { name }) {
+                                  customSwalError(
+                                    error.response!.data.errors[0].message,
+                                    `Ocurrio un error al intentar eliminar el estado agrupado ${name}`,
+                                  );
+                                },
+                                onSettled() {
+                                  methods.resetField('groupedState.name', { defaultValue: 'undefined' })
+                                }
+                              });
+                            }
+                          }}
+                        />
+                      ))}
                     />
                   </Form.Group>
                 </Col>
-              </Row>
-              <Row className="border border-1 py-2 border-dark-subtle rounded-1">
-                <Form.Group>
-                  <CustomLabel
-                    label="Estado agrupado"
-                    icon={<Box2 color="#864e16" />}
-                  />
-                  <Controller
-                    name="groupedState.name"
-                    control={methods.control}
-                    defaultValue="undefined"
-                    render={(({ field }) => (
-                      <EnhancedSelect
-                        {...field}
-                        size="sm"
-                        placeholder={"Estado agrupado"}
-                        options={groupedStates.map(({ name }) => ({ label: name, value: name }))}
-                        onCreate={() => {
-                          setModal({ form: 'createGroupedState', title: 'Crear estado agrupado', show: true })
-                        }}
-                        onEdit={() => {
-                          setModal({ form: 'updateGroupedState', title: 'Actualizar estado agrupado', show: true, params: { name: groupedState } })
-                        }}
-                        onDelete={() => {
-                          const groupedState = methods.getValues('groupedState');
-
-                          if (groupedState) {
-                            mutationGroupedStateDelete(groupedState, {
-                              onSuccess({ data: { groupedState: { name } } }) {
-                                customSwalSuccess(
-                                  "Estado agrupado eliminado",
-                                  `El estado agrupado ${name} se ha eliminado correctamente`,
-                                );
-                              },
-                              onError(error, { name }) {
-                                customSwalError(
-                                  error.response!.data.errors[0].message,
-                                  `Ocurrio un error al intentar eliminar el estado agrupado ${name}`,
-                                );
-                              },
-                              onSettled() {
-                                methods.resetField('groupedState.name', { defaultValue: 'undefined' })
-                              }
-                            });
-                          }
-                        }}
-                      />
-                    ))}
-                  />
-                </Form.Group>
-              </Row>
-              <Row className="border border-1 py-2 border-dark-subtle rounded-1">
-                <Col>
+                <Col xs={12}>
                   <Form.Group>
                     <CustomLabel
                       label="Juridico"
@@ -471,9 +481,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                     />
                   </Form.Group>
                 </Col>
-              </Row>
-              <Row className="border border-1 py-2 border-dark-subtle rounded-1">
-                <Col>
+                <Col xs={12}>
                   <Form.Group>
                     <CustomLabel
                       label="Tecnico"
@@ -491,56 +499,66 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property }) => {
                     />
                   </Form.Group>
                 </Col>
-              </Row>
-              <Row className="border border-1 py-2 border-dark-subtle rounded-1">
-                <Form.Group>
-                  <CustomLabel
-                    label="Referencia"
-                    icon={<Link45deg color="#7d7907" />}
-                  />
-                  <Controller
-                    name="reference.name"
-                    control={methods.control}
-                    defaultValue="undefined"
-                    render={(({ field }) => (
-                      <EnhancedSelect
-                        {...field}
-                        size="sm"
-                        placeholder={"Referencia"}
-                        options={references.map(({ name }) => ({ label: name, value: name }))}
-                        onCreate={() => {
-                          setModal({ form: 'createReference', title: 'Crear referencia', show: true })
-                        }}
-                        onEdit={() => {
-                          setModal({ form: 'updateReference', title: 'Actualizar referencia', show: true, params: { name: reference } })
-                        }}
-                        onDelete={() => {
-                          const reference = methods.getValues('reference');
+                <Col xs={12}>
+                  <Form.Group>
+                    <CustomLabel
+                      label="Referencia"
+                      icon={<Link45deg color="#7d7907" />}
+                    />
+                    <Controller
+                      name="reference.name"
+                      control={methods.control}
+                      defaultValue="undefined"
+                      render={(({ field }) => (
+                        <EnhancedSelect
+                          {...field}
+                          size="sm"
+                          placeholder={"Referencia"}
+                          options={references.map(({ name }) => ({ label: name, value: name }))}
+                          onCreate={() => {
+                            setModal({ form: 'createReference', title: 'Crear referencia', show: true })
+                          }}
+                          onEdit={() => {
+                            setModal({ form: 'updateReference', title: 'Actualizar referencia', show: true, params: { name: reference } })
+                          }}
+                          onDelete={() => {
+                            const reference = methods.getValues('reference');
 
-                          if (reference) {
-                            mutationReferenceDelete(reference, {
-                              onSuccess({ data: { reference: { name } } }) {
-                                customSwalSuccess(
-                                  "Referencia eliminada",
-                                  `La referencia ${name} se ha eliminado correctamente`,
-                                );
-                              },
-                              onError(error, { name }) {
-                                customSwalError(
-                                  error.response!.data.errors[0].message,
-                                  `Ocurrio un error al intentar eliminar la referencia ${name}`,
-                                );
-                              },
-                              onSettled() {
-                                methods.resetField('reference.name', { defaultValue: 'undefined' })
-                              }
-                            });
-                          }
-                        }}
-                      />
-                    ))}
+                            if (reference) {
+                              mutationReferenceDelete(reference, {
+                                onSuccess({ data: { reference: { name } } }) {
+                                  customSwalSuccess(
+                                    "Referencia eliminada",
+                                    `La referencia ${name} se ha eliminado correctamente`,
+                                  );
+                                },
+                                onError(error, { name }) {
+                                  customSwalError(
+                                    error.response!.data.errors[0].message,
+                                    `Ocurrio un error al intentar eliminar la referencia ${name}`,
+                                  );
+                                },
+                                onSettled() {
+                                  methods.resetField('reference.name', { defaultValue: 'undefined' })
+                                }
+                              });
+                            }
+                          }}
+                        />
+                      ))}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col xs={12}>
+                  <CustomLabel label="Observación tecnica" icon={<EyeFill color="#bada2d" />} />
+                  <Form.Control
+                    as="textarea"
+                    rows={5}
+                    placeholder="Observación tecnica"
+                    {...register("name")}
+                    autoComplete="off"
                   />
-                </Form.Group>
+                </Col>
               </Row>
             </Col>
             <Col className='d-flex flex-column gap-2' xs={12}>

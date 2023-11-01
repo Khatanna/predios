@@ -11,7 +11,7 @@ const CustomLabel: React.FC<CustomLabelProps> = ({ label, icon }) => {
 		<div className="d-flex gap-2 align-items-center ">
 			{icon}
 			<div>
-				{label}
+				{label}:
 			</div>
 		</div>
 	</Form.Label>;

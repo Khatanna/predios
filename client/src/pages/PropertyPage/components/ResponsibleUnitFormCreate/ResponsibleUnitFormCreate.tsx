@@ -7,10 +7,10 @@ import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts
 
 const ResponsibleUnitFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
 	const { register, handleSubmit } = useForm<ResponsibleUnit>();
-	const { mutationCreate } = useResponsibleUnitMutations<{ responsibleUnit: ResponsibleUnit }>();
+	const { mutationCreate } = useResponsibleUnitMutations<{ unit: ResponsibleUnit }>();
 	return <Form onSubmit={handleSubmit(data => {
 		mutationCreate({ input: data }, {
-			onSuccess({ data: { responsibleUnit: { name } } }) {
+			onSuccess({ data: { unit: { name } } }) {
 				customSwalSuccess(
 					"Nueva unidad responsable agregada",
 					`La unidad responsable ${name} se ha creado correctamente`,

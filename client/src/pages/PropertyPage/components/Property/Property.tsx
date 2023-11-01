@@ -71,7 +71,7 @@ query GetPropertyById($id: String) {
 		responsibleUnit {
 			name
 		}
-		subDirectory {
+		folderLocation {
 			name
 		}
 		state {

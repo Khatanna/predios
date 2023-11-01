@@ -7,18 +7,18 @@ import { useSubdirectoryMutations } from '../../hooks/useRepository';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 
 const GET_SUBDIRECTORY_BY_NAME_QUERY = `
-  query GetSubdirectoryByName($name: String) {
-    subdirectory: getSubdirectory(name: $name) {
+  query GetFolderLocationByName($name: String) {
+    folderLocation: getFolderLocation(name: $name) {
       name
     }
   }
 `
 
 const SubdirectoryFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
-	const { data, isLoading } = useCustomQuery<{ subdirectory: SubDirectory }>(GET_SUBDIRECTORY_BY_NAME_QUERY, ['getSubdirectoryByName', { name: params?.name }]);
-	const { register, handleSubmit } = useForm<SubDirectory>({ values: data?.subdirectory });
+	const { data, isLoading } = useCustomQuery<{ folderLocation: SubDirectory }>(GET_SUBDIRECTORY_BY_NAME_QUERY, ['getSubdirectoryByName', { name: params?.name }]);
+	const { register, handleSubmit } = useForm<SubDirectory>({ values: data?.folderLocation });
 	const { resetField } = useFormContext<Property>();
-	const { mutationUpdate } = useSubdirectoryMutations<{ subdirectory: SubDirectory }>();
+	const { mutationUpdate } = useSubdirectoryMutations<{ folderLocation: SubDirectory }>();
 
 	if (isLoading) {
 		return <div>Cargando...</div>
@@ -27,14 +27,14 @@ const SubdirectoryFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) =
 	return <Form onSubmit={handleSubmit(data => {
 		if (params) {
 			mutationUpdate({ name: params.name, item: data }, {
-				onSuccess({ data: { subdirectory: { name } } }) {
-					customSwalSuccess("Subcarpeta actualizada correctamente", `El nombre de la subcarpeta ${name} ha sido actualizada correctamente`);
+				onSuccess({ data: { folderLocation: { name } } }) {
+					customSwalSuccess("Ubicación de carpeta actualizada correctamente", `El nombre de la subcarpeta ${name} ha sido actualizada correctamente`);
 				},
 				onError(error, { name }) {
-					customSwalError(error.response!.data.errors[0].message, `Ocurrio un error al intentar actualizar el nombre de la subcarpeta ${name}`)
+					customSwalError(error.response!.data.errors[0].message, `Ocurrio un error al intentar actualizar el nombre de la ubicación de carpeta ${name}`)
 				},
 				onSettled() {
-					resetField('subDirectory.name', { defaultValue: 'undefined' })
+					resetField('folderLocation.name', { defaultValue: 'undefined' })
 					onHide()
 				}
 			})
@@ -42,8 +42,8 @@ const SubdirectoryFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) =
 	})}>
 		<Row>
 			<Col>
-				<Form.Label>Subcarpeta</Form.Label>
-				<Form.Control {...register('name')} placeholder='Subcarpeta'></Form.Control>
+				<Form.Label>Ubicación de carpeta</Form.Label>
+				<Form.Control {...register('name')} placeholder='Ubicación de carpeta' />
 			</Col>
 		</Row>
 		<Row className='mt-3'>
@@ -52,7 +52,7 @@ const SubdirectoryFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) =
 					Cancelar
 				</Button>
 				<Button type='submit' variant='success' className='text-white'>
-					Actualizar subcarpeta
+					Actualizar ubicación de carpeta
 				</Button>
 			</Col>
 		</Row>

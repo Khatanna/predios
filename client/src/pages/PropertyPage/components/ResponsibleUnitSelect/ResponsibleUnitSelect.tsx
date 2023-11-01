@@ -9,7 +9,7 @@ import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 
 const GET_ALL_RESPONSIBLE_UNITS_QUERY = `
 	query GetAllResponsibleUnits {
-		responsibleUnits: getAllResponsibleUnits {
+		responsibleUnits: getAllUnits {
 			name
 		}
 	} 
@@ -21,7 +21,7 @@ const ResponsibleUnitSelect: React.FC = () => {
 		useResponsibleUnitStore();
 	const setModal = useModalStore(s => s.setModal);
 	const responsibleUnit = watch('responsibleUnit.name');
-	const { mutationDelete: mutationResponsibleUnitDelete } = useResponsibleUnitMutations<{ responsibleUnit: ResponsibleUnit }>();
+	const { mutationDelete: mutationResponsibleUnitDelete } = useResponsibleUnitMutations<{ unit: ResponsibleUnit }>();
 
 	const { error } = useCustomQuery<{ responsibleUnits: ResponsibleUnit[] }>(
 		GET_ALL_RESPONSIBLE_UNITS_QUERY,
@@ -54,7 +54,7 @@ const ResponsibleUnitSelect: React.FC = () => {
 					const responsibleUnit = getValues('responsibleUnit');
 					if (responsibleUnit) {
 						mutationResponsibleUnitDelete(responsibleUnit, {
-							onSuccess({ data: { responsibleUnit: { name } } }) {
+							onSuccess({ data: { unit: { name } } }) {
 								customSwalSuccess(
 									"Unidad responsable eliminada",
 									`La unidad responsable ${name} se ha eliminado correctamente`,

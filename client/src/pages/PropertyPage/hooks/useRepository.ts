@@ -160,49 +160,49 @@ const DELETE_STATE_MUTATION = `
   }
 `
 
-const CREATE_SUBDIRECTORY_MUTATION = `
-  mutation CreateSubdirectory($input: SubdirectoryInput) {
-    subdirectory: createSubdirectory(input: $input) {
+const CREATE_FOLDERLOCATION_MUTATION = `
+  mutation CreateFolderLocation($input: FolderLocationInput) {
+    folderLocation: createFolderLocation(input: $input) {
       name
     }
   }
 `
 
-const UPDATE_SUBDIRECTORY_MUTATION = `
-  mutation UpdateSubdirectoryMutation($name: String, $item: SubdirectoryInput) {
-    subdirectory: updateSubdirectory(name: $name, item: $item) {
+const UPDATE_FOLDERLOCATION_MUTATION = `
+  mutation UpdateFolderLocationMutation($name: String, $item: FolderLocationInput) {
+    folderLocation: updateFolderLocation(name: $name, item: $item) {
       name
     }
   }
 `
 
-const DELETE_SUBDIRECTORY_MUTATION = `
-  mutation DeleteSubdirectoryMutation($name: String) {
-    subdirectory: deleteSubdirectory(name: $name) {
+const DELETE_FOLDERLOCATION_MUTATION = `
+  mutation DeleteFolderLocationMutation($name: String) {
+    folderLocation: deleteFolderLocation(name: $name) {
       name
     }
   }
 `
 
-const CREATE_RESPONSIBLE_UNIT_MUTATION = `
-	mutation CreateResponsibleUnit($input: ResponsibleUnitInput) {
-		responsibleUnit: createResponsibleUnit(input: $input) {
+const CREATE_UNIT_MUTATION = `
+	mutation CreateUnit($input: UnitInput) {
+		unit: createUnit(input: $input) {
 			name
 		}
 	}
 `;
 
-const UPDATE_RESPONSIBLE_UNIT_MUTATION = `
-	mutation UpdateResponsibleUnit($name: String, $item: ResponsibleUnitInput) {
-		responsibleUnit: updateResponsibleUnit(name: $name, item: $item) {
+const UPDATE_UNIT_MUTATION = `
+	mutation UpdateUnit($name: String, $item: UnitInput) {
+		unit: updateUnit(name: $name, item: $item) {
 			name
 		}
 	}
 `;
 
-const DELETE_RESPONSIBLE_UNIT_MUTATION = `
-  mutation DeleteResponsibleUnit($name: String) {
-    responsibleUnit: deleteResponsibleUnit(name: $name) {
+const DELETE_UNIT_MUTATION = `
+  mutation DeleteUnit($name: String) {
+    unit: deleteUnit(name: $name) {
       name
     }
   }
@@ -377,15 +377,15 @@ export const { useStore: useStateStore, useMutations: useStateMutations } = crea
 })
 
 export const { useStore: useSubdirectoryStore, useMutations: useSubdirectoryMutations } = createMutations<SubDirectory>({
-  createMutation: CREATE_SUBDIRECTORY_MUTATION,
-  updateMutation: UPDATE_SUBDIRECTORY_MUTATION,
-  deleteMutation: DELETE_SUBDIRECTORY_MUTATION
+  createMutation: CREATE_FOLDERLOCATION_MUTATION,
+  updateMutation: UPDATE_FOLDERLOCATION_MUTATION,
+  deleteMutation: DELETE_FOLDERLOCATION_MUTATION
 })
 
 export const { useStore: useResponsibleUnitStore, useMutations: useResponsibleUnitMutations } = createMutations<ResponsibleUnit>({
-  createMutation: CREATE_RESPONSIBLE_UNIT_MUTATION,
-  updateMutation: UPDATE_RESPONSIBLE_UNIT_MUTATION,
-  deleteMutation: DELETE_RESPONSIBLE_UNIT_MUTATION
+  createMutation: CREATE_UNIT_MUTATION,
+  updateMutation: UPDATE_UNIT_MUTATION,
+  deleteMutation: DELETE_UNIT_MUTATION
 });
 
 export const { useStore: useTypeStore, useMutations: useTypeMutations } = createMutations<Type>({

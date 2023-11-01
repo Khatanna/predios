@@ -11,6 +11,7 @@ import { EnhancedSelect } from '../EnhancedSelect';
 import { GeoAlt, GlobeAmericas, Map } from 'react-bootstrap-icons';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
 import { useModalStore } from '../../state/useModalStore';
+import { SelectNameable } from '../../../HomePage/HomePage';
 
 const GET_ALL_CITIES_QUERY = `
 	query GetAllCities {
@@ -37,7 +38,7 @@ const GET_MUNICIPALITIES_BY_PROVINCE_NAME = `
 `;
 
 const Localization: React.FC = () => {
-	const { control, resetField, getValues, watch } = useFormContext<Property>();
+	const { control, resetField, getValues, watch, setValue } = useFormContext<Property>();
 	const { mutationDelete: mutationCityDelete } = useCityMutations<{ city: City }>();
 	const { mutationDelete: mutationProvinceDelete } = useProvinceMutations<{ province: Province }>();
 	const { mutationDelete: mutationMunicipalityDelete } = useMunicipalityMutations<{ municipality: Municipality }>();
@@ -91,22 +92,20 @@ const Localization: React.FC = () => {
 					control={control}
 					defaultValue="undefined"
 					render={(({ field }) => (
-						<EnhancedSelect
+						<SelectNameable
 							{...field}
-							onChange={(e) => {
-								field.onChange(e);
-								resetField('province.name', { defaultValue: 'undefined' });
-								resetField('municipality.name', { defaultValue: 'undefined' });
-							}}
-							disabled={cities.length === 0}
 							size="sm"
-							placeholder={"Departamento"}
+							placeholder="Departamento"
 							options={cities.map(({ name }) => ({ label: name, value: name }))}
+							onChange={(e) => {
+								field.onChange(e)
+								setValue('province.name', 'undefined')
+							}}
 							onCreate={() => {
 								setModal({ form: 'createCity', title: 'Crear departamento', show: true })
 							}}
 							onEdit={() => {
-								setModal({ form: 'updateCity', title: 'Actualizar departamento', show: true, params: { name: city } })
+								setModal({ form: 'updateCity', title: 'Actualizar departamento', show: true, params: { name: getValues('city.name') } })
 							}}
 							onDelete={() => {
 								const city = getValues("city");
@@ -146,21 +145,21 @@ const Localization: React.FC = () => {
 					control={control}
 					defaultValue="undefined"
 					render={(({ field }) => (
-						<EnhancedSelect
+						<SelectNameable
 							{...field}
 							onChange={(e) => {
 								field.onChange(e);
-								resetField('municipality.name', { defaultValue: 'undefined' });
+								setValue('municipality.name', 'undefined')
 							}}
 							disabled={city === "undefined"}
 							size="sm"
 							placeholder={"Provincia"}
 							options={provinces.map(({ name }) => ({ label: name, value: name }))}
 							onCreate={() => {
-								setModal({ form: 'createProvince', title: 'Crear provincia', show: true, params: { cityName: city } })
+								setModal({ form: 'createProvince', title: 'Crear provincia', show: true, params: { cityName: getValues('city.name') } })
 							}}
 							onEdit={() => {
-								setModal({ form: 'updateProvince', title: 'Actualizar provincia', show: true, params: { name: province } })
+								setModal({ form: 'updateProvince', title: 'Actualizar provincia', show: true, params: { name: getValues('province.name') } })
 							}}
 							onDelete={() => {
 								const province = getValues("province");
@@ -200,17 +199,17 @@ const Localization: React.FC = () => {
 					control={control}
 					defaultValue="undefined"
 					render={(({ field }) => (
-						<EnhancedSelect
+						<SelectNameable
 							{...field}
 							disabled={province === "undefined"}
 							size="sm"
 							placeholder="Municipio"
 							options={municipalities.map(({ name }) => ({ label: name, value: name }))}
 							onCreate={() => {
-								setModal({ form: 'createMunicipality', show: true, title: 'Crear municipio', params: { provinceName: province } })
+								setModal({ form: 'createMunicipality', show: true, title: 'Crear municipio', params: { provinceName: getValues('province.name') } })
 							}}
 							onEdit={() => {
-								setModal({ form: 'updateMunicipality', show: true, title: 'Actualizar municipio', params: { name: municipality } })
+								setModal({ form: 'updateMunicipality', show: true, title: 'Actualizar municipio', params: { name: getValues('municipality.name') } })
 							}}
 							onDelete={() => {
 								const municipality = getValues("municipality");

@@ -184,9 +184,9 @@ model Property {
   bodies               Int                  @default(0) @map("cuerpos")
   sheets               Int                  @default(0) @map("fojas")
   code                 String?              @unique @default("Sin codigo definido") @map("codigo") @db.VarChar(128)
-  codeOfSearch         String               @default("Sin codigo de busqueda definido") @map("codigo_de_busqueda") @db.VarChar(128)
-  agrupationIdentifier String               @default("Sin Id de agrupación definido") @map("id_de_agrupacion_social") @db.VarChar(64)
-  secondState          String               @default("Sin estado definido") @map("estado_2") @db.VarChar(128)
+  codeOfSearch         String               @default("Indefinido") @map("codigo_de_busqueda") @db.VarChar(128)
+  agrupationIdentifier String               @default("Indefinido") @map("id_de_agrupacion_social") @db.VarChar(64)
+  secondState          String               @default("Indefinido") @map("estado_2") @db.VarChar(128)
   polygone             String               @map("poligono") @db.VarChar(32) // OJO
   observations         Observation[]
   beneficiaries        Beneficiary[]

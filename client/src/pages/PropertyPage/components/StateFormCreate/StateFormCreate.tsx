@@ -65,6 +65,7 @@ const StateFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
 				</Row>
 				<Row>
 					<Col>
+						<Form.Label>Etapa</Form.Label>
 						{
 							isLoading ? <div className='d-flex justify-content-center '><Spinner variant='warning' /></div> : error ?
 								<Alert>

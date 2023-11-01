@@ -45,7 +45,7 @@ export interface Property {
   reference?: Reference
   type?: Type
   responsibleUnit?: ResponsibleUnit
-  subDirectory?: SubDirectory
+  folderLocation?: SubDirectory
   trackings: Pick<Tracking, 'state' | 'dateOfInit' | 'dateOfEnd' | 'numberOfNote' | 'observation' | 'responsible'>[]
   technical?: UserOnProperty
   legal?: UserOnProperty

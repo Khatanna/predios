@@ -7,16 +7,16 @@ import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts
 
 const SubdirectoryFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
 	const { register, handleSubmit } = useForm<SubDirectory>();
-	const { mutationCreate } = useSubdirectoryMutations<{ subdirectory: SubDirectory }, Pick<SubDirectory, 'name'>>();
+	const { mutationCreate } = useSubdirectoryMutations<{ folderLocation: SubDirectory }, Pick<SubDirectory, 'name'>>();
 	return <Form onSubmit={handleSubmit(data => {
 		mutationCreate({ input: data }, {
-			onSuccess({ data: { subdirectory: { name } } }) {
-				customSwalSuccess("Subcarpeta creada correctamente", `La subcarpeta ${name} ha sido creada correctamente`);
+			onSuccess({ data: { folderLocation: { name } } }) {
+				customSwalSuccess("Ubicación de carpeta creada correctamente", `La subcarpeta ${name} ha sido creada correctamente`);
 			},
 			onError(error, { input: { name } }) {
 				customSwalError(
 					error.response!.data.errors[0].message,
-					`Ocurrio un error al intentar crear la subcarpeta ${name}`)
+					`Ocurrio un error al intentar crear la ubicación de carpeta ${name}`)
 			},
 			onSettled() {
 				onHide()
@@ -25,8 +25,8 @@ const SubdirectoryFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
 	})} >
 		<Row>
 			<Col>
-				<Form.Label>Subcarpeta</Form.Label>
-				<Form.Control {...register('name')} placeholder='Subcarpeta'></Form.Control>
+				<Form.Label>Ubicación de carpeta</Form.Label>
+				<Form.Control {...register('name')} placeholder='Ubicación de carpeta'></Form.Control>
 			</Col>
 		</Row>
 		<Row className='mt-3'>
@@ -35,7 +35,7 @@ const SubdirectoryFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
 					Cancelar
 				</Button>
 				<Button type='submit' variant='success' className='text-white'>
-					Crear subcarpeta
+					Crear ubicación de carpeta
 				</Button>
 			</Col>
 		</Row>

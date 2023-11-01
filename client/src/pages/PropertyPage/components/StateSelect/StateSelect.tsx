@@ -5,7 +5,7 @@ import { useStateMutations, useStateStore } from '../../hooks/useRepository';
 import { State } from '../../../StatePage/models/types';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
-import { EnhancedSelect } from '../EnhancedSelect';
+import { SelectNameable } from '../../../HomePage/HomePage';
 
 const GET_ALL_STATES_QUERY = `
 	query GetAllStates {
@@ -37,7 +37,7 @@ const StateSelect: React.FC<{ name: 'state.name' | `trackings.${number}.state.na
 		control={control}
 		defaultValue="undefined"
 		render={(({ field }) => (
-			<EnhancedSelect
+			<SelectNameable
 				{...field}
 				size="sm"
 				placeholder={"Estado"}

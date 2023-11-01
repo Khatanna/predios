@@ -27,7 +27,7 @@ type Property {
   city: City
   province: Province
   municipality: Municipality
-  FolderLocation: FolderLocation
+  folderLocation: FolderLocation
   technical: UserToProperty
   legal: UserToProperty
   type: Type

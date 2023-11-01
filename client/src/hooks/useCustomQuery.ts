@@ -20,7 +20,6 @@ export const useCustomQuery = <D>(
     });
 
     if (options?.onSuccess) {
-      console.log(data.data)
       options.onSuccess(data.data);
     }
     return data;

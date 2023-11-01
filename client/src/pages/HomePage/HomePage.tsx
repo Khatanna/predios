@@ -1,88 +1,61 @@
-import { useState } from "react";
-import { Dropdown, DropdownProps, Stack, StackProps } from "react-bootstrap";
-import {
-  ThreeDotsVertical,
-  Activity,
-  Airplane,
-  IconProps,
-  Icon,
-} from "react-bootstrap-icons";
-export type HomeProps = {};
+import { useMemo } from "react";
+import { Button, Dropdown, DropdownProps, Form, FormSelectProps, InputGroup, Row, Stack, StackProps } from "react-bootstrap";
 
-type DropdownItemProps = typeof Dropdown.Item.defaultProps;
+import {
+  Icon,
+  IconProps,
+  ThreeDotsVertical,
+} from "react-bootstrap-icons";
+import { Icon as Tooltip } from "../../components/Icon";
+
+type DropdownItemProps = typeof Dropdown.Item.defaultProps & { show?: boolean };
 type DropdownItemComposedProps = {
   item: [string, DropdownItemProps?];
-  icon: [Icon, IconProps?];
+  icon?: [Icon, IconProps?];
 };
+type DropdownToggleProps = typeof Dropdown.Toggle.defaultProps;
 
-const items: DropdownItemComposedProps[] = [
-  {
-    item: ["Crear"],
-    icon: [
-      Activity,
-      {
-        color: "red",
-      },
-    ],
-  },
-  {
-    item: ["Editar"],
-    icon: [
-      Airplane,
-      {
-        color: "green",
-      },
-    ],
-  },
-];
+const ItemWithIcon = ({ icon }: Required<Pick<DropdownItemComposedProps, 'icon'>>) => {
+  const [Icon, iconProps] = icon;
 
-const useItemsDropdown = (items: DropdownItemComposedProps[]) => {
-  const [currentItems, setCurrentItems] = useState(items);
-
-  const addHandlers = (handlers: { onClick: () => void }): void => {
-    console.log("añadiendo handlers");
-    setCurrentItems((items) => {
-      return items.map((item) => ({
-        ...item,
-        item: [item.item[0], { ...item.item[1], onClick: handlers.onClick }],
-      }));
-    });
-  };
-
-  const deleteHandlers = (): void => {
-    setCurrentItems((items) => {
-      return items.map((item) => ({
-        ...item,
-        item: [item.item[0], { ...item.item[1], onClick: undefined }],
-      }));
-    });
-  };
-  return { items: currentItems, addHandlers, deleteHandlers };
-};
+  return <Icon {...iconProps} />
+}
 
 const DropdownItem: React.FC<DropdownItemComposedProps & StackProps> = ({
   item: [label, itemProps],
-  icon: [Icon, iconProps],
+  icon,
   ...stackProps
 }) => {
   return (
     <Dropdown.Item {...itemProps}>
       <Stack {...stackProps}>
         <div>{label}</div>
-        <Icon {...iconProps} />
+        {icon && (
+          <ItemWithIcon icon={icon} />
+        )}
       </Stack>
     </Dropdown.Item>
   );
 };
 
-const Drop: React.FC<
-  Omit<DropdownProps, "children"> & { items: typeof items }
-> = ({ items, ...props }) => {
+const DropdownMenu: React.FC<
+  Omit<DropdownProps, "children"> & { options: DropdownItemComposedProps[] }
+  & { toggleProps?: DropdownToggleProps }
+> = ({ options, toggleProps, ...props }) => {
+  const optionsFiltered = useMemo(() => {
+    return options.filter(({ item: [, props] }) => {
+      if (props && 'show' in props) {
+        return props.show;
+      }
+      return true;
+    });
+  }, [options])
+
   return (
     <Dropdown {...props}>
-      <Dropdown.Toggle as={ThreeDotsVertical} role="button" variant="link" />
+      <Dropdown.Toggle as={Button} {...toggleProps} />
       <Dropdown.Menu>
-        {items.map(({ item, icon }) => (
+        {optionsFiltered.map(({ item, icon }) => (
           <DropdownItem
             item={item}
             icon={icon}
@@ -96,25 +69,63 @@ const Drop: React.FC<
   );
 };
 
-const HomePage: React.FC<HomeProps> = ({}) => {
-  const { addHandlers, deleteHandlers, items: data } = useItemsDropdown(items);
+const toggleProps: DropdownToggleProps = {
+  as: ThreeDotsVertical,
+  role: 'button'
+}
+
+export const SelectNameable: React.FC<FormSelectProps & {
+  options: { label: string, value: string }[]
+  readOnly?: boolean,
+  onCreate?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  onEdit?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  onDelete?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+}> = ({ options, placeholder, onCreate, onEdit, onDelete, ...props }) => {
+  const optionsMenu: DropdownItemComposedProps[] = [
+    {
+      item: ["➕ Crear", { onClick: onCreate, show: Boolean(onCreate) }],
+    },
+    {
+      item: ["✏ Editar", { onClick: onEdit, show: Boolean(onEdit) && props.value !== 'undefined' }],
+    },
+    {
+      item: ['🗑 Eliminar', { onClick: onDelete, show: Boolean(onDelete) && props.value !== 'undefined' }],
+    }
+  ]
+
+  if (props.readOnly || props.disabled) {
+    return (
+      <Tooltip label={props.readOnly ? "Campo de solo lectura" : "Campo deshabilitado"}>
+        <Form.Control
+          placeholder={placeholder || (props.value as string)}
+          value={undefined}
+          size={props.size}
+          readOnly={props.readOnly}
+          disabled={props.disabled}
+        />
+      </Tooltip>
+    );
+  }
+
+  return <InputGroup size={props.size}>
+    <Form.Select {...props} className={`${props.value === 'undefined' || !props.value ? 'text-body-tertiary' : 'text-black'}`}>
+      <option value="undefined" className="text-body-tertiary" disabled>{placeholder}</option>
+      {options.map(option => (
+        <option value={option.value} key={crypto.randomUUID()} style={{ color: 'black' }}>{option.label}</option>
+      ))}
+    </Form.Select>
+    {(onCreate || onEdit || onDelete) &&
+      <InputGroup.Text>
+        <DropdownMenu options={optionsMenu} toggleProps={toggleProps} />
+      </InputGroup.Text>}
+  </InputGroup>
+}
+
+const HomePage: React.FC = () => {
   return (
-    <>
-      Dropdown
-      <Drop items={data} />
-      <button
-        onClick={() =>
-          addHandlers({
-            onClick: () => {
-              alert("handler");
-            },
-          })
-        }
-      >
-        Añadir handlers
-      </button>
-      <button onClick={() => deleteHandlers()}>Quitar handlers</button>
-    </>
+    <Row>
+
+    </Row>
   );
 };
 

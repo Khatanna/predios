@@ -74,6 +74,7 @@ const StateFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 				</Row>
 				<Row>
 					<Col>
+						<Form.Label>Etapa</Form.Label>
 						<Controller
 							name="stage.name"
 							control={control}
