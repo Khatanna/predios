@@ -11,7 +11,6 @@ import {
 } from "react-bootstrap";
 import { CheckCircle, ExclamationTriangle } from "react-bootstrap-icons";
 import { useForm, Controller } from "react-hook-form";
-import Swal from "sweetalert2";
 import * as yup from "yup";
 import { Error } from "../../../LoginPage/styled-components/Error";
 import { User, UserInput, UserType } from "../../models/types";
@@ -23,8 +22,9 @@ import {
 import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { mutationMessages, status } from "../../../../utilities/constants";
 import { useCustomMutation } from "../../../../hooks";
-import { Icon } from "../../../../components/Icon";
+import { Tooltip } from "../../../../components/Tooltip";
 import { EnhancedSelect } from "../../../PropertyPage/components/EnhancedSelect";
+import { SelectNameable } from "../../../HomePage/HomePage";
 
 export interface FormCreateUserProps {
   user?: User;
@@ -104,14 +104,17 @@ const SelectUserType: React.FC<FormSelectProps> = (props) => {
   }
 
   return (
-    <EnhancedSelect
+    <SelectNameable
+      {...props}
       placeholder="Tipo de usuario"
-      options={data?.userTypes}
-      onCreate={() => {}}
+      options={data?.userTypes.map(({ name }) => ({
+        label: name,
+        value: name,
+      }))}
     />
   );
 };
- 
+
 const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
   // const { createUserType } = useFetchCreateUserType();
   const { createUser } = useFetchCreateUser();
@@ -211,14 +214,14 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                   autoComplete="off"
                 />
                 {!user && names?.length > 0 && (
-                  <Icon label="Autocompletar">
+                  <Tooltip label="Autocompletar">
                     <InputGroup.Text
                       role="button"
                       onClick={handleSetCredentials}
                     >
                       <CheckCircle color="green" />
                     </InputGroup.Text>
-                  </Icon>
+                  </Tooltip>
                 )}
               </InputGroup>
               <Error>{errors.names?.message}</Error>

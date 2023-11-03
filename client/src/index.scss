@@ -13,8 +13,8 @@ $custom-chip-colors: (
   ACTIVITY: $blue-500,
   OBSERVATION: $green-500,
   STATE: $orange-500,
-  SUBDIRECTORY: $teal-500,
-  RESPONSIBLEUNIT: $red-500,
+  FOLDERLOCATION: $teal-500,
+  UNIT: $red-500,
   TYPE: $yellow-500,
   CLASIFICATION: $pink-500,
   USER: $blue-700,
@@ -35,8 +35,7 @@ $custom-chip-colors: (
   TRACKING: $yellow-800,
 );
 
-@each $type,
-$color in $custom-chip-colors {
+@each $type, $color in $custom-chip-colors {
   .chip-#{$type} {
     font-size: 0.8rem;
     text-align: center;
@@ -51,6 +50,6 @@ $color in $custom-chip-colors {
   }
 }
 
-// *{
+// * {
 //   outline: 1px solid red;
 // }

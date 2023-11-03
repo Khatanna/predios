@@ -58,11 +58,11 @@ type Mutation {
 }
 
 input TrackingInput {
-  stateName: String,
-  numberOfNote: String,
-  observation: String,
-  responsibleUsername: String,
-  dateOfInit: String,
+  stateName: String
+  numberOfNote: String
+  observation: String
+  responsibleUsername: String
+  dateOfInit: String
   dateOfEnd: String
 }
 
@@ -88,7 +88,7 @@ input PropertyInput {
   cityName: String
   provinceName: String
   municipalityName: String
-  subDirectoryName: String
+  folderLocationName: String
   technicalUsername: String
   legalUsername: String
   typeName: String
@@ -96,4 +96,3 @@ input PropertyInput {
   referenceName: String
   trackings: [TrackingInput]
 }
-

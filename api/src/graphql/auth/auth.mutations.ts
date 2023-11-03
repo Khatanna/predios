@@ -24,8 +24,8 @@ export const login = async (
         username: true,
         password: true,
         status: true,
-        connection: true
-      }
+        connection: true,
+      },
     });
     if (user.status === "DISABLE") {
       throw throwLoginError(AuthErrorMessage.USER_DISABLE);
@@ -40,17 +40,17 @@ export const login = async (
     }
     const userUpdated = await prisma.user.update({
       where: {
-        username: user.username
+        username: user.username,
       },
       data: {
-        connection: 'ONLINE'
+        connection: "ONLINE",
       },
       select: {
         username: true,
         status: true,
-        connection: true
-      }
-    })
+        connection: true,
+      },
+    });
     const accessToken = generateToken(
       userUpdated,
       process.env.ACCESS_TOKEN_SECRET!,
@@ -71,9 +71,9 @@ export const login = async (
       },
     });
 
-    await pubSub.publish('USER_CONNECTED', {
-      userConnected: true
-    })
+    await pubSub.publish("USER_CONNECTED", {
+      userConnected: true,
+    });
     return { accessToken, refreshToken };
     // throw throwLoginError(AuthErrorMessage.UNREGISTERED_USER);
   } catch (e) {
@@ -81,27 +81,31 @@ export const login = async (
   }
 };
 
-export const logout = async (_parent: any, { username, token }: { username: string; token: string }, { prisma, pubSub }: PrismaContext & PubSubContext) => {
+export const logout = async (
+  _parent: any,
+  { username, token }: { username: string; token: string },
+  { prisma, pubSub }: PrismaContext & PubSubContext,
+) => {
   try {
     const user = await prisma.user.update({
       where: {
         username,
-        token
+        token,
       },
       data: {
-        connection: 'OFFLINE',
-        token: undefined
-      }
-    })
+        connection: "OFFLINE",
+        token: undefined,
+      },
+    });
 
-    pubSub.publish('USER_CONNECTED', {
-      userConnected: true
-    })
+    pubSub.publish("USER_CONNECTED", {
+      userConnected: true,
+    });
     return Boolean(user);
   } catch (e) {
     throw e;
   }
-}
+};
 export const getNewAccessToken = async (
   _parent: any,
   { refreshToken }: { refreshToken: string },
@@ -119,8 +123,11 @@ export const getNewAccessToken = async (
     });
 
     if (!user) {
-      throw new Error('El token de sesión no ha sido encontrado vuelva a iniciar sesión')
+      throw new Error(
+        "El token de sesión no ha sido encontrado vuelva a iniciar sesión",
+      );
     }
+    // Verificar el vencimiento del token
     verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
 
     const accessToken = generateToken(
@@ -130,6 +137,6 @@ export const getNewAccessToken = async (
     );
     return accessToken;
   } catch (e) {
-    throw e
+    throw e;
   }
 };

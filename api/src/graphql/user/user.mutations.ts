@@ -3,6 +3,7 @@ import {
   Resource,
   Status,
   Status as StatusDB,
+  Type,
   User,
 } from "@prisma/client";
 import bcrypt from "bcryptjs";
@@ -14,13 +15,13 @@ type GraphQLInput<T> = { input: T };
 export const createUser = async (
   _: any,
   {
-    input: { names, firstLastName, secondLastName, username, password, typeId },
-  }: GraphQLInput<User>,
+    input: { names, firstLastName, secondLastName, username, password, type },
+  }: { input: User & { type: Pick<Type, "name"> } },
   { prisma, userContext }: Context,
 ) => {
   try {
     hasPermission(userContext, "CREATE", "USER");
-    const user = await prisma.user.create({
+    return prisma.user.create({
       data: {
         names,
         firstLastName,
@@ -28,14 +29,10 @@ export const createUser = async (
         username,
         password: bcrypt.hashSync(password, 10),
         type: {
-          connect: {
-            id: typeId!,
-          },
+          connect: type,
         },
       },
     });
-
-    return { created: Boolean(user), user };
   } catch (e) {
     throw e;
   }
@@ -161,14 +158,22 @@ export const createPermissionForUser = async (
       ),
     );
     const permissions = await prisma.$transaction(elements);
-    await pubSub.publish('USER_PERMISSION_STATUS_UPDATED', {
-      userPermissionStatusUpdated: data.flatMap(({ resource, levels }) =>
-        levels.map(level => ({
-          resource,
-          level
-        }))
-      ).reduce((acc: string[], { level, resource }) => [...acc, level.concat("_", resource)], [])
-    })
+    await pubSub.publish("USER_PERMISSION_STATUS_UPDATED", {
+      userPermissionStatusUpdated: data
+        .flatMap(({ resource, levels }) =>
+          levels.map((level) => ({
+            resource,
+            level,
+          })),
+        )
+        .reduce(
+          (acc: string[], { level, resource }) => [
+            ...acc,
+            level.concat("_", resource),
+          ],
+          [],
+        ),
+    });
     return {
       created: true,
       permissions,
@@ -213,12 +218,12 @@ export const updateStateOfPermissionUserByUsername = async (
       },
       include: {
         permission: true,
-      }
+      },
     });
 
-    await pubSub.publish('USER_PERMISSION_STATUS_UPDATED', {
-      userPermissionStatusUpdated: [level.concat("_", resource)]
-    })
+    await pubSub.publish("USER_PERMISSION_STATUS_UPDATED", {
+      userPermissionStatusUpdated: [level.concat("_", resource)],
+    });
 
     return {
       updated: Boolean(updated),
@@ -262,9 +267,9 @@ export const deletePermissionOfUserByUsername = async (
       },
     });
 
-    await pubSub.publish('USER_PERMISSION_STATUS_UPDATED', {
-      userPermissionStatusUpdated: [level.concat("_", resource)]
-    })
+    await pubSub.publish("USER_PERMISSION_STATUS_UPDATED", {
+      userPermissionStatusUpdated: [level.concat("_", resource)],
+    });
     return {
       deleted: Boolean(permission),
       permission,
@@ -274,25 +279,33 @@ export const deletePermissionOfUserByUsername = async (
   }
 };
 
-export const updateStateUsersByUsername = async (_parent: any, { input: { usernames, status } }: { input: { usernames: string[], status: Status } }, { prisma, userContext }: Context) => {
+export const updateStateUsersByUsername = async (
+  _parent: any,
+  {
+    input: { usernames, status },
+  }: { input: { usernames: string[]; status: Status } },
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, 'UPDATE', "USER")
-    const users = await prisma.$transaction(usernames.map((username) => {
-      return prisma.user.update({
-        where: {
-          username
-        },
-        data: {
-          status
-        }
-      })
-    }))
+    hasPermission(userContext, "UPDATE", "USER");
+    const users = await prisma.$transaction(
+      usernames.map((username) => {
+        return prisma.user.update({
+          where: {
+            username,
+          },
+          data: {
+            status,
+          },
+        });
+      }),
+    );
 
     return {
       users: users,
-      count: users.length
-    }
+      count: users.length,
+    };
   } catch (e) {
     throw e;
   }
-}
+};

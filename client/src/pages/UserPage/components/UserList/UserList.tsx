@@ -2,7 +2,7 @@ import { Alert } from "react-bootstrap";
 import { PersonAdd } from "react-bootstrap-icons";
 import { TableColumn } from "react-data-table-component";
 import { Link, useNavigate } from "react-router-dom";
-import { Icon } from "../../../../components/Icon";
+import { Tooltip } from "../../../../components/Tooltip";
 import { StateCell } from "../../../../components/StateCell";
 import { Table } from "../../../../components/Table";
 import { StateOfStatus } from "../../../../utilities/constants";
@@ -50,17 +50,22 @@ const columns: TableColumn<User>[] = [
     reorder: true,
   },
   {
-    name: 'Conexión',
-    cell: ({ connection }) => <StateCell status={connection} values={{
-      "ONLINE": {
-        label: 'En Linea',
-        color: 'green'
-      },
-      "OFFLINE": {
-        label: 'Desconectado',
-        color: 'red'
-      }
-    }} />
+    name: "Conexión",
+    cell: ({ connection }) => (
+      <StateCell
+        status={connection}
+        values={{
+          ONLINE: {
+            label: "En Linea",
+            color: "green",
+          },
+          OFFLINE: {
+            label: "Desconectado",
+            color: "red",
+          },
+        }}
+      />
+    ),
   },
   {
     name: "Estado",
@@ -71,13 +76,13 @@ const columns: TableColumn<User>[] = [
   {
     cell: (row) => <DropdownMenu user={row} />,
     button: true,
-    width: '30px',
+    width: "30px",
     allowOverflow: true,
   },
 ];
 
 const SubHeaderComponent: React.FC = () => {
-  const { filterText, setFilterText } = useUsersStore()
+  const { filterText, setFilterText } = useUsersStore();
 
   return (
     <div className="d-flex justify-content-between align-items-center gap-3">
@@ -125,18 +130,18 @@ const UserList: React.FC = () => {
 
   return (
     <Table
-      name='usuarios'
+      name="usuarios"
       columns={columns}
       selectableRows
       data={Object.values(users)}
       progressPending={isLoading}
       onRowDoubleClicked={(row) => navigate("permissions", { state: row })}
       actions={
-        <Icon placement="left" label="Crear un nuevo usuario">
+        <Tooltip placement="left" label="Crear un nuevo usuario">
           <Link to={"/users/create"}>
             <PersonAdd role="button" size={"30"} />
           </Link>
-        </Icon>
+        </Tooltip>
       }
       // contextActions={<ContextActions />}
       // clearSelectedRows={showContextMenu}
@@ -150,15 +155,15 @@ const UserList: React.FC = () => {
       }}
       // paginationPerPage={currentCount}
       onChangeRowsPerPage={(numberOfResults) => {
-        console.log(numberOfResults)
-        changeRowsPerPage(numberOfResults)
+        console.log(numberOfResults);
+        changeRowsPerPage(numberOfResults);
       }}
       onChangePage={(page) => {
         if (currentPage < page) {
-          getNextPage({ page, nextCursor: data?.results.nextCursor })
+          getNextPage({ page, nextCursor: data?.results.nextCursor });
         }
         if (page < currentPage) {
-          getPreviousPage({ page, prevCursor: data?.results.prevCursor })
+          getPreviousPage({ page, prevCursor: data?.results.prevCursor });
         }
       }}
     />

@@ -1,12 +1,18 @@
 import { useMemo } from "react";
-import { Button, Dropdown, DropdownProps, Form, FormSelectProps, InputGroup, Row, Stack, StackProps } from "react-bootstrap";
-
 import {
-  Icon,
-  IconProps,
-  ThreeDotsVertical,
-} from "react-bootstrap-icons";
-import { Icon as Tooltip } from "../../components/Icon";
+  Button,
+  Dropdown,
+  DropdownProps,
+  Form,
+  FormSelectProps,
+  InputGroup,
+  Row,
+  Stack,
+  StackProps,
+} from "react-bootstrap";
+
+import { Icon, IconProps, ThreeDotsVertical } from "react-bootstrap-icons";
+import { Tooltip } from "../../components/Tooltip";
 
 type DropdownItemProps = typeof Dropdown.Item.defaultProps & { show?: boolean };
 type DropdownItemComposedProps = {
@@ -15,11 +21,13 @@ type DropdownItemComposedProps = {
 };
 type DropdownToggleProps = typeof Dropdown.Toggle.defaultProps;
 
-const ItemWithIcon = ({ icon }: Required<Pick<DropdownItemComposedProps, 'icon'>>) => {
+const ItemWithIcon = ({
+  icon,
+}: Required<Pick<DropdownItemComposedProps, "icon">>) => {
   const [Icon, iconProps] = icon;
 
-  return <Icon {...iconProps} />
-}
+  return <Icon {...iconProps} />;
+};
 
 const DropdownItem: React.FC<DropdownItemComposedProps & StackProps> = ({
   item: [label, itemProps],
@@ -30,26 +38,25 @@ const DropdownItem: React.FC<DropdownItemComposedProps & StackProps> = ({
     <Dropdown.Item {...itemProps}>
       <Stack {...stackProps}>
         <div>{label}</div>
-        {icon && (
-          <ItemWithIcon icon={icon} />
-        )}
+        {icon && <ItemWithIcon icon={icon} />}
       </Stack>
     </Dropdown.Item>
   );
 };
 
 const DropdownMenu: React.FC<
-  Omit<DropdownProps, "children"> & { options: DropdownItemComposedProps[] }
-  & { toggleProps?: DropdownToggleProps }
+  Omit<DropdownProps, "children"> & { options: DropdownItemComposedProps[] } & {
+    toggleProps?: DropdownToggleProps;
+  }
 > = ({ options, toggleProps, ...props }) => {
   const optionsFiltered = useMemo(() => {
     return options.filter(({ item: [, props] }) => {
-      if (props && 'show' in props) {
+      if (props && "show" in props) {
         return props.show;
       }
       return true;
     });
-  }, [options])
+  }, [options]);
 
   return (
     <Dropdown {...props}>
@@ -71,62 +78,93 @@ const DropdownMenu: React.FC<
 
 const toggleProps: DropdownToggleProps = {
   as: ThreeDotsVertical,
-  role: 'button'
-}
+  role: "button",
+};
 
-export const SelectNameable: React.FC<FormSelectProps & {
-  options: { label: string, value: string }[]
-  readOnly?: boolean,
-  onCreate?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-  onEdit?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-  onDelete?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-}> = ({ options, placeholder, onCreate, onEdit, onDelete, ...props }) => {
+export const SelectNameable: React.FC<
+  FormSelectProps & {
+    options: { label: string; value: string }[];
+    readOnly?: boolean;
+    onCreate?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+    onEdit?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+    onDelete?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  }
+> = ({ options, placeholder, onCreate, onEdit, onDelete, ...props }) => {
   const optionsMenu: DropdownItemComposedProps[] = [
     {
       item: ["➕ Crear", { onClick: onCreate, show: Boolean(onCreate) }],
     },
     {
-      item: ["✏ Editar", { onClick: onEdit, show: Boolean(onEdit) && props.value !== 'undefined' }],
+      item: [
+        "✏ Editar",
+        {
+          onClick: onEdit,
+          show: Boolean(onEdit) && props.value !== "undefined",
+        },
+      ],
     },
     {
-      item: ['🗑 Eliminar', { onClick: onDelete, show: Boolean(onDelete) && props.value !== 'undefined' }],
-    }
-  ]
+      item: [
+        "🗑 Eliminar",
+        {
+          onClick: onDelete,
+          show: Boolean(onDelete) && props.value !== "undefined",
+        },
+      ],
+    },
+  ];
 
   if (props.readOnly || props.disabled) {
     return (
-      <Tooltip label={props.readOnly ? "Campo de solo lectura" : "Campo deshabilitado"}>
+      <Tooltip
+        label={props.readOnly ? "Campo de solo lectura" : "Campo deshabilitado"}
+      >
         <Form.Control
           placeholder={placeholder || (props.value as string)}
-          value={undefined}
+          value={props.readOnly ? (props.value as string) : placeholder}
           size={props.size}
           readOnly={props.readOnly}
           disabled={props.disabled}
+          className={`${props.disabled ? "text-body-tertiary" : ""}`}
         />
       </Tooltip>
     );
   }
 
-  return <InputGroup size={props.size}>
-    <Form.Select {...props} className={`${props.value === 'undefined' || !props.value ? 'text-body-tertiary' : 'text-black'}`}>
-      <option value="undefined" className="text-body-tertiary" disabled>{placeholder}</option>
-      {options.map(option => (
-        <option value={option.value} key={crypto.randomUUID()} style={{ color: 'black' }}>{option.label}</option>
-      ))}
-    </Form.Select>
-    {(onCreate || onEdit || onDelete) &&
-      <InputGroup.Text>
-        <DropdownMenu options={optionsMenu} toggleProps={toggleProps} />
-      </InputGroup.Text>}
-  </InputGroup>
-}
+  return (
+    <InputGroup size={props.size}>
+      <Form.Select
+        {...props}
+        className={`${
+          props.value === "undefined" || !props.value
+            ? "text-body-tertiary"
+            : "text-black"
+        }`}
+      >
+        <option value="undefined" className="text-body-tertiary" disabled>
+          {placeholder}
+        </option>
+        {options.map((option) => (
+          <option
+            value={option.value}
+            key={crypto.randomUUID()}
+            style={{ color: "black" }}
+          >
+            {option.label}
+          </option>
+        ))}
+      </Form.Select>
+      {(onCreate || onEdit || onDelete) && (
+        <InputGroup.Text>
+          <DropdownMenu options={optionsMenu} toggleProps={toggleProps} />
+        </InputGroup.Text>
+      )}
+    </InputGroup>
+  );
+};
 
 const HomePage: React.FC = () => {
-  return (
-    <Row>
-
-    </Row>
-  );
+  return <Row></Row>;
 };
 
 export default HomePage;

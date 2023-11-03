@@ -4,9 +4,9 @@ import { mutationMessages } from "../../../utilities/constants";
 import { User, UserInput } from "../models/types";
 
 const CREATE_USER_MUTATION = ` 
-  mutation CreateUser($input: CreateUserInput) {
+  mutation CreateUser($input: UserInput) {
     result: createUser(input: $input) {
-      created
+      username
     } 
   }
 `;
