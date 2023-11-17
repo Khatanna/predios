@@ -45,6 +45,11 @@ const columns: TableColumn<User>[] = [
     reorder: true,
   },
   {
+    name: "Rol",
+    selector: row => row.role.name,
+    reorder: true,
+  },
+  {
     name: "Tipo",
     selector: (row) => row.type.name,
     reorder: true,

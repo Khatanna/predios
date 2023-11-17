@@ -75,6 +75,7 @@ export const getAllUsers = async (
           },
         },
         type: true,
+        role: true
       },
       skip,
       cursor: nextCursor ? { id: nextCursor } : prevCursor ? { id: prevCursor } : undefined,
@@ -155,7 +156,7 @@ export const getUserById = async (
 
     const user = await prisma.user.findUnique({
       where: { id },
-      include: { permissions: true },
+      include: { permissions: true, role: true },
     });
 
     return user;
@@ -190,6 +191,7 @@ export const getUserByUsername = async (
             user: true,
           },
         },
+        role: true
       },
     });
 
@@ -243,17 +245,16 @@ export const getUser = async (_parent: any, { nextCursor, prevCursor }: { nextCu
   }
 }
 
-export const getUsers = async (_parent: any, { type, filterText }: { type: string, filterText: string }, { prisma, userContext }: Context) => {
+export const getUsers = async (_parent: any, { type, filterText }: { type?: string, filterText: string }, { prisma, userContext }: Context) => {
   try {
-    console.log({ type, filterText })
     hasPermission(userContext, 'READ', 'USER')
     const filterTextParts = filterText && filterText.includes(" ") ? filterText.trim().split(" ") : []
     const result = await prisma.user.findMany({
       take: 10,
       where: {
-        type: {
+        type: type ? {
           name: type,
-        },
+        } : undefined,
         OR: filterText ? [
           {
             names: {

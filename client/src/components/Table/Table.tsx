@@ -36,7 +36,6 @@ const Table = <T extends NonNullable<unknown>>(
 
   return (
     <DataTable
-      {...props}
       columns={props.columns.map(c => ({ ...c, sortable: true }))}
       striped
       pagination
@@ -79,6 +78,8 @@ const Table = <T extends NonNullable<unknown>>(
           />
         </div>
       </div>}
+      {...props}
+
     />
   );
 };

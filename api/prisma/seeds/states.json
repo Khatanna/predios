@@ -1,0 +1,529 @@
+{
+  "states": [
+    {
+      "name": "Título Firmado",
+      "order": "03",
+      "stage": {
+        "name": "TIT"
+      }
+    },
+    {
+      "name": "Cumplimiento fallo TAN",
+      "order": "22",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Defensa ante el TAN (Impugnado)",
+      "order": "23",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Subsanacion Observaciones Titulacion",
+      "order": "24",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "RFS remitida a Titulacion",
+      "order": "25",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Replanteo",
+      "order": "26",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "RFS para remisión a Titulación / Dist. Tierras",
+      "order": "27",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "RFS Rectificatoria para firma en Presidencia",
+      "order": "28",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "RFS Rectificatoria para firma en Despacho",
+      "order": "29",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Elaboracion de RFS Rectificatoria",
+      "order": "30",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Solicitud Certificacion al TAN",
+      "order": "31",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Remitido a Fiscalizacion",
+      "order": "38",
+      "stage": {
+        "name": "P. RFS"
+      }
+    },
+    {
+      "name": "RFS Notificada",
+      "order": "32",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "RFS remitida para Notificacion",
+      "order": "33",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "RFS Firmada No devuelta de Presidencia (Medianas Y Empresas)",
+      "order": "34",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "RFS para firma en Presidencia",
+      "order": "36",
+      "stage": {
+        "name": "P. RFS"
+      }
+    },
+    {
+      "name": "RFS para firma en Despacho",
+      "order": "37",
+      "stage": {
+        "name": "P. RFS"
+      }
+    },
+    {
+      "name": "RFS remitida a Control de Calidad",
+      "order": "40",
+      "stage": {
+        "name": "P. RFS"
+      }
+    },
+    {
+      "name": "Para Subsanacion en Direccion Departamental",
+      "order": "41",
+      "stage": {
+        "name": "P. RFS"
+      }
+    },
+    {
+      "name": "Solicitud Fijacion, Reajuste del Precio, dejar Sin Efecto la I-Tec",
+      "order": "43",
+      "stage": {
+        "name": "P. RFS"
+      }
+    },
+    {
+      "name": "Con Proyecto de Resolucion elaborado",
+      "order": "44",
+      "stage": {
+        "name": "P. RFS"
+      }
+    },
+    {
+      "name": "Elaboracion de Proyecto de Resolucion",
+      "order": "45",
+      "stage": {
+        "name": "CAMPO"
+      }
+    },
+    {
+      "name": "Remitido al VT",
+      "order": "21",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Elaboracion del Informe de Cierre",
+      "order": "48",
+      "stage": {
+        "name": "CAMPO"
+      }
+    },
+    {
+      "name": "Solicitud de Precios a la ABT",
+      "order": "49",
+      "stage": {
+        "name": "CAMPO"
+      }
+    },
+    {
+      "name": "Control de Calidad Informe en Conclusiones",
+      "order": "51",
+      "stage": {
+        "name": "CAMPO"
+      }
+    },
+    {
+      "name": "Elaboracion de Informe en Conclusiones",
+      "order": "52",
+      "stage": {
+        "name": "CAMPO"
+      }
+    },
+    {
+      "name": "Relevamiento en campo terminado",
+      "order": "53",
+      "stage": {
+        "name": "CAMPO"
+      }
+    },
+    {
+      "name": "Relevamiento de informacion en campo",
+      "order": "55",
+      "stage": {
+        "name": "CAMPO"
+      }
+    },
+    {
+      "name": "Devuelto de la Departamental Beni",
+      "order": "20",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Devuelto del VT",
+      "order": "21",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Elaboracion INUET - RICPIO",
+      "order": "56",
+      "stage": {
+        "name": "PREP."
+      }
+    },
+    {
+      "name": "Resolucion de Inicio de Procedimiento emitida",
+      "order": "57",
+      "stage": {
+        "name": "PREP."
+      }
+    },
+    {
+      "name": "Carpeta remitida a la Deptal Beni",
+      "order": "70",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "RFS Firmada",
+      "order": "Indefinido",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "RFS en curso de firmas para Presidencia/Despacho",
+      "order": "Indefinido",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Control de Calidad Relevamiento en campo",
+      "order": "54",
+      "stage": {
+        "name": "CAMPO"
+      }
+    },
+    {
+      "name": "Res. Determinativa de Area de Saneamiento emitida",
+      "order": "59",
+      "stage": {
+        "name": "PREP."
+      }
+    },
+    {
+      "name": "Demanda/Solicitud admitida",
+      "order": "60",
+      "stage": {
+        "name": "PREP."
+      }
+    },
+    {
+      "name": "Auto de Intimacion/ Rechazo / Aprobacion",
+      "order": "62",
+      "stage": {
+        "name": "PREP."
+      }
+    },
+    {
+      "name": "Elaboracion de Informe Tecnico Legal",
+      "order": "63",
+      "stage": {
+        "name": "PREP."
+      }
+    },
+    {
+      "name": "Solicitud Demanda TCO / SS a pedido de Parte",
+      "order": "64",
+      "stage": {
+        "name": "PREP."
+      }
+    },
+    {
+      "name": "Res. Dotacion remitida a titulacion",
+      "order": "05",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Res. Dotacion Firmada",
+      "order": "06",
+      "stage": {
+        "name": "AAHH"
+      }
+    },
+    {
+      "name": "Res. Dotacion para Firma en Despacho",
+      "order": "07",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Elaboracion Resolucion de Dotacion",
+      "order": "08",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Ejecucion de Programa de AAHH",
+      "order": "09",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Elaboracion de Programa de AAHH",
+      "order": "10",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Registro de Beneficiarios",
+      "order": "11",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Prueba de Preferencias Legales o IPE",
+      "order": "12",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Selección de Beneficiarios",
+      "order": "13",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Elaboracion Res. modificatoria MD",
+      "order": "14",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Resolucion MD Firmada",
+      "order": "15",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Resolucion MD remitida a la CAD",
+      "order": "16",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Resolucion MD para firma en Despacho",
+      "order": "17",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Elaboracion de Res. Modalidad de Distribucion",
+      "order": "18",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Solicitud de certificacion Aptitud de Uso de Suelo",
+      "order": "19",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Analisis de disponibilidad de Tierra Fiscal",
+      "order": "20",
+      "stage": {
+        "name": "AAHH1"
+      }
+    },
+    {
+      "name": "Tierra Fiscal remitida a AAHH",
+      "order": "21",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Elab. de Informes Complementarios o Rectificacion",
+      "order": "46",
+      "stage": {
+        "name": "CAMPO"
+      }
+    },
+    {
+      "name": "Paralizado",
+      "order": "Indefinido",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Devuelto de Fiscalización",
+      "order": "65",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Transferencia de Custodio",
+      "order": "67",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Enviado a Bosques",
+      "order": "68",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Devuelto de Bosques",
+      "order": "69",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Otros estados",
+      "order": "70",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Con certificacion del TA",
+      "order": "71",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Devolucion de Cobranzas",
+      "order": "72",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Con PRFS para revision (Control Calidad)",
+      "order": "73",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "RFS Rectificatoria en curso de firmas a Presidencia",
+      "order": "74",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Falta de Pago de Precio - RFS Notificada",
+      "order": "75",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "RFS Rectificatoria Firmada",
+      "order": "76",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Falta de Documento (CI)",
+      "order": "77",
+      "stage": {
+        "name": "RFS"
+      }
+    },
+    {
+      "name": "Observado/Paralizado",
+      "order": "Indefinido",
+      "stage": {
+        "name": "CAMPO"
+      }
+    },
+    {
+      "name": "Conflicto",
+      "order": "Indefinido",
+      "stage": {
+        "name": "CAMPO"
+      }
+    }
+  ]
+}

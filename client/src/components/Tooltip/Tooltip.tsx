@@ -1,4 +1,3 @@
-import React from "react";
 import {
   OverlayTrigger,
   OverlayTriggerProps,
@@ -7,7 +6,7 @@ import {
 
 export type TooltipProps = {
   label: string;
-} & Pick<OverlayTriggerProps, "placement" | "children">;
+} & Omit<OverlayTriggerProps, 'overlay'>;
 
 const Tooltip: React.FC<TooltipProps> = ({ placement, label, children }) => {
   return (

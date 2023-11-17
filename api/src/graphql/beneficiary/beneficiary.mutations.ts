@@ -1,43 +1,46 @@
+import { Beneficiary } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createBeneficiary = async (_parent: any, { input: { name } }: { input: { name: string } }, { prisma, userContext }: Context) => {
+export const createBeneficiary = (_parent: any, { propertyId, input }: { propertyId: string, input: Pick<Beneficiary, 'name'> }, { prisma, userContext }: Context) => {
   try {
-    //hasPermission(userContext, 'CREATE', 'BENEFICIARY');
+    hasPermission(userContext, 'CREATE', 'BENEFICIARY');
 
-    const beneficiary = await prisma.beneficiary.create({
+    return prisma.beneficiary.create({
       data: {
-        name
-      },
-      include: {
-        properties: true,
+        ...input,
+        properties: {
+          connect: {
+            id: propertyId
+          }
+        }
       }
     })
-
-    return {
-      created: Boolean(beneficiary),
-      beneficiary
-    }
   } catch (e) {
     throw e;
   }
 };
 
-export const deleteBeneficiary = async (_parent: any, { input: { name } }: { input: { name: string } }, { prisma, userContext }: Context) => {
+export const deleteBeneficiary = (_parent: any, { input }: { input: Pick<Beneficiary, 'name'> }, { prisma, userContext }: Context) => {
   try {
-    //hasPermission(userContext, 'DELETE', 'BENEFICIARY')
-    const beneficiary = await prisma.beneficiary.delete({
-      where: {
-        name
-      },
-      include: {
-        properties: true
-      }
+    hasPermission(userContext, 'DELETE', 'BENEFICIARY')
+
+    return prisma.beneficiary.delete({
+      where: input
     })
-    return {
-      deleted: Boolean(beneficiary),
-      beneficiary
-    };
+  } catch (e) {
+    throw e;
+  }
+}
+
+export const updateBeneficiary = (_parent: any, { name, input }: { name: string, input: Pick<Beneficiary, 'name'> }, { prisma, userContext }: Context) => {
+  try {
+    hasPermission(userContext, 'DELETE', 'BENEFICIARY')
+
+    return prisma.beneficiary.update({
+      where: { name },
+      data: input
+    })
   } catch (e) {
     throw e;
   }

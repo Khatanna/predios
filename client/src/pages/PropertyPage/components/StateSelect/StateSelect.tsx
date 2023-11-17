@@ -14,6 +14,10 @@ const GET_ALL_STATES_QUERY = `
 	query GetAllStates {
 		states: getAllStates {
 			name
+      order
+      stage {
+        name
+      }
 		}
 	} 
 `;

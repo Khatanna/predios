@@ -10,25 +10,12 @@ type Query {
   getAllBeneficiaries(name: String): [Beneficiary]!
 }
 
-type BeneficiaryCreated {
-  created: Boolean
-  beneficiary: Beneficiary
-}
-
-type BeneficiaryDeleted {
-  deleted: Boolean
-  beneficiary: Beneficiary
-}
-
 type Mutation {
-  createBeneficiary(input: CreateBeneficiaryInput): BeneficiaryCreated
-  deleteBeneficiary(input: DeleteBeneficiaryInput): BeneficiaryDeleted
+  createBeneficiary(propertyId: String, input: BeneficiaryInput): Beneficiary
+  deleteBeneficiary(input: BeneficiaryInput): Beneficiary
+  updateBeneficiary(name: String, input: BeneficiaryInput): Beneficiary
 }
 
-input CreateBeneficiaryInput {
-  name: String!
-}
-
-input DeleteBeneficiaryInput {
+input BeneficiaryInput {
   name: String!
 }

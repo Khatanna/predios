@@ -8,6 +8,9 @@ export const getAllClasifications = (_parent: any, args: any, { prisma, userCont
     return prisma.clasification.findMany({
       include: {
         properties: true
+      },
+      orderBy: {
+        name: 'asc'
       }
     })
   } catch (e) {

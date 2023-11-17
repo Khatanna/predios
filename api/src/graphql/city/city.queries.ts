@@ -5,7 +5,23 @@ export const getAllCities = async (_parent: any, args: any, { prisma, userContex
   try {
     hasPermission(userContext, 'READ', 'CITY');
     return prisma.city.findMany({
-      include: { provinces: { include: { municipalities: true } } },
+      include: {
+        provinces: {
+          include: {
+            municipalities: {
+              orderBy: {
+                name: 'asc'
+              }
+            },
+          },
+          orderBy: {
+            name: 'asc'
+          }
+        },
+      },
+      orderBy: {
+        name: 'asc'
+      }
     });
   } catch (e) {
     throw e;

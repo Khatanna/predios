@@ -25,6 +25,10 @@ export interface Property {
   name: string
   area?: string
   expertiseOfArea?: string
+  fileNumber: Pick<{
+    id: string
+    number: string
+  }, 'number'>
   plots: number
   bodies: number
   sheets: number
@@ -33,20 +37,21 @@ export interface Property {
   agrupationIdentifier?: string
   secondState?: string
   polygone?: string
-  observations: Observation[]
-  beneficiaries: Partial<Beneficiary>[]
-  city?: City
-  province?: Province
-  municipality?: Municipality
-  activity?: Activity
-  clasification?: Clasification
-  state?: State
-  groupedState?: GroupedState
-  reference?: Reference
-  type?: Type
-  responsibleUnit?: ResponsibleUnit
-  folderLocation?: SubDirectory
-  trackings: Pick<Tracking, 'state' | 'dateOfInit' | 'dateOfEnd' | 'numberOfNote' | 'observation' | 'responsible'>[]
+  observations: Pick<Observation, 'observation'>[]
+  technicalObservation: string
+  beneficiaries: Pick<Beneficiary, 'name'>[]
+  city?: Pick<City, 'name'>
+  province?: Pick<Province, 'name'>
+  municipality?: Pick<Municipality, 'name'>
+  activity?: Pick<Activity, 'name'>
+  clasification?: Pick<Clasification, 'name'>
+  state?: Pick<State, 'name' | 'order' | 'stage'>
+  groupedState?: Pick<GroupedState, 'name'>
+  reference?: Pick<Reference, 'name'>
+  type?: Pick<Type, 'name'>
+  responsibleUnit?: Pick<ResponsibleUnit, 'name'>
+  folderLocation?: Pick<SubDirectory, 'name'>
+  trackings: Pick<Tracking, 'state' | 'dateOfInit' | 'numberOfNote' | 'observation' | 'responsible'>[]
   technical?: UserOnProperty
   legal?: UserOnProperty
   createdAt: string

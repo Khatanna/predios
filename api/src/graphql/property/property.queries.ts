@@ -1,6 +1,6 @@
 import { GraphQLArgs } from "graphql";
 import { Context } from "../../types";
-import { hasPermission } from "../../utilities";
+import { hasPermission, prisma } from "../../utilities";
 
 export const getAllProperties = async (_parent: any,
   _args: GraphQLArgs,
@@ -47,6 +47,9 @@ export const getAllProperties = async (_parent: any,
         },
         municipality: true,
       },
+      orderBy: {
+        registryNumber: 'asc',
+      }
     });
 
     return result;
@@ -55,20 +58,27 @@ export const getAllProperties = async (_parent: any,
   }
 };
 
-export const getProperty = async (_parent: any, { nextCursor }: { nextCursor?: string }, context: Context) => {
+export const getProperty = async (_parent: any, { nextCursor, prevCursor }: { nextCursor?: string, prevCursor?: string }, context: Context) => {
   try {
+    // console.log
     const property = await context.prisma.property.findFirstOrThrow({
-      skip: nextCursor ? 1 : 0,
+      skip: nextCursor || prevCursor ? 1 : 0,
+      take: prevCursor ? - 1 : 1,
       cursor: nextCursor ? {
         id: nextCursor
+      } : prevCursor ? {
+        id: prevCursor
       } : undefined,
       orderBy: {
-        id: 'asc'
+        registryNumber: nextCursor ? 'asc' : prevCursor ? 'desc' : 'asc'
       },
       include: {
         beneficiaries: {
           include: {
             properties: true
+          },
+          orderBy: {
+            createdAt: 'asc'
           }
         },
         activity: true,
@@ -113,11 +123,33 @@ export const getProperty = async (_parent: any, { nextCursor }: { nextCursor?: s
             user: true
           }
         },
+        fileNumber: true,
+        trackings: {
+          include: {
+            responsible: true,
+            state: true
+          }
+        },
       },
     });
+    let prevProperty;
+
+    if (nextCursor || prevCursor) {
+      prevProperty = await context.prisma.property.findFirst({
+        cursor: {
+          id: nextCursor ?? prevCursor
+        },
+        take: -1,
+        skip: 1,
+        orderBy: {
+          registryNumber: 'asc'
+        }
+      });
+    }
 
     return {
-      nextCursor: property.id,
+      nextCursor: property?.id,
+      prevCursor: prevProperty?.id,
       property
     }
   } catch (e) {
@@ -136,13 +168,16 @@ export const getPropertyById = async (_parent: any, { id }: { id: string }, { pr
         beneficiaries: {
           include: {
             properties: true
+          },
+          orderBy: {
+            createdAt: 'asc'
           }
         },
         activity: true,
         clasification: true,
         observations: {
-          include: {
-            property: true
+          orderBy: {
+            createdAt: 'desc'
           }
         },
         type: true,
@@ -185,26 +220,35 @@ export const getPropertyById = async (_parent: any, { id }: { id: string }, { pr
             responsible: true,
             state: true
           }
-        }
+        },
+        fileNumber: true,
       },
     });
+
+    // console.log(property.observations)
     return property
   } catch (e) {
     throw e;
   }
 }
-export const searchPropertyByAttribute = async (_parent: any, { query }: { query: string }, { prisma, userContext }: Context) => {
+export const searchPropertyByAttribute = async (_parent: any, { code, codeOfSearch, agrupationIdentifier }: { code: string, codeOfSearch: string, agrupationIdentifier: string }, { prisma, userContext }: Context) => {
   try {
     hasPermission(userContext, 'READ', 'PROPERTY');
-    console.log({ query })
-    const property = await prisma.property.findFirst({
+    console.log({ code, codeOfSearch, agrupationIdentifier });
+    const properties = await prisma.property.findMany({
+      take: 8,
       where: {
         OR: [
           {
-            code: query
-          },
-          {
-            agrupationIdentifier: query
+            code: {
+              contains: code
+            },
+            agrupationIdentifier: {
+              contains: agrupationIdentifier
+            },
+            codeOfSearch: {
+              contains: codeOfSearch
+            }
           }
         ]
       },
@@ -265,8 +309,7 @@ export const searchPropertyByAttribute = async (_parent: any, { query }: { query
       },
     });
 
-    console.log(property?.id)
-    return property
+    return properties
   } catch (e) {
     throw e;
   }

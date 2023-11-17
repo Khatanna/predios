@@ -19,6 +19,7 @@ type User {
   connection: String!
   type: UserType
   status: String!
+  role: Role
 }
 
 type getUserPagination {
@@ -73,7 +74,7 @@ type Mutation {
   createUser(input: UserInput): User
   updateUserByUsername(username: String, input: UserInput): User
   updateUserById(id: ID, input: UserInput): User
-  updateStateUserByUsername(input: UserInput): User
+  updateStateUserByUsername(username: String, input: UserInput): User
   updateStateOfPermissionUserByUsername(
     input: UpdateStateOfPermissionUserByUsernameInput
   ): UserPermissionUpdate
@@ -92,14 +93,15 @@ type Mutation {
 
 # Input types
 input UserInput {
-  names: String!
-  firstLastName: String!
-  secondLastName: String!
-  username: String!
-  password: String!
+  names: String
+  firstLastName: String
+  secondLastName: String
+  username: String
+  password: String
   permissions: [CreatePermissionInput]
-  type: UserTypeInput!
-  status: String!
+  type: UserTypeInput
+  status: String
+  role: RoleInput
 }
 
 input PermissionsInput {

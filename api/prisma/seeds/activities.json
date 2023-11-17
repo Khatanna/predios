@@ -1,0 +1,22 @@
+{
+  "activities": [
+    {
+      "name": "Agricola"
+    },
+    {
+      "name": "Ganadera"
+    },
+    {
+      "name": "Agropecuaria"
+    },
+    {
+      "name": "Tierra fiscal"
+    },
+    {
+      "name": "Otros"
+    },
+    {
+      "name": "Ninguna"
+    }
+  ]
+}

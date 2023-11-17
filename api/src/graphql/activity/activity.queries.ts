@@ -8,6 +8,9 @@ export const getAllActivities = (_parent: any, _args: any, { prisma, userContext
     return prisma.activity.findMany({
       include: {
         properties: true
+      },
+      orderBy: {
+        name: 'asc'
       }
     })
   } catch (e) {

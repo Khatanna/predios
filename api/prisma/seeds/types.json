@@ -1,0 +1,22 @@
+{
+  "types": [
+    {
+      "name": "TCO"
+    },
+    {
+      "name": "Individual"
+    },
+    {
+      "name": "Recorte"
+    },
+    {
+      "name": "Desalogo"
+    },
+    {
+      "name": "Tierra fiscal"
+    },
+    {
+      "name": "Comunitario"
+    }
+  ]
+}

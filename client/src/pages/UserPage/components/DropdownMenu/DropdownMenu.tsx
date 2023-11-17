@@ -21,21 +21,21 @@ const DELETE_USER_BY_USERNAME_MUTATION = `
 `;
 
 const DISABLE_USER_MUTATION = `
-  mutation UpdateStateUserByUsername ($input: UpdateUserByUsernameInput) {
-    result: updateStateUserByUsername(input: $input) {
-      updated
+  mutation UpdateStateUserByUsername ($username: String, $input: UserInput) {
+    user: updateStateUserByUsername(username: $username, input: $input) {
+      username
     }
   }
 `
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({ user }) => {
   const { updateUser, deleteUser, rollbackDeleteUser } = useUsersStore();
-  const [disableUser, { isLoading }] = useCustomMutation<{ result: { updated: boolean } }, { input: { username: string, data: Pick<User, 'status'> } }>(DISABLE_USER_MUTATION, {
-    onError(error, { input: { username, data } }) {
+  const [disableUser, { isLoading }] = useCustomMutation<{ user: User }, { username: string, input: Pick<User, 'status'> }>(DISABLE_USER_MUTATION, {
+    onError(error, { username, input: data }) {
       updateUser({ username, user: { ...data, status: data.status === 'ENABLE' ? 'DISABLE' : 'ENABLE' } })
       customSwalError(error, `Error al deshabilitar al usuario (${username})`);
     },
-    onMutate({ input: { username, data } }) {
+    onMutate({ username, input: data }) {
       updateUser({ username, user: data })
     },
   })
@@ -77,11 +77,9 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ user }) => {
 
   const handleStatusOfUser = () => {
     disableUser({
+      username: user.username,
       input: {
-        username: user.username,
-        data: {
-          status: user.status === "ENABLE" ? "DISABLE" : "ENABLE"
-        }
+        status: user.status === "ENABLE" ? "DISABLE" : "ENABLE"
       }
     })
   }

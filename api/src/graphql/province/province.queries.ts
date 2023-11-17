@@ -9,6 +9,9 @@ export const getAllProvinces = (_parent: any, _args: any, { prisma, userContext 
       include: {
         city: true,
         municipalities: true
+      },
+      orderBy: {
+        name: 'asc'
       }
     })
   } catch (e) {
@@ -27,7 +30,7 @@ export const getProvinces = (_parent: any, args: { city: string }, { prisma, use
           }
         },
         orderBy: {
-          code: 'asc'
+          name: 'asc'
         },
         include: {
           city: true,

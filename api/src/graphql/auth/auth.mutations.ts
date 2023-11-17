@@ -23,8 +23,7 @@ export const login = async (
       select: {
         username: true,
         password: true,
-        status: true,
-        connection: true,
+        status: true
       },
     });
     if (user.status === "DISABLE") {
@@ -49,6 +48,11 @@ export const login = async (
         username: true,
         status: true,
         connection: true,
+        role: {
+          select: {
+            name: true,
+          }
+        }
       },
     });
     const accessToken = generateToken(
@@ -119,17 +123,20 @@ export const getNewAccessToken = async (
       select: {
         username: true,
         connection: true,
+        role: {
+          select: {
+            name: true
+          }
+        }
       },
     });
 
     if (!user) {
       throw new Error(
-        "El token de sesión no ha sido encontrado vuelva a iniciar sesión",
+        "El Token de sesión no ha sido encontrado vuelva a iniciar sesión",
       );
     }
-    // Verificar el vencimiento del token
     verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
-
     const accessToken = generateToken(
       user,
       process.env.ACCESS_TOKEN_SECRET!,

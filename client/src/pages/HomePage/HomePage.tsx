@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   Button,
   Dropdown,
@@ -13,7 +13,9 @@ import {
 
 import { Icon, IconProps, ThreeDotsVertical } from "react-bootstrap-icons";
 import { Tooltip } from "../../components/Tooltip";
-
+import db from 'C:/Users/Administrador/Documents/dumps/database.svg';
+import { useAuth } from "../../hooks";
+import { Navigate } from "react-router";
 type DropdownItemProps = typeof Dropdown.Item.defaultProps & { show?: boolean };
 type DropdownItemComposedProps = {
   item: [string, DropdownItemProps?];
@@ -44,7 +46,7 @@ const DropdownItem: React.FC<DropdownItemComposedProps & StackProps> = ({
   );
 };
 
-const DropdownMenu: React.FC<
+export const DropdownMenu: React.FC<
   Omit<DropdownProps, "children"> & { options: DropdownItemComposedProps[] } & {
     toggleProps?: DropdownToggleProps;
   }
@@ -60,7 +62,7 @@ const DropdownMenu: React.FC<
 
   return (
     <Dropdown {...props}>
-      <Dropdown.Toggle as={Button} {...toggleProps} />
+      <Dropdown.Toggle as={Button} {...toggleProps} variant="outline-dark" />
       <Dropdown.Menu>
         {optionsFiltered.map(({ item, icon }) => (
           <DropdownItem
@@ -79,17 +81,23 @@ const DropdownMenu: React.FC<
 const toggleProps: DropdownToggleProps = {
   as: ThreeDotsVertical,
   role: "button",
+  color: 'black',
+  fontSize: 16
 };
 
 export const SelectNameable: React.FC<
   FormSelectProps & {
     options: { label: string; value: string }[];
     readOnly?: boolean;
+    dirty?: boolean;
     onCreate?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
     onEdit?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
     onDelete?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
   }
-> = ({ options, placeholder, onCreate, onEdit, onDelete, ...props }) => {
+> = ({ options, placeholder, onCreate, onEdit, onDelete, dirty, ...props }) => {
+  const [readOnly, setReadOnly] = useState(props.readOnly);
+  const { role } = useAuth();
+  const currentValue = useMemo(() => props.value, []);
   const optionsMenu: DropdownItemComposedProps[] = [
     {
       item: ["➕ Crear", { onClick: onCreate, show: Boolean(onCreate) }],
@@ -111,35 +119,68 @@ export const SelectNameable: React.FC<
           show: Boolean(onDelete) && props.value !== "undefined",
         },
       ],
-    },
+    }
   ];
 
-  if (props.readOnly || props.disabled) {
+  const optionsReadOnly: DropdownItemComposedProps[] = [
+    {
+      item: ['✍ Modificar', {
+        onClick: () => {
+          setReadOnly(false)
+        }
+      }]
+    }]
+
+  const optionsCancelReadOnly: DropdownItemComposedProps[] = [
+    {
+      item: ['❌ Cancelar', {
+        onClick: () => {
+          if (props.onChange && props.value !== currentValue) {
+            props.onChange(currentValue);
+          }
+          setReadOnly(true)
+        }
+      }],
+    }, {
+      item: ['✔ Confirmar', {
+        onClick: () => {
+          setReadOnly(true)
+        }
+      }]
+    }]
+
+  if (readOnly || props.disabled) {
     return (
       <Tooltip
-        label={props.readOnly ? "Campo de solo lectura" : "Campo deshabilitado"}
+        label={readOnly ? "Campo de solo lectura" : "Campo deshabilitado"}
       >
-        <Form.Control
-          placeholder={placeholder || (props.value as string)}
-          value={props.readOnly ? (props.value as string) : placeholder}
-          size={props.size}
-          readOnly={props.readOnly}
-          disabled={props.disabled}
-          className={`${props.disabled ? "text-body-tertiary" : ""}`}
-        />
+        <InputGroup size={props.size}>
+          <Form.Control
+            placeholder={placeholder || (props.value as string)}
+            value={readOnly && props.value !== 'undefined' ? (props.value as string) : placeholder}
+            size={props.size}
+            readOnly={readOnly}
+            disabled={props.disabled || dirty}
+            className={`${props.disabled ? "text-body-tertiary" : readOnly && props.value === 'undefined' ? "text-danger fw-bold" : ""}`}
+          />
+          {props.readOnly && role === "Administrador" && (
+            <InputGroup.Text >
+              <DropdownMenu options={optionsReadOnly} toggleProps={toggleProps} />
+            </InputGroup.Text>
+          )}
+        </InputGroup>
       </Tooltip>
     );
   }
 
   return (
-    <InputGroup size={props.size}>
+    <InputGroup size={props.size} >
       <Form.Select
         {...props}
-        className={`${
-          props.value === "undefined" || !props.value
-            ? "text-body-tertiary"
-            : "text-black"
-        }`}
+        className={`${props.value === "undefined" || !props.value
+          ? "text-body-tertiary"
+          : "text-black"
+          }`}
       >
         <option value="undefined" className="text-body-tertiary" disabled>
           {placeholder}
@@ -156,7 +197,7 @@ export const SelectNameable: React.FC<
       </Form.Select>
       {(onCreate || onEdit || onDelete) && (
         <InputGroup.Text>
-          <DropdownMenu options={optionsMenu} toggleProps={toggleProps} />
+          <DropdownMenu options={props.readOnly ? optionsCancelReadOnly : optionsMenu} toggleProps={toggleProps} />
         </InputGroup.Text>
       )}
     </InputGroup>
@@ -164,7 +205,11 @@ export const SelectNameable: React.FC<
 };
 
 const HomePage: React.FC = () => {
-  return <Row></Row>;
+  return <Navigate to={'/properties'} />
+
+  // return <Row>
+  //   <img src={db} alt="" title="Base de datos" />
+  // </Row>;
 };
 
 export default HomePage;

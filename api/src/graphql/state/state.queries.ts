@@ -8,6 +8,9 @@ export const getAllStates = (_parent: any, _args: any, { prisma, userContext }: 
       include: {
         stage: true,
         properties: true,
+      },
+      orderBy: {
+        name: 'asc'
       }
     })
   } catch (e) {

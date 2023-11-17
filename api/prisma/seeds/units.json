@@ -1,0 +1,31 @@
+{
+  "units": [
+    {
+      "name": "Campo norte"
+    },
+    {
+      "name": "Campo sur"
+    },
+    {
+      "name": "Admisiones"
+    },
+    {
+      "name": "Evaluación"
+    },
+    {
+      "name": "Conflictos"
+    },
+    {
+      "name": "Archivo"
+    },
+    {
+      "name": "DGS"
+    },
+    {
+      "name": "Evaluación sur"
+    },
+    {
+      "name": "Evaluación norte"
+    }
+  ]
+}

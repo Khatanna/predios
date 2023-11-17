@@ -445,22 +445,46 @@
       "description": "Permite ver la información de las observaciones de predio del sistema."
     },
     {
-      "name": "Creación de",
+      "name": "Creación de observaciones",
       "level": "CREATE",
       "resource": "OBSERVATION",
       "description": "Permite crear nuevas observaciones de predio en el sistema."
     },
     {
-      "name": "Actualización de",
+      "name": "Actualización de observaciones",
       "level": "UPDATE",
       "resource": "OBSERVATION",
       "description": "Permite modificar la información de las observaciones de predio existentes en el sistema."
     },
     {
-      "name": "Eliminación de",
+      "name": "Eliminación de observaciones",
       "level": "DELETE",
       "resource": "OBSERVATION",
       "description": "Permite eliminar las observaciones de predio existentes del sistema."
+    },
+    {
+      "name": "Lectura de los tipos de usuario",
+      "level": "READ",
+      "resource": "USERTYPE",
+      "description": "Permite ver la información de los tipos de usuario del sistema."
+    },
+    {
+      "name": "Creación de tipos de usuario",
+      "level": "CREATE",
+      "resource": "USERTYPE",
+      "description": "Permite crear nuevos tipos de usuario en el sistema."
+    },
+    {
+      "name": "Actualización de tipos de usuario",
+      "level": "UPDATE",
+      "resource": "USERTYPE",
+      "description": "Permite modificar la información de los tipos de usuario existentes en el sistema."
+    },
+    {
+      "name": "Eliminación de tipos de usuario",
+      "level": "DELETE",
+      "resource": "USERTYPE",
+      "description": "Permite eliminar los tipos de usuario existentes del sistema."
     }
   ]
 }

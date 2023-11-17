@@ -1,20 +1,17 @@
 import { create } from 'zustand';
-import { UseFormReturn, useForm, FieldValues } from 'react-hook-form';
-import { City } from '../../CityPage/models/types';
+import { Property } from '../models/types';
+import { persist, createJSONStorage } from 'zustand/middleware'
 
-type State<T extends FieldValues> = UseFormReturn<T>
-
-// export const createHookFormStore = <T extends FieldValues>(form: UseFormReturn<T>) => {
-//   return create<State<T>>()(() => form)
-// }
-
-export const createFormStore = <T extends FieldValues>() => {
-
-  const useFormStore = () => {
-    return useForm<T>();
-  }
-
-  return useFormStore
+interface State {
+  propertyForm?: Property
 }
 
-export const useCityFormStore = createFormStore<City>();
+interface Actions {
+  setPropertyForm: (newState: State) => void
+}
+
+export const useFormStore = create<State & Actions>()(persist((set) => ({
+  setPropertyForm({ propertyForm }) {
+    set({ propertyForm });
+  },
+}), { name: 'form', storage: createJSONStorage(() => localStorage) }))

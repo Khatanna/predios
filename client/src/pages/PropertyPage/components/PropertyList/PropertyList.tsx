@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { HouseAdd } from "react-bootstrap-icons";
 import { TableColumn } from "react-data-table-component";
 import { Table } from "../../../../components/Table";
+import { useAuth } from "../../../../hooks";
 
 export type PropertyListProps = {};
 const columns: TableColumn<Property>[] = [
@@ -20,6 +21,7 @@ const columns: TableColumn<Property>[] = [
     name: "Nombre del predio",
     selector: (row) => row.name,
     wrap: true,
+    grow: 3
   },
   {
     name: "Codigo",
@@ -72,8 +74,9 @@ const GET_ALL_PROPERTIES_QUERY = `
 	}
 `;
 
-const PropertyList: React.FC<PropertyListProps> = ({}) => {
+const PropertyList: React.FC<PropertyListProps> = ({ }) => {
   const navigate = useNavigate();
+  const { role } = useAuth();
   const { data, isLoading, error } = useCustomQuery<{ properties: Property[] }>(
     GET_ALL_PROPERTIES_QUERY,
     ["getAllProperties"],
@@ -92,7 +95,9 @@ const PropertyList: React.FC<PropertyListProps> = ({}) => {
       onRowDoubleClicked={(row) => {
         navigate(`${row.id}`);
       }}
+      paginationPerPage={20}
       actions={
+        role === "Administrador" &&
         <Tooltip label="Crear predio">
           <Link to={"create"}>
             <HouseAdd size={30} />

@@ -1,6 +1,7 @@
 import {
   LevelPermission,
   Resource,
+  Role,
   Status,
   Status as StatusDB,
   Type,
@@ -15,8 +16,8 @@ type GraphQLInput<T> = { input: T };
 export const createUser = async (
   _: any,
   {
-    input: { names, firstLastName, secondLastName, username, password, type },
-  }: { input: User & { type: Pick<Type, "name"> } },
+    input: { names, firstLastName, secondLastName, username, password, type, role },
+  }: { input: User & { type: Pick<Type, "name">, role: Role } },
   { prisma, userContext }: Context,
 ) => {
   try {
@@ -31,6 +32,9 @@ export const createUser = async (
         type: {
           connect: type,
         },
+        role: {
+          connect: role
+        }
       },
     });
   } catch (e) {
@@ -41,11 +45,9 @@ export const createUser = async (
 export const updateUserByUsername = async (
   _parent: any,
   {
-    input: {
-      username,
-      data: { names, firstLastName, secondLastName, password, typeId, status },
-    },
-  }: GraphQLInput<{ username: string; data: User }>,
+    username,
+    input: { names, firstLastName, secondLastName, password, status, type, role }
+  }: { username: string; input: User & { type: Pick<Type, 'name'>, role: Role } },
   { prisma, userContext }: Context,
 ) => {
   try {
@@ -62,42 +64,31 @@ export const updateUserByUsername = async (
         password: bcrypt.hashSync(password, 10),
         status,
         type: {
-          connect: {
-            id: typeId!,
-          },
+          connect: type
         },
+        role: {
+          connect: role
+        }
       },
     });
 
-    return {
-      updated: Boolean(user),
-      user,
-    };
+    return user;
   } catch (e) {
     throw e;
   }
 };
 
-export const updateStateUserByUsername = async (
-  _parent: any,
-  {
-    input: { username, data },
-  }: GraphQLInput<{ username: string; data: Pick<User, "status"> }>,
-  { prisma, userContext }: Context,
+export const updateStateUserByUsername = (
+  _parent: any, { username, input }: { username: string; input: Pick<User, "status"> }, { prisma, userContext }: Context,
 ) => {
   try {
     hasPermission(userContext, "UPDATE", "USER");
-    const user = await prisma.user.update({
+    return prisma.user.update({
       where: {
         username,
       },
-      data,
+      data: input,
     });
-
-    return {
-      updated: Boolean(user),
-      user,
-    };
   } catch (e) {
     throw e;
   }

@@ -8,6 +8,9 @@ export const getAllFolderLocations = (_parent: any, _args: any, { prisma, userCo
     return prisma.folderLocation.findMany({
       include: {
         properties: true
+      },
+      orderBy: {
+        name: 'asc'
       }
     })
   } catch (e) {

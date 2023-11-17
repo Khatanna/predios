@@ -3,7 +3,11 @@ import { hasPermission } from '../../utilities';
 export const getAllStages = (_parent: any, args_: any, { prisma, userContext }: Context) => {
   try {
     hasPermission(userContext, 'READ', 'STAGE');
-    return prisma.stage.findMany()
+    return prisma.stage.findMany({
+      orderBy: {
+        name: 'asc'
+      }
+    })
   } catch (e) {
     throw e;
   }
@@ -13,7 +17,6 @@ export const getStage = (_parent: any, { name }: { name: string }, { prisma, use
     hasPermission(userContext, 'READ', 'STAGE');
     return prisma.stage.findUniqueOrThrow({
       where: {
-
         name
       }
     })

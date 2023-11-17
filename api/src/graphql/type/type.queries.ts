@@ -6,7 +6,11 @@ export const getAllTypes = (_parent: any, _args: any, { prisma, userContext }: C
   try {
     hasPermission(userContext, 'READ', 'TYPE')
 
-    return prisma.type.findMany()
+    return prisma.type.findMany({
+      orderBy: {
+        name: 'asc'
+      }
+    })
   } catch (e) {
     throw e;
   }

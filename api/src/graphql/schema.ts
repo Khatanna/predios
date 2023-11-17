@@ -73,6 +73,14 @@ import {
   resolvers as trackingResolvers
 } from './tracking'
 import {
+  typeDefs as fileNumberTypeDefs,
+  resolvers as fileNumberResolvers
+} from './fileNumber';
+import {
+  typeDefs as roleTypeDefs,
+  resolvers as roleResolvers
+} from './role'
+import {
   resolvers as subscriptionsResolvers,
   typeDefs as subscriptionsTypeDefs
 } from './subscriptions'
@@ -102,7 +110,9 @@ export const schema = makeExecutableSchema({
     subscriptionsTypeDefs,
     technicalOnPropertyTypeDefs,
     legalOnPropertyTypeDefs,
-    trackingTypeDefs
+    trackingTypeDefs,
+    fileNumberTypeDefs,
+    roleTypeDefs
   ],
   resolvers: [
     permissionResolvers,
@@ -128,6 +138,8 @@ export const schema = makeExecutableSchema({
     subscriptionsResolvers,
     technicalOnPropertyResolvers,
     legalOnPropertyResolvers,
-    trackingResolvers
+    trackingResolvers,
+    fileNumberResolvers,
+    roleResolvers
   ],
 });

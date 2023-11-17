@@ -55,15 +55,6 @@ enum Resource {
   @@map("recurso")
 }
 
-enum ObservationType {
-  TECHNICAL @map("tecnico")
-  LEGAL     @map("juridico")
-  STANDARD  @map("estandar")
-  // GENERAL y quitamos STANDARD y LEGAL
-
-  @@map("tipo_de_observación")
-}
-
 model User {
   id             String                @id @default(uuid())
   names          String?               @map("nombre") @db.VarChar(30)
@@ -71,12 +62,14 @@ model User {
   secondLastName String?               @map("apellido_materno") @db.VarChar(50)
   username       String                @unique @map("nombre_de_usuario") @db.VarChar(20)
   password       String                @map("contraseña") @db.MediumText
+  roleId         String                @map("rol_id")
   typeId         String                @map("tipo_id")
   createdAt      DateTime              @default(now())
   updatedAt      DateTime              @updatedAt
   token          String?               @db.MediumText
   permissions    UserPermission[]
   type           UserType              @relation(fields: [typeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role           Role                  @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   status         Status                @default(ENABLE) @map("estado")
   connection     StatusConnection      @default(OFFLINE) @map("estado_de_conexion")
   records        Record[]
@@ -87,8 +80,16 @@ model User {
   @@map("usuario")
 }
 
+model Role {
+  id        String   @id @default(uuid())
+  name      String   @unique @map("nombre")
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model TechnicalOnProperty {
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   propertyId String   @unique @map("predio_id")
   user       User     @relation(fields: [userId], references: [id])
   userId     String   @map("tecnico_id")
@@ -98,11 +99,10 @@ model TechnicalOnProperty {
 }
 
 model LegalOnProperty {
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   propertyId String   @unique @map("predio_id")
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @map("juridico_id")
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   @map("juridico_id")
 
   @@unique([propertyId, userId])
   @@map("juridicos_por_predio")
@@ -143,31 +143,19 @@ model UserPermission {
   status       Status     @default(ENABLE) @map("estado")
   userId       String     @map("usuario_id")
   permissionId String     @map("permiso_id")
-  expires      Expires?
   user         User       @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   permission   Permission @relation(fields: [permissionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-  // UserDeleted   UserDeleted? @relation(fields: [userDeletedId], references: [id])
-  // userDeletedId String?
 
   @@unique([userId, permissionId])
   @@map("permiso_de_usuario")
 }
 
-model Expires {
-  id               String         @id @default(uuid())
-  userPermissionId String         @unique @map("expira")
-  userPermission   UserPermission @relation(fields: [userPermissionId], references: [id], map: "expiracion")
-
-  @@map("expiracion")
-}
-
 model UserType {
-  id    String @id @default(uuid())
-  name  String @unique @map("nombre")
-  users User[]
-
+  id        String   @id @default(uuid())
+  name      String   @unique @map("nombre")
+  users     User[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -218,24 +206,24 @@ model Property {
   unitId               String
   folderLocation       FolderLocation?      @relation(fields: [folderLocationId], references: [id])
   folderLocationId     String?
+  technicalObservation String?              @db.LongText()
 
   @@map("predio")
 }
 
 model Tracking {
-  id          String   @id @default(uuid())
-  property_id String   @map("predio_id")
-  property    Property @relation(fields: [property_id], references: [id])
+  id           String   @id @default(uuid())
+  property_id  String   @map("predio_id")
+  property     Property @relation(fields: [property_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  state_id     String   @map("estado_id")
+  state        State    @relation(fields: [state_id], references: [id])
+  dateOfInit   String   @map("fecha_de_inicio")
+  user_id      String?  @map("usuario_id")
+  responsible  User?    @relation(fields: [user_id], references: [id])
+  observation  String   @map("observación")
+  numberOfNote String   @map("numero_de_nota")
 
-  state_id   String    @map("estado_id")
-  state      State     @relation(fields: [state_id], references: [id])
-  dateOfInit DateTime  @map("fecha_de_inicio")
-  dateOfEnd  DateTime? @map("fecha_de_finalización")
-
-  user_id      String @map("usuario_id")
-  responsible  User   @relation(fields: [user_id], references: [id])
-  observation  String @map("observación")
-  numberOfNote String @map("numero_de_nota")
+  @@map("seguimiento")
 }
 
 model Unit {
@@ -260,21 +248,20 @@ model FolderLocation {
 
 model FileNumber {
   id         String   @id @default(uuid())
-  number     String   @unique @map("numero_de_expediente")
+  number     String   @map("numero_de_expediente")
   propertyId String   @unique @map("predio_id")
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("expediente")
 }
 
 model Observation {
-  id          String          @id @default(uuid())
-  observation String          @map("observacion") @db.MediumText
-  type        ObservationType @default(STANDARD) @map("tipo")
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  propertyId  String          @map("predio_id")
-  property    Property        @relation(fields: [propertyId], references: [id])
+  id          String   @id @default(uuid())
+  observation String   @map("observacion") @db.MediumText
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  propertyId  String   @map("predio_id")
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("observacion")
 }

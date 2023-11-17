@@ -8,6 +8,9 @@ export const getAllGroupedStates = (_parent: any, _args: any, { prisma, userCont
     return prisma.groupedState.findMany({
       include: {
         properties: true
+      },
+      orderBy: {
+        name: 'asc'
       }
     })
   } catch (e) {

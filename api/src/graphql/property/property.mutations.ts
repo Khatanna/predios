@@ -1,11 +1,32 @@
-import { Prisma, Property, Tracking } from "@prisma/client";
+import { Activity, Beneficiary, City, Clasification, FileNumber, FolderLocation, GroupedState, Municipality, Observation, Prisma, Property, Province, Reference, State, Tracking, Type, Unit, User } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
 type TrackingInput = {
-  stateName: string
-  responsibleUsername: string
-} & Pick<Tracking, 'numberOfNote' | 'observation' | 'dateOfInit' | 'dateOfEnd'>
+  state: State
+  responsible: User
+} & Tracking
+
+type PropertyInput = Property & {
+  activity: Pick<Activity, 'name'>,
+  clasification: Pick<Clasification, 'name'>
+  state: Pick<State, 'name'>
+  groupedState: Pick<GroupedState, 'name'>
+  city: Pick<City, 'name'>
+  province: Pick<Province, 'name'>
+  municipality: Pick<Municipality, 'name'>
+  folderLocation: Pick<FolderLocation, 'name'>
+  technical?: { user: Pick<User, 'username'> }
+  legal?: { user: Pick<User, 'username'> }
+  type: Pick<Type, 'name'>
+  responsibleUnit: Pick<Unit, 'name'>
+  reference: Pick<Reference, 'name'>
+  fileNumber: Pick<FileNumber, 'number'>
+  technicalObservation: string
+  trackings: TrackingInput[],
+  beneficiaries: Pick<Beneficiary, 'name'>[]
+  observations: Pick<Observation, 'observation'>[]
+}
 
 export const createProperty = async (
   _parent: any,
@@ -23,65 +44,29 @@ export const createProperty = async (
       agrupationIdentifier,
       secondState,
       polygone,
-      activityName,
-      clasificationName,
-      stateName,
-      groupedStateName,
-      cityName,
-      provinceName,
-      municipalityName,
-      folderLocationName,
-      technicalUsername,
-      legalUsername,
-      typeName,
-      responsibleUnitName,
-      referenceName,
-      trackings
+      technicalObservation,
+      fileNumber,
+      activity,
+      clasification,
+      state,
+      groupedState,
+      city,
+      province,
+      municipality,
+      folderLocation,
+      technical,
+      legal,
+      type,
+      responsibleUnit,
+      reference,
+      trackings,
+      beneficiaries,
+      observations
     }
-  }: {
-    input: Property &
-    {
-      activityName: string
-      clasificationName: string
-      stateName: string
-      groupedStateName: string
-      cityName: string
-      provinceName: string
-      municipalityName: string
-      folderLocationName: string
-      technicalUsername: string
-      legalUsername: string
-      typeName: string
-      responsibleUnitName: string
-      referenceName: string
-      trackings: TrackingInput[]
-    }
-  }, { prisma, userContext }: Context) => {
+  }: { input: PropertyInput }, { prisma, userContext }: Context) => {
   try {
     hasPermission(userContext, 'CREATE', 'PROPERTY');
-    const stateNames = trackings.map(tracking => tracking.stateName)
-    const userNames = trackings.map(tracking => tracking.responsibleUsername);
-    const stateIds: Record<string, string> = {}
-    const usernames: Record<string, string> = {}
 
-    for (let name of stateNames) {
-      const state = await prisma.state.findUniqueOrThrow({
-        where: {
-          name
-        }
-      })
-      stateIds[state.name] = state.id;
-    }
-
-    for (let username of userNames) {
-      const user = await prisma.user.findUniqueOrThrow({
-        where: {
-          username
-        }
-      })
-      usernames[user.username] = user.id
-    }
-    console.log({ trackings })
     const property = await prisma.property.create({
       data: {
         name,
@@ -95,96 +80,207 @@ export const createProperty = async (
         agrupationIdentifier,
         secondState,
         polygone,
-        activity: {
-          connect: {
-            name: activityName
+        technicalObservation,
+        fileNumber: {
+          create: fileNumber
+        },
+        observations: {
+          createMany: {
+            data: observations
           }
+        },
+        activity: {
+          connect: activity
         },
         clasification: {
-          connect: {
-            name: clasificationName
-          }
+          connect: clasification
         },
         state: {
-          connect: {
-            name: stateName
-          }
+          connect: state
         },
         groupedState: {
-          connect: {
-            name: groupedStateName
-          }
+          connect: groupedState
         },
         city: {
-          connect: {
-            name: cityName
-          }
+          connect: city
         },
         province: {
-          connect: {
-            name: provinceName
-          }
+          connect: province
         },
         municipality: {
-          connect: {
-            name: municipalityName
-          }
+          connect: municipality
         },
         folderLocation: {
-          connect: {
-            name: folderLocationName
-          }
+          connect: folderLocation
         },
         type: {
-          connect: {
-            name: typeName
-          }
+          connect: type
         },
         responsibleUnit: {
-          connect: {
-            name: responsibleUnitName
-          }
+          connect: responsibleUnit
         },
         reference: {
-          connect: {
-            name: referenceName
-          }
+          connect: reference
         },
-        technical: {
+        technical: technical && technical.user ? {
           create: {
             user: {
-              connect: {
-                username: technicalUsername
-              }
+              connect: technical.user
+            }
+          }
+        } : undefined,
+        legal: legal && legal.user ? {
+          create: {
+            user: {
+              connect: legal.user
+            }
+          }
+        } : undefined
+      }
+    })
+
+    for (let beneficiary of beneficiaries) {
+      await prisma.beneficiary.upsert({
+        where: {
+          name: beneficiary.name
+        },
+        create: {
+
+          name: beneficiary.name,
+          properties: {
+            connect: {
+              id: property.id
             }
           }
         },
-        legal: {
-          create: {
-            user: {
-              connect: {
-                username: legalUsername
-              }
+        update: {}
+      })
+    }
+
+    for (let tracking of trackings) {
+      await prisma.tracking.create({
+        data: {
+          observation: tracking.observation,
+          dateOfInit: tracking.dateOfInit,
+          numberOfNote: tracking.numberOfNote,
+          state: {
+            connect: {
+              name: tracking.state.name
+            }
+          },
+          responsible: tracking.responsible?.username ? {
+            connect: {
+              username: tracking.responsible.username
+            }
+          } : undefined,
+          property: {
+            connect: {
+              id: property.id
             }
           }
         }
-      }
-    })
-    const mapTrackings = trackings.map(({ stateName, responsibleUsername, observation, numberOfNote, dateOfEnd, dateOfInit }) => ({
-      state_id: stateIds[stateName],
-      user_id: usernames[responsibleUsername],
-      observation,
-      numberOfNote,
-      dateOfInit: new Date(dateOfInit).toISOString(),
-      dateOfEnd: dateOfEnd ? new Date(dateOfEnd).toISOString() : null,
-      property_id: property.id
-    }))
-    await prisma.tracking.createMany({
-      data: mapTrackings
-    })
+      })
+    }
 
     return property;
   } catch (e) {
     throw e;
   }
 };
+
+export const updateProperty = async (_parent: any, { input: { id, name, area, expertiseOfArea, plots, bodies, sheets, code, codeOfSearch, agrupationIdentifier, secondState, polygone, fileNumber, technicalObservation, activity, clasification, state, groupedState, city, province, municipality, folderLocation, technical, legal, type, responsibleUnit, reference } }: { input: PropertyInput }, { prisma, userContext }: Context) => {
+
+  hasPermission(userContext, 'UPDATE', 'PROPERTY');
+
+  const propertyUpdated = await prisma.property.update({
+    where: {
+      id
+    },
+    data: {
+      name,
+      area,
+      expertiseOfArea,
+      plots,
+      bodies,
+      sheets,
+      code,
+      codeOfSearch,
+      agrupationIdentifier,
+      secondState,
+      polygone,
+      technicalObservation,
+      fileNumber: fileNumber.number ? {
+        upsert: {
+          where: {
+            propertyId: id,
+          },
+          create: {
+            number: fileNumber.number
+          },
+          update: {
+            number: fileNumber.number
+          }
+        },
+
+      } : {
+        delete: {
+          propertyId: id
+        }
+      },
+      activity: {
+        connect: activity
+      },
+      clasification: {
+        connect: clasification
+      },
+      state: {
+        connect: state
+      },
+      groupedState: {
+        connect: groupedState
+      },
+      city: {
+        connect: city
+      },
+      province: {
+        connect: province
+      },
+      municipality: {
+        connect: municipality
+      },
+      folderLocation: {
+        connect: folderLocation
+      },
+      type: {
+        connect: type
+      },
+      responsibleUnit: {
+        connect: responsibleUnit
+      },
+      reference: {
+        connect: reference
+      },
+      technical: technical && technical.user ? {
+        update: {
+          user: {
+            connect: technical.user
+          }
+        }
+      } : undefined,
+      legal: legal && legal.user ? {
+        update: {
+          user: {
+            connect: legal.user
+          }
+        }
+      } : undefined,
+    },
+    include: {
+      beneficiaries: {
+        select: { name: true }
+      },
+    }
+  })
+
+  return propertyUpdated;
+}

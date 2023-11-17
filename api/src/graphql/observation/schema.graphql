@@ -1,13 +1,6 @@
-enum ObservationType {
-  TECHNICAL
-  LEGAL
-  STANDARD
-}
-
 type Observation { 
   id: ID!
   observation: String!
-  type: ObservationType!
   createdAt: String
   updatedAt: String
   property: Property!
@@ -18,11 +11,9 @@ type Query {
 }
 
 type Mutation {
-  createObservation(input: CreateObservationInput): Observation 
+  createObservation(input: ObservationInput): Observation 
 }
 
-input CreateObservationInput {
+input ObservationInput {
   observation: String!
-  type: ObservationType!
-  propertyId: String
 }

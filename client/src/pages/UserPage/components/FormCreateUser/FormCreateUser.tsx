@@ -1,30 +1,30 @@
+import { useCallback } from 'react';
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Alert,
   Button,
   Col,
   Form,
+  FormSelectProps,
   InputGroup,
   Row,
   Spinner,
-  FormSelectProps,
 } from "react-bootstrap";
 import { CheckCircle, ExclamationTriangle } from "react-bootstrap-icons";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
-import { Error } from "../../../LoginPage/styled-components/Error";
-import { User, UserInput, UserType } from "../../models/types";
-import { useFetchCreateUserType, useFetchCreateUser } from "../../hooks";
+import { Tooltip } from "../../../../components/Tooltip";
+import { useCustomMutation } from "../../../../hooks";
+import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import {
   customSwalError,
   customSwalSuccess,
 } from "../../../../utilities/alerts";
-import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { mutationMessages, status } from "../../../../utilities/constants";
-import { useCustomMutation } from "../../../../hooks";
-import { Tooltip } from "../../../../components/Tooltip";
-import { EnhancedSelect } from "../../../PropertyPage/components/EnhancedSelect";
 import { SelectNameable } from "../../../HomePage/HomePage";
+import { Error } from "../../../LoginPage/styled-components/Error";
+import { useFetchCreateUser } from "../../hooks";
+import { User, UserInput, UserType } from "../../models/types";
 
 export interface FormCreateUserProps {
   user?: User;
@@ -61,17 +61,13 @@ const GET_ALL_USER_TYPES_QUERY = `{
   }
 }`;
 const UDPATE_USER_MUTATION = `
-  mutation UpdateUser($input: UpdateUserByUsernameInput) {
-    result: updateUserByUsername(input: $input) {
-      updated,
-      user {
-        names
-        firstLastName
-        secondLastName
-        username
-        status
-        typeId
-      }
+  mutation UpdateUser($username: String, $input: UserInput) {
+    user: updateUserByUsername(username: $username, input: $input) {
+      names
+      firstLastName
+      secondLastName
+      username
+      status
     }
   }
 `;
@@ -114,6 +110,44 @@ const SelectUserType: React.FC<FormSelectProps> = (props) => {
     />
   );
 };
+const SelectRol: React.FC<FormSelectProps> = (props) => {
+  // const { data, error, isLoading } = useCustomQuery<{ userTypes: UserType[] }>(
+  //   GET_ALL_USER_TYPES_QUERY,
+  //   ["getAllUserTypes"],
+  // );
+
+  // if (isLoading) {
+  //   return (
+  //     <div className="d-flex justify-content-center">
+  //       <Spinner variant="danger" />
+  //     </div>
+  //   );
+  // }
+
+  // if (error) {
+  //   return (
+  //     <Alert variant="warning" className="p-1 py-2 m-0">
+  //       <small>
+  //         <div className="d-flex align-items-center gap-2">
+  //           <ExclamationTriangle size={16} color="red" />
+  //           <div>No tienes permisos para ver los tipos de usuario</div>
+  //         </div>
+  //       </small>
+  //     </Alert>
+  //   );
+  // }
+
+  return (
+    <SelectNameable
+      {...props}
+      placeholder="Rol"
+      options={[{ name: 'Administrador' }, { name: 'Usuario' }].map(({ name }) => ({
+        label: name,
+        value: name,
+      }))}
+    />
+  );
+};
 
 const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
   // const { createUserType } = useFetchCreateUserType();
@@ -128,17 +162,15 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
     watch,
     formState: { errors },
   } = useForm<UserInput>({
-    defaultValues: user,
+    defaultValues: { ...user, password: user ? 'Inra12345' : '' },
     resolver: yupResolver<UserInput>(schema),
   });
   const names = watch("names");
   const [updateUser] = useCustomMutation<
     { user: User },
     {
-      input: {
-        username: string;
-        data: UserInput;
-      };
+      username: string;
+      input: UserInput;
     }
   >(UDPATE_USER_MUTATION, {
     onSuccess({ user: { username } }) {
@@ -155,7 +187,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
     },
   });
 
-  const handleSetCredentials = () => {
+  const handleSetCredentials = useCallback(() => {
     if (getValues("names").length === 0) {
       customSwalError(
         "Debe llenar correctamente los campos",
@@ -178,15 +210,16 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
       );
       setValue("password", "Inra12345", { shouldValidate: true });
     }
-  };
+  }, [getValues, setValue])
 
-  const submit = (data: Omit<User, "id" | "connection" | "createdAt">) => {
+  const submit = (data: UserInput) => {
+    console.log(data);
     if (user) {
+      delete data.connection;
+      delete data.createdAt;
       updateUser({
-        input: {
-          username: user.username,
-          data,
-        },
+        username: user.username,
+        input: data
       });
     } else {
       createUser({
@@ -203,7 +236,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
           className="row g-3 position-absolute top-50 start-50 translate-middle"
           onSubmit={handleSubmit(submit)}
         >
-          <Col xs={7}>
+          <Col xs={12}>
             <Form.Group>
               <Form.Label>Nombres</Form.Label>
               <InputGroup>
@@ -225,18 +258,6 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                 )}
               </InputGroup>
               <Error>{errors.names?.message}</Error>
-            </Form.Group>
-          </Col>
-          <Col xs={5}>
-            <Form.Group>
-              <Form.Label>Tipo</Form.Label>
-              <Controller
-                name="type.name"
-                control={control}
-                defaultValue={"undefined"}
-                render={({ field }) => <SelectUserType {...field} />}
-              />
-              <Error>{errors.type?.name?.message}</Error>
             </Form.Group>
           </Col>
           <Col xs={12} md={6}>
@@ -261,7 +282,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               <Error>{errors.secondLastName?.message}</Error>
             </Form.Group>
           </Col>
-          <Col sm={4}>
+          <Col sm={6}>
             <Form.Group>
               <Form.Label>Nombre de usuario</Form.Label>
               <Form.Control
@@ -272,7 +293,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               <Error>{errors.username?.message}</Error>
             </Form.Group>
           </Col>
-          <Col sm={4}>
+          <Col sm={6}>
             <Form.Group>
               <Form.Label>Contraseña</Form.Label>
               <Form.Control
@@ -283,13 +304,26 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               <Error>{errors.password?.message}</Error>
             </Form.Group>
           </Col>
-          <Col sm={4}>
+          <Col xs={4}>
+            <Form.Group>
+              <Form.Label>Tipo</Form.Label>
+              <Controller
+                name="type.name"
+                control={control}
+                defaultValue={"undefined"}
+                render={({ field }) => <SelectUserType {...field} />}
+              />
+              <Error>{errors.type?.name?.message}</Error>
+            </Form.Group>
+          </Col>
+          <Col sm={5}>
             <Form.Group>
               <Form.Label>Estado del usuario</Form.Label>
               <div className="d-flex flex-row justify-content-around border border-1 p-1 rounded-2">
                 {Object.entries(status).map(([key, value]) => (
                   <Form.Check
                     {...register("status")}
+                    defaultChecked={key === "ENABLE"}
                     value={key}
                     type="radio"
                     label={value}
@@ -300,7 +334,18 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               </div>
             </Form.Group>
           </Col>
-
+          <Col xs={3}>
+            <Form.Group>
+              <Form.Label>Rol</Form.Label>
+              <Controller
+                name="role.name"
+                control={control}
+                defaultValue={"Usuario"}
+                render={({ field }) => <SelectRol {...field} />}
+              />
+              <Error>{errors.type?.name?.message}</Error>
+            </Form.Group>
+          </Col>
           <Col xs={12}>
             <Button
               className="float-end w-100 text-white"

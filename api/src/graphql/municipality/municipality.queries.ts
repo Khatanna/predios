@@ -8,6 +8,9 @@ export const getAllMunicipalities = (_parent: any, _args: any, { prisma, userCon
     return prisma.municipality.findMany({
       include: {
         province: true,
+      },
+      orderBy: {
+        name: 'asc'
       }
     })
   } catch (e) {
@@ -25,6 +28,9 @@ export const getMunicipalities = (_parent: any, { province }: { province?: strin
           province: {
             name: province
           }
+        },
+        orderBy: {
+          name: 'asc'
         }
       })
     }

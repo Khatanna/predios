@@ -1,0 +1,28 @@
+{
+  "clasifications": [
+    {
+      "name": "Solar campesino"
+    },
+    {
+      "name": "Pequeña"
+    },
+    {
+      "name": "Mediana"
+    },
+    {
+      "name": "Empresarial"
+    },
+    {
+      "name": "Comunitaria"
+    },
+    {
+      "name": "TCO"
+    },
+    {
+      "name": "Tierra fiscal"
+    },
+    {
+      "name": "Sin clasificacion"
+    }
+  ]
+}

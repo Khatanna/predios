@@ -78,7 +78,6 @@ const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
     ["getAllProvincesByCityName", { city }],
     {
       onSuccess({ provinces }) {
-        console.log(provinces);
         setProvinces(provinces);
       },
       enabled: !!city && city !== "undefined",
@@ -108,7 +107,7 @@ const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
           <Controller
             name="city.name"
             control={control}
-            defaultValue="undefined"
+            defaultValue="La Paz"
             render={({ field }) => (
               <SelectNameable
                 {...field}
@@ -243,6 +242,7 @@ const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
       <Col>
         <Form.Group>
           <CustomLabel label="Municipio" icon={<GeoAlt color="purple" />} />
+
           <Controller
             name="municipality.name"
             control={control}

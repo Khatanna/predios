@@ -8,7 +8,6 @@ const GET_ALL_USERS_QUERY = `
       prevCursor
       total
       users {
-        id
         names
         username
         firstLastName
@@ -17,6 +16,9 @@ const GET_ALL_USERS_QUERY = `
         connection
         createdAt
         type {
+          name
+        }
+        role {
           name
         }
       }

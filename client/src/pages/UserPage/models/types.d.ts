@@ -14,6 +14,9 @@ export type User = {
   status: string;
   createdAt?: string;
   connection: string;
+  role: {
+    name: string
+  }
 };
 
 export type UserTypeInput = Omit<UserInput, "id">;

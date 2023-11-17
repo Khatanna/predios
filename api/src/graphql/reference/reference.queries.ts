@@ -9,6 +9,9 @@ export const getAllReferences = (_parent: any, _args: any, { prisma, userContext
     return prisma.reference.findMany({
       include: {
         properties: true,
+      },
+      orderBy: {
+        name: 'asc'
       }
     })
   } catch (e) {

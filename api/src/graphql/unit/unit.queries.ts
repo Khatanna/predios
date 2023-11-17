@@ -7,6 +7,9 @@ export const getAllUnits = (_parent: any, _args: any, { prisma, userContext }: C
     return prisma.unit.findMany({
       include: {
         properties: true
+      },
+      orderBy: {
+        name: 'asc'
       }
     })
   } catch (e) {

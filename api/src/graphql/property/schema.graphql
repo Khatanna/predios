@@ -16,8 +16,10 @@ type Property {
   code: String
   codeOfSearch: String
   agrupationIdentifier: String
+  fileNumber: FileNumber
   secondState: String
   polygone: String
+  technicalObservation: String
   observations: [Observation]!
   beneficiaries: [Beneficiary]!
   activity: Activity
@@ -39,6 +41,7 @@ type Property {
 }
 
 type getPropertyWithCursor {
+  prevCursor: String
   nextCursor: String
   property: Property
 }
@@ -46,30 +49,31 @@ type getPropertyWithCursor {
 # Queries
 type Query {
   getAllProperties: [Property]
-  getProperty(nextCursor: String): getPropertyWithCursor
+  getProperty(nextCursor: String, prevCursor: String): getPropertyWithCursor
   getPropertyById(id: String): Property
-  searchPropertyByAttribute(query: String): Property
-  # permissionsWithUsers: [PermissionWithUser!]!
+  searchPropertyByAttribute(code: String, codeOfSearch: String, agrupationIdentifier: String): [Property]
 }
 
 # Mutations
 type Mutation {
   createProperty(input: PropertyInput): Property
+  updateProperty(id: String, input: PropertyInput): Property
 }
 
 input TrackingInput {
-  stateName: String
+  state: StateInput
   numberOfNote: String
   observation: String
-  responsibleUsername: String
+  responsible: UserInput
   dateOfInit: String
-  dateOfEnd: String
 }
 
 # Input Types
 input PropertyInput {
+  id: String
   name: String!
   area: String
+  registryNumber: Int
   expertiseOfArea: String
   plots: Int
   bodies: Int
@@ -79,20 +83,26 @@ input PropertyInput {
   agrupationIdentifier: String
   secondState: String
   polygone: String
-  # observations: [Observation]!
-  # beneficiaries: [Beneficiary]!
-  activityName: String
-  clasificationName: String
-  stateName: String
-  groupedStateName: String
-  cityName: String
-  provinceName: String
-  municipalityName: String
-  folderLocationName: String
-  technicalUsername: String
-  legalUsername: String
-  typeName: String
-  responsibleUnitName: String
-  referenceName: String
+  fileNumber: FileNumberInput
+  technicalObservation: String
+  observations: [ObservationInput]
+  beneficiaries: [BeneficiaryInput]
+  activity: ActivityInput
+  clasification: ClasificationInput
+  state: StateInput
+  groupedState: GroupedStateInput
+  city: CityInput
+  province: ProvinceInput
+  municipality: MunicipalityInput
+  folderLocation: FolderLocationInput
+  technical: UserToPropertyInput
+  legal: UserToPropertyInput
+  type: TypeInput
+  responsibleUnit: UnitInput
+  reference: ReferenceInput
   trackings: [TrackingInput]
+}
+
+input UserToPropertyInput {
+  user: UserInput
 }

@@ -11,6 +11,7 @@ interface State {
   accessToken?: string;
   user?: UserAuthenticate;
   expirationAccessToken?: number;
+  role?: string
 }
 
 interface Actions {
@@ -45,6 +46,7 @@ export const useAuthStore = create(
 
           state.isAuth = true;
           state.expirationAccessToken = tokenDecode.exp;
+          state.role = tokenDecode.role.name
         }),
       );
     },

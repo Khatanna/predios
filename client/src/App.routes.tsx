@@ -12,6 +12,7 @@ import { CityPage } from './pages/CityPage';
 import { PropertyForm } from './pages/PropertyPage/components/PropertyForm';
 import { AuthProvider } from './context/AuthContext';
 import { SeekerProvider } from './context/SeekerContext';
+import { useAuth } from './hooks';
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"))
 const Permission = lazy(() => import("./pages/UserPage/components/Permission/Permission"))
 const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
@@ -30,6 +31,9 @@ const LazyComponent = ({ Component }: { Component: React.ComponentType<NonNullab
 }
 
 function App() {
+  const { role } = useAuth();
+  const isAdmin = role === "Administrador"
+
   return (
     <BrowserRouter>
       <AxiosProvider>
@@ -38,7 +42,7 @@ function App() {
             <Routes>
               <Route path="/" element={<LazyComponent Component={NavBar} />}>
                 <Route index element={<LazyComponent Component={HomePage} />} />
-                <Route path="/users">
+                {isAdmin && <Route path="/users">
                   <Route index element={<LazyComponent Component={UserList} />} />
                   <Route path="create" Component={FormCreateUser} />
                   <Route
@@ -50,8 +54,8 @@ function App() {
                     }}
                   />
                   <Route path="permissions" element={<LazyComponent Component={Permission} />} />
-                </Route>
-                <Route path="/admin">
+                </Route>}
+                {isAdmin && <Route path="/admin">
                   {/* <Route index Component={AdminPage} /> */}
                   <Route path="records" element={<LazyComponent Component={RecordPage} />} />
                   <Route path="permissions">
@@ -63,11 +67,7 @@ function App() {
                       return <FormCreatePermission permission={state} />
                     }}></Route>
                   </Route>
-                  <Route path="properties" element={<LazyComponent Component={PropertyPage} />} >
-                    <Route index Component={PropertyList}></Route>
-                    <Route path='create' Component={PropertyForm}></Route>
-                    <Route path=':id' Component={Property}></Route>
-                  </Route>
+
                   <Route path="activities" element={<LazyComponent Component={ActivityPage} />} />
                   <Route path="beneficiaries" element={<LazyComponent Component={BeneficiaryPage} />} />
                   <Route path='localizations' element={<LazyComponent Component={LocalizationPage} />}>
@@ -76,6 +76,11 @@ function App() {
                   <Route path='cities' element={<LazyComponent Component={CityPage} />}></Route>
                   <Route path='provinces'></Route>
                   <Route path='municipalities'></Route>
+                </Route>}
+                <Route path="properties" element={<LazyComponent Component={PropertyPage} />} >
+                  <Route index Component={PropertyList}></Route>
+                  {isAdmin && <Route path='create' Component={PropertyForm}></Route>}
+                  <Route path=':id' Component={Property}></Route>
                 </Route>
               </Route>
               <Route path="/auth">

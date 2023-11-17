@@ -12,7 +12,7 @@ const GET_NEW_ACCESS_TOKEN_QUERY = `
 
 const baseURL = import.meta.env.VITE_API_URL;
 export const useAuth = () => {
-  const { user, isAuth, reset, accessToken, setAccessToken, expirationAccessToken } =
+  const { user, isAuth, reset, accessToken, setAccessToken, expirationAccessToken, role } =
     useAuthStore();
   const { refreshToken, deleteRefreshToken, setRefreshToken, expirationRefreshToken } =
     useSessionStore();
@@ -55,6 +55,7 @@ export const useAuth = () => {
     expirationAccessToken,
     expirationRefreshToken,
     user,
+    role,
     getNewAccessToken
   };
 };

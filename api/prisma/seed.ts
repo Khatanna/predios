@@ -1,4 +1,4 @@
-import { City, Permission, PrismaClient, User, UserType } from "@prisma/client";
+import { City, Permission, PrismaClient, User, UserType, Type, FolderLocation, Activity, Clasification, Unit, Stage, State, GroupedState, Reference, Role } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 import bcrypt from "bcryptjs";
@@ -12,36 +12,118 @@ function getData(resource: string) {
   );
 }
 
+
 const { cities }: { cities: City[] } = getData("locations");
 const { permissions }: { permissions: Permission[] } = getData("permissions");
 const { users }: { users: User[] } = getData("users");
 const { userTypes }: { userTypes: UserType[] } = getData("userTypes");
-const delay = 5;
+const { types }: { types: Type[] } = getData('types');
+const { folderLocations }: { folderLocations: FolderLocation[] } = getData('folderLocations');
+const { activities }: { activities: Activity[] } = getData('activities');
+const { clasifications }: { clasifications: Clasification[] } = getData('clasifications');
+const { units }: { units: Unit[] } = getData('units');
+const { stages }: { stages: Stage[] } = getData('stages');
+const { states }: { states: Array<State & { stage: Stage }> } = getData('states');
+const { groupedStates }: { groupedStates: GroupedState } = getData('groupedStates');
+const { references }: { references: Reference } = getData('references');
+const { roles }: { roles: Role } = getData('roles');
+const delay = 3;
 console.log("initializing seed");
+
+const createTypes = async () => {
+  await prisma.type.createMany({
+    data: types,
+    skipDuplicates: true,
+  });
+}
+
+const createFolderLocations = async () => {
+  await prisma.folderLocation.createMany({
+    data: folderLocations,
+    skipDuplicates: true,
+  })
+}
+
+const createActivities = async () => {
+  await prisma.activity.createMany({
+    data: activities,
+    skipDuplicates: true,
+  })
+}
+
+const createClasifications = async () => {
+  await prisma.clasification.createMany({
+    data: clasifications,
+    skipDuplicates: true,
+  })
+}
+
+const createUnits = async () => {
+  await prisma.unit.createMany({
+    data: units,
+    skipDuplicates: true,
+  })
+}
+
+const createStages = async () => {
+  await prisma.stage.createMany({
+    data: stages,
+    skipDuplicates: true,
+  })
+}
+
+const createStates = async () => {
+  for (let state of states) {
+    await prisma.state.create({
+      data: {
+        name: state.name,
+        order: state.order,
+        stage: {
+          connect: state.stage
+        }
+      }
+    })
+  }
+}
+
+const createGroupedStates = async () => {
+  await prisma.groupedState.createMany({
+    data: groupedStates,
+    skipDuplicates: true
+  })
+}
+
+const createReferences = async () => {
+  await prisma.reference.createMany({
+    data: references,
+    skipDuplicates: true
+  })
+}
+
+const createRoles = async () => {
+  await prisma.role.createMany({
+    data: roles
+  })
+}
+
 async function main() {
+  await createRoles();
+  await createTypes();
+  await createFolderLocations();
+  await createActivities();
+  await createClasifications();
+  await createUnits();
+  await createStages();
+  await createStates();
+  await createGroupedStates();
+  await createReferences();
   await prisma.userType.createMany({
     data: userTypes,
     skipDuplicates: true,
   });
 
   await prisma.user.createMany({
-    data: users.map(
-      ({
-        names,
-        firstLastName,
-        secondLastName,
-        username,
-        password,
-        typeId,
-      }) => ({
-        names,
-        firstLastName,
-        secondLastName,
-        username,
-        password,
-        typeId,
-      }),
-    ),
+    data: users,
     skipDuplicates: true
   });
 
@@ -63,6 +145,16 @@ async function main() {
       type: {
         connect: {
           name: 'Pasante'
+        }
+      },
+      role: {
+        connectOrCreate: {
+          where: {
+            name: 'Administrador',
+          },
+          create: {
+            name: 'Administrador'
+          }
         }
       }
     }
@@ -156,11 +248,11 @@ async function main() {
       observations: {
         createMany: {
           data: [
-            { type: 'STANDARD', observation: '5 FOLDERS SOLO FLIP SIN FOLDER,CONFLICTO  DERECHO PROPIETARIO , SE ENCUENTRA EN   TRATAMIENTO CONCLUIDO  PARA SU PROSECUCION MEDIANTE PROCEDIMIENTO' },
-            { type: 'TECHNICAL', observation: 'PARA PROCEDIMIENTO COMUN DE SANEAMIENTO, ACTUALMENTE EN SEGUIMIENTO POR LAS PARTES INTERESADAS' }
+            { observation: '5 FOLDERS SOLO FLIP SIN FOLDER,CONFLICTO  DERECHO PROPIETARIO , SE ENCUENTRA EN   TRATAMIENTO CONCLUIDO  PARA SU PROSECUCION MEDIANTE PROCEDIMIENTO' }
           ]
         }
       },
+      technicalObservation: 'PARA PROCEDIMIENTO COMUN DE SANEAMIENTO, ACTUALMENTE EN SEGUIMIENTO POR LAS PARTES INTERESADAS',
       groupedState: {
         connectOrCreate: {
           where: {

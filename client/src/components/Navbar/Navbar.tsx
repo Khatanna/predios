@@ -8,7 +8,6 @@ import { useAuth } from "../../hooks";
 import { Avatar } from "../Avatar";
 import { BackButton } from "../BackButton";
 import { Nav } from "../Nav";
-import { SeekerProvider } from "../../context/SeekerContext";
 import { useSeeker } from "../../hooks/useSeeker";
 import { SeekerModal } from "../SeekerModal";
 

@@ -1,0 +1,9 @@
+type FileNumber { 
+  id: ID!
+  number: String
+  property: Property
+}
+
+input FileNumberInput {
+  number: String
+}
