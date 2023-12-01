@@ -22,61 +22,40 @@ const client = createClient({
 })
 
 const NavbarComponent: React.FC = () => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   const { isAuth } = useAuth();
   const { isModalOpen } = useSeeker();
 
-  useEffect(() => {
-    client.on('connected', () => {
-      console.log("conectados");
-    })
+  // useEffect(() => {
+  //   client.on('connected', () => {
+  //     console.log("conectados");
+  //   })
 
-    // client.subscribe<{ userPermissionStatusUpdated: string[] }>({ query: WS_QUERY }, {
-    //   next({ data }) {
-    //     console.log("ws", data)
-    //     if (data?.userPermissionStatusUpdated.length) {
-    //       console.log("limpiando todas las queries")
+  //   client.subscribe<{ userConnected: boolean }>({
+  //     query: `
+  //       subscription Subscription {
+  //       userConnected
+  //     }
+  //   `},
+  //     {
+  //       next({ data }) {
+  //         console.log(data)
+  //         if (data?.userConnected) {
+  //           queryClient.invalidateQueries(['getAllUsers'])
+  //         }
+  //       },
+  //       error(error) {
+  //         console.log(error)
+  //       },
+  //       complete() {
+  //         console.log("conectados completado")
+  //       },
+  //     })
 
-    //       for (const query of data.userPermissionStatusUpdated) {
-    //         console.log(query, map[query]);
-    //         queryClient.invalidateQueries([map[query]])
-    //       }
-    //       // queryClient.invalidateQueries(['getAllUsers'])
-    //     }
-    //   },
-    //   error(error) {
-    //     console.log(error)
-    //   },
-    //   complete() {
-
-    //   },
-    // })
-
-    client.subscribe<{ userConnected: boolean }>({
-      query: `
-        subscription Subscription {
-        userConnected
-      }
-    `},
-      {
-        next({ data }) {
-          console.log(data)
-          if (data?.userConnected) {
-            queryClient.invalidateQueries(['getAllUsers'])
-          }
-        },
-        error(error) {
-          console.log(error)
-        },
-        complete() {
-          console.log("conectados completado")
-        },
-      })
-
-    return () => {
-      client.dispose()
-    }
-  }, [queryClient])
+  //   return () => {
+  //     client.dispose()
+  //   }
+  // }, [queryClient])
 
   if (!isAuth) {
     return <Navigate to={"/auth"} />;

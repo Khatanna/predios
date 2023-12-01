@@ -4,7 +4,7 @@
       "name": "La Paz",
       "provinces": [
         {
-          "name": "Pedro Domingo Murillo",
+          "name": "Murillo",
           "municipalities": [
             {
               "name": "Nuestra Señora de La Paz"
@@ -40,7 +40,7 @@
               "name": "Huarina"
             },
             {
-              "name": "Siantago de Huata"
+              "name": "Santiago de Huata"
             },
             {
               "name": "Huatajata"
@@ -73,13 +73,13 @@
               "name": "Nazacara"
             },
             {
-              "name": "Callapa"
+              "name": "Santiago de callapa"
             }
           ],
           "code": "9003"
         },
         {
-          "name": "Eliodoro Camacho",
+          "name": "Camacho",
           "municipalities": [
             {
               "name": "Escoma"
@@ -184,7 +184,7 @@
           "code": "9008"
         },
         {
-          "name": "José Ramón Loayza",
+          "name": "Loayza",
           "municipalities": [
             {
               "name": "Cairoma"
@@ -289,7 +289,7 @@
               "name": "Sica Sica"
             },
             {
-              "name": "Umalla"
+              "name": "Umala"
             }
           ],
           "code": "9013"
@@ -319,7 +319,7 @@
           "code": "9015"
         },
         {
-          "name": "Juan Bautista Saavedra",
+          "name": "Bautista Saavedra",
           "municipalities": [
             {
               "name": "Charazani"
@@ -346,7 +346,7 @@
           "code": "9017"
         },
         {
-          "name": "Gualberto Villaroel",
+          "name": "Gualberto Villarroel",
           "municipalities": [
             {
               "name": "Chacarilla"
@@ -361,13 +361,13 @@
           "code": "9018"
         },
         {
-          "name": "Jose Manuel Pando Solares",
+          "name": "Jose Manuel Pando",
           "municipalities": [
             {
               "name": "Catacora"
             },
             {
-              "name": "Santiago de Machacas"
+              "name": "Santiago de Machaca"
             }
           ],
           "code": "9019"
@@ -383,6 +383,15 @@
             }
           ],
           "code": "9020"
+        },
+        {
+          "name": "Por definir",
+          "municipalities": [
+            {
+              "name": "Por definir"
+            }
+          ],
+          "code": "9021"
         }
       ]
     }

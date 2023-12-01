@@ -21,7 +21,7 @@ type PropertyInput = Property & {
   type: Pick<Type, 'name'>
   responsibleUnit: Pick<Unit, 'name'>
   reference: Pick<Reference, 'name'>
-  fileNumber: Pick<FileNumber, 'number'>
+  fileNumber: Pick<FileNumber, 'number' | 'id'>
   technicalObservation: string
   trackings: TrackingInput[],
   beneficiaries: Pick<Beneficiary, 'name'>[]
@@ -191,7 +191,7 @@ export const createProperty = async (
 export const updateProperty = async (_parent: any, { input: { id, name, area, expertiseOfArea, plots, bodies, sheets, code, codeOfSearch, agrupationIdentifier, secondState, polygone, fileNumber, technicalObservation, activity, clasification, state, groupedState, city, province, municipality, folderLocation, technical, legal, type, responsibleUnit, reference } }: { input: PropertyInput }, { prisma, userContext }: Context) => {
 
   hasPermission(userContext, 'UPDATE', 'PROPERTY');
-
+  console.log({ fileNumber })
   const propertyUpdated = await prisma.property.update({
     where: {
       id
@@ -209,7 +209,7 @@ export const updateProperty = async (_parent: any, { input: { id, name, area, ex
       secondState,
       polygone,
       technicalObservation,
-      fileNumber: fileNumber.number ? {
+      fileNumber: fileNumber && fileNumber.number ? {
         upsert: {
           where: {
             propertyId: id,
@@ -221,12 +221,11 @@ export const updateProperty = async (_parent: any, { input: { id, name, area, ex
             number: fileNumber.number
           }
         },
-
-      } : {
+      } : fileNumber.number.length === 0 ? {
         delete: {
           propertyId: id
         }
-      },
+      } : undefined,
       activity: {
         connect: activity
       },

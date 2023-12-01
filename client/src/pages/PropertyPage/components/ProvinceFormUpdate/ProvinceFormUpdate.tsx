@@ -1,6 +1,6 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useFormContext } from 'react-hook-form';
 import { Row, Col, Form, Button } from 'react-bootstrap';
-import { FormUpdateProps } from '../../models/types';
+import { FormUpdateProps, Property } from '../../models/types';
 import { Province } from '../../../ProvincePage/models/types';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 import { useProvinceMutations } from '../../hooks/useRepository';
@@ -21,12 +21,14 @@ const ProvinceFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 	const { register, handleSubmit } = useForm<Province>({
 		values: data?.province
 	})
+	const { resetField } = useFormContext<Property>();
 	const { mutationUpdate } = useProvinceMutations<{ province: Province }>();
 
 	return <Form onSubmit={handleSubmit(data => {
 		if (params) {
 			mutationUpdate({ name: params.name, item: data }, {
 				onSuccess({ data: { province: { name } } }) {
+					resetField('province.name', { defaultValue: 'undefined' })
 					customSwalSuccess(
 						"Provincia actualizado",
 						`La provincia ${name} se ha actualizado correctamente`,
@@ -58,7 +60,6 @@ const ProvinceFormUpdate: React.FC<FormUpdateProps> = ({ onHide, params }) => {
 			<Button variant='danger' onClick={onHide}>Cancelar</Button>
 			<Button type='submit' variant='success' className='text-white'>Actualizar provincia</Button>
 		</div>
-		x
 	</Form>
 };
 

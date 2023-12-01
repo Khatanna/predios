@@ -40,18 +40,25 @@ type Property {
   updatedAt: String
 }
 
+type PropertiesPaginate {
+  total: Int
+  properties: [Property]
+}
+
 type getPropertyWithCursor {
   prevCursor: String
   nextCursor: String
+  total: Int
   property: Property
 }
 
 # Queries
 type Query {
   getAllProperties: [Property]
+  getProperties(page: Int, limit: Int): PropertiesPaginate
   getProperty(nextCursor: String, prevCursor: String): getPropertyWithCursor
   getPropertyById(id: String): Property
-  searchPropertyByAttribute(code: String, codeOfSearch: String, agrupationIdentifier: String): [Property]
+  searchPropertyByAttribute(code: String, codeOfSearch: String, agrupationIdentifier: String, name: String, beneficiary: String): [Property]
 }
 
 # Mutations
@@ -60,13 +67,13 @@ type Mutation {
   updateProperty(id: String, input: PropertyInput): Property
 }
 
-input TrackingInput {
-  state: StateInput
-  numberOfNote: String
-  observation: String
-  responsible: UserInput
-  dateOfInit: String
-}
+# input TrackingInput {
+#   state: StateInput
+#   numberOfNote: String
+#   observation: String
+#   responsible: UserInput
+#   dateOfInit: String
+# }
 
 # Input Types
 input PropertyInput {

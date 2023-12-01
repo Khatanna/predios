@@ -1,4 +1,4 @@
-import { City, Permission, PrismaClient, User, UserType, Type, FolderLocation, Activity, Clasification, Unit, Stage, State, GroupedState, Reference, Role } from "@prisma/client";
+import { City, Permission, PrismaClient, User, UserType, Type, FolderLocation, Activity, Clasification, Unit, Stage, State, GroupedState, Reference, Role, Property } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 import bcrypt from "bcryptjs";
@@ -27,9 +27,9 @@ const { states }: { states: Array<State & { stage: Stage }> } = getData('states'
 const { groupedStates }: { groupedStates: GroupedState } = getData('groupedStates');
 const { references }: { references: Reference } = getData('references');
 const { roles }: { roles: Role } = getData('roles');
-const delay = 3;
+const delay = 1;
+const properties: Record<string, string>[] = getData('DAT_PREDIO');
 console.log("initializing seed");
-
 const createTypes = async () => {
   await prisma.type.createMany({
     data: types,
@@ -77,7 +77,7 @@ const createStates = async () => {
     await prisma.state.create({
       data: {
         name: state.name,
-        order: state.order,
+        // order: state.order,
         stage: {
           connect: state.stage
         }
@@ -100,42 +100,198 @@ const createReferences = async () => {
   })
 }
 
-const createRoles = async () => {
-  await prisma.role.createMany({
+const createRoles = () => {
+  return prisma.role.createMany({
     data: roles
   })
 }
 
 async function main() {
-  await createRoles();
-  await createTypes();
-  await createFolderLocations();
-  await createActivities();
-  await createClasifications();
-  await createUnits();
-  await createStages();
-  await createStates();
-  await createGroupedStates();
-  await createReferences();
-  await prisma.userType.createMany({
-    data: userTypes,
-    skipDuplicates: true,
-  });
+  // await createTypes();
+  // await createFolderLocations();
+  // await createActivities();
+  // await createClasifications();
+  // await createUnits();
+  // await createStages();
+  // await createStates();
+  // await createGroupedStates();
+  // await createReferences();
+  const propertiesMapped = properties.map(({ codigo, superficie, superficie_pericia, nombre, poligono, cuerpos, fojas, parcelas, departamento, provincia, municipio, observacion, tipo_de_predio, ubicación_de_carpeta, actividad, clasificación, expediente, unidad_responsable, estado_agrupado, estado_2, estado, codigo_de_busqueda, id_de_agrupacion_social, beneficiario, observacion_tecnica, segunda_observacion, referencia }) => {
+    const observations: { observation: string }[] = [];
 
-  await prisma.user.createMany({
-    data: users,
-    skipDuplicates: true
-  });
+    if (observacion) {
+      observations.push({ observation: observacion });
+    }
 
-  const permissionsID: string[] = []
-  for (const permission of permissions) {
-    await new Promise((resolve) => setTimeout(resolve, delay));
-    const { id } = await prisma.permission.create({ data: permission });
-    console.log("permiso creado")
-    permissionsID.push(id);
-  }
+    if (segunda_observacion) {
+      observations.push({ observation: segunda_observacion })
+    }
 
-  await prisma.user.create({
+    if (referencia && referencia.toLocaleLowerCase() !== 'verificado') {
+      observations.push({ observation: referencia });
+    }
+
+    return prisma.property.create({
+      data: {
+        code: codigo ? codigo + "" : "",
+        area: superficie ? superficie + "" : "",
+        expertiseOfArea: superficie_pericia ? superficie_pericia + "" : "",
+        name: nombre ? nombre : "",
+        polygone: poligono ? poligono + "" : "Predio sin nombre",
+        bodies: cuerpos ? +cuerpos : 0,
+        plots: parcelas ? +parcelas : 0,
+        sheets: fojas ? +fojas : 0,
+        fileNumber: expediente ? {
+          create: {
+            number: expediente
+          }
+        } : undefined,
+        reference: {
+          connectOrCreate: {
+            where: {
+              name: 'Verificado',
+            },
+            create: {
+              name: 'Verificado'
+            }
+          }
+        },
+        city: {
+          connect: {
+            name: "La Paz"
+          }
+        },
+        province: provincia ? {
+          connect: {
+            name: provincia
+          }
+        } : {
+          connect: {
+            name: "Por definir"
+          }
+        },
+        municipality: municipio ? {
+          connect: {
+            name: municipio
+          }
+        } : {
+          connect: {
+            name: "Por definir"
+          }
+        },
+        responsibleUnit: unidad_responsable ? {
+          connectOrCreate: {
+            where: {
+              name: unidad_responsable
+            },
+            create: {
+              name: unidad_responsable
+            }
+          }
+        } : undefined,
+        activity: actividad ? {
+          connectOrCreate: {
+            where: {
+              name: actividad
+            },
+            create: {
+              name: actividad
+            }
+          }
+        } : undefined,
+        clasification: clasificación ? {
+          connectOrCreate: {
+            where: {
+              name: clasificación
+            },
+            create: {
+              name: clasificación
+            }
+          }
+        } : undefined,
+        type: tipo_de_predio ? {
+          connectOrCreate: {
+            where: {
+              name: tipo_de_predio
+            },
+            create: {
+              name: tipo_de_predio
+            }
+          }
+        } : undefined,
+        folderLocation: ubicación_de_carpeta ? {
+          connectOrCreate: {
+            where: {
+              name: ubicación_de_carpeta
+            },
+            create: {
+              name: ubicación_de_carpeta
+            }
+          }
+        } : undefined,
+        state: estado ? {
+          connectOrCreate: {
+            where: {
+              name: estado
+            },
+            create: {
+              name: estado,
+              stage: {
+                connectOrCreate: {
+                  where: {
+                    name: 'Departamental'
+                  },
+                  create: {
+                    name: 'Departamental',
+                  }
+                }
+              }
+            }
+          }
+        } : undefined,
+        secondState: estado_2 ? estado_2 : "",
+        groupedState: estado_agrupado ? {
+          connectOrCreate: {
+            where: {
+              name: estado_agrupado
+            },
+            create: {
+              name: estado_agrupado
+            }
+          },
+        } : undefined,
+        codeOfSearch: codigo_de_busqueda,
+        observations: {
+          createMany: {
+            data: observations
+          }
+        },
+        agrupationIdentifier: id_de_agrupacion_social ? id_de_agrupacion_social + "" : "",
+        beneficiaries: beneficiario ? {
+          connectOrCreate: {
+            where: {
+              name: beneficiario
+            },
+            create: {
+              name: beneficiario
+            }
+          }
+        } : undefined,
+        technicalObservation: observacion_tecnica ? observacion_tecnica : ""
+        // legal: {
+        //   connectOrCreate: {
+        //     where: {
+        //       user: {
+        //         username: 
+        //       }
+        //     }
+        //   }
+        // }
+      }
+    })
+  })
+
+  const user = prisma.user.create({
     data: {
       names: "Carlos Elmer",
       firstLastName: "Chambi",
@@ -158,28 +314,7 @@ async function main() {
         }
       }
     }
-  });
-
-  for (const username of ["carlos.chambi", 'daniel.chipana']) {
-    for (const id of permissionsID) {
-      await new Promise((resolve) => setTimeout(resolve, delay));
-      console.log("permiso asignado a: " + username)
-      await prisma.userPermission.create({
-        data: {
-          permission: {
-            connect: {
-              id,
-            },
-          },
-          user: {
-            connect: {
-              username,
-            },
-          },
-        },
-      });
-    }
-  }
+  })
 
   for (const city of cities) {
     await prisma.city.create({
@@ -205,133 +340,48 @@ async function main() {
     }))
   }
 
-  await prisma.property.create({
-    data: {
-      beneficiaries: {
-        connectOrCreate: [
-          { where: { name: "Roberto Torrez" }, create: { name: "Roberto Torrez" } },
-          { where: { name: "Yola Blanco" }, create: { name: "Yola Blanco" } },
-          { where: { name: "Eleuterio Torrez Aguilar" }, create: { name: "Eleuterio Torrez Aguilar" } },
-          { where: { name: "Maria Nemecia Mujica" }, create: { name: "Maria Nemecia Mujica" } },
-          { where: { name: "Julia Libertad Aguilar" }, create: { name: "Julia Libertad Aguilar" } },
-          { where: { name: "Flia. Saucedo Choque" }, create: { name: "Flia. Saucedo Choque" } },
-          { where: { name: "Graciela Mamani Callisaya" }, create: { name: "Graciela Mamani Callisaya" } },
-          { where: { name: "Exalta Mamani" }, create: { name: "Exalta Mamani" } },
-        ]
-      },
-      plots: 8,
-      activity: {
-        connectOrCreate: {
-          where: { name: 'Agricola' },
-          create: { name: 'Agricola' }
-        }
-      },
-      type: {
-        connectOrCreate: {
-          where: { name: 'Comunitario' },
-          create: { name: 'Comunitario' }
-        }
-      },
-      clasification: {
-        connectOrCreate: {
-          where: { name: 'Pequeña' },
-          create: { name: 'Pequeña' }
-        }
-      },
-      bodies: 5,
-      name: "Comunidad Sullcata",
-      area: "8.9420",
-      expertiseOfArea: "8.942",
-      code: "500570",
-      codeOfSearch: "DEP161",
-      polygone: "Indefinido",
-      observations: {
-        createMany: {
-          data: [
-            { observation: '5 FOLDERS SOLO FLIP SIN FOLDER,CONFLICTO  DERECHO PROPIETARIO , SE ENCUENTRA EN   TRATAMIENTO CONCLUIDO  PARA SU PROSECUCION MEDIANTE PROCEDIMIENTO' }
-          ]
-        }
-      },
-      technicalObservation: 'PARA PROCEDIMIENTO COMUN DE SANEAMIENTO, ACTUALMENTE EN SEGUIMIENTO POR LAS PARTES INTERESADAS',
-      groupedState: {
-        connectOrCreate: {
-          where: {
-            name: 'Proceso departamental'
+  await prisma.$transaction([
+    createRoles(),
+    prisma.userType.createMany({
+      data: userTypes,
+      skipDuplicates: true,
+    }),
+    prisma.user.createMany({
+      data: users,
+      skipDuplicates: true
+    }),
+    user,
+    ...propertiesMapped
+  ]);
+
+  const permissionsID: string[] = []
+  for (const permission of permissions) {
+    await new Promise((resolve) => setTimeout(resolve, delay));
+    const { id } = await prisma.permission.create({ data: permission });
+    console.log("permiso creado")
+    permissionsID.push(id);
+  }
+
+  for (const username of ["carlos.chambi", 'daniel.chipana']) {
+    for (const id of permissionsID) {
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      console.log("permiso asignado a: " + username)
+      await prisma.userPermission.create({
+        data: {
+          permission: {
+            connect: {
+              id,
+            },
           },
-          create: {
-            name: 'Proceso departamental'
-          }
-        }
-      },
-      city: {
-        connect: {
-          name: 'La Paz'
-        }
-      },
-      province: {
-        connect: {
-          name: 'Ingavi'
-        }
-      },
-      municipality: {
-        connect: {
-          name: 'Guaqui'
-        }
-      },
-      reference: {
-        connectOrCreate: {
-          where: {
-            name: 'Verificado',
+          user: {
+            connect: {
+              username,
+            },
           },
-          create: {
-            name: 'Verificado',
-          }
-        }
-      },
-      secondState: 'POL.',
-      state: {
-        connectOrCreate: {
-          where: {
-            name: 'Conflicto'
-          },
-          create: {
-            name: 'Conflicto',
-            order: 'Sin definir',
-            stage: {
-              connectOrCreate: {
-                where: {
-                  name: 'Campo'
-                },
-                create: {
-                  name: 'Campo'
-                }
-              }
-            }
-          },
-        }
-      },
-      responsibleUnit: {
-        connectOrCreate: {
-          where: {
-            name: 'Conflictos'
-          },
-          create: {
-            name: 'Conflictos'
-          }
-        }
-      },
-      folderLocation: {
-        connectOrCreate: {
-          where: {
-            name: 'Conflictos'
-          },
-          create: {
-            name: 'Conflictos'
-          }
-        }
-      }
-    },
-  })
+        },
+      });
+    }
+  }
 }
 
 main()

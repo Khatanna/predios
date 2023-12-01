@@ -19,7 +19,7 @@ export type User = {
   }
 };
 
-export type UserTypeInput = Omit<UserInput, "id">;
+export type UserTypeInput = Omit<UserType, "id">;
 
-export type UserInput = Omit<User, "id" | "connection" | "createdAt" | "type"> &
+export type UserInput = Omit<User, "id" | "type"> &
   UserTypeInput;

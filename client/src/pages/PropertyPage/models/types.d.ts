@@ -37,7 +37,7 @@ export interface Property {
   agrupationIdentifier?: string
   secondState?: string
   polygone?: string
-  observations: Pick<Observation, 'observation'>[]
+  observations: Pick<Observation, 'observation' | 'id'>[]
   technicalObservation: string
   beneficiaries: Pick<Beneficiary, 'name'>[]
   city?: Pick<City, 'name'>
@@ -51,7 +51,7 @@ export interface Property {
   type?: Pick<Type, 'name'>
   responsibleUnit?: Pick<ResponsibleUnit, 'name'>
   folderLocation?: Pick<SubDirectory, 'name'>
-  trackings: Pick<Tracking, 'state' | 'dateOfInit' | 'numberOfNote' | 'observation' | 'responsible'>[]
+  trackings: Pick<Tracking, 'state' | 'dateOfInit' | 'numberOfNote' | 'observation' | 'responsible' | 'id'>[]
   technical?: UserOnProperty
   legal?: UserOnProperty
   createdAt: string

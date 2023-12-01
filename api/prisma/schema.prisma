@@ -171,7 +171,7 @@ model Property {
   plots                Int                  @default(0) @map("parcelas")
   bodies               Int                  @default(0) @map("cuerpos")
   sheets               Int                  @default(0) @map("fojas")
-  code                 String?              @unique @default("Sin codigo definido") @map("codigo") @db.VarChar(128)
+  code                 String?              @default("Sin codigo definido") @map("codigo") @db.VarChar(128)
   codeOfSearch         String               @default("Indefinido") @map("codigo_de_busqueda") @db.VarChar(128)
   agrupationIdentifier String               @default("Indefinido") @map("id_de_agrupacion_social") @db.VarChar(64)
   secondState          String               @default("Indefinido") @map("estado_2") @db.VarChar(128)
@@ -203,23 +203,23 @@ model Property {
   legal                LegalOnProperty?
   trackings            Tracking[]
   responsibleUnit      Unit?                @relation(fields: [unitId], references: [id])
-  unitId               String
+  unitId               String?              @map("unidad_responsable_id")
   folderLocation       FolderLocation?      @relation(fields: [folderLocationId], references: [id])
-  folderLocationId     String?
-  technicalObservation String?              @db.LongText()
+  folderLocationId     String?              @map("ubicación_de_carpeta_id")
+  technicalObservation String?              @map("observacion_tecnica") @db.LongText()
 
   @@map("predio")
 }
 
 model Tracking {
   id           String   @id @default(uuid())
-  property_id  String   @map("predio_id")
-  property     Property @relation(fields: [property_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  state_id     String   @map("estado_id")
-  state        State    @relation(fields: [state_id], references: [id])
+  propertyId   String   @map("predio_id")
+  property     Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  stateId      String   @map("estado_id")
+  state        State    @relation(fields: [stateId], references: [id])
   dateOfInit   String   @map("fecha_de_inicio")
-  user_id      String?  @map("usuario_id")
-  responsible  User?    @relation(fields: [user_id], references: [id])
+  userId       String?  @map("usuario_id")
+  responsible  User?    @relation(fields: [userId], references: [id])
   observation  String   @map("observación")
   numberOfNote String   @map("numero_de_nota")
 
@@ -289,7 +289,7 @@ model Reference {
 model State {
   id         String     @id @default(uuid())
   name       String     @unique @map("nombre")
-  order      String     @map("orden") @db.VarChar(16)
+  // order      String     @map("orden") @db.VarChar(16)
   properties Property[]
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt

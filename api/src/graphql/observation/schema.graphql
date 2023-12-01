@@ -11,9 +11,12 @@ type Query {
 }
 
 type Mutation {
-  createObservation(input: ObservationInput): Observation 
+  createObservation(propertyId: String, input: ObservationInput): Observation 
+  updateObservation(observationId: String, input: ObservationInput): Observation
+  deleteObservation(observationId: String): Observation
 }
 
 input ObservationInput {
+  id: String
   observation: String!
 }

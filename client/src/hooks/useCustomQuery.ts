@@ -14,7 +14,6 @@ export const useCustomQuery = <D>(
   const axios = useContext(AxiosContext)
   if (!axios) throw new Error("Sin contexto");
 
-  console.log(options);
   const { data, error, ...rest } = useQuery<GraphQLResponse<D>, AxiosError<GraphQLErrorResponse>>(queryKey, async (variables) => {
     const { data } = await axios.post<GraphQLResponse<D>>('/', {
       query,
@@ -30,7 +29,12 @@ export const useCustomQuery = <D>(
     retryDelay: 200,
     enabled: options?.enabled,
     cacheTime: options?.cacheTime,
-    refetchOnWindowFocus: options && options.refetchOnWindowFocus ? !!options.refetchOnWindowFocus : true,
+    refetchOnWindowFocus() {
+      if (options && 'refetchOnWindowFocus' in options) {
+        return options.refetchOnWindowFocus as boolean;
+      }
+      return true;
+    },
   });
 
   return {

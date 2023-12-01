@@ -10,8 +10,8 @@ import { Table } from '../Table';
 import { TableColumn } from 'react-data-table-component';
 
 const SEARCH_PROPERTY_BY_ATTRIBUTE = `
-	query SearchPropertyByAttribute($code: String, $codeOfSearch: String, $agrupationIdentifier: String) {
-		properties: searchPropertyByAttribute(code: $code, codeOfSearch: $codeOfSearch, agrupationIdentifier: $agrupationIdentifier) {
+	query SearchPropertyByAttribute($code: String, $codeOfSearch: String, $agrupationIdentifier: String, $name: String, $beneficiary: String) {
+		properties: searchPropertyByAttribute(code: $code, codeOfSearch: $codeOfSearch, agrupationIdentifier: $agrupationIdentifier, name: $name, beneficiary: $beneficiary) {
 			id
 			name
 			agrupationIdentifier
@@ -22,7 +22,7 @@ const SEARCH_PROPERTY_BY_ATTRIBUTE = `
 	}
 `
 
-type PropertySearch = Pick<Required<Property>, 'id', 'name' | 'agrupationIdentifier' | 'area' | 'code' | 'codeOfSearch'>
+type PropertySearch = Pick<Required<Property>, 'id' | 'name' | 'code' | 'codeOfSearch'>
 
 const columns: TableColumn<PropertySearch>[] = [
 	{
@@ -32,10 +32,6 @@ const columns: TableColumn<PropertySearch>[] = [
 		grow: 3
 	},
 	{
-		name: 'Id de agrupación social',
-		selector: row => row.agrupationIdentifier
-	},
-	{
 		name: 'Codigo de predio',
 		selector: row => row.code
 	},
@@ -43,21 +39,18 @@ const columns: TableColumn<PropertySearch>[] = [
 		name: 'Codigo de busqueda',
 		selector: row => row.codeOfSearch
 	},
-	// {
-	// 	name: 'Superficie',
-	// 	selector: row => row.area.concat(' ha')
-	// },
 ]
 
 const SeekerModal: React.FC = () => {
 	const { isModalOpen, closeModal } = useSeeker();
 	const navigate = useNavigate();
 	const [name, setName] = useState('');
+	const [beneficiary, setBeneficiary] = useState('');
 	const [code, setCode] = useState('');
 	const [codeOfSearch, setCodeOfSearch] = useState('');
 	const [agrupationIdentifier, setAgrupationIdentifier] = useState('');
 
-	const { data, isFetching } = useCustomQuery<{ properties: PropertySearch[] }>(SEARCH_PROPERTY_BY_ATTRIBUTE, ['searchPropertyByAttribute', { code, codeOfSearch, agrupationIdentifier }])
+	const { data, isFetching } = useCustomQuery<{ properties: PropertySearch[] }>(SEARCH_PROPERTY_BY_ATTRIBUTE, ['searchPropertyByAttribute', { code, codeOfSearch, agrupationIdentifier, name, beneficiary }])
 	return createPortal(<Modal show={isModalOpen} onHide={closeModal} centered size='lg'>
 		<Modal.Header closeButton closeLabel='Cerrar'>
 			<Modal.Title>
@@ -77,8 +70,11 @@ const SeekerModal: React.FC = () => {
 				// 	remove()
 				// }
 			}} className='row g-3'>
-				<Col xs={12} className='position-relative'>
-					{/* <Form.Control placeholder='Nombre del predio' value={name} onChange={(e) => setName(e.target.value)} autoFocus /> */}
+				<Col xs={6} className='position-relative'>
+					<Form.Control placeholder='Nombre del predio' value={name} onChange={(e) => setName(e.target.value)} autoFocus />
+				</Col>
+				<Col xs={6} className='position-relative'>
+					<Form.Control placeholder='Nombre de beneficiario' value={beneficiary} onChange={(e) => setBeneficiary(e.target.value)} />
 				</Col>
 				<Col xs={4}>
 					<Form.Control placeholder='Codigo de predio' value={code} onChange={(e) => setCode(e.target.value)} />

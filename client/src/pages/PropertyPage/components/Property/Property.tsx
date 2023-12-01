@@ -7,7 +7,6 @@ import { usePaginationStore } from '../../state/usePaginationStore';
 
 const GET_PROPERTY_BY_ID_QUERY = `
 query GetPropertyById($id: String) {
-
 		property: getPropertyById(id: $id) {
 			id
 			name
@@ -67,6 +66,7 @@ query GetPropertyById($id: String) {
 				name
 			}
 			observations {
+				id
 				observation
 			}
 			reference {
@@ -82,6 +82,7 @@ query GetPropertyById($id: String) {
 				name
 			}
 			trackings {
+				id
 				observation
 				numberOfNote
 				dateOfInit
@@ -105,7 +106,8 @@ const Property: React.FC = () => {
 	const { isLoading } = useCustomQuery<{ property: Property }>(GET_PROPERTY_BY_ID_QUERY, ['getPropertyById', { id }], {
 		onSuccess({ property }) {
 			setState({ property, nextCursor: property.id });
-		}
+		},
+		refetchOnWindowFocus: false,
 	})
 	// const { isLoading } = useCustomQuery<{ result: { nextCursor?: string, prevCursor?: string, property: Property } }>(GET_PROPERTY_BY_ID_QUERY, ['getProperty', { nextCursor: undefined, prevCursor: undefined }], {
 	// 	onSuccess({ result: { prevCursor, nextCursor, property } }) {

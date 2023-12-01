@@ -14,7 +14,6 @@ const GET_ALL_STATES_QUERY = `
 	query GetAllStates {
 		states: getAllStates {
 			name
-      order
       stage {
         name
       }
@@ -52,6 +51,7 @@ const StateSelect: React.FC<{
           {...field}
           size="sm"
           readOnly={readOnly}
+          highlight
           placeholder={"Estado"}
           options={states.map(({ name }) => ({ label: name, value: name }))}
           onCreate={() => {

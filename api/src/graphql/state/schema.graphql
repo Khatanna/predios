@@ -1,7 +1,6 @@
 type State { 
   id: ID!
   name: String
-  order: String
   properties: [Property]!
   stage: Stage!
   createdAt: String
@@ -21,6 +20,5 @@ type Mutation {
 
 input StateInput {
   name: String
-  order: String
   stage: StageInput
 }

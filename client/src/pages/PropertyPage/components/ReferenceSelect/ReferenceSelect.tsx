@@ -43,7 +43,7 @@ const ReferenceSelect: React.FC<ReferenceSelectProps> = ({ readOnly }) => {
 	return <Controller
 		name="reference.name"
 		control={control}
-		defaultValue="undefined"
+		defaultValue="Verificado"
 		render={({ field }) => (
 			<SelectNameable
 				{...field}
@@ -54,6 +54,7 @@ const ReferenceSelect: React.FC<ReferenceSelectProps> = ({ readOnly }) => {
 					label: name,
 					value: name,
 				}))}
+				highlight
 				onCreate={() => {
 					setModal({
 						form: "createReference",

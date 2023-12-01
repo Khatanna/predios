@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { Property } from "../../models/types";
@@ -13,63 +13,67 @@ export type PropertyListProps = {};
 const columns: TableColumn<Property>[] = [
   {
     name: "Nro",
-    selector: (_row, index) => (index || 0) + 1,
+    selector: (row, index) => `${row.registryNumber}`,
     width: "80px",
-    sortFunction: (a, b) => +a.createdAt - +b.createdAt,
+    sortFunction: (a, b) => +a.registryNumber - +b.registryNumber,
   },
   {
     name: "Nombre del predio",
     selector: (row) => row.name,
     wrap: true,
-    grow: 3
+    grow: 2
   },
   {
     name: "Codigo",
     selector: (row) => row.code ?? "Sin codigo",
   },
   {
-    name: "Codigo de busqueda",
-    selector: (row) => row.codeOfSearch ?? "Sin codigo de busqueda",
+    name: "Estado",
+    selector: (row) => row.state?.name ?? "Sin estado definido",
+    grow: 2
   },
   {
     name: "Tipo de predio",
     selector: (row) => row.type?.name ?? "Sin definir",
   },
   {
-    name: "Departamento",
-    selector: (row) => row.city?.name ?? "Sin definir",
-  },
-  {
-    name: "Provincia",
-    selector: (row) => row.province?.name ?? "Sin definir",
-  },
-  {
-    name: "Municipio",
-    selector: (row) => row.municipality?.name ?? "Sin definir",
-  },
+    name: 'Ubicación',
+    selector: ({ city, province, municipality }) => `${city?.name} - ${province?.name} / ${municipality?.name}`,
+    grow: 2
+  }
 ];
 
 const GET_ALL_PROPERTIES_QUERY = `
-	query {
-		properties: getAllProperties {
-			id
-			name
-			code
-			codeOfSearch
-			createdAt
-			city {
-				name
-			}
-			province {
-				name
-				code
-			}
-			municipality {
-				name
-			}
-			type {
-				name
-			}
+	query GetProperties($page: Int, $limit: Int) {
+		results: getProperties(page: $page, limit: $limit) {
+      total
+      properties {
+        id
+        name
+        code
+        registryNumber
+        codeOfSearch
+        createdAt
+        city {
+          name
+        }
+        province {
+          name
+          code
+        }
+        municipality {
+          name
+        }
+        type {
+          name
+        }
+        state {
+          name
+        }
+        reference { 
+          name
+        }
+      }
 		}
 	}
 `;
@@ -77,9 +81,11 @@ const GET_ALL_PROPERTIES_QUERY = `
 const PropertyList: React.FC<PropertyListProps> = ({ }) => {
   const navigate = useNavigate();
   const { role } = useAuth();
-  const { data, isLoading, error } = useCustomQuery<{ properties: Property[] }>(
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(20);
+  const { data, isLoading, error } = useCustomQuery<{ results: { total: number, properties: Property[] } }>(
     GET_ALL_PROPERTIES_QUERY,
-    ["getAllProperties"],
+    ["getAllProperties", { page, limit }],
   );
   if (error) {
     return <div>{error}</div>;
@@ -89,13 +95,19 @@ const PropertyList: React.FC<PropertyListProps> = ({ }) => {
     <Table
       name="predios"
       columns={columns}
-      data={data?.properties ?? []}
+      data={data?.results.properties ?? []}
       progressPending={isLoading}
       dense
+      defaultSortAsc={false}
       onRowDoubleClicked={(row) => {
         navigate(`${row.id}`);
       }}
+      paginationServer
+      paginationTotalRows={data?.results.total ?? 0}
       paginationPerPage={20}
+      paginationRowsPerPageOptions={[20, 30, 50, 100, 200]}
+      onChangePage={setPage}
+      onChangeRowsPerPage={setLimit}
       actions={
         role === "Administrador" &&
         <Tooltip label="Crear predio">

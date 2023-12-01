@@ -231,10 +231,10 @@ export const getPropertyById = async (_parent: any, { id }: { id: string }, { pr
     throw e;
   }
 }
-export const searchPropertyByAttribute = async (_parent: any, { code, codeOfSearch, agrupationIdentifier }: { code: string, codeOfSearch: string, agrupationIdentifier: string }, { prisma, userContext }: Context) => {
+export const searchPropertyByAttribute = async (_parent: any, { code, codeOfSearch, agrupationIdentifier, name, beneficiary }: { code: string, codeOfSearch: string, agrupationIdentifier: string, name: string, beneficiary: string }, { prisma, userContext }: Context) => {
   try {
     hasPermission(userContext, 'READ', 'PROPERTY');
-    console.log({ code, codeOfSearch, agrupationIdentifier });
+
     const properties = await prisma.property.findMany({
       take: 8,
       where: {
@@ -248,6 +248,16 @@ export const searchPropertyByAttribute = async (_parent: any, { code, codeOfSear
             },
             codeOfSearch: {
               contains: codeOfSearch
+            },
+            name: {
+              contains: name,
+            },
+            beneficiaries: {
+              some: {
+                name: {
+                  contains: beneficiary
+                }
+              }
             }
           }
         ]
@@ -310,6 +320,66 @@ export const searchPropertyByAttribute = async (_parent: any, { code, codeOfSear
     });
 
     return properties
+  } catch (e) {
+    throw e;
+  }
+}
+
+export const getProperties = (_parent: any, { page, limit = 20 }: { page: number, limit?: number }, { prisma, userContext }: Context) => {
+  try {
+    hasPermission(userContext, 'READ', 'PROPERTY');
+    const properties = prisma.property.findMany({
+      include: {
+        beneficiaries: {
+          include: {
+            properties: true
+          }
+        },
+        activity: true,
+        clasification: true,
+        observations: {
+          include: {
+            property: true
+          }
+        },
+        type: true,
+        folderLocation: true,
+        groupedState: true,
+        reference: true,
+        responsibleUnit: true,
+        state: {
+          include: {
+            stage: true
+          }
+        },
+        city: {
+          include: {
+            provinces: {
+              include: {
+                municipalities: true
+              }
+            },
+          }
+        },
+        province: {
+          include: {
+            municipalities: true
+          }
+        },
+        municipality: true,
+      },
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: {
+        registryNumber: 'asc'
+      }
+    });
+    const total = prisma.property.count();
+    return {
+      total,
+      properties
+    }
+
   } catch (e) {
     throw e;
   }

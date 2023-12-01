@@ -1,52 +1,38 @@
 import { useCustomQuery } from "../../../hooks/useCustomQuery";
+import { userListAdapter } from "../adapters/userList.adapter";
 import { User } from "../models/types";
 import { useUsersStore } from "../state/useUsersStore";
+import { useUserContext } from "./useUserContext";
 const GET_ALL_USERS_QUERY = `
-  query AllUsers($nextCursor: String, $prevCursor: String, $numberOfResults: Int, $filterText: String) {
-    results: getAllUsers(nextCursor: $nextCursor, prevCursor: $prevCursor, numberOfResults: $numberOfResults, filterText: $filterText) {
-      nextCursor
-      prevCursor
-      total
-      users {
-        names
-        username
-        firstLastName
-        secondLastName
-        status
-        connection
-        createdAt
-        type {
-          name
-        }
-        role {
-          name
-        }
+  query AllUsers($filterText: String) {
+    users: getAllUsers(filterText: $filterText){
+      names
+      username
+      firstLastName
+      secondLastName
+      status
+      connection
+      createdAt
+      type {
+        name
+      }
+      role {
+        name
       }
     }
   }
 `;
 
 export const useFetchUsers = () => {
-  const {
-    setInitialData,
-    nextCursor,
-    prevCursor,
-    numberOfResults,
-    filterText,
-  } = useUsersStore();
+  const { setUsers } = useUserContext();
   const { isLoading, error, data } = useCustomQuery<{
-    results: {
-      nextCursor: string;
-      prevCursor: string;
-      total: number;
-      users: User[];
-    };
+    users: User[];
   }>(
     GET_ALL_USERS_QUERY,
-    ["getAllUsers", { numberOfResults, nextCursor, prevCursor, filterText }],
+    ["getAllUsers"],
     {
-      onSuccess({ results }) {
-        setInitialData({ users: results.users, total: results.total });
+      onSuccess({ users }) {
+        setUsers(userListAdapter(users))
       },
     },
   );

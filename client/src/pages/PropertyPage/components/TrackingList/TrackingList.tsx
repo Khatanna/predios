@@ -1,27 +1,96 @@
 import React, { useState } from 'react';
-import { Property } from '../../models/types';
-import { UseFieldArrayReturn } from 'react-hook-form'
-import { Col, Form, Row } from 'react-bootstrap';
-import { StateSelect } from '../StateSelect';
+import { Button, Col, Form, Row } from 'react-bootstrap';
+import { CheckSquare, DashSquare, PencilSquare, PlusSquare, XSquare } from 'react-bootstrap-icons';
+import { Controller, UseFieldArrayReturn, useFormContext } from 'react-hook-form';
 import { Tooltip } from '../../../../components/Tooltip';
-import { CheckCircle, CheckSquare, CircleHalf, DashCircle, DashSquare, InfoCircle, Pencil, PencilSquare, PlusCircle, PlusSquare, XCircle, XSquare } from 'react-bootstrap-icons';
-import { useFormContext, Controller } from 'react-hook-form';
-import { useAuth } from '../../../../hooks';
-import { SelectUser } from '../SelectUser';
+import { useAuth, useCustomMutation } from '../../../../hooks';
 import { Tracking } from '../../../TrackingPage/models/types';
-import { EditableInput } from '../EditableInput';
+import { Property } from '../../models/types';
 import { usePaginationStore } from '../../state/usePaginationStore';
+import { SelectUser } from '../SelectUser';
+import { StateSelect } from '../StateSelect';
+import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
+import { useQueryClient } from '@tanstack/react-query';
+
+const CREATE_TRACKING_MUTATION = `
+	mutation CreateTraking($propertyId: String, $input: TrackingInput) {
+		tracking: createTracking(propertyId: $propertyId, input: $input) {
+			observation
+		}
+	}
+`;
+
+const DELETE_TRACKING_MUTATION = `
+	mutation DeleteTraking($propertyId: String, $id: String) {
+		tracking: deleteTracking(propertyId: $propertyId, id: $id) {
+			observation
+		}
+	}
+`;
+
+const UPDATE_TRACKING_MUTATION = `
+	mutation UpdateTraking($trackingId: String, $input: TrackingInput) {
+		tracking: updateTracking(trackingId: $trackingId, input: $input) {
+			observation
+		}
+	}
+`;
 
 export type TrackingListProps = Pick<Property, 'trackings'> & Pick<UseFieldArrayReturn<Property, 'trackings'>, 'remove' | 'update'>
-
-const TrackingItem: React.FC<{ tracking: Pick<Tracking, 'state' | 'dateOfInit' | 'numberOfNote' | 'observation' | 'responsible'>, index: number } & Pick<UseFieldArrayReturn<Property, 'trackings'>, 'remove' | 'update'>> = ({ tracking, index, remove, update }) => {
+type TrackingInput = Pick<Tracking, 'state' | 'dateOfInit' | 'numberOfNote' | 'observation' | 'responsible' | 'id'>
+const TrackingItem: React.FC<{ tracking: TrackingInput, index: number } & Pick<UseFieldArrayReturn<Property, 'trackings'>, 'remove' | 'update'>> = ({ tracking, index, remove, update }) => {
 	const { role } = useAuth();
-	const { property } = usePaginationStore();
-	const { register, getValues, control } = useFormContext<Property>();
-	const isNew = Boolean(getValues('id')) && index + 1 > property!.trackings!.length;
+	const queryClient = useQueryClient();
+	const { register, getValues, control, formState: { defaultValues } } = useFormContext<Property>();
+	const isNew = index >= (defaultValues?.trackings?.length ?? 0);
 	const [edit, setEdit] = useState(false);
-	const createTracking = () => { }
-	const deleteTracking = () => { }
+	const [create] = useCustomMutation<Tracking, { propertyId: string, input: TrackingInput }>(CREATE_TRACKING_MUTATION, {
+		onSuccess(data, { input }) {
+			update(index, input);
+			queryClient.invalidateQueries({ queryKey: ["getPropertyById"] })
+			customSwalSuccess("Seguimiento creado", "Se ha creado un nuevo seguimiento para este predio")
+		},
+		onError(error) {
+			remove(index)
+			customSwalError(error, "Ocurrio un error al intentar crear el seguimientos")
+		},
+	});
+	const [deleteT] = useCustomMutation<Tracking, { propertyId: string, id: string }>(DELETE_TRACKING_MUTATION, {
+		onSuccess() {
+			customSwalSuccess("Seguimiento eliminado", "Se ha eliminado un nuevo seguimiento para este predio")
+			queryClient.invalidateQueries({ queryKey: ["getPropertyById"] })
+			remove(index);
+		},
+		onError(error) {
+			customSwalError(error, "Ocurrio un error al intentar eliminar el seguimiento")
+		},
+	});
+
+	const [updateT] = useCustomMutation<Tracking, { trackingId: string, input: TrackingInput }>(UPDATE_TRACKING_MUTATION, {
+		onSuccess(_data, { input }) {
+			customSwalSuccess("Seguimiento actualizdado", "Se ha actualizdado el seguimiento de este predio")
+			queryClient.invalidateQueries({ queryKey: ["getPropertyById"] })
+			update(index, input);
+		},
+		onError(error, { input }) {
+			update(index, input)
+			customSwalError(error, "Ocurrio un error al intentar actualizar el seguimiento")
+		},
+	});
+
+	const createTracking = () => {
+		create({
+			propertyId: getValues('id'),
+			input: getValues(`trackings.${index}`)
+		})
+	}
+	const deleteTracking = () => {
+		deleteT({
+			propertyId: getValues('id'),
+			id: getValues(`trackings.${index}`).id,
+		})
+	}
+
 	return <Row
 		className="border border-1 border-dark-subtle d-flex py-2 rounded-1 position-relative mb-2"
 	>
@@ -30,9 +99,8 @@ const TrackingItem: React.FC<{ tracking: Pick<Tracking, 'state' | 'dateOfInit' |
 				<Form.Label className="fw-bold">
 					Seguimiento estado:
 				</Form.Label>
-
 				<StateSelect
-					readOnly={!edit && !isNew}
+					readOnly={!isNew}
 					name={`trackings.${index}.state.name`}
 				/>
 			</Form.Group>
@@ -58,10 +126,6 @@ const TrackingItem: React.FC<{ tracking: Pick<Tracking, 'state' | 'dateOfInit' |
 				<Form.Label className="fw-bold">
 					Responsable:
 				</Form.Label>
-
-				{/* <Form.Control
-					value={tracking.responsible?.names.concat(' ', tracking.responsible.firstLastName, ' ', tracking.responsible.secondLastName)}
-					disabled size="sm" hidden /> */}
 				<Controller
 					name={`trackings.${index}.responsible`}
 					control={control}
@@ -114,15 +178,15 @@ const TrackingItem: React.FC<{ tracking: Pick<Tracking, 'state' | 'dateOfInit' |
 		>
 			{isNew ?
 				<>
-					<Tooltip label="Crear seguimiento">
+					{Boolean(getValues('id')) && <Tooltip label="Crear seguimiento">
 						<PlusSquare
 							color="green"
 							className="float-end"
 							role="button"
 							fontSize={16}
-							onClick={() => deleteTracking()}
+							onClick={() => createTracking()}
 						/>
-					</Tooltip>
+					</Tooltip>}
 					<Tooltip label="Quitar seguimiento">
 						<DashSquare
 							color="orange"
@@ -134,7 +198,7 @@ const TrackingItem: React.FC<{ tracking: Pick<Tracking, 'state' | 'dateOfInit' |
 					</Tooltip>
 				</>
 				: <>
-					{!edit ?
+					{!edit && getValues('id') ?
 						<>
 							<Tooltip label='Editar seguimiento'>
 								<PencilSquare
@@ -151,7 +215,7 @@ const TrackingItem: React.FC<{ tracking: Pick<Tracking, 'state' | 'dateOfInit' |
 									className="float-end"
 									role="button"
 									fontSize={16}
-									onClick={() => createTracking()}
+									onClick={() => deleteTracking()}
 								/>
 							</Tooltip>
 						</>
@@ -174,6 +238,10 @@ const TrackingItem: React.FC<{ tracking: Pick<Tracking, 'state' | 'dateOfInit' |
 									role="button"
 									fontSize={16}
 									onClick={() => {
+										updateT({
+											trackingId: getValues(`trackings.${index}.id`),
+											input: { ...getValues(`trackings.${index}`) }
+										})
 										setEdit(false)
 									}}
 								/>

@@ -2,7 +2,7 @@ import { State, Stage } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createState = (_parent: any, { input: { name, order, stage } }: { input: State & { stage: Stage } }, { userContext, prisma }: Context) => {
+export const createState = (_parent: any, { input: { name, stage } }: { input: State & { stage: Stage } }, { userContext, prisma }: Context) => {
   // console.log({
   //   name,
   //   order,
@@ -14,7 +14,6 @@ export const createState = (_parent: any, { input: { name, order, stage } }: { i
     return prisma.state.create({
       data: {
         name,
-        order,
         stage: {
           connect: stage
         }
@@ -34,7 +33,7 @@ export const updateState = (_parent: any, { name, item }: { name: string, item: 
       },
       data: {
         name: item.name,
-        order: item.order,
+        /// order: item.order,
         stage: {
           connect: item.stage
         }

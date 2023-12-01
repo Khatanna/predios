@@ -67,6 +67,7 @@ import { SubdirectorySelect } from "../SubdirectorySelect";
 import { TypeSelect } from "../TypeSelect";
 import { useFormStore } from "../../state/useFormStore";
 import { TrackingList } from "../TrackingList";
+import { ObservationList } from "../ObservationList";
 
 const GET_PROPERTY_QUERY = `
 query GetPropertyPaginate($nextCursor: String, $prevCursor: String) {
@@ -132,6 +133,7 @@ query GetPropertyPaginate($nextCursor: String, $prevCursor: String) {
           name
         }
         observations {
+          id
           observation
         }
         reference {
@@ -147,9 +149,10 @@ query GetPropertyPaginate($nextCursor: String, $prevCursor: String) {
           name
         }
         trackings {
+          id
           observation
           numberOfNote
-          dateOfEnd
+          dateOfInit
           state {
             name
           }
@@ -203,10 +206,10 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
     fields: observations,
     append: appendObservation,
     remove: removeObservation,
+    update: updateObservation
   } = useFieldArray({
     control: methods.control,
     name: "observations",
-
   });
   const {
     fields: beneficiaries,
@@ -236,6 +239,12 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
     { property: Property },
     { input: Property }
   >(UPDATE_PROPERTY_MUTATION, {
+    onSuccess() {
+      customSwalSuccess("Predio actualizado", "Se ha actualizado el predio correctamente")
+    },
+    onError(error) {
+      customSwalError(error, "Ocurrio un error al intentar actualizar los datos de este predio")
+    },
   })
   const submit = (data: Property) => {
     console.log(data);
@@ -257,27 +266,15 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
       setState(result)
     },
     enabled: false,
+    refetchOnWindowFocus: false
   })
   const { refetch: fetchPrev } = useCustomQuery<{ result: { nextCursor?: string, prevCursor?: string, property: Property } }>(GET_PROPERTY_QUERY, ['getPropertyPaginatePrev', { nextCursor: undefined, prevCursor }], {
     onSuccess({ result }) {
       setState(result)
     },
-    enabled: false
+    enabled: false,
+    refetchOnWindowFocus: false
   })
-
-  // useEffect(() => {
-  //   let interval: NodeJS.Timer;
-  //   if (!property) {
-  //     interval = setInterval(() => {
-
-  //     }, 7000)
-  //   }
-  //   return () => {
-  //     if (interval) {
-  //       clearInterval(interval);
-  //     }
-  //   }
-  // }, [])
 
   return (
     <Container fluid>
@@ -696,6 +693,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                               variant="info"
                               onClick={() =>
                                 append({
+                                  id: crypto.randomUUID(),
                                   numberOfNote: "",
                                   observation: "",
                                   state: {
@@ -706,6 +704,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                     .substring(0, 10),
                                 })
                               }
+                              disabled={!!methods.getValues('id') && (methods.getValues('trackings')?.length > (property?.trackings?.length ?? 0))}
                             >
                               Añadir seguimiento
                             </Button>
@@ -713,38 +712,8 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                         </Col>
                       </Tab>
                       <Tab eventKey={"observaciones"} title="Observaciones">
-                        {observations.length ?
-                          observations.map((observation, index) => (
-                            <Row className="position-relative mb-2">
-                              <Form.Control
-                                as="textarea"
-                                rows={2}
-
-                                placeholder="Observación..."
-                                {...register(
-                                  `observations.${index}.observation`,
-                                )}
-                                autoComplete="off"
-                              />
-                              {role === "Administrador" && <div
-                                className={
-                                  "position-absolute top-0 end-0 mt-2"
-                                }
-                              >
-                                <Tooltip label="Quitar observación">
-                                  <DashCircle
-                                    color="red"
-                                    className="float-end"
-                                    role="button"
-                                    onClick={() => {
-                                      removeObservation(index);
-                                    }}
-                                  />
-                                </Tooltip>
-                              </div>}
-                            </Row>
-                          )
-                          ) : (
+                        {observations.length ? (<ObservationList observations={observations} remove={removeObservation} update={updateObservation} />)
+                          : (
                             <Row>
                               <Alert
                                 className="d-flex flex-row gap-2"
@@ -760,10 +729,12 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                             size="sm"
                             className="text-white"
                             variant="info"
-                            onClick={() =>
+                            onClick={() => {
                               appendObservation({
+                                id: crypto.randomUUID(),
                                 observation: "",
                               })
+                            }
                             }
                           >
                             Añadir observación
@@ -879,10 +850,14 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                   {!property && <>
                     <Button variant="primary" onClick={() => {
                       methods.reset(undefined)
-                      setPropertyForm({ propertyForm: undefined });
                       remove()
                       removeBeneficiary()
                       removeObservation()
+
+                      if (property) {
+                        location.reload()
+                        setPropertyForm({ propertyForm: undefined });
+                      }
                     }}>
                       Limpiar
                     </Button>

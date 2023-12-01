@@ -1,29 +1,29 @@
+import { Modal, ModalProps } from 'react-bootstrap';
 import { createPortal } from 'react-dom';
-import { ModalProps, Modal } from 'react-bootstrap';
-import { CityFormCreate } from '../CityFormCreate';
-import { CityFormUpdate } from '../CityFormUpdate';
-import { ProvinceFormCreate } from '../ProvinceFormCreate';
-import { ProvinceFormUpdate } from '../ProvinceFormUpdate';
-import { MunicipalityFormCreate } from '../MunicipalityFormCreate';
-import { MunicipalityFormUpdate } from '../MunicipalityFormUpdate';
-import { StateFormCreate } from '../StateFormCreate';
-import { StateFormUpdate } from '../StateFormUpdate';
-import { SubdirectoryFormCreate } from '../SubdirectoryFormCreate';
-import { SubdirectoryFormUpdate } from '../SubdirectoryFormUpdate';
 import { ActivityFormCreate } from '../ActivityFormCreate';
 import { ActivityFormUpdate } from '../ActivityFormUpdate';
-import { ResponsibleUnitFormCreate } from '../ResponsibleUnitFormCreate';
-import { ResponsibleUnitFormUpdate } from '../ResponsibleUnitFormUpdate';
-import { TypeFormCreate } from '../TypeFormCreate';
-import { TypeFormUpdate } from '../TypeFormUpdate';
+import { CityFormCreate } from '../CityFormCreate';
+import { CityFormUpdate } from '../CityFormUpdate';
 import { ClasificationFormCreate } from '../ClasificationFormCreate';
 import { ClasificationFormUpdate } from '../ClasificationFormUpdate';
 import { GroupedStateFormCreate } from '../GroupedStateFormCreate';
 import { GroupedStateFormUpdate } from '../GroupedStateFormUpdate';
+import { MunicipalityFormCreate } from '../MunicipalityFormCreate';
+import { MunicipalityFormUpdate } from '../MunicipalityFormUpdate';
+import { ProvinceFormCreate } from '../ProvinceFormCreate';
+import { ProvinceFormUpdate } from '../ProvinceFormUpdate';
 import { ReferenceFormCreate } from '../ReferenceFormCreate';
 import { ReferenceFormUpdate } from '../ReferenceFormUpdate';
+import { ResponsibleUnitFormCreate } from '../ResponsibleUnitFormCreate';
+import { ResponsibleUnitFormUpdate } from '../ResponsibleUnitFormUpdate';
 import { StageFormCreate } from '../StageFormCreate';
 import { StageFormUpdate } from '../StageFormUpdate';
+import { StateFormCreate } from '../StateFormCreate';
+import { StateFormUpdate } from '../StateFormUpdate';
+import { SubdirectoryFormCreate } from '../SubdirectoryFormCreate';
+import { SubdirectoryFormUpdate } from '../SubdirectoryFormUpdate';
+import { TypeFormCreate } from '../TypeFormCreate';
+import { TypeFormUpdate } from '../TypeFormUpdate';
 
 export type FormKey = keyof typeof forms
 
@@ -55,7 +55,7 @@ const forms = {
 	createReference: ReferenceFormCreate,
 	updateReference: ReferenceFormUpdate,
 	createStage: StageFormCreate,
-	updateStage: StageFormUpdate
+	updateStage: StageFormUpdate,
 }
 
 const ModalForm: React.FC<ModalFormProps> = ({ title, form, params, ...props }) => {

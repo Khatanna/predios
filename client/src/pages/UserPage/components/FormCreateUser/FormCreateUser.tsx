@@ -1,5 +1,6 @@
-import { useCallback } from 'react';
+import { gql, useMutation } from '@apollo/client';
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useCallback, useState } from 'react';
 import {
   Alert,
   Button,
@@ -12,19 +13,20 @@ import {
 } from "react-bootstrap";
 import { CheckCircle, ExclamationTriangle } from "react-bootstrap-icons";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from 'sonner';
 import * as yup from "yup";
 import { Tooltip } from "../../../../components/Tooltip";
-import { useCustomMutation } from "../../../../hooks";
 import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import {
-  customSwalError,
-  customSwalSuccess,
+  customSwalError
 } from "../../../../utilities/alerts";
-import { mutationMessages, status } from "../../../../utilities/constants";
+import { status } from "../../../../utilities/constants";
 import { SelectNameable } from "../../../HomePage/HomePage";
 import { Error } from "../../../LoginPage/styled-components/Error";
+import { GET_ALL_USERS_QUERY } from '../../GraphQL/types';
 import { useFetchCreateUser } from "../../hooks";
 import { User, UserInput, UserType } from "../../models/types";
+import { useUsersStore } from '../../state/useUsersStore';
 
 export interface FormCreateUserProps {
   user?: User;
@@ -60,7 +62,7 @@ const GET_ALL_USER_TYPES_QUERY = `{
     name
   }
 }`;
-const UDPATE_USER_MUTATION = `
+const UDPATE_USER_MUTATION = gql`
   mutation UpdateUser($username: String, $input: UserInput) {
     user: updateUserByUsername(username: $username, input: $input) {
       names
@@ -151,6 +153,8 @@ const SelectRol: React.FC<FormSelectProps> = (props) => {
 
 const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
   // const { createUserType } = useFetchCreateUserType();
+  const [userUpdated, setUserUpdated] = useState(user);
+  const { filterText } = useUsersStore();
   const { createUser } = useFetchCreateUser();
   const {
     register,
@@ -162,29 +166,58 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
     watch,
     formState: { errors },
   } = useForm<UserInput>({
-    defaultValues: { ...user, password: user ? 'Inra12345' : '' },
+    values: { ...userUpdated, password: user ? 'Inra12345' : '' },
     resolver: yupResolver<UserInput>(schema),
   });
   const names = watch("names");
-  const [updateUser] = useCustomMutation<
+  const [updateUser] = useMutation<
     { user: User },
     {
       username: string;
       input: UserInput;
     }
   >(UDPATE_USER_MUTATION, {
-    onSuccess({ user: { username } }) {
-      customSwalSuccess(
-        mutationMessages.UPDATE_USER.title,
-        mutationMessages.UPDATE_USER.getSuccessMessage(username),
-      );
+    refetchQueries: [{ query: GET_ALL_USERS_QUERY }],
+    optimisticResponse: ({ input }) => {
+      setUserUpdated(input);
+      return {
+        __typename: 'Mutation',
+        user: {
+          __typename: 'User',
+          ...input
+        }
+      }
     },
-    onError(error) {
-      customSwalError(
-        error,
-        "Ocurrio un error al intentar actualizar el usuario",
-      );
-    },
+    update: (cache, { data }) => {
+      if (!data || !data.user) return;
+
+      const query = cache.readQuery<{ users: User[] }, { filterText: string }>({
+        query: GET_ALL_USERS_QUERY,
+        variables: {
+          filterText
+        }
+      })
+
+      if (!query) return
+
+      const updatedUsers = query.users.map(user => {
+        if (user.username === data?.user.username) {
+          return data.user
+        }
+
+        return user;
+      })
+
+      cache.writeQuery<{ users: User[] }>({
+        query: GET_ALL_USERS_QUERY,
+        data: {
+          users: updatedUsers!,
+        },
+        variables: {
+          filterText
+        }
+      })
+    }
   });
 
   const handleSetCredentials = useCallback(() => {
@@ -213,13 +246,22 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
   }, [getValues, setValue])
 
   const submit = (data: UserInput) => {
-    console.log(data);
     if (user) {
       delete data.connection;
       delete data.createdAt;
-      updateUser({
-        username: user.username,
-        input: data
+      toast.promise(updateUser({
+        variables: {
+          username: user.username,
+          input: data
+        }
+      }), {
+        loading: 'Actualizando usuario',
+        success: ({ data }) => {
+          return `Se actualizo el usuario: ${data?.user.username}`
+        },
+        error(error) {
+          return `Error ${error}`
+        }
       });
     } else {
       createUser({

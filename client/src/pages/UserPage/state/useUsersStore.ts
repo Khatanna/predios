@@ -18,6 +18,7 @@ interface State {
 
 interface Actions {
   setInitialData: (initialState: Pick<State, 'total'> & { users: User[] }) => void
+  // setUsers: (user: User[]) => void;
   getNextPage: (nextPage: { page: number, nextCursor?: string }) => void
   getPreviousPage: (prevPage: { page: number, prevCursor?: string }) => void
   changeRowsPerPage: (numberOfResults: number) => void

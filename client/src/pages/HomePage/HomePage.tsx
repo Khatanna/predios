@@ -46,11 +46,18 @@ const DropdownItem: React.FC<DropdownItemComposedProps & StackProps> = ({
   );
 };
 
+const togglePropsx: DropdownToggleProps = {
+  as: ThreeDotsVertical,
+  role: "button",
+  color: 'black',
+  fontSize: 16
+};
+
 export const DropdownMenu: React.FC<
   Omit<DropdownProps, "children"> & { options: DropdownItemComposedProps[] } & {
     toggleProps?: DropdownToggleProps;
   }
-> = ({ options, toggleProps, ...props }) => {
+> = ({ options, toggleProps = togglePropsx, ...props }) => {
   const optionsFiltered = useMemo(() => {
     return options.filter(({ item: [, props] }) => {
       if (props && "show" in props) {
@@ -78,23 +85,17 @@ export const DropdownMenu: React.FC<
   );
 };
 
-const toggleProps: DropdownToggleProps = {
-  as: ThreeDotsVertical,
-  role: "button",
-  color: 'black',
-  fontSize: 16
-};
-
 export const SelectNameable: React.FC<
   FormSelectProps & {
     options: { label: string; value: string }[];
     readOnly?: boolean;
     dirty?: boolean;
+    highlight?: boolean;
     onCreate?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
     onEdit?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
     onDelete?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
   }
-> = ({ options, placeholder, onCreate, onEdit, onDelete, dirty, ...props }) => {
+> = ({ options, placeholder, onCreate, onEdit, onDelete, dirty, highlight, ...props }) => {
   const [readOnly, setReadOnly] = useState(props.readOnly);
   const { role } = useAuth();
   const currentValue = useMemo(() => props.value, []);
@@ -161,11 +162,11 @@ export const SelectNameable: React.FC<
             size={props.size}
             readOnly={readOnly}
             disabled={props.disabled || dirty}
-            className={`${props.disabled ? "text-body-tertiary" : readOnly && props.value === 'undefined' ? "text-danger fw-bold" : ""}`}
+            className={`${props.disabled ? "text-body-tertiary" : readOnly && props.value === 'undefined' || highlight ? "text-danger fw-bold" : ""}`}
           />
           {props.readOnly && role === "Administrador" && (
             <InputGroup.Text >
-              <DropdownMenu options={optionsReadOnly} toggleProps={toggleProps} />
+              <DropdownMenu options={optionsReadOnly} toggleProps={togglePropsx} />
             </InputGroup.Text>
           )}
         </InputGroup>
@@ -179,7 +180,7 @@ export const SelectNameable: React.FC<
         {...props}
         className={`${props.value === "undefined" || !props.value
           ? "text-body-tertiary"
-          : "text-black"
+          : highlight ? "text-danger fw-bold" : "text-black"
           }`}
       >
         <option value="undefined" className="text-body-tertiary" disabled>
@@ -197,7 +198,7 @@ export const SelectNameable: React.FC<
       </Form.Select>
       {(onCreate || onEdit || onDelete) && (
         <InputGroup.Text>
-          <DropdownMenu options={props.readOnly ? optionsCancelReadOnly : optionsMenu} toggleProps={toggleProps} />
+          <DropdownMenu options={props.readOnly ? optionsCancelReadOnly : optionsMenu} toggleProps={togglePropsx} />
         </InputGroup.Text>
       )}
     </InputGroup>

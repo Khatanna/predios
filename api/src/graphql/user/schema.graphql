@@ -37,12 +37,13 @@ type UsersPaginate {
 
 # Queries
 type Query {
-  getAllUsers(
+  getAllUsersPaginateWithCursor(
     nextCursor: String
     prevCursor: String
     numberOfResults: Int
     filterText: String
   ): UsersPaginate
+  getAllUsers(filterText: String): [User]
   getUsers(type: String, filterText: String): [User]!
   getUserById(id: ID): User
   getUserByUsername(username: String): User
@@ -98,6 +99,7 @@ input UserInput {
   secondLastName: String
   username: String
   password: String
+  connection: String
   permissions: [CreatePermissionInput]
   type: UserTypeInput
   status: String

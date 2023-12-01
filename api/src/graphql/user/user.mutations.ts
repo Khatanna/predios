@@ -79,7 +79,7 @@ export const updateUserByUsername = async (
 };
 
 export const updateStateUserByUsername = (
-  _parent: any, { username, input }: { username: string; input: Pick<User, "status"> }, { prisma, userContext }: Context,
+  _parent: any, { username, input: { status } }: { username: string; input: Pick<User, "status"> }, { prisma, userContext }: Context,
 ) => {
   try {
     hasPermission(userContext, "UPDATE", "USER");
@@ -87,8 +87,14 @@ export const updateStateUserByUsername = (
       where: {
         username,
       },
-      data: input,
-    });
+      data: {
+        status
+      },
+      include: {
+        type: true,
+        role: true
+      }
+    })
   } catch (e) {
     throw e;
   }

@@ -43,6 +43,7 @@ const GroupedStateSelect: React.FC<GroupedStateSelectProps> = ({ readOnly }) => 
 				{...field}
 				readOnly={readOnly}
 				size="sm"
+				highlight
 				placeholder={"Estado agrupado"}
 				options={groupedStates.map(({ name }) => ({
 					label: name,

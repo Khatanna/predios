@@ -1,7 +1,7 @@
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const getAllUsers = async (
+export const getAllUsersPaginateWithCursor = async (
   _parent: any,
   { nextCursor, prevCursor, numberOfResults, filterText }: { nextCursor: string, prevCursor: string, numberOfResults: number; filterText: string },
   { prisma, userContext }: Context,
@@ -117,6 +117,77 @@ export const getAllUsers = async (
     throw e;
   }
 };
+
+export const getAllUsers = async (_parent: any, { filterText }: { filterText: string }, { prisma, userContext }: Context) => {
+  try {
+    hasPermission(userContext, 'READ', 'USER')
+
+    const filterTextParts = filterText && filterText.includes(" ") ? filterText.trim().split(" ") : []
+    console.log(filterText)
+    return prisma.user.findMany({
+      where: {
+        NOT: {
+          username: userContext!.username,
+        },
+        OR: filterText ? [
+          {
+            names: {
+              contains: filterText.trim(),
+            },
+          },
+          {
+            firstLastName: {
+              contains: filterText.trim()
+            }
+          },
+          {
+            secondLastName: {
+              contains: filterText.trim()
+            }
+          },
+          {
+            username: {
+              contains: filterText.trim()
+            }
+          },
+          {
+            OR: filterTextParts.length === 2 ? [
+              {
+                names: {
+                  contains: filterTextParts[0]
+                },
+                firstLastName: {
+                  contains: filterTextParts[1]
+                }
+              }
+            ] : []
+          },
+          {
+            OR: filterTextParts.length === 3 ? [
+              {
+                names: {
+                  contains: filterTextParts[0]
+                },
+                firstLastName: {
+                  contains: filterTextParts[1]
+                },
+                secondLastName: {
+                  contains: filterTextParts[2]
+                }
+              }
+            ] : []
+          }
+        ] : undefined
+      },
+      include: {
+        role: true,
+        type: true,
+      }
+    });
+  } catch (e) {
+    throw e;
+  }
+}
 // export const allUsers = async (
 //   _parent: any,
 //   _args: any,

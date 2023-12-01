@@ -1,13 +1,16 @@
+import { useMutation } from "@apollo/client";
 import React from "react";
-import { Dropdown, Spinner } from "react-bootstrap";
-import { DropdownMenu as DropdownMenuComponent } from "../../../../components/DropdownMenu";
-import { User } from "../../models/types";
+import { Spinner } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { toast } from 'sonner';
+import Swal from "sweetalert2";
 import { useCustomMutation } from "../../../../hooks";
 import { customSwalError, customSwalSuccess } from "../../../../utilities/alerts";
-import Swal from "sweetalert2";
+import { StateOfStatus } from "../../../../utilities/constants";
+import { DropdownMenu as Menu } from '../../../HomePage/HomePage';
+import { DISABLE_USER_MUTATION, GET_ALL_USERS_QUERY } from "../../GraphQL/types";
+import { User } from "../../models/types";
 import { useUsersStore } from "../../state/useUsersStore";
-import { Link } from "react-router-dom";
-
 export type DropdownMenuProps = {
   user: Omit<User, 'createdAt'>;
 };
@@ -20,25 +23,88 @@ const DELETE_USER_BY_USERNAME_MUTATION = `
   }
 `;
 
-const DISABLE_USER_MUTATION = `
-  mutation UpdateStateUserByUsername ($username: String, $input: UserInput) {
-    user: updateStateUserByUsername(username: $username, input: $input) {
-      username
-    }
+
+
+type Status = keyof typeof StateOfStatus;
+
+const negateStatus = (status: Status): Status => {
+  if (status === 'ENABLE') {
+    return 'DISABLE'
   }
-`
+
+  return 'ENABLE'
+}
+
+const useUserServices = (user: User) => {
+  const { filterText } = useUsersStore();
+  const [handleStateOfUser, { loading }] = useMutation<{ user: User }, { username: string, input: User }>(DISABLE_USER_MUTATION, {
+    refetchQueries: [{ query: GET_ALL_USERS_QUERY }],
+    optimisticResponse: ({ input }) => ({
+      __typename: 'Mutation',
+      user: {
+        __typename: 'User',
+        ...input
+      }
+    }),
+    update: (cache, { data }) => {
+      if (!data || !data.user) return;
+
+      const query = cache.readQuery<{ users: User[] }, { filterText: string }>({
+        query: GET_ALL_USERS_QUERY,
+        variables: {
+          filterText
+        }
+      })
+
+      if (!query) return
+
+      const updatedUsers = query.users.map(user => {
+        if (user.username === data?.user.username) {
+          return data.user
+        }
+
+        return user;
+      })
+
+      cache.writeQuery<{ users: User[] }>({
+        query: GET_ALL_USERS_QUERY,
+        data: {
+          users: updatedUsers!,
+        },
+        variables: {
+          filterText
+        }
+      })
+    }
+  })
+
+  const handleState = () => {
+    toast.promise(handleStateOfUser({
+      variables: {
+        username: user.username,
+        input: {
+          ...user,
+          status: negateStatus(user.status as Status)
+        }
+      }
+    }), {
+      loading: 'Actualizando usuario',
+      success: ({ data }) => {
+        return `Se actualizo el usuario: ${data?.user.username}`
+      },
+      error(error) {
+        return `Error ${error}`
+      }
+    })
+  }
+
+  return { handleState, loading };
+}
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({ user }) => {
-  const { updateUser, deleteUser, rollbackDeleteUser } = useUsersStore();
-  const [disableUser, { isLoading }] = useCustomMutation<{ user: User }, { username: string, input: Pick<User, 'status'> }>(DISABLE_USER_MUTATION, {
-    onError(error, { username, input: data }) {
-      updateUser({ username, user: { ...data, status: data.status === 'ENABLE' ? 'DISABLE' : 'ENABLE' } })
-      customSwalError(error, `Error al deshabilitar al usuario (${username})`);
-    },
-    onMutate({ username, input: data }) {
-      updateUser({ username, user: data })
-    },
-  })
+  const { deleteUser, rollbackDeleteUser } = useUsersStore();
+  const { handleState, loading } = useUserServices(user);
+
   const [deleteUserByUsername] = useCustomMutation<{ result: { deleted: boolean; user: User } }, { username: string }>(DELETE_USER_BY_USERNAME_MUTATION,
     {
       onSuccess({ result }, { username }) {
@@ -75,35 +141,39 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ user }) => {
     })
   }
 
-  const handleStatusOfUser = () => {
-    disableUser({
-      username: user.username,
-      input: {
-        status: user.status === "ENABLE" ? "DISABLE" : "ENABLE"
-      }
-    })
-  }
-
-  if (isLoading) {
+  if (loading) {
     return <Spinner size="sm" variant="warning" />
   }
 
   return (
-    <DropdownMenuComponent align={'end'}>
-      <Dropdown.Item to={`edit`} state={user} as={Link}>
-        ✏ Editar
-      </Dropdown.Item>
-      <Dropdown.Item to={`permissions`} state={user} as={Link}>
-        📑 Permisos
-      </Dropdown.Item>
-      <Dropdown.Item onClick={handleStatusOfUser}>
-        {user.status === "ENABLE" ? "⛔ Deshabilitar" : "✔ Habilitar"}
-      </Dropdown.Item>
-      <Dropdown.Item onClick={handleDelete}>
-        🗑 Eliminar
-      </Dropdown.Item>
-    </DropdownMenuComponent>
+    <Menu
+      options={[
+        {
+          item: ['✏ Editar', {
+            as: Link,
+            to: 'edit',
+            state: user
+          }],
+        },
+        {
+          item: ['📑 Permisos', {
+            as: Link,
+            to: 'permissions',
+            state: user
+          }]
+        },
+        {
+          item: [user.status === "ENABLE" ? "⛔ Deshabilitar" : "✔ Habilitar", {
+            onClick: handleState
+          }]
+        },
+        {
+          item: ['🗑 Eliminar', { onClick: handleDelete }]
+        }
+      ]}
+    />
   );
 };
 
 export default DropdownMenu;
+

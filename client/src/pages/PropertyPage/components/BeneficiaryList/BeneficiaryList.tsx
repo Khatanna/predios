@@ -4,7 +4,7 @@ import { Tooltip } from '../../../../components/Tooltip';
 import { useAuth, useCustomMutation } from '../../../../hooks';
 import { Check, Pencil, ThreeDotsVertical, Trash, X } from 'react-bootstrap-icons';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
-import { useFormContext, useFieldArray, UseFieldArrayReturn } from 'react-hook-form'
+import { useFormContext, UseFieldArrayReturn } from 'react-hook-form'
 import { Property } from '../../models/types';
 import { Beneficiary } from '../../../BeneficiaryPage/models/types';
 import { DropdownMenu } from '../../../HomePage/HomePage';
@@ -56,6 +56,7 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({ beneficiary, index, r
 				update(index, { name });
 			},
 			onError(error) {
+				remove(index);
 				customSwalError(error, "Ocurrio un error al intentar crear el beneficiario")
 			},
 		}
@@ -67,8 +68,9 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({ beneficiary, index, r
 				customSwalSuccess("Beneficiario eliminado correctamente", `Se ha eliminado al beneficiario: (${name}) de este predio`);
 				remove(index);
 			},
-			onError(error) {
+			onError(error, { index, input }) {
 				customSwalError(error, "Ocurrio un error al intentar eliminar el beneficiario")
+				// append
 			},
 		}
 	)
@@ -203,14 +205,13 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({ beneficiary, index, r
 
 const BeneficiaryList: React.FC<BeneficiaryListProps> = ({ maxHeight, beneficiaries, ...props }) => {
 	return <ListGroup
-
 		as={"ol"}
 		numbered
 		style={{
 			maxHeight:
 				maxHeight - 35,
 		}}
-		className={`${beneficiaries.length < 2 ? 'overflow-y-visible ' : 'overflow-y-scroll'}  pe-1`}
+		className={`${beneficiaries.length <= 2 ? 'overflow-y-visible ' : 'overflow-y-scroll'}  pe-1`}
 	>
 		{beneficiaries.map((beneficiary, index) => (
 			<BeneficiaryItem

@@ -6,7 +6,7 @@ import DataTable, {
 } from "react-data-table-component";
 
 const Table = <T extends NonNullable<unknown>>(
-  { name, ...props }: TableProps<T> & { name: string; },
+  { name, columns, ...props }: TableProps<T> & { name: string; },
 ) => {
   const paginationComponentOptions = useMemo(() => {
     const showName = name[0].toUpperCase() + name.slice(1);
@@ -15,7 +15,6 @@ const Table = <T extends NonNullable<unknown>>(
       rangeSeparatorText: "de",
       selectAllRowsItem: true,
       selectAllRowsItemText: "Todos",
-
     };
   }, [name]);
   const [dense, setDense] = useState(props.dense);
@@ -36,7 +35,7 @@ const Table = <T extends NonNullable<unknown>>(
 
   return (
     <DataTable
-      columns={props.columns.map(c => ({ ...c, sortable: true }))}
+      columns={columns}
       striped
       pagination
       responsive
@@ -44,17 +43,11 @@ const Table = <T extends NonNullable<unknown>>(
       pointerOnHover={props.pointerOnHover ?? true}
       highlightOnHover
       selectableRowsHighlight
-      onColumnOrderChange={(nextOrder) => {
-        localStorage.setItem(
-          `columns@user_permission`,
-          JSON.stringify(nextOrder.filter((c) => c.name).map((c) => c.name)),
-        );
-      }}
       subHeader={Boolean(props.subHeaderComponent)}
       progressComponent={<div className="mt-5">
         <Spinner variant="success" />
       </div>}
-      sortIcon={<ArrowDownShort color="green" />}
+      sortIcon={<ArrowDownShort color="red" />}
       paginationComponentOptions={paginationComponentOptions}
       noDataComponent="No hay registros por ahora"
       persistTableHead
@@ -79,7 +72,6 @@ const Table = <T extends NonNullable<unknown>>(
         </div>
       </div>}
       {...props}
-
     />
   );
 };

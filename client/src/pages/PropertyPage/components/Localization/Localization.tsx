@@ -113,6 +113,7 @@ const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
                 {...field}
                 size="sm"
                 readOnly={readOnly}
+                highlight
                 placeholder="Departamento"
                 options={cities.map(({ name }) => ({
                   label: name,
@@ -179,6 +180,7 @@ const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
               <SelectNameable
                 {...field}
                 readOnly={readOnly}
+                highlight
                 onChange={(e) => {
                   field.onChange(e);
                   setValue("municipality.name", "undefined");
@@ -252,6 +254,7 @@ const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
                 {...field}
                 readOnly={readOnly}
                 disabled={province === "undefined"}
+                highlight
                 size="sm"
                 placeholder="Municipio"
                 options={municipalities.map(({ name }) => ({

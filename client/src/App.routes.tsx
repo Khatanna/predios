@@ -13,6 +13,7 @@ import { PropertyForm } from './pages/PropertyPage/components/PropertyForm';
 import { AuthProvider } from './context/AuthContext';
 import { SeekerProvider } from './context/SeekerContext';
 import { useAuth } from './hooks';
+import UserPage from './pages/UserPage/UserPage';
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"))
 const Permission = lazy(() => import("./pages/UserPage/components/Permission/Permission"))
 const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
@@ -43,7 +44,7 @@ function App() {
               <Route path="/" element={<LazyComponent Component={NavBar} />}>
                 <Route index element={<LazyComponent Component={HomePage} />} />
                 {isAdmin && <Route path="/users">
-                  <Route index element={<LazyComponent Component={UserList} />} />
+                  <Route index element={<LazyComponent Component={UserPage} />} />
                   <Route path="create" Component={FormCreateUser} />
                   <Route
                     path="edit"
