@@ -11,7 +11,7 @@ interface State {
   accessToken?: string;
   user?: UserAuthenticate;
   expirationAccessToken?: number;
-  role?: string
+  role?: string;
 }
 
 interface Actions {
@@ -41,12 +41,12 @@ export const useAuthStore = create(
           state.accessToken = token;
           state.user = {
             username: tokenDecode.username,
-            connection: tokenDecode.connection
+            connection: tokenDecode.connection,
           };
 
           state.isAuth = true;
           state.expirationAccessToken = tokenDecode.exp;
-          state.role = tokenDecode.role.name
+          state.role = tokenDecode.role.name;
         }),
       );
     },

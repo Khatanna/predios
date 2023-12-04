@@ -9,14 +9,13 @@ import {
   InputGroup,
   Row,
   Tab,
-  Tabs
+  Tabs,
 } from "react-bootstrap";
 import {
   Activity as ActivityIcon,
   BodyText,
   Box2,
   Compass,
-  DashCircle,
   Database,
   DeviceSsd,
   Diagram3,
@@ -33,7 +32,6 @@ import {
   PeopleFill,
   PersonGear,
   PersonWorkspace,
-  X
 } from "react-bootstrap-icons";
 import {
   Controller,
@@ -49,6 +47,7 @@ import {
   customSwalSuccess,
 } from "../../../../utilities/alerts";
 import { Property } from "../../models/types";
+import { useFormStore } from "../../state/useFormStore";
 import { useModalStore } from "../../state/useModalStore";
 import { usePaginationStore } from "../../state/usePaginationStore";
 import { ActivitySelect } from "../ActivitySelect";
@@ -59,15 +58,14 @@ import { EditableInput } from "../EditableInput";
 import { GroupedStateSelect } from "../GroupedStateSelect";
 import { Localization } from "../Localization";
 import ModalForm from "../ModalForm/ModalForm";
+import { ObservationList } from "../ObservationList";
 import { ReferenceSelect } from "../ReferenceSelect";
 import { ResponsibleUnitSelect } from "../ResponsibleUnitSelect";
 import { SelectUser } from "../SelectUser";
 import { StateSelect } from "../StateSelect";
 import { SubdirectorySelect } from "../SubdirectorySelect";
-import { TypeSelect } from "../TypeSelect";
-import { useFormStore } from "../../state/useFormStore";
 import { TrackingList } from "../TrackingList";
-import { ObservationList } from "../ObservationList";
+import { TypeSelect } from "../TypeSelect";
 
 const GET_PROPERTY_QUERY = `
 query GetPropertyPaginate($nextCursor: String, $prevCursor: String) {
@@ -166,7 +164,7 @@ query GetPropertyPaginate($nextCursor: String, $prevCursor: String) {
       }
     }
   } 
-`
+`;
 const CREATE_PROPERTY_MUTATION = `
   mutation CreateProperty($input: PropertyInput) {
     property: createProperty(input: $input) {
@@ -186,13 +184,15 @@ const UPDATE_PROPERTY_MUTATION = `
 const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
   const { role } = useAuth();
   const { propertyForm, setPropertyForm } = useFormStore();
-  const { property, nextCursor, prevCursor, setState } = usePaginationStore(s => {
-    if (!newItem) {
-      return { ...s, property: undefined }
-    }
+  const { property, nextCursor, prevCursor, setState } = usePaginationStore(
+    (s) => {
+      if (!newItem) {
+        return { ...s, property: undefined };
+      }
 
-    return s;
-  });
+      return s;
+    },
+  );
   const colRef = useRef<HTMLDivElement | null>(null);
   const { handleSubmit, register, ...methods } = useForm<Property>({
     values: property ?? propertyForm,
@@ -206,7 +206,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
     fields: observations,
     append: appendObservation,
     remove: removeObservation,
-    update: updateObservation
+    update: updateObservation,
   } = useFieldArray({
     control: methods.control,
     name: "observations",
@@ -218,19 +218,22 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
     update: updateBeneficiaries,
   } = useFieldArray({
     control: methods.control,
-    name: 'beneficiaries',
-  })
+    name: "beneficiaries",
+  });
 
   const [createProperty] = useCustomMutation<
     { property: Property },
     { input: Property }
   >(CREATE_PROPERTY_MUTATION, {
     onSuccess() {
-      customSwalSuccess('Predio creado', 'Se ha creado un nuevo predio correctamente')
-      setPropertyForm({ propertyForm: undefined })
+      customSwalSuccess(
+        "Predio creado",
+        "Se ha creado un nuevo predio correctamente",
+      );
+      setPropertyForm({ propertyForm: undefined });
     },
     onError(error) {
-      customSwalError(error, 'Ocurrio un error al intentar crear el predio')
+      customSwalError(error, "Ocurrio un error al intentar crear el predio");
       // methods.reset();
     },
   });
@@ -240,17 +243,23 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
     { input: Property }
   >(UPDATE_PROPERTY_MUTATION, {
     onSuccess() {
-      customSwalSuccess("Predio actualizado", "Se ha actualizado el predio correctamente")
+      customSwalSuccess(
+        "Predio actualizado",
+        "Se ha actualizado el predio correctamente",
+      );
     },
     onError(error) {
-      customSwalError(error, "Ocurrio un error al intentar actualizar los datos de este predio")
+      customSwalError(
+        error,
+        "Ocurrio un error al intentar actualizar los datos de este predio",
+      );
     },
-  })
+  });
   const submit = (data: Property) => {
     console.log(data);
     if (!property) {
       createProperty({
-        input: data
+        input: data,
       });
     } else {
       console.log("update");
@@ -261,20 +270,32 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
   };
   const { setModal, ...modal } = useModalStore();
 
-  const { refetch: fetchNext } = useCustomQuery<{ result: { nextCursor?: string, prevCursor?: string, property: Property } }>(GET_PROPERTY_QUERY, ['getPropertyPaginateNext', { nextCursor, prevCursor: undefined }], {
-    onSuccess({ result }) {
-      setState(result)
+  const { refetch: fetchNext } = useCustomQuery<{
+    result: { nextCursor?: string; prevCursor?: string; property: Property };
+  }>(
+    GET_PROPERTY_QUERY,
+    ["getPropertyPaginateNext", { nextCursor, prevCursor: undefined }],
+    {
+      onSuccess({ result }) {
+        setState(result);
+      },
+      enabled: false,
+      refetchOnWindowFocus: false,
     },
-    enabled: false,
-    refetchOnWindowFocus: false
-  })
-  const { refetch: fetchPrev } = useCustomQuery<{ result: { nextCursor?: string, prevCursor?: string, property: Property } }>(GET_PROPERTY_QUERY, ['getPropertyPaginatePrev', { nextCursor: undefined, prevCursor }], {
-    onSuccess({ result }) {
-      setState(result)
+  );
+  const { refetch: fetchPrev } = useCustomQuery<{
+    result: { nextCursor?: string; prevCursor?: string; property: Property };
+  }>(
+    GET_PROPERTY_QUERY,
+    ["getPropertyPaginatePrev", { nextCursor: undefined, prevCursor }],
+    {
+      onSuccess({ result }) {
+        setState(result);
+      },
+      enabled: false,
+      refetchOnWindowFocus: false,
     },
-    enabled: false,
-    refetchOnWindowFocus: false
-  })
+  );
 
   return (
     <Container fluid>
@@ -297,7 +318,11 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
             {...modal}
           />
         )}
-        <Form onSubmit={handleSubmit(submit)} id="propertyForm" className="mb-2">
+        <Form
+          onSubmit={handleSubmit(submit)}
+          id="propertyForm"
+          className="mb-2"
+        >
           <Row>
             <Col>
               <Row className="d-flex flex-row gap-2">
@@ -306,7 +331,12 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                     {property && (
                       <div className="position-absolute top-0 end-0 d-flex gap-2 justify-content-end align-items-center mt-1">
                         <Tooltip label="Anterior">
-                          <FastForwardFill color="orange" size={24} style={{ rotate: '-180deg' }} onClick={() => fetchPrev()} />
+                          <FastForwardFill
+                            color="orange"
+                            size={24}
+                            style={{ rotate: "-180deg" }}
+                            onClick={() => fetchPrev()}
+                          />
                         </Tooltip>
                         <Tooltip label="Número de registro">
                           <Badge className="fw-bold mx-2 fs-6">
@@ -314,7 +344,11 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                           </Badge>
                         </Tooltip>
                         <Tooltip label="Siguiente">
-                          <FastForwardFill color="orange" size={24} onClick={() => fetchNext()} />
+                          <FastForwardFill
+                            color="orange"
+                            size={24}
+                            onClick={() => fetchNext()}
+                          />
                         </Tooltip>
                       </div>
                     )}
@@ -351,14 +385,17 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                               <>
                                 <InputGroup.Text>
                                   <Hexagon color="purple" className="me-1" />
-                                  <Form.Label column="sm" className="fw-bold">Poligono</Form.Label>
+                                  <Form.Label column="sm" className="fw-bold">
+                                    Poligono
+                                  </Form.Label>
                                 </InputGroup.Text>
                                 <Form.Control
                                   size="sm"
                                   placeholder="Poligono"
                                   readOnly={!edit}
                                   {...register("polygone")}
-                                  autoComplete="off" />
+                                  autoComplete="off"
+                                />
                               </>
                             )}
                           />
@@ -376,7 +413,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                 <Form.Control
                                   size="sm"
                                   readOnly={!edit}
-                                  {...register('fileNumber.number')}
+                                  {...register("fileNumber.number")}
                                   placeholder="Nro de expediente"
                                   autoFocus={edit}
                                 />
@@ -388,7 +425,9 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                     </Col>
                     <Col xs={4}>
                       <Row className="mb-1">
-                        <Form.Label column="sm" className="fw-bold">Codigo de busqueda:</Form.Label>
+                        <Form.Label column="sm" className="fw-bold">
+                          Codigo de busqueda:
+                        </Form.Label>
                         <Col>
                           <EditableInput
                             isEdit={!property}
@@ -407,7 +446,9 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                         </Col>
                       </Row>
                       <Row className="mb-1">
-                        <Form.Label column="sm" className="fw-bold">Codigo de predio:</Form.Label>
+                        <Form.Label column="sm" className="fw-bold">
+                          Codigo de predio:
+                        </Form.Label>
                         <Col>
                           <EditableInput
                             isEdit={!property}
@@ -425,7 +466,9 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                         </Col>
                       </Row>
                       <Row>
-                        <Form.Label column="sm" className="fw-bold">ID Agrupación:</Form.Label>
+                        <Form.Label column="sm" className="fw-bold">
+                          ID Agrupación:
+                        </Form.Label>
                         <Col>
                           <Form.Group>
                             <EditableInput
@@ -471,7 +514,9 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                       size="sm"
                                       render={({ edit }) => (
                                         <>
-                                          <InputGroup.Text className="fw-bold text-primary">Superficie</InputGroup.Text>
+                                          <InputGroup.Text className="fw-bold text-primary">
+                                            Superficie
+                                          </InputGroup.Text>
                                           <Form.Control
                                             {...register("area")}
                                             size="sm"
@@ -489,7 +534,9 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                       size="sm"
                                       render={({ edit }) => (
                                         <>
-                                          <InputGroup.Text className="fw-bold text-primary">Superficie de pericia</InputGroup.Text>
+                                          <InputGroup.Text className="fw-bold text-primary">
+                                            Superficie de pericia
+                                          </InputGroup.Text>
                                           <Form.Control
                                             {...register("expertiseOfArea")}
                                             size="sm"
@@ -517,9 +564,13 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                       isEdit={!property}
                                       render={({ edit }) => (
                                         <>
-                                          <InputGroup.Text className="fw-bold text-success">Parcelas</InputGroup.Text>
+                                          <InputGroup.Text className="fw-bold text-success">
+                                            Parcelas
+                                          </InputGroup.Text>
                                           <Form.Control
-                                            {...register("plots", { valueAsNumber: true })}
+                                            {...register("plots", {
+                                              valueAsNumber: true,
+                                            })}
                                             type="number"
                                             defaultValue={0}
                                             size="sm"
@@ -534,9 +585,13 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                       isEdit={!property}
                                       render={({ edit }) => (
                                         <>
-                                          <InputGroup.Text className="fw-bold text-success">Fojas</InputGroup.Text>
+                                          <InputGroup.Text className="fw-bold text-success">
+                                            Fojas
+                                          </InputGroup.Text>
                                           <Form.Control
-                                            {...register("sheets", { valueAsNumber: true })}
+                                            {...register("sheets", {
+                                              valueAsNumber: true,
+                                            })}
                                             type="number"
                                             defaultValue={0}
                                             size="sm"
@@ -551,9 +606,13 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                       isEdit={!property}
                                       render={({ edit }) => (
                                         <>
-                                          <InputGroup.Text className="fw-bold text-success">Cuerpos</InputGroup.Text>
+                                          <InputGroup.Text className="fw-bold text-success">
+                                            Cuerpos
+                                          </InputGroup.Text>
                                           <Form.Control
-                                            {...register("bodies", { valueAsNumber: true })}
+                                            {...register("bodies", {
+                                              valueAsNumber: true,
+                                            })}
                                             type="number"
                                             defaultValue={0}
                                             size="sm"
@@ -599,7 +658,9 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                     label="Unidad responsable"
                                     icon={<People color="#40d781" />}
                                   />
-                                  <ResponsibleUnitSelect readOnly={!!property} />
+                                  <ResponsibleUnitSelect
+                                    readOnly={!!property}
+                                  />
                                 </Form.Group>
                               </Col>
                               <Col xs={4}>
@@ -639,7 +700,9 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                               <Col>
                                 {beneficiaries.length ? (
                                   <BeneficiaryList
-                                    maxHeight={colRef.current?.scrollHeight ?? 0}
+                                    maxHeight={
+                                      colRef.current?.scrollHeight ?? 0
+                                    }
                                     beneficiaries={beneficiaries}
                                     remove={removeBeneficiary}
                                     update={updateBeneficiaries}
@@ -655,26 +718,38 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                 )}
                               </Col>
                             </Row>
-                            {role === 'Administrador' && <Row className="align-self-end">
-                              <Col>
-                                <Button className="text-white" size="sm" variant="success" onClick={() => {
-                                  appendBeneficiary({
-                                    name: ''
-                                  })
-                                }}
-                                  disabled={beneficiaries.some(b => b.name.length === 0)}
-                                >
-                                  Añadir beneficiario
-                                </Button>
-                              </Col>
-                            </Row>}
+                            {role === "Administrador" && (
+                              <Row className="align-self-end">
+                                <Col>
+                                  <Button
+                                    className="text-white"
+                                    size="sm"
+                                    variant="success"
+                                    onClick={() => {
+                                      appendBeneficiary({
+                                        name: "",
+                                      });
+                                    }}
+                                    disabled={beneficiaries.some(
+                                      (b) => b.name.length === 0,
+                                    )}
+                                  >
+                                    Añadir beneficiario
+                                  </Button>
+                                </Col>
+                              </Row>
+                            )}
                           </Col>
                         </Row>
                       </Tab>
                       <Tab eventKey={"seguimiento"} title="Seguimiento">
                         <Col className="">
                           {fields.length ? (
-                            <TrackingList trackings={fields} remove={remove} update={update} />
+                            <TrackingList
+                              trackings={fields}
+                              remove={remove}
+                              update={update}
+                            />
                           ) : (
                             <Row>
                               <Alert
@@ -686,60 +761,72 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                               </Alert>
                             </Row>
                           )}
-                          {role === 'Administrador' && <Row>
+                          {role === "Administrador" && (
+                            <Row>
+                              <Button
+                                size="sm"
+                                className="text-white"
+                                variant="info"
+                                onClick={() =>
+                                  append({
+                                    id: crypto.randomUUID(),
+                                    numberOfNote: "",
+                                    observation: "",
+                                    state: {
+                                      name: "undefined",
+                                    },
+                                    dateOfInit: new Date()
+                                      .toISOString()
+                                      .substring(0, 10),
+                                  })
+                                }
+                                disabled={
+                                  !!methods.getValues("id") &&
+                                  methods.getValues("trackings")?.length >
+                                    (property?.trackings?.length ?? 0)
+                                }
+                              >
+                                Añadir seguimiento
+                              </Button>
+                            </Row>
+                          )}
+                        </Col>
+                      </Tab>
+                      <Tab eventKey={"observaciones"} title="Observaciones">
+                        {observations.length ? (
+                          <ObservationList
+                            observations={observations}
+                            remove={removeObservation}
+                            update={updateObservation}
+                          />
+                        ) : (
+                          <Row>
+                            <Alert
+                              className="d-flex flex-row gap-2"
+                              variant="info"
+                            >
+                              <InfoCircle size={24} />
+                              Este predio aun no tiene observaciones
+                            </Alert>
+                          </Row>
+                        )}
+                        {role === "Administrador" && (
+                          <Row>
                             <Button
                               size="sm"
                               className="text-white"
                               variant="info"
-                              onClick={() =>
-                                append({
+                              onClick={() => {
+                                appendObservation({
                                   id: crypto.randomUUID(),
-                                  numberOfNote: "",
                                   observation: "",
-                                  state: {
-                                    name: "undefined",
-                                  },
-                                  dateOfInit: new Date()
-                                    .toISOString()
-                                    .substring(0, 10),
-                                })
-                              }
-                              disabled={!!methods.getValues('id') && (methods.getValues('trackings')?.length > (property?.trackings?.length ?? 0))}
+                                });
+                              }}
                             >
-                              Añadir seguimiento
+                              Añadir observación
                             </Button>
-                          </Row>}
-                        </Col>
-                      </Tab>
-                      <Tab eventKey={"observaciones"} title="Observaciones">
-                        {observations.length ? (<ObservationList observations={observations} remove={removeObservation} update={updateObservation} />)
-                          : (
-                            <Row>
-                              <Alert
-                                className="d-flex flex-row gap-2"
-                                variant="info"
-                              >
-                                <InfoCircle size={24} />
-                                Este predio aun no tiene observaciones
-                              </Alert>
-                            </Row>
-                          )}
-                        {role === 'Administrador' && <Row>
-                          <Button
-                            size="sm"
-                            className="text-white"
-                            variant="info"
-                            onClick={() => {
-                              appendObservation({
-                                id: crypto.randomUUID(),
-                                observation: "",
-                              })
-                            }
-                            }
-                          >
-                            Añadir observación
-                          </Button>
-                        </Row>}
+                          </Row>
+                        )}
                       </Tab>
                     </Tabs>
                   </Row>
@@ -845,33 +932,45 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                   </Row>
                 </Col>
               </Row>
-              {role === 'Administrador' && <Row className="my-2">
-                <Col className="d-flex justify-content-end gap-2">
-                  {!property && <>
-                    <Button variant="primary" onClick={() => {
-                      methods.reset(undefined)
-                      remove()
-                      removeBeneficiary()
-                      removeObservation()
+              {role === "Administrador" && (
+                <Row className="my-2">
+                  <Col className="d-flex justify-content-end gap-2">
+                    {!property && (
+                      <>
+                        <Button
+                          variant="primary"
+                          onClick={() => {
+                            methods.reset(undefined);
+                            remove();
+                            removeBeneficiary();
+                            removeObservation();
 
-                      if (property) {
-                        location.reload()
-                        setPropertyForm({ propertyForm: undefined });
-                      }
-                    }}>
-                      Limpiar
+                            if (property) {
+                              location.reload();
+                              setPropertyForm({ propertyForm: undefined });
+                            }
+                          }}
+                        >
+                          Limpiar
+                        </Button>
+                        <Button
+                          variant="success"
+                          onClick={() => {
+                            setPropertyForm({
+                              propertyForm: methods.getValues(),
+                            });
+                          }}
+                        >
+                          Guardar
+                        </Button>
+                      </>
+                    )}
+                    <Button type="submit" variant="warning">
+                      {property ? "Actualizar" : "Crear"} predio
                     </Button>
-                    <Button variant="success" onClick={() => {
-                      setPropertyForm({ propertyForm: methods.getValues() })
-                    }}>
-                      Guardar
-                    </Button>
-                  </>}
-                  <Button type="submit" variant="warning" >
-                    {property ? 'Actualizar' : 'Crear'} predio
-                  </Button>
-                </Col>
-              </Row>}
+                  </Col>
+                </Row>
+              )}
             </Col>
           </Row>
         </Form>

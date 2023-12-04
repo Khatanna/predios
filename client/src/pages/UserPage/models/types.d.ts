@@ -1,7 +1,15 @@
+import { StateOfStatus } from "../../../utilities/constants";
+
 export type UserType = {
   id: string;
   name: string;
 };
+
+export type Role = {
+  name: string;
+};
+
+export type Status = keyof typeof StateOfStatus;
 
 export type User = {
   id: string;
@@ -14,12 +22,11 @@ export type User = {
   status: string;
   createdAt?: string;
   connection: string;
-  role: {
-    name: string
-  }
+  role: Role;
 };
+
+export type UserItem = User & { fullName: string };
 
 export type UserTypeInput = Omit<UserType, "id">;
 
-export type UserInput = Omit<User, "id" | "type"> &
-  UserTypeInput;
+export type UserInput = Omit<User, "id" | "type"> & UserTypeInput;

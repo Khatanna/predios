@@ -1,18 +1,8 @@
-import { gql } from '@apollo/client';
-export const UserItemFragment = gql`
-  fragment UserItem on User {
-    names
-    username
-    firstLastName
-    secondLastName
-    status
-    connection
-  }
-`
+import { gql } from "@apollo/client";
 
 export const GET_ALL_USERS_QUERY = gql`
   query AllUsers($filterText: String) {
-    users: getAllUsers(filterText: $filterText){
+    users: getAllUsers(filterText: $filterText) {
       names
       username
       firstLastName
@@ -30,7 +20,7 @@ export const GET_ALL_USERS_QUERY = gql`
 `;
 
 export const DISABLE_USER_MUTATION = gql`
-  mutation UpdateStateUserByUsername ($username: String, $input: UserInput) {
+  mutation UpdateStateUserByUsername($username: String, $input: UserInput) {
     user: updateStateUserByUsername(username: $username, input: $input) {
       names
       username
@@ -46,4 +36,12 @@ export const DISABLE_USER_MUTATION = gql`
       }
     }
   }
-`
+`;
+
+export const DELETE_USER_BY_USERNAME_MUTATION = gql`
+  mutation DeleteUserByUsername($username: String) {
+    user: deleteUserByUsername(username: $username) {
+      username
+    }
+  }
+`;

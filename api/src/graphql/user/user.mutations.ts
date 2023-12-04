@@ -16,8 +16,16 @@ type GraphQLInput<T> = { input: T };
 export const createUser = async (
   _: any,
   {
-    input: { names, firstLastName, secondLastName, username, password, type, role },
-  }: { input: User & { type: Pick<Type, "name">, role: Role } },
+    input: {
+      names,
+      firstLastName,
+      secondLastName,
+      username,
+      password,
+      type,
+      role,
+    },
+  }: { input: User & { type: Pick<Type, "name">; role: Role } },
   { prisma, userContext }: Context,
 ) => {
   try {
@@ -33,8 +41,8 @@ export const createUser = async (
           connect: type,
         },
         role: {
-          connect: role
-        }
+          connect: role,
+        },
       },
     });
   } catch (e) {
@@ -46,8 +54,19 @@ export const updateUserByUsername = async (
   _parent: any,
   {
     username,
-    input: { names, firstLastName, secondLastName, password, status, type, role }
-  }: { username: string; input: User & { type: Pick<Type, 'name'>, role: Role } },
+    input: {
+      names,
+      firstLastName,
+      secondLastName,
+      password,
+      status,
+      type,
+      role,
+    },
+  }: {
+    username: string;
+    input: User & { type: Pick<Type, "name">; role: Role };
+  },
   { prisma, userContext }: Context,
 ) => {
   try {
@@ -64,11 +83,11 @@ export const updateUserByUsername = async (
         password: bcrypt.hashSync(password, 10),
         status,
         type: {
-          connect: type
+          connect: type,
         },
         role: {
-          connect: role
-        }
+          connect: role,
+        },
       },
     });
 
@@ -79,7 +98,12 @@ export const updateUserByUsername = async (
 };
 
 export const updateStateUserByUsername = (
-  _parent: any, { username, input: { status } }: { username: string; input: Pick<User, "status"> }, { prisma, userContext }: Context,
+  _parent: any,
+  {
+    username,
+    input: { status },
+  }: { username: string; input: Pick<User, "status"> },
+  { prisma, userContext }: Context,
 ) => {
   try {
     hasPermission(userContext, "UPDATE", "USER");
@@ -88,31 +112,35 @@ export const updateStateUserByUsername = (
         username,
       },
       data: {
-        status
+        status,
       },
       include: {
         type: true,
-        role: true
-      }
-    })
+        role: true,
+      },
+    });
   } catch (e) {
     throw e;
   }
 };
 
-export const deleteUserByUsername = async (
+export const deleteUserByUsername = (
   _: any,
   { username }: { username: string },
   { prisma, userContext }: Context,
 ) => {
   try {
     hasPermission(userContext, "DELETE", "USER");
-    const user = await prisma.user.delete({
-      where: {
-        username,
-      },
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject();
+        // prisma.user.delete({
+        //   where: {
+        //     username,
+        //   },
+        // });
+      }, 4000);
     });
-    return { deleted: Boolean(user), user };
   } catch (e) {
     throw e;
   }

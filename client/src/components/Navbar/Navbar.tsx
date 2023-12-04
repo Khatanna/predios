@@ -18,8 +18,8 @@ import { SeekerModal } from "../SeekerModal";
 //   `
 const WS_URL = import.meta.env.VITE_WS_URL as string;
 const client = createClient({
-  url: WS_URL
-})
+  url: WS_URL,
+});
 
 const NavbarComponent: React.FC = () => {
   // const queryClient = useQueryClient();
@@ -62,7 +62,7 @@ const NavbarComponent: React.FC = () => {
   }
 
   return (
-    <>
+    <div className="d-flex flex-column vh-100">
       <Navbar expand="sm" sticky="top" bg="body-tertiary" className="shadow-sm">
         <Container fluid>
           <Navbar.Brand>
@@ -81,16 +81,20 @@ const NavbarComponent: React.FC = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      <Container as={"main"} fluid>
+      <Container as={"main"} fluid className="flex-grow-1 d-flex flex-column">
         {isModalOpen && <SeekerModal />}
         <Row>
           <Col xs={1}>
             <BackButton />
           </Col>
         </Row>
-        <Outlet />
+        <Row className="flex-grow-1">
+          <Col xs={12}>
+            <Outlet />
+          </Col>
+        </Row>
       </Container>
-    </>
+    </div>
   );
 };
 

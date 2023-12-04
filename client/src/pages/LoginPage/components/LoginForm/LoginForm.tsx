@@ -4,7 +4,7 @@ import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import { useFetchLogin, useFormLogin } from "../../hooks";
 import { Error } from "../../styled-components/Error";
 
-const propsIconEye = {
+const iconEyeProps = {
   color: "black",
   role: "button",
   size: 20,
@@ -20,9 +20,9 @@ const LoginForm: React.FC = () => {
   const normalizeValues = () => {
     return {
       ...getValues(),
-      username: getValues('username').trim(),
-    }
-  }
+      username: getValues("username").trim(),
+    };
+  };
 
   if (isLoading) {
     return <Spinner variant="primary" />;
@@ -48,34 +48,31 @@ const LoginForm: React.FC = () => {
           />
           <Error>{errors.username?.message}</Error>
         </FloatingLabel>
-        <div className="input-wrapper position-relative">
-          <FloatingLabel
-            controlId="floatingInputPassword"
-            label="Contraseña"
-            className="mb-2 text-body-tertiary"
-          >
-            <Form.Control
-              type={showPassword ? "text" : "password"}
-              placeholder="password"
-              {...register("password")}
-              autoComplete="off"
+        <FloatingLabel
+          controlId="floatingInputPassword"
+          label="Contraseña"
+          className="mb-2 text-body-tertiary"
+        >
+          <Form.Control
+            type={showPassword ? "text" : "password"}
+            placeholder="password"
+            {...register("password")}
+            autoComplete="off"
+          />
+          {showPassword ? (
+            <EyeFill {...iconEyeProps} onClick={() => setShowPassword(false)} />
+          ) : (
+            <EyeSlashFill
+              {...iconEyeProps}
+              onClick={() => setShowPassword(true)}
             />
-            {showPassword ? (
-              <EyeFill
-                {...propsIconEye}
-                onClick={() => setShowPassword(false)}
-              />
-            ) : (
-              <EyeSlashFill
-                {...propsIconEye}
-                onClick={() => setShowPassword(true)}
-              />
-            )}
-          </FloatingLabel>
-          <Error className="mb-3">{errors.password?.message}</Error>
-        </div>
+          )}
+        </FloatingLabel>
+        <Error className="mb-3">{errors.password?.message}</Error>
         {capsLock && (
-          <Error $color="#F28705">Tiene las MAYUSCULAS activadas</Error>
+          <div className="text-warning fw-bold">
+            Tiene las MAYUSCULAS activadas
+          </div>
         )}
         <Button variant="primary" type="submit" className="float-end">
           Iniciar sesión

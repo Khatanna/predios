@@ -5,3 +5,8 @@ export type GraphQLResponse<T> = {
 export type GraphQLErrorResponse = {
   errors: Error[];
 };
+
+export type UserAuthenticate = {
+  username: string;
+  connection: string;
+};

@@ -1,0 +1,1 @@
+export { default as SubHeaderComponent } from './SubHeaderComponent';
