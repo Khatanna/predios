@@ -1,30 +1,39 @@
 import { useState } from 'react';
-import { Button, Col, Form, InputGroup, Modal, Spinner } from 'react-bootstrap';
-import { CheckCircle, XCircle } from 'react-bootstrap-icons';
+import { Col, Form, Modal, Spinner } from 'react-bootstrap';
+import { TableColumn } from 'react-data-table-component';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router';
 import { useCustomQuery } from '../../hooks/useCustomQuery';
 import { useSeeker } from '../../hooks/useSeeker';
 import { Property } from '../../pages/PropertyPage/models/types';
 import { Table } from '../Table';
-import { TableColumn } from 'react-data-table-component';
-
 const SEARCH_PROPERTY_BY_ATTRIBUTE = `
-	query SearchPropertyByAttribute($code: String, $codeOfSearch: String, $agrupationIdentifier: String, $name: String, $beneficiary: String) {
-		properties: searchPropertyByAttribute(code: $code, codeOfSearch: $codeOfSearch, agrupationIdentifier: $agrupationIdentifier, name: $name, beneficiary: $beneficiary) {
-			id
-			name
-			agrupationIdentifier
-			code
-			codeOfSearch
-			area
+	query SearchPropertyByAttribute($page: Int, $limit: Int, $orderBy: String, $code: String, $codeOfSearch: String, $agrupationIdentifier: String, $name: String, $beneficiary: String) {
+		results: searchPropertyByAttribute(page: $page, limit: $limit, orderBy: $orderBy, code: $code, codeOfSearch: $codeOfSearch, agrupationIdentifier: $agrupationIdentifier, name: $name, beneficiary: $beneficiary) {
+			page
+			limit
+			total	
+			properties {
+				registryNumber
+				id
+				name
+				agrupationIdentifier
+				code
+				codeOfSearch
+				area
+			}
 		}
 	}
 `
 
-type PropertySearch = Pick<Required<Property>, 'id' | 'name' | 'code' | 'codeOfSearch'>
+type PropertySearch = Pick<Required<Property>, 'id' | 'name' | 'code' | 'codeOfSearch' | 'registryNumber'>
 
 const columns: TableColumn<PropertySearch>[] = [
+	{
+		name: 'N°',
+		selector: row => row.registryNumber,
+		width: '80px'
+	},
 	{
 		name: 'Nombre del predio',
 		selector: row => row.name,
@@ -43,69 +52,87 @@ const columns: TableColumn<PropertySearch>[] = [
 
 const SeekerModal: React.FC = () => {
 	const { isModalOpen, closeModal } = useSeeker();
+	const [paginationToggle, setPaginationToggle] = useState(false);
 	const navigate = useNavigate();
-	const [name, setName] = useState('');
-	const [beneficiary, setBeneficiary] = useState('');
-	const [code, setCode] = useState('');
-	const [codeOfSearch, setCodeOfSearch] = useState('');
-	const [agrupationIdentifier, setAgrupationIdentifier] = useState('');
+	const [page, setPage] = useState(1);
+	const [limit, setLimit] = useState(10);
+	const [attributes, setAttributes] = useState({
+		code: '',
+		name: '',
+		beneficiary: '',
+		codeOfSearch: '',
+		agrupationIdentifier: ''
+	})
+	const { code, agrupationIdentifier, beneficiary, codeOfSearch, name } = attributes;
+	const { data, isLoading } = useCustomQuery<{ results: { page: number; limit: number; total: number; properties: PropertySearch[] } }>(SEARCH_PROPERTY_BY_ATTRIBUTE, ['searchPropertyByAttribute', { page, limit, orderBy: 'asc', ...attributes }], {
+		enabled: true, refetchOnWindowFocus: false, cacheTime: 0, onSuccess() {
+			setPaginationToggle(false);
+		}
+	});
+	const handleChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
+		setAttributes({
+			...attributes,
+			[name]: value
+		})
+		setPaginationToggle(true);
+	}
+	return createPortal(
+		<Modal show={isModalOpen} onHide={closeModal} centered size='xl' backdrop="static" keyboard={false}>
+			<Modal.Header closeButton closeLabel='Cerrar'>
+				<Modal.Title>
+					Buscar predio
+				</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				<Form onSubmit={async (e) => {
+					e.preventDefault()
+				}} className='row g-3'>
+					<Col xs={6} className='position-relative'>
+						<Form.Control name='name' placeholder='Nombre del predio' value={name} onChange={handleChange} autoFocus />
+					</Col>
+					<Col xs={6} className='position-relative'>
+						<Form.Control name='beneficiary' placeholder='Nombre de beneficiario' value={beneficiary} onChange={handleChange} />
+					</Col>
+					<Col xs={4}>
+						<Form.Control name='code' placeholder='Codigo de predio' value={code} onChange={handleChange} />
+					</Col>
+					<Col xs={4}>
+						<Form.Control name='codeOfSearch' placeholder='Codigo de busqueda' value={codeOfSearch} onChange={handleChange} />
+					</Col>
+					<Col xs={4}>
+						<Form.Control name='agrupationIdentifier' placeholder='Id de agrupación social' value={agrupationIdentifier} onChange={handleChange} />
+					</Col>
 
-	const { data, isFetching } = useCustomQuery<{ properties: PropertySearch[] }>(SEARCH_PROPERTY_BY_ATTRIBUTE, ['searchPropertyByAttribute', { code, codeOfSearch, agrupationIdentifier, name, beneficiary }])
-	return createPortal(<Modal show={isModalOpen} onHide={closeModal} centered size='lg'>
-		<Modal.Header closeButton closeLabel='Cerrar'>
-			<Modal.Title>
-				Buscar predio
-			</Modal.Title>
-		</Modal.Header>
-		<Modal.Body>
-			<Form onSubmit={async (e) => {
-				e.preventDefault()
-				// const { data } = await refetch()
-
-				// if (data) {
-				// 	console.log(data);
-				// 	const id = data.data.property.id;
-				// 	navigate(`/admin/properties/${id}`)
-				// 	closeModal();
-				// 	remove()
-				// }
-			}} className='row g-3'>
-				<Col xs={6} className='position-relative'>
-					<Form.Control placeholder='Nombre del predio' value={name} onChange={(e) => setName(e.target.value)} autoFocus />
-				</Col>
-				<Col xs={6} className='position-relative'>
-					<Form.Control placeholder='Nombre de beneficiario' value={beneficiary} onChange={(e) => setBeneficiary(e.target.value)} />
-				</Col>
-				<Col xs={4}>
-					<Form.Control placeholder='Codigo de predio' value={code} onChange={(e) => setCode(e.target.value)} />
-				</Col>
-				<Col xs={4}>
-					<Form.Control placeholder='Codigo de busqueda' value={codeOfSearch} onChange={(e) => setCodeOfSearch(e.target.value)} />
-				</Col>
-				<Col xs={4}>
-					<Form.Control placeholder='Id de agrupación social' value={agrupationIdentifier} onChange={(e) => setAgrupationIdentifier(e.target.value)} />
-				</Col>
-				{data?.properties && (
 					<Col xs={12} className='mb-2'>
 						<Table
 							columns={columns}
-							data={data.properties}
+							data={data?.results.properties ?? []}
 							title={false}
-							dense={true}
+							dense
 							name='predios encontrados'
-							pagination={false}
-							progressPending={isFetching}
+							progressPending={isLoading}
+							paginationServer
+							paginationTotalRows={data?.results.total ?? 0}
+							paginationResetDefaultPage={paginationToggle}
+							//paginationPerPage={data.results.limit}
+							paginationComponentOptions={{
+								selectAllRowsItem: false,
+							}}
+							paginationRowsPerPageOptions={[8, 10, 15, 20]}
+							onChangePage={(page) => {
+								setPage(page);
+							}}
+							onChangeRowsPerPage={(newLimit) => {
+								setLimit(newLimit)
+							}}
 							progressComponent={<Spinner />}
 							onRowDoubleClicked={(row) => navigate(`/properties/${row.id}`, { replace: true })}
 						/>
 					</Col>
-				)}
-				{/* <Col>
-					<Button type="submit" className='float-end'> Buscar 🔎</Button>
-				</Col> */}
-			</Form>
-		</Modal.Body>
-	</Modal>, document.getElementById('modal')!)
+				</Form>
+			</Modal.Body>
+		</Modal>
+		, document.getElementById('modal')!)
 };
 
 export default SeekerModal;

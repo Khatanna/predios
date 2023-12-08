@@ -1,7 +1,7 @@
 import { useMutation } from "@apollo/client";
 import { Status, User } from "../models/types";
 import { useUsersStore } from "../state/useUsersStore";
-import { DISABLE_USER_MUTATION, GET_ALL_USERS_QUERY } from "../GraphQL/types";
+import { DISABLE_USER_MUTATION, GET_ALL_USERS_QUERY } from "../graphQL/types";
 import { toast } from "sonner";
 import { negateStatus } from "../utils/negateStatus";
 

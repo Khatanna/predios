@@ -23,7 +23,7 @@ import {
 import { status } from "../../../../utilities/constants";
 import { SelectNameable } from "../../../HomePage/HomePage";
 import { Error } from "../../../LoginPage/styled-components/Error";
-import { GET_ALL_USERS_QUERY } from '../../GraphQL/types';
+import { GET_ALL_USERS_QUERY } from '../../graphQL/types';
 import { useFetchCreateUser } from "../../hooks";
 import { User, UserInput, UserType } from "../../models/types";
 import { useUsersStore } from '../../state/useUsersStore';

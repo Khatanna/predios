@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { GET_ALL_USERS_QUERY } from "../GraphQL/types";
+import { GET_ALL_USERS_QUERY } from "../graphQL/types";
 import { userListAdapter } from "../adapters/userList.adapter";
 import { User } from "../models/types";
 import { useUsersStore } from "../state/useUsersStore";

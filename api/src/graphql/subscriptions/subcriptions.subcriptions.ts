@@ -5,5 +5,5 @@ export const userPermissionStatusUpdated = {
 }
 
 export const userConnected = {
-  subscribe: (_parent: any, args: any, { pubSub }: Context) => pubSub.asyncIterator(['USER_CONNECTED'])
+  subscribe: (_parent: any, args: any, { pubSub }: Context) => pubSub.asyncIterator('USER_CONNECTED')
 }

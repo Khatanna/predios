@@ -1,31 +1,35 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { createClient } from "graphql-ws";
-import { useEffect } from "react";
 import { Col, Container, Navbar, Row } from "react-bootstrap";
 import { Navigate, Outlet } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useAuth } from "../../hooks";
+import { useSeeker } from "../../hooks/useSeeker";
 import { Avatar } from "../Avatar";
 import { BackButton } from "../BackButton";
 import { Nav } from "../Nav";
-import { useSeeker } from "../../hooks/useSeeker";
 import { SeekerModal } from "../SeekerModal";
+import { gql, useSubscription } from "@apollo/client";
+import { toast } from "sonner";
 
-// const WS_QUERY = `
-//     subscription Subscription {
-//       userPermissionStatusUpdated
-//     }
-//   `
-const WS_URL = import.meta.env.VITE_WS_URL as string;
-const client = createClient({
-  url: WS_URL,
-});
+const WS_QUERY = gql`
+subscription OnUserConnect {
+  userConnected {
+    username
+    connected
+  }
+}
+`
 
 const NavbarComponent: React.FC = () => {
-  // const queryClient = useQueryClient();
   const { isAuth } = useAuth();
   const { isModalOpen } = useSeeker();
-
+  useSubscription<{ userConnected: { username: string, connected: boolean } }>(WS_QUERY, {
+    onData({ data }) {
+      if (data.data) {
+        const { connected, username } = data.data.userConnected;
+        toast.info(`El usuario: ${username} se ha ${connected ? 'conectado' : 'desconectado'}`)
+      }
+    }
+  });
   // useEffect(() => {
   //   client.on('connected', () => {
   //     console.log("conectados");

@@ -5,6 +5,7 @@ import {
   customSwalSuccess,
 } from "../../../../utilities/alerts";
 import { Activity } from "../../../ActivityPage/models/types";
+import { Activity as ActivityIcon } from "react-bootstrap-icons";
 import { SelectNameable } from "../../../HomePage/HomePage";
 import {
   useActivityMutations,
@@ -12,6 +13,8 @@ import {
 } from "../../hooks/useRepository";
 import { Property } from "../../models/types";
 import { useModalStore } from "../../state/useModalStore";
+import { Form } from "react-bootstrap";
+import { CustomLabel } from "../CustomLabel";
 
 const GET_ALL_ACTIVITIES_QUERY = `
 	query GetAllActivities {
@@ -40,62 +43,68 @@ const ActivitySelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
   );
 
   return (
-    <Controller
-      name="activity.name"
-      control={control}
-      defaultValue="undefined"
-      render={({ field }) => (
-        <SelectNameable
-          {...field}
-          size="sm"
-          readOnly={readOnly}
-          placeholder={"Actividad"}
-          options={activities.map(({ name }) => ({ label: name, value: name }))}
-          onCreate={() => {
-            setModal({
-              form: "createActivity",
-              title: "Crear Actividad",
-              show: true,
-            });
-          }}
-          onEdit={() => {
-            setModal({
-              form: "updateActivity",
-              title: "Actualizar Actividad",
-              show: true,
-              params: { name: activity },
-            });
-          }}
-          onDelete={() => {
-            const activity = getValues("activity");
-
-            if (activity) {
-              mutationActivityDelete(activity, {
-                onSuccess({
-                  data: {
-                    activity: { name },
-                  },
-                }) {
-                  customSwalSuccess(
-                    "Actividad eliminada",
-                    `La actividad ${name} se ha eliminado correctamente`,
-                  );
-                },
-                onError(error, { name }) {
-                  customSwalError(
-                    error.response!.data.errors[0].message,
-                    `Ocurrio un error al intentar eliminar la actividad ${name}`,
-                  );
-                },
-                onSettled() {
-                  resetField("activity.name", { defaultValue: "undefined" });
-                },
+    <Form.Group>
+      <CustomLabel
+        label="Actividad"
+        icon={<ActivityIcon color="red" />}
+      />
+      <Controller
+        name="activity.name"
+        control={control}
+        defaultValue="undefined"
+        render={({ field }) => (
+          <SelectNameable
+            {...field}
+            size="sm"
+            readOnly={readOnly}
+            placeholder={"Actividad"}
+            options={activities.map(({ name }) => ({ label: name, value: name }))}
+            onCreate={() => {
+              setModal({
+                form: "createActivity",
+                title: "Crear Actividad",
+                show: true,
               });
-            }
-          }}
-        />
-      )}
-    />
+            }}
+            onEdit={() => {
+              setModal({
+                form: "updateActivity",
+                title: "Actualizar Actividad",
+                show: true,
+                params: { name: activity },
+              });
+            }}
+            onDelete={() => {
+              const activity = getValues("activity");
+
+              if (activity) {
+                mutationActivityDelete(activity, {
+                  onSuccess({
+                    data: {
+                      activity: { name },
+                    },
+                  }) {
+                    customSwalSuccess(
+                      "Actividad eliminada",
+                      `La actividad ${name} se ha eliminado correctamente`,
+                    );
+                  },
+                  onError(error, { name }) {
+                    customSwalError(
+                      error.response!.data.errors[0].message,
+                      `Ocurrio un error al intentar eliminar la actividad ${name}`,
+                    );
+                  },
+                  onSettled() {
+                    resetField("activity.name", { defaultValue: "undefined" });
+                  },
+                });
+              }
+            }}
+          />
+        )}
+      />
+    </Form.Group>
   );
 };
 

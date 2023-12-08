@@ -1,4 +1,4 @@
-import { GraphQLArgs } from "graphql";
+import { GraphQLArgs, specifiedDirectives } from "graphql";
 import { Context } from "../../types";
 import { hasPermission, prisma } from "../../utilities";
 
@@ -231,36 +231,28 @@ export const getPropertyById = async (_parent: any, { id }: { id: string }, { pr
     throw e;
   }
 }
-export const searchPropertyByAttribute = async (_parent: any, { code, codeOfSearch, agrupationIdentifier, name, beneficiary }: { code: string, codeOfSearch: string, agrupationIdentifier: string, name: string, beneficiary: string }, { prisma, userContext }: Context) => {
+export const searchPropertyByAttribute = async (_parent: any, { page, limit, orderBy = 'asc', code, codeOfSearch, agrupationIdentifier, name, beneficiary }: { page: number, limit: number, orderBy: 'asc' | 'desc', code: string, codeOfSearch: string, agrupationIdentifier: string, name: string, beneficiary: string }, { prisma, userContext }: Context) => {
   try {
     hasPermission(userContext, 'READ', 'PROPERTY');
-
     const properties = await prisma.property.findMany({
-      take: 8,
       where: {
         OR: [
           {
-            code: {
-              contains: code
-            },
-            agrupationIdentifier: {
-              contains: agrupationIdentifier
-            },
-            codeOfSearch: {
-              contains: codeOfSearch
-            },
-            name: {
-              contains: name,
-            },
-            beneficiaries: {
-              some: {
-                name: {
-                  contains: beneficiary
-                }
-              }
-            }
-          }
-        ]
+            code: code !== '' ? { contains: code } : undefined,
+          },
+          {
+            agrupationIdentifier: agrupationIdentifier !== '' ? { contains: agrupationIdentifier } : undefined,
+          },
+          {
+            codeOfSearch: codeOfSearch !== '' ? { contains: codeOfSearch } : undefined,
+          },
+          {
+            name: name !== '' ? { contains: name } : undefined,
+          },
+          {
+            beneficiaries: beneficiary !== '' ? { some: { name: { contains: beneficiary } } } : undefined,
+          },
+        ],
       },
       include: {
         beneficiaries: {
@@ -317,15 +309,51 @@ export const searchPropertyByAttribute = async (_parent: any, { code, codeOfSear
           }
         }
       },
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: {
+        registryNumber: orderBy
+      }
+    });
+    console.log({ code, codeOfSearch, agrupationIdentifier, name, beneficiary })
+    const total = await prisma.property.count({
+      where: {
+        OR: [
+          {
+            code: code !== '' ? { contains: code } : undefined,
+          },
+          {
+            agrupationIdentifier: agrupationIdentifier !== '' ? { contains: agrupationIdentifier } : undefined,
+          },
+          {
+            codeOfSearch: codeOfSearch !== '' ? { contains: codeOfSearch } : undefined,
+          },
+          {
+            name: name !== '' ? { contains: name } : undefined,
+          },
+          {
+            beneficiaries: beneficiary !== '' ? { some: { name: { contains: beneficiary } } } : undefined,
+          },
+        ],
+      },
+      orderBy: {
+        registryNumber: orderBy
+      }
     });
 
-    return properties
+    console.log({ page, limit, total, skip: (page - 1) * limit });
+    return {
+      page,
+      limit,
+      total,
+      properties
+    }
   } catch (e) {
     throw e;
   }
 }
 
-export const getProperties = (_parent: any, { page, limit = 20 }: { page: number, limit?: number }, { prisma, userContext }: Context) => {
+export const getProperties = (_parent: any, { page, limit = 20, orderBy = 'asc' }: { page: number, limit?: number, orderBy: 'asc' | 'desc' }, { prisma, userContext }: Context) => {
   try {
     hasPermission(userContext, 'READ', 'PROPERTY');
     const properties = prisma.property.findMany({
@@ -371,7 +399,7 @@ export const getProperties = (_parent: any, { page, limit = 20 }: { page: number
       skip: (page - 1) * limit,
       take: limit,
       orderBy: {
-        registryNumber: 'asc'
+        registryNumber: orderBy
       }
     });
     const total = prisma.property.count();

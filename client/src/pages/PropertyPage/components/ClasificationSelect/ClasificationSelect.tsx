@@ -10,6 +10,9 @@ import { Clasification } from "../../../ClasificationPage/models/types";
 import { useClasificationStore } from "../../state/useSelectablesStore";
 import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { SelectNameable } from "../../../HomePage/HomePage";
+import { Form } from "react-bootstrap";
+import { CustomLabel } from "../CustomLabel";
+import { Diagram3 } from "react-bootstrap-icons";
 
 const GET_ALL_CLASIFICATIONS_QUERY = `
 	query GetAllClasifications {
@@ -40,65 +43,71 @@ const ClasificationSelect: React.FC<{ readOnly?: boolean }> = ({
   );
 
   return (
-    <Controller
-      name="clasification.name"
-      control={control}
-      defaultValue="undefined"
-      render={({ field }) => (
-        <SelectNameable
-          {...field}
-          size="sm"
-          readOnly={readOnly}
-          placeholder={"Clasificación"}
-          options={clasifications.map(({ name }) => ({
-            label: name,
-            value: name,
-          }))}
-          onCreate={() => {
-            setModal({
-              form: "createClasification",
-              title: "Crear Clasificación",
-              show: true,
-            });
-          }}
-          onEdit={() => {
-            setModal({
-              form: "updateClasification",
-              title: "Actualizar Clasificación",
-              show: true,
-              params: { name: clasification },
-            });
-          }}
-          onDelete={() => {
-            const clasification = getValues("clasification");
-
-            if (clasification) {
-              mutationClasificationDelete(clasification, {
-                onSuccess({
-                  data: {
-                    clasification: { name },
-                  },
-                }) {
-                  customSwalSuccess(
-                    "Clasificación eliminada",
-                    `La clasificación ${name} se ha eliminado correctamente`,
-                  );
-                },
-                onError(error, { name }) {
-                  customSwalError(
-                    error.response!.data.errors[0].message,
-                    `Ocurrio un error al intentar eliminar la clasificación ${name}`,
-                  );
-                },
-                onSettled() {
-                  resetField("activity.name", { defaultValue: "undefined" });
-                },
+    <Form.Group>
+      <CustomLabel
+        label="Clasificación"
+        icon={<Diagram3 color="green" />}
+      />
+      <Controller
+        name="clasification.name"
+        control={control}
+        defaultValue="undefined"
+        render={({ field }) => (
+          <SelectNameable
+            {...field}
+            size="sm"
+            readOnly={readOnly}
+            placeholder={"Clasificación"}
+            options={clasifications.map(({ name }) => ({
+              label: name,
+              value: name,
+            }))}
+            onCreate={() => {
+              setModal({
+                form: "createClasification",
+                title: "Crear Clasificación",
+                show: true,
               });
-            }
-          }}
-        />
-      )}
-    />
+            }}
+            onEdit={() => {
+              setModal({
+                form: "updateClasification",
+                title: "Actualizar Clasificación",
+                show: true,
+                params: { name: clasification },
+              });
+            }}
+            onDelete={() => {
+              const clasification = getValues("clasification");
+
+              if (clasification) {
+                mutationClasificationDelete(clasification, {
+                  onSuccess({
+                    data: {
+                      clasification: { name },
+                    },
+                  }) {
+                    customSwalSuccess(
+                      "Clasificación eliminada",
+                      `La clasificación ${name} se ha eliminado correctamente`,
+                    );
+                  },
+                  onError(error, { name }) {
+                    customSwalError(
+                      error.response!.data.errors[0].message,
+                      `Ocurrio un error al intentar eliminar la clasificación ${name}`,
+                    );
+                  },
+                  onSettled() {
+                    resetField("activity.name", { defaultValue: "undefined" });
+                  },
+                });
+              }
+            }}
+          />
+        )}
+      />
+    </Form.Group>
   );
 };
 

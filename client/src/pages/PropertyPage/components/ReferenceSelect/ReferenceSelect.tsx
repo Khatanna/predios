@@ -8,6 +8,9 @@ import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts
 import { Reference } from '../../../ReferencePage/models/types';
 import { useReferenceMutations } from '../../hooks/useRepository';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
+import { CustomLabel } from '../CustomLabel';
+import { Link45deg } from 'react-bootstrap-icons';
+import { Form } from 'react-bootstrap';
 
 export type ReferenceSelectProps = {
 	readOnly: boolean
@@ -40,68 +43,75 @@ const ReferenceSelect: React.FC<ReferenceSelectProps> = ({ readOnly }) => {
 		},
 	);
 
-	return <Controller
-		name="reference.name"
-		control={control}
-		defaultValue="Verificado"
-		render={({ field }) => (
-			<SelectNameable
-				{...field}
-				size="sm"
-				readOnly={readOnly}
-				placeholder={"Referencia"}
-				options={references.map(({ name }) => ({
-					label: name,
-					value: name,
-				}))}
-				highlight
-				onCreate={() => {
-					setModal({
-						form: "createReference",
-						title: "Crear referencia",
-						show: true,
-					});
-				}}
-				onEdit={() => {
-					setModal({
-						form: "updateReference",
-						title: "Actualizar referencia",
-						show: true,
-						params: { name: reference },
-					});
-				}}
-				onDelete={() => {
-					const reference = getValues("reference");
-
-					if (reference) {
-						mutationReferenceDelete(reference, {
-							onSuccess({
-								data: {
-									reference: { name },
-								},
-							}) {
-								customSwalSuccess(
-									"Referencia eliminada",
-									`La referencia ${name} se ha eliminado correctamente`,
-								);
-							},
-							onError(error, { name }) {
-								customSwalError(
-									error.response!.data.errors[0].message,
-									`Ocurrio un error al intentar eliminar la referencia ${name}`,
-								);
-							},
-							onSettled() {
-								resetField("reference.name", {
-									defaultValue: "undefined",
-								});
-							},
+	return <Form.Group>
+		<CustomLabel
+			label="Referencia"
+			icon={<Link45deg color="#7d7907" />}
+		/>
+		<Controller
+			name="reference.name"
+			control={control}
+			defaultValue="Verificado"
+			render={({ field }) => (
+				<SelectNameable
+					{...field}
+					size="sm"
+					readOnly={readOnly}
+					placeholder={"Referencia"}
+					options={references.map(({ name }) => ({
+						label: name,
+						value: name,
+					}))}
+					highlight
+					onCreate={() => {
+						setModal({
+							form: "createReference",
+							title: "Crear referencia",
+							show: true,
 						});
-					}
-				}}
-			/>
-		)}
-	/>;
+					}}
+					onEdit={() => {
+						setModal({
+							form: "updateReference",
+							title: "Actualizar referencia",
+							show: true,
+							params: { name: reference },
+						});
+					}}
+					onDelete={() => {
+						const reference = getValues("reference");
+
+						if (reference) {
+							mutationReferenceDelete(reference, {
+								onSuccess({
+									data: {
+										reference: { name },
+									},
+								}) {
+									customSwalSuccess(
+										"Referencia eliminada",
+										`La referencia ${name} se ha eliminado correctamente`,
+									);
+								},
+								onError(error, { name }) {
+									customSwalError(
+										error.response!.data.errors[0].message,
+										`Ocurrio un error al intentar eliminar la referencia ${name}`,
+									);
+								},
+								onSettled() {
+									resetField("reference.name", {
+										defaultValue: "undefined",
+									});
+								},
+							});
+						}
+					}}
+				/>
+			)}
+		/>
+	</Form.Group>
+		;
 };
 
 export default ReferenceSelect;

@@ -2,7 +2,7 @@ import { useMutation } from "@apollo/client";
 import {
   DELETE_USER_BY_USERNAME_MUTATION,
   GET_ALL_USERS_QUERY,
-} from "../GraphQL/types";
+} from "../graphQL/types";
 import { User } from "../models/types";
 import Swal from "sweetalert2";
 import { toast } from "sonner";

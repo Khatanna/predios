@@ -221,7 +221,7 @@ export const updateProperty = async (_parent: any, { input: { id, name, area, ex
             number: fileNumber.number
           }
         },
-      } : fileNumber.number.length === 0 ? {
+      } : fileNumber.number?.length === 0 ? {
         delete: {
           propertyId: id
         }

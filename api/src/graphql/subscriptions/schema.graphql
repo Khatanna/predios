@@ -2,6 +2,11 @@ type Subscription {
   userPermissionStatusUpdated: [String]
 }
 
+type OnConnection {
+  username: String
+  connected: Boolean
+}
+
 type Subscription {
-  userConnected: Boolean
+  userConnected: OnConnection
 }

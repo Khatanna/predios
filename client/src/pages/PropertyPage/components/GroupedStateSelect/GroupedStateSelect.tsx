@@ -8,6 +8,9 @@ import { GroupedState } from '../../../GroupedState/models/types';
 import { useGroupedStateMutations } from '../../hooks/useRepository';
 import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts';
+import { Form } from 'react-bootstrap';
+import { CustomLabel } from '../CustomLabel';
+import { Box2 } from 'react-bootstrap-icons';
 
 export type GroupedStateSelectProps = {
 	readOnly: boolean
@@ -34,69 +37,75 @@ const GroupedStateSelect: React.FC<GroupedStateSelectProps> = ({ readOnly }) => 
 		}
 	})
 
-	return <Controller
-		name="groupedState.name"
-		control={control}
-		defaultValue="undefined"
-		render={({ field }) => (
-			<SelectNameable
-				{...field}
-				readOnly={readOnly}
-				size="sm"
-				highlight
-				placeholder={"Estado agrupado"}
-				options={groupedStates.map(({ name }) => ({
-					label: name,
-					value: name,
-				}))}
-				onCreate={() => {
-					setModal({
-						form: "createGroupedState",
-						title: "Crear estado agrupado",
-						show: true,
-					});
-				}}
-				onEdit={() => {
-					setModal({
-						form: "updateGroupedState",
-						title: "Actualizar estado agrupado",
-						show: true,
-						params: { name: groupedState },
-					});
-				}}
-				onDelete={() => {
-					const groupedState =
-						getValues("groupedState");
-
-					if (groupedState) {
-						mutationGroupedStateDelete(groupedState, {
-							onSuccess({
-								data: {
-									groupedState: { name },
-								},
-							}) {
-								customSwalSuccess(
-									"Estado agrupado eliminado",
-									`El estado agrupado ${name} se ha eliminado correctamente`,
-								);
-							},
-							onError(error, { name }) {
-								customSwalError(
-									error.response!.data.errors[0].message,
-									`Ocurrio un error al intentar eliminar el estado agrupado ${name}`,
-								);
-							},
-							onSettled() {
-								resetField("groupedState.name", {
-									defaultValue: "undefined",
-								});
-							},
+	return <Form.Group>
+		<CustomLabel
+			label="Estado agrupado"
+			icon={<Box2 color="#864e16" />}
+		/>
+		<Controller
+			name="groupedState.name"
+			control={control}
+			defaultValue="undefined"
+			render={({ field }) => (
+				<SelectNameable
+					{...field}
+					readOnly={readOnly}
+					size="sm"
+					highlight
+					placeholder={"Estado agrupado"}
+					options={groupedStates.map(({ name }) => ({
+						label: name,
+						value: name,
+					}))}
+					onCreate={() => {
+						setModal({
+							form: "createGroupedState",
+							title: "Crear estado agrupado",
+							show: true,
 						});
-					}
-				}}
-			/>
-		)}
-	/>
+					}}
+					onEdit={() => {
+						setModal({
+							form: "updateGroupedState",
+							title: "Actualizar estado agrupado",
+							show: true,
+							params: { name: groupedState },
+						});
+					}}
+					onDelete={() => {
+						const groupedState =
+							getValues("groupedState");
+
+						if (groupedState) {
+							mutationGroupedStateDelete(groupedState, {
+								onSuccess({
+									data: {
+										groupedState: { name },
+									},
+								}) {
+									customSwalSuccess(
+										"Estado agrupado eliminado",
+										`El estado agrupado ${name} se ha eliminado correctamente`,
+									);
+								},
+								onError(error, { name }) {
+									customSwalError(
+										error.response!.data.errors[0].message,
+										`Ocurrio un error al intentar eliminar el estado agrupado ${name}`,
+									);
+								},
+								onSettled() {
+									resetField("groupedState.name", {
+										defaultValue: "undefined",
+									});
+								},
+							});
+						}
+					}}
+				/>
+			)}
+		/>
+	</Form.Group>
 };
 
 export default GroupedStateSelect;

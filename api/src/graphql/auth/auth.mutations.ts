@@ -75,8 +75,12 @@ export const login = async (
       },
     });
 
+    console.log("Enviando usuario conectado")
     await pubSub.publish("USER_CONNECTED", {
-      userConnected: true,
+      userConnected: {
+        username: user.username,
+        connected: true,
+      }
     });
     return { accessToken, refreshToken };
     // throw throwLoginError(AuthErrorMessage.UNREGISTERED_USER);
@@ -102,8 +106,11 @@ export const logout = async (
       },
     });
 
-    pubSub.publish("USER_CONNECTED", {
-      userConnected: true,
+    await pubSub.publish("USER_CONNECTED", {
+      userConnected: {
+        username: user.username,
+        connected: false
+      }
     });
     return Boolean(user);
   } catch (e) {

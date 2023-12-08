@@ -9,6 +9,9 @@ import {
 } from "../../../../utilities/alerts";
 import { useModalStore } from "../../state/useModalStore";
 import { SelectNameable } from "../../../HomePage/HomePage";
+import { Form } from "react-bootstrap";
+import { CustomLabel } from "../CustomLabel";
+import { ListColumns } from "react-bootstrap-icons";
 
 const GET_ALL_TYPES_QUERY = `
 	query GetAllTypes {
@@ -37,62 +40,68 @@ const TypeSelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
   );
 
   return (
-    <Controller
-      name="type.name"
-      control={control}
-      defaultValue="undefined"
-      render={({ field }) => (
-        <SelectNameable
-          {...field}
-          readOnly={readOnly}
-          size="sm"
-          placeholder={"Tipo de predio"}
-          options={types.map(({ name }) => ({ label: name, value: name }))}
-          onCreate={() => {
-            setModal({
-              form: "createType",
-              title: "Crear tipo de predio",
-              show: true,
-            });
-          }}
-          onEdit={() => {
-            setModal({
-              form: "updateType",
-              title: "Actualizar tipo de predio",
-              show: true,
-              params: { name: type },
-            });
-          }}
-          onDelete={() => {
-            const type = getValues("type");
-
-            if (type) {
-              mutationTypeDelete(type, {
-                onSuccess({
-                  data: {
-                    type: { name },
-                  },
-                }) {
-                  customSwalSuccess(
-                    "Tipo de predio eliminado",
-                    `El tipo de predio ${name} se ha eliminado correctamente`,
-                  );
-                },
-                onError(error, { name }) {
-                  customSwalError(
-                    error.response!.data.errors[0].message,
-                    `Ocurrio un error al intentar eliminar el tipo de predio ${name}`,
-                  );
-                },
-                onSettled() {
-                  resetField("type.name", { defaultValue: "undefined" });
-                },
+    <Form.Group>
+      <CustomLabel
+        label="Tipo de predio"
+        icon={<ListColumns />}
+      />
+      <Controller
+        name="type.name"
+        control={control}
+        defaultValue="undefined"
+        render={({ field }) => (
+          <SelectNameable
+            {...field}
+            readOnly={readOnly}
+            size="sm"
+            placeholder={"Tipo de predio"}
+            options={types.map(({ name }) => ({ label: name, value: name }))}
+            onCreate={() => {
+              setModal({
+                form: "createType",
+                title: "Crear tipo de predio",
+                show: true,
               });
-            }
-          }}
-        />
-      )}
-    />
+            }}
+            onEdit={() => {
+              setModal({
+                form: "updateType",
+                title: "Actualizar tipo de predio",
+                show: true,
+                params: { name: type },
+              });
+            }}
+            onDelete={() => {
+              const type = getValues("type");
+
+              if (type) {
+                mutationTypeDelete(type, {
+                  onSuccess({
+                    data: {
+                      type: { name },
+                    },
+                  }) {
+                    customSwalSuccess(
+                      "Tipo de predio eliminado",
+                      `El tipo de predio ${name} se ha eliminado correctamente`,
+                    );
+                  },
+                  onError(error, { name }) {
+                    customSwalError(
+                      error.response!.data.errors[0].message,
+                      `Ocurrio un error al intentar eliminar el tipo de predio ${name}`,
+                    );
+                  },
+                  onSettled() {
+                    resetField("type.name", { defaultValue: "undefined" });
+                  },
+                });
+              }
+            }}
+          />
+        )}
+      />
+    </Form.Group>
   );
 };
 

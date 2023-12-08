@@ -12,26 +12,18 @@ import {
   Tabs,
 } from "react-bootstrap";
 import {
-  Activity as ActivityIcon,
   BodyText,
-  Box2,
   Compass,
   Database,
-  DeviceSsd,
-  Diagram3,
   EyeFill,
   FastForwardFill,
-  Folder,
   Hash,
   Hexagon,
   Icon2Circle,
   InfoCircle,
-  Link45deg,
-  ListColumns,
-  People,
   PeopleFill,
   PersonGear,
-  PersonWorkspace,
+  PersonWorkspace
 } from "react-bootstrap-icons";
 import {
   Controller,
@@ -66,120 +58,7 @@ import { StateSelect } from "../StateSelect";
 import { SubdirectorySelect } from "../SubdirectorySelect";
 import { TrackingList } from "../TrackingList";
 import { TypeSelect } from "../TypeSelect";
-
-const GET_PROPERTY_QUERY = `
-query GetPropertyPaginate($nextCursor: String, $prevCursor: String) {
-    result: getProperty(nextCursor: $nextCursor, prevCursor: $prevCursor){
-      nextCursor
-      prevCursor
-      property {
-        id
-        name
-        registryNumber
-        code
-        codeOfSearch
-        plots
-        bodies
-        sheets
-        area
-        polygone
-        expertiseOfArea
-        secondState
-        agrupationIdentifier
-        technicalObservation
-        technical {
-          user {
-            names
-            firstLastName
-            secondLastName
-            username
-          }
-        }
-        legal {
-          user {
-            names
-            firstLastName
-            secondLastName
-            username
-          }
-        }
-        fileNumber {
-          number
-        }		
-        groupedState {
-          name
-        }
-        beneficiaries {
-          name
-        }
-        city {
-          name
-        }
-        province {
-          name
-        }
-        municipality {
-          name
-        }
-        type {
-          name
-        }
-        activity {
-          name
-        }
-        clasification {
-          name
-        }
-        observations {
-          id
-          observation
-        }
-        reference {
-          name
-        }
-        responsibleUnit {
-          name
-        }
-        folderLocation {
-          name
-        }
-        state {
-          name
-        }
-        trackings {
-          id
-          observation
-          numberOfNote
-          dateOfInit
-          state {
-            name
-          }
-          responsible {
-            names
-            firstLastName
-            secondLastName
-            username
-          }
-        }
-      }
-    }
-  } 
-`;
-const CREATE_PROPERTY_MUTATION = `
-  mutation CreateProperty($input: PropertyInput) {
-    property: createProperty(input: $input) {
-      name
-    }
-  }
-`;
-
-const UPDATE_PROPERTY_MUTATION = `
-  mutation UpdateProperty($id: String, $input: PropertyInput) {
-    property: updateProperty(id: $id, input: $input) {
-      name
-    }
-  }
-`;
+import { CREATE_PROPERTY_MUTATION, GET_PROPERTY_QUERY, UPDATE_PROPERTY_MUTATION } from '../../graphQL/types';
 
 const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
   const { role } = useAuth();
@@ -399,27 +278,6 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                               </>
                             )}
                           />
-                          <EditableInput
-                            size="sm"
-                            isEdit={!property}
-                            render={({ edit }) => (
-                              <>
-                                <InputGroup.Text>
-                                  <Hash color="#d44da2" className="me-1" />
-                                  <Form.Label column="sm" className="fw-bold">
-                                    Nro. de expediente
-                                  </Form.Label>
-                                </InputGroup.Text>
-                                <Form.Control
-                                  size="sm"
-                                  readOnly={!edit}
-                                  {...register("fileNumber.number")}
-                                  placeholder="Nro de expediente"
-                                  autoFocus={edit}
-                                />
-                              </>
-                            )}
-                          />
                         </Col>
                       </Row>
                     </Col>
@@ -502,6 +360,12 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                         <Row className="border border-1 py-2 border-dark-subtle rounded-1">
                           <Col xs={8}>
                             <Row className="gy-2" ref={colRef}>
+                              <Col xs={12}>
+                                <StateSelect
+                                  name="state.name"
+                                  readOnly={!!property}
+                                />
+                              </Col>
                               <Col xs={12}>
                                 <Form.Group>
                                   <CustomLabel
@@ -625,64 +489,41 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                   </div>
                                 </Form.Group>
                               </Col>
-                              <Col xs={6}>
-                                <Form.Group>
-                                  <CustomLabel
-                                    label="Clasificación"
-                                    icon={<Diagram3 color="green" />}
-                                  />
-                                  <ClasificationSelect readOnly={!!property} />
-                                </Form.Group>
-                              </Col>
-                              <Col xs={6}>
-                                <Form.Group>
-                                  <CustomLabel
-                                    label="Tipo de predio"
-                                    icon={<ListColumns />}
-                                  />
-                                  <TypeSelect readOnly={!!property} />
-                                </Form.Group>
-                              </Col>
-                              <Col xs={6}>
-                                <Form.Group>
-                                  <CustomLabel
-                                    label="Ubicación de carpeta"
-                                    icon={<Folder color="orange" />}
-                                  />
-                                  <SubdirectorySelect readOnly={!!property} />
-                                </Form.Group>
-                              </Col>
-                              <Col xs={6}>
-                                <Form.Group>
-                                  <CustomLabel
-                                    label="Unidad responsable"
-                                    icon={<People color="#40d781" />}
-                                  />
-                                  <ResponsibleUnitSelect
-                                    readOnly={!!property}
-                                  />
-                                </Form.Group>
+                              <Col xs={4}>
+                                <TypeSelect readOnly={!!property} />
                               </Col>
                               <Col xs={4}>
-                                <Form.Group>
-                                  <CustomLabel
-                                    label="Actividad"
-                                    icon={<ActivityIcon color="red" />}
-                                  />
-                                  <ActivitySelect readOnly={!!property} />
-                                </Form.Group>
+                                <ClasificationSelect readOnly={!!property} />
                               </Col>
-                              <Col xs={8}>
-                                <Form.Group>
-                                  <CustomLabel
-                                    label="Estado"
-                                    icon={<DeviceSsd color="#ff5e00" />}
-                                  />
-                                  <StateSelect
-                                    name="state.name"
-                                    readOnly={!!property}
-                                  />
-                                </Form.Group>
+                              <Col xs={4}>
+                                <ActivitySelect readOnly={!!property} />
+                              </Col>
+                              <Col xs={4}>
+                                <SubdirectorySelect readOnly={!!property} />
+                              </Col>
+                              <Col xs={4}>
+                                <ResponsibleUnitSelect
+                                  readOnly={!!property}
+                                />
+                              </Col>
+                              <Col>
+                                <CustomLabel
+                                  label="Nro. de expediente"
+                                  icon={<Hash color="#d44da2" />}
+                                />
+                                <EditableInput
+                                  size="sm"
+                                  isEdit={!property}
+                                  render={({ edit }) => (
+                                    <Form.Control
+                                      size="sm"
+                                      readOnly={!edit}
+                                      {...register("fileNumber.number")}
+                                      placeholder="Nro de expediente"
+                                      autoFocus={edit}
+                                    />
+                                  )}
+                                />
                               </Col>
                             </Row>
                           </Col>
@@ -743,7 +584,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                         </Row>
                       </Tab>
                       <Tab eventKey={"seguimiento"} title="Seguimiento">
-                        <Col className="">
+                        <Col>
                           {fields.length ? (
                             <TrackingList
                               trackings={fields}
@@ -783,7 +624,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                 disabled={
                                   !!methods.getValues("id") &&
                                   methods.getValues("trackings")?.length >
-                                    (property?.trackings?.length ?? 0)
+                                  (property?.trackings?.length ?? 0)
                                 }
                               >
                                 Añadir seguimiento
@@ -854,13 +695,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                       </Form.Group>
                     </Col>
                     <Col xs={12}>
-                      <Form.Group>
-                        <CustomLabel
-                          label="Estado agrupado"
-                          icon={<Box2 color="#864e16" />}
-                        />
-                        <GroupedStateSelect readOnly={!!property} />
-                      </Form.Group>
+                      <GroupedStateSelect readOnly={!!property} />
                     </Col>
                     <Col xs={12}>
                       <Form.Group>
@@ -901,13 +736,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                       </Form.Group>
                     </Col>
                     <Col xs={12}>
-                      <Form.Group>
-                        <CustomLabel
-                          label="Referencia"
-                          icon={<Link45deg color="#7d7907" />}
-                        />
-                        <ReferenceSelect readOnly={!!property} />
-                      </Form.Group>
+                      <ReferenceSelect readOnly={!!property} />
                     </Col>
                     <Col xs={12}>
                       <CustomLabel
@@ -972,10 +801,10 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                 </Row>
               )}
             </Col>
-          </Row>
-        </Form>
-      </FormProvider>
-    </Container>
+          </Row >
+        </Form >
+      </FormProvider >
+    </Container >
   );
 };
 

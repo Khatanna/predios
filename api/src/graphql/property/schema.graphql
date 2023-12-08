@@ -41,6 +41,8 @@ type Property {
 }
 
 type PropertiesPaginate {
+  page: Int
+  limit: Int
   total: Int
   properties: [Property]
 }
@@ -55,10 +57,10 @@ type getPropertyWithCursor {
 # Queries
 type Query {
   getAllProperties: [Property]
-  getProperties(page: Int, limit: Int): PropertiesPaginate
+  getProperties(page: Int, limit: Int, orderBy: String): PropertiesPaginate
   getProperty(nextCursor: String, prevCursor: String): getPropertyWithCursor
   getPropertyById(id: String): Property
-  searchPropertyByAttribute(code: String, codeOfSearch: String, agrupationIdentifier: String, name: String, beneficiary: String): [Property]
+  searchPropertyByAttribute(page: Int, limit: Int, orderBy: String, code: String, codeOfSearch: String, agrupationIdentifier: String, name: String, beneficiary: String): PropertiesPaginate
 }
 
 # Mutations
