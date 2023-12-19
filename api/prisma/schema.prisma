@@ -123,15 +123,16 @@ model DeletedUser {
 }
 
 model Permission {
-  id          String           @id @default(uuid())
-  name        String           @map("nombre")
-  level       LevelPermission  @map("nivel_de_acceso")
-  resource    Resource         @map("recurso")
-  description String           @map("descripcion")
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  id          String              @id @default(uuid())
+  name        String              @map("nombre")
+  level       LevelPermission     @map("nivel_de_acceso")
+  resource    Resource            @map("recurso")
+  description String              @map("descripcion")
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
   users       UserPermission[]
-  status      Status           @default(ENABLE) @map("estado")
+  status      Status              @default(ENABLE) @map("estado")
+  profiles    PermissionProfile[]
 
   @@unique([resource, level])
   @@index([resource, level])
@@ -150,6 +151,12 @@ model UserPermission {
 
   @@unique([userId, permissionId])
   @@map("permiso_de_usuario")
+}
+
+model PermissionProfile {
+  id          String       @id @default(uuid())
+  name        String       @map("nombre")
+  permissions Permission[]
 }
 
 model UserType {
@@ -215,8 +222,8 @@ model Tracking {
   id           String   @id @default(uuid())
   propertyId   String   @map("predio_id")
   property     Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  stateId      String   @map("estado_id")
-  state        State    @relation(fields: [stateId], references: [id])
+  stateId      String?  @map("estado_id")
+  state        State?   @relation(fields: [stateId], references: [id])
   dateOfInit   String   @map("fecha_de_inicio")
   userId       String?  @map("usuario_id")
   responsible  User?    @relation(fields: [userId], references: [id])

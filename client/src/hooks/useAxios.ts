@@ -23,10 +23,10 @@ export const useAxios = () => {
           const expires = new Date(expirationAccessToken! * 1000)
 
           if (current > expires && refreshToken) {
-            alert("se rompio")
-            // getNewAccessToken({
-            //   refreshToken
-            // });
+            // alert("se rompio")
+            getNewAccessToken({
+              refreshToken
+            });
           }
           config.headers?.setAuthorization(accessToken);
         }

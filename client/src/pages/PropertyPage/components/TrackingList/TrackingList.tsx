@@ -96,9 +96,6 @@ const TrackingItem: React.FC<{ tracking: TrackingInput, index: number } & Pick<U
 	>
 		<Col>
 			<Form.Group>
-				<Form.Label className="fw-bold">
-					Seguimiento estado:
-				</Form.Label>
 				<StateSelect
 					readOnly={!isNew}
 					name={`trackings.${index}.state.name`}
@@ -121,7 +118,7 @@ const TrackingItem: React.FC<{ tracking: TrackingInput, index: number } & Pick<U
 				/>
 			</Form.Group>
 		</Col>
-		<Col>
+		<Col >
 			<Form.Group>
 				<Form.Label className="fw-bold">
 					Responsable:
@@ -156,7 +153,7 @@ const TrackingItem: React.FC<{ tracking: TrackingInput, index: number } & Pick<U
 				/>
 			</Form.Group>
 		</Col>
-		<Col xs={2}>
+		<Col xs={3} className=''>
 			<Form.Group>
 				<Form.Label className="fw-bold">
 					Observación:
@@ -167,6 +164,8 @@ const TrackingItem: React.FC<{ tracking: TrackingInput, index: number } & Pick<U
 					)}
 					disabled={!edit && !isNew}
 					size="sm"
+					as='textarea'
+					rows={1}
 					placeholder="Observación"
 				/>
 			</Form.Group>

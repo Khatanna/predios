@@ -10,7 +10,7 @@ import { StateOfStatus, levels, resources } from "../../utilities/constants";
 import { OptionMenu } from "./components/DropdownMenu";
 import { Permission } from "./models/types";
 import { Tooltip } from "../../components/Tooltip";
-import { FileEarmarkLock } from "react-bootstrap-icons";
+import { FileEarmarkLock, People, PersonBadge } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 
 const GET_ALL_PERMISSIONS_QUERY = `{
@@ -105,11 +105,18 @@ const PermissionsLayout: React.FC = () => {
       }
       progressPending={isLoading}
       actions={
-        <Tooltip placement="left" label="Crear nuevos permisos">
-          <Link to={"create"}>
-            <FileEarmarkLock size={30} />
-          </Link>
-        </Tooltip>
+        <div className="d-flex gap-2">
+          <Tooltip placement="left" label="Perfiles">
+            <Link to={"create"}>
+              <PersonBadge size={30} />
+            </Link>
+          </Tooltip>
+          <Tooltip placement="left" label="Crear nuevos permisos">
+            <Link to={"create"}>
+              <FileEarmarkLock size={30} />
+            </Link>
+          </Tooltip>
+        </div>
       }
     />
   );

@@ -1,0 +1,3637 @@
+[
+  {
+    "codigo_de_predio": 928,
+    "estado": 82,
+    "fecha_de_inicio": "07\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A JURIDICA 26 CC POR KARINA QUISPE",
+    "nota": "DDLP CI No 773\/2023"
+  },
+  {
+    "codigo_de_predio": 928,
+    "estado": 82,
+    "fecha_de_inicio": "21\/07\/2023",
+    "responsable": 21,
+    "observacion": "DEVUELTO DE JURIDICA 26 CC CON DECRETO EN RESPUESTA A HR8496\/2023",
+    "nota": "NOTA DE 21\/07\/2023"
+  },
+  {
+    "codigo_de_predio": 1055,
+    "estado": 84,
+    "fecha_de_inicio": "18\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDA A JURIDICA CON NOTA DDLP-USLP-CI No 434\/2023 DE 18\/09\/2023 PARA RESPONDER RECURSOS JERARQUICOS",
+    "nota": "DDLP-USLP-CI No 434\/2023"
+  },
+  {
+    "codigo_de_predio": 1055,
+    "estado": 84,
+    "fecha_de_inicio": "23\/10\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDA A JURIDICA NOTA DDLP-USLP-CI No 502\/2023 DE 23\/10\/2023",
+    "nota": "DDLP-USLP-CI No 502\/2023"
+  },
+  {
+    "codigo_de_predio": 200082,
+    "estado": 28,
+    "fecha_de_inicio": "28\/06\/2022",
+    "responsable": 6,
+    "nota": "DDLP-UDST-INT No591\/2022"
+  },
+  {
+    "codigo_de_predio": 200082,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 6,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 400180,
+    "estado": 28,
+    "fecha_de_inicio": "26\/09\/2022",
+    "responsable": 5,
+    "nota": "UDST-INT N°1010\/2022"
+  },
+  {
+    "codigo_de_predio": 400180,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 5,
+    "observacion": "\r\nDDLP HRI Nº 4006\/2023\r\nDDLP HRI Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 400181,
+    "estado": 28,
+    "fecha_de_inicio": "26\/09\/2022",
+    "responsable": 5,
+    "nota": "UDST-INT N°1010\/2022"
+  },
+  {
+    "codigo_de_predio": 400181,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 5,
+    "observacion": "DDLP HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 400192,
+    "estado": 28,
+    "fecha_de_inicio": "30\/09\/2022",
+    "responsable": 2,
+    "nota": "UDST-INT N°1027\/2022"
+  },
+  {
+    "codigo_de_predio": 400192,
+    "estado": 27,
+    "fecha_de_inicio": "30\/05\/2023",
+    "responsable": 2,
+    "observacion": "HR DDLP HRI No.6674\/2023",
+    "nota": "DDLP-C-EXT No425\/2023"
+  },
+  {
+    "codigo_de_predio": 500949,
+    "estado": 28,
+    "fecha_de_inicio": "30\/06\/2022",
+    "responsable": 5,
+    "nota": "DDLP-CI No282\/2022"
+  },
+  {
+    "codigo_de_predio": 500949,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 5,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 500977,
+    "estado": 28,
+    "fecha_de_inicio": "31\/05\/2022",
+    "responsable": 3,
+    "nota": "DDLP-CI No205\/2022"
+  },
+  {
+    "codigo_de_predio": 500977,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 3,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 4002056,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 15,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 4002056,
+    "estado": 27,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 18,
+    "observacion": "DDLP  HRI Nº8562\/2023",
+    "nota": "DDLP-C-EXT Nº553\/2023"
+  },
+  {
+    "codigo_de_predio": 4002078,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 17,
+    "observacion": "DDL HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 4002078,
+    "estado": 44,
+    "fecha_de_inicio": "05\/07\/2023",
+    "responsable": 17,
+    "observacion": "DDL HRI Nº 4173\/2023",
+    "nota": "INRA-DDLP-CI- Nº076\/2023"
+  },
+  {
+    "codigo_de_predio": 4002084,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 13,
+    "observacion": "\r\nDDLP HRI Nº 5401\/2023\r\nDDLP HRI Nº 5401\/2023\r\nDDLP HRI Nº 5401\/2023\r\nDDLP HRI Nº 5401\/2023\r\nDDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 4002084,
+    "estado": 0,
+    "responsable": 0,
+    "observacion": "\r\nDDLP HRI Nº 5401\/2023"
+  },
+  {
+    "codigo_de_predio": 140368513,
+    "estado": 72,
+    "fecha_de_inicio": "14\/07\/2022",
+    "responsable": 7,
+    "observacion": "REMITIDO AL VICEMINISTERIO CON HRE 15549\/2022",
+    "nota": "DDLP-C-EXT No651\/2022"
+  },
+  {
+    "codigo_de_predio": 140368513,
+    "estado": 72,
+    "fecha_de_inicio": "27\/01\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 812\/2023",
+    "nota": "DDLP-C-EXT N 100\/2023"
+  },
+  {
+    "codigo_de_predio": 140375492,
+    "estado": 72,
+    "fecha_de_inicio": "14\/07\/2022",
+    "responsable": 7,
+    "observacion": "REMITIDO AL VICEMINISTERIO DE TIERRAS CON HRE 15549\/2022",
+    "nota": "DDLP-C-EXT No651\/2022"
+  },
+  {
+    "codigo_de_predio": 140375492,
+    "estado": 72,
+    "fecha_de_inicio": "27\/01\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 812\/2023",
+    "nota": "DDLP-C-EXT No100\/2023"
+  },
+  {
+    "codigo_de_predio": 141084888,
+    "estado": 27,
+    "fecha_de_inicio": "12\/04\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 4186\/2023",
+    "nota": "DDLP-C-EXT N 264\/2023"
+  },
+  {
+    "codigo_de_predio": 141084888,
+    "estado": 27,
+    "fecha_de_inicio": "12\/04\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 4186\/2023",
+    "nota": "DDLP-C-EXT N 264\/2023"
+  },
+  {
+    "codigo_de_predio": 141435351,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI No5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 141435351,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI No5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 141441190,
+    "estado": 27,
+    "fecha_de_inicio": "19\/06\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 7884\/2023",
+    "nota": "DDLP-C-EXT N 504\/2023"
+  },
+  {
+    "codigo_de_predio": 141441190,
+    "estado": 27,
+    "fecha_de_inicio": "19\/06\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 7884\/2023",
+    "nota": "DDLP-C-EXT N 504\/2023"
+  },
+  {
+    "codigo_de_predio": 141685636,
+    "estado": 27,
+    "fecha_de_inicio": "30\/05\/2023",
+    "responsable": 2,
+    "observacion": "HR DDLP HRI No.6674\/2023",
+    "nota": "DDLP-C-EXT No425\/2023"
+  },
+  {
+    "codigo_de_predio": 141685636,
+    "estado": 27,
+    "fecha_de_inicio": "30\/05\/2023",
+    "responsable": 2,
+    "observacion": "HR DDLP HRI No.6674\/2023",
+    "nota": "DDLP-C-EXT No425\/2023"
+  },
+  {
+    "codigo_de_predio": 141726975,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI No5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 141726975,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "observacion": "DDLP HRI No5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 141726975,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI No5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 141726975,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "observacion": "DDLP HRI No5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 142032908,
+    "estado": 27,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 16,
+    "observacion": "DDLP  HRI Nº8562\/2023",
+    "nota": "DDLP-C-EXT Nº553\/2023"
+  },
+  {
+    "codigo_de_predio": 142032908,
+    "estado": 27,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 3,
+    "observacion": "DDLP  HRI Nº8562\/2023",
+    "nota": "DDLP-C-EXT Nº553\/2023"
+  },
+  {
+    "codigo_de_predio": 142186890,
+    "estado": 27,
+    "fecha_de_inicio": "07\/06\/2023",
+    "responsable": 10,
+    "observacion": "DDLP HRI No7424\/2023",
+    "nota": "DDLP-C-EXT No456\/2023"
+  },
+  {
+    "codigo_de_predio": 142186890,
+    "estado": 27,
+    "fecha_de_inicio": "07\/06\/2023",
+    "responsable": 10,
+    "observacion": "DDLP HRI No7424\/2023",
+    "nota": "DDLP-C-EXT No456\/2023"
+  },
+  {
+    "codigo_de_predio": 142203803,
+    "estado": 27,
+    "fecha_de_inicio": "19\/06\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI N 7884\/2023",
+    "nota": "DDLP-C-EXT N 504\/2023"
+  },
+  {
+    "codigo_de_predio": 142203803,
+    "estado": 27,
+    "fecha_de_inicio": "19\/06\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI N 7884\/2023",
+    "nota": "DDLP-C-EXT N 504\/2023"
+  },
+  {
+    "codigo_de_predio": 142460236,
+    "estado": 28,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 0,
+    "observacion": "DDLP Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142460236,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI N 15249\/2023",
+    "nota": "DDLP-C-EXT N 970\/2023"
+  },
+  {
+    "codigo_de_predio": 142502565,
+    "estado": 28,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 2,
+    "observacion": "DDLP Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142502565,
+    "estado": 27,
+    "fecha_de_inicio": "31\/10\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 15528\/2023",
+    "nota": "DDLP-C-EXT N  1007\/2023"
+  },
+  {
+    "codigo_de_predio": 142558628,
+    "estado": 128,
+    "fecha_de_inicio": "22\/06\/2023",
+    "responsable": 23,
+    "nota": "DDLP UDST AEV N 653\/2023"
+  },
+  {
+    "codigo_de_predio": 142558628,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 23
+  },
+  {
+    "codigo_de_predio": 142568516,
+    "estado": 27,
+    "fecha_de_inicio": "14\/09\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 12532\/2023",
+    "nota": "DDLP-C-EXT N 783\/2023"
+  },
+  {
+    "codigo_de_predio": 142568516,
+    "estado": 28,
+    "fecha_de_inicio": "03\/06\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142646421,
+    "estado": 27,
+    "fecha_de_inicio": "14\/09\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 12532\/2023",
+    "nota": "DDLP-C-EXT N 783\/2023"
+  },
+  {
+    "codigo_de_predio": 142646421,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142655661,
+    "estado": 28,
+    "fecha_de_inicio": "03\/06\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142655661,
+    "estado": 27,
+    "fecha_de_inicio": "24\/10\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 14863\/2023",
+    "nota": "DDLP-C-EXT N 943\/2023"
+  },
+  {
+    "codigo_de_predio": 142671123,
+    "estado": 27,
+    "fecha_de_inicio": "14\/09\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 12532\/2023",
+    "nota": "DDLP-C-EXT N 783\/2023"
+  },
+  {
+    "codigo_de_predio": 142671123,
+    "estado": 28,
+    "fecha_de_inicio": "03\/06\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142684421,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142684421,
+    "estado": 27,
+    "fecha_de_inicio": "31\/10\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 15528\/2023",
+    "nota": "DDLP-C-EXT N 1007\/2023"
+  },
+  {
+    "codigo_de_predio": 142729753,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 14,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142729753,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 14,
+    "observacion": "DDLP HRI N 14442\/2023",
+    "nota": "DDLP-C-EXT N 906\/2023"
+  },
+  {
+    "codigo_de_predio": 143153611,
+    "estado": 27,
+    "fecha_de_inicio": "26\/10\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 15289\/2023",
+    "nota": "DDLP-C-EXT N 977\/2023"
+  },
+  {
+    "codigo_de_predio": 143153611,
+    "estado": 27,
+    "fecha_de_inicio": "09\/11\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 16127\/2023",
+    "nota": "DDLP-C-EXT N 1042\/2023"
+  },
+  {
+    "codigo_de_predio": 143164002,
+    "estado": 65,
+    "fecha_de_inicio": "04\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO PARA CONTROL DE CALIDAD A LA NACIONAL EN EL MES DE SEPTIEMBRE CON NOTA DDLP-C-EXT No 564\/2023 HR DDLP HRI Nro 8931\/2023 DE 04\/07\/2023",
+    "nota": "DDLP-C-EXT No 564\/2023"
+  },
+  {
+    "codigo_de_predio": 143164002,
+    "estado": 65,
+    "fecha_de_inicio": "20\/11\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A LA NACIONAL CON CONTROL APROBADO EL 20\/11\/2023 CON NOTA DDLP-C-EXT No 1095\/2023 Y HR DDLP HRI No 16662\/2023",
+    "nota": "DDLP-C-EXT No 1095\/2023"
+  },
+  {
+    "codigo_de_predio": 13,
+    "estado": 84,
+    "fecha_de_inicio": "14\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 425\/2023 DE 14\/09\/2023",
+    "nota": "DDLP-USLP-CI No 425\/2023"
+  },
+  {
+    "codigo_de_predio": 27,
+    "estado": 84,
+    "fecha_de_inicio": "01\/08\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO SUR CON NOTA DDLP-USLP-CI No 334\/2023 DEL 01\/08\/2023",
+    "nota": "DDLP-USLP-CI No 334\/2023"
+  },
+  {
+    "codigo_de_predio": 40,
+    "estado": 84,
+    "fecha_de_inicio": "14\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 425\/2023 DE 14\/09\/2023",
+    "nota": "DDLP-USLP-CI No 425\/2023"
+  },
+  {
+    "codigo_de_predio": 49,
+    "estado": 84,
+    "fecha_de_inicio": "14\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 425\/2023 DE 14\/09\/2023",
+    "nota": "DDLP-USLP-CI No 425\/2023"
+  },
+  {
+    "codigo_de_predio": 123,
+    "estado": 84,
+    "fecha_de_inicio": "20\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDA  A JURIDICACON NOTA DDLP-USLP-CI No 439\/2023 de 20\/09\/2023",
+    "nota": "DDLP-USLP-CI No 439\/202"
+  },
+  {
+    "codigo_de_predio": 165,
+    "estado": 67,
+    "fecha_de_inicio": "22\/08\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 354\/2023 EL 22\/08\/2023",
+    "nota": "DDLP-USLP-CI No 354\/2023"
+  },
+  {
+    "codigo_de_predio": 166,
+    "estado": 82,
+    "fecha_de_inicio": "20\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A JURIDICA POR OLICITUD DE INSPECICON OCULAR",
+    "nota": "DDLP-USLP-CI No 312\/2023"
+  },
+  {
+    "codigo_de_predio": 210,
+    "estado": 65,
+    "fecha_de_inicio": "04\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDA A LA NACIONAL CON NOTA DDLP-C-EXT No 564\/2023 HR 8931\/2023 DE 8\/07\/2023-ENTREGADO EL 19\/10\/2023",
+    "nota": "DDLP-C-EXT No 564\/2023"
+  },
+  {
+    "codigo_de_predio": 219,
+    "estado": 84,
+    "fecha_de_inicio": "14\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 425\/2023 DE 14\/09\/2023",
+    "nota": "DDLP-USLP-CI No 425\/2023"
+  },
+  {
+    "codigo_de_predio": 235,
+    "estado": 61,
+    "fecha_de_inicio": "15\/06\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO AL VICEMINSIERIO DE TIERRAS CON NOTA DDLP-US-LP-C-EXT No 201\/2023 DEL 15\/06\/2023",
+    "nota": "DDLP-US-LP-C-EXT No201\/23"
+  },
+  {
+    "codigo_de_predio": 303,
+    "estado": 58,
+    "fecha_de_inicio": "25\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 449\/2023 DE 25\/09\/2023",
+    "nota": "DDLP-USLP-CI No 449\/2023"
+  },
+  {
+    "codigo_de_predio": 334,
+    "estado": 58,
+    "fecha_de_inicio": "09\/10\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A ADMINISIONES CON NOTA INRA-DDLP-UDST-SIRC-INT No 1127\/2023 DE 09\/09\/2023",
+    "nota": "SIRC-INT No 1127\/2023"
+  },
+  {
+    "codigo_de_predio": 342,
+    "estado": 58,
+    "fecha_de_inicio": "25\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 449\/2023 DE 25\/09\/2023",
+    "nota": "DDLP-USLP-CI No 449\/2023"
+  },
+  {
+    "codigo_de_predio": 388,
+    "estado": 58,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A ADMISIONES EL 29\/06\/2023 CON NOTA DDLP-USLP-CI No 286\/2023",
+    "nota": "DDLP-USLP-CI No 286\/2023"
+  },
+  {
+    "codigo_de_predio": 390,
+    "estado": 58,
+    "fecha_de_inicio": "04\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A ADMISIONES CON NOTA DDLP-USLP-CI No 404\/2023 DE 04\/09\/2023--KAREN SURCULENTO",
+    "nota": "DDLP-USLP-CI No 404\/2023"
+  },
+  {
+    "codigo_de_predio": 416,
+    "estado": 58,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDA A ADMISIONES CON NOTA INRA-DDLP-UDST-SIRC-INT NRO. 1161\/2023 DE 16\/10\/2023",
+    "nota": "SIRC-INT NRO. 1161\/2023"
+  },
+  {
+    "codigo_de_predio": 417,
+    "estado": 85,
+    "fecha_de_inicio": "07\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA INRA-DDLP-UDST-SIRC-INT No 1009\/2023 DE 07\/09\/2023",
+    "nota": "SIRC-INT No 1009\/2023"
+  },
+  {
+    "codigo_de_predio": 444,
+    "estado": 58,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDA A ADMISIONES CON NOTA INRA-DDLP-UDST-SIRC-INT NRO. 1161\/2023 DE 16\/10\/2023",
+    "nota": "SIRC-INT NRO. 1161\/2023"
+  },
+  {
+    "codigo_de_predio": 454,
+    "estado": 84,
+    "fecha_de_inicio": "14\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 425\/2023 DE 14\/09\/2023",
+    "nota": "DDLP-USLP-CI No 425\/2023"
+  },
+  {
+    "codigo_de_predio": 492,
+    "estado": 84,
+    "fecha_de_inicio": "01\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 391\/2023 DE 01\/09\/2023",
+    "nota": "DDLP-USLP-CI No 391\/2023"
+  },
+  {
+    "codigo_de_predio": 497,
+    "estado": 58,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDA A ADMISIONES CON NOTA INRA-DDLP-UDST-SIRC-INT NRO. 1161\/2023 DE 16\/10\/2023",
+    "nota": "SIRC-INT NRO. 1161\/2023"
+  },
+  {
+    "codigo_de_predio": 518,
+    "estado": 84,
+    "fecha_de_inicio": "05\/10\/2023",
+    "responsable": 20,
+    "observacion": "06\/10\/2023--SE REMITIO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 461\/2023 DE 05\/10\/2023",
+    "nota": "DDLP-USLP-CI No 461\/2023"
+  },
+  {
+    "codigo_de_predio": 546,
+    "estado": 58,
+    "fecha_de_inicio": "09\/10\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A ADMINISIONES CON NOTA INRA-DDLP-UDST-SIRC-INT No 1127\/2023 DE 09\/09\/2023",
+    "nota": "SIRC-INT No 1127\/2023"
+  },
+  {
+    "codigo_de_predio": 599,
+    "estado": 58,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDA A ADMISIONES CON NOTA INRA-DDLP-UDST-SIRC-INT NRO. 1161\/2023 DE 16\/10\/2023",
+    "nota": "SIRC-INT NRO. 1161\/2023"
+  },
+  {
+    "codigo_de_predio": 624,
+    "estado": 85,
+    "fecha_de_inicio": "06\/10\/2023",
+    "responsable": 20,
+    "observacion": "06\/10\/2023 se remitio a campo sur con nota DDLP-USLP-CI No 469\/2023 DE 06\/10\/2023",
+    "nota": "DDLP-USLP-CI No 469\/2023"
+  },
+  {
+    "codigo_de_predio": 663,
+    "estado": 81,
+    "fecha_de_inicio": "10\/08\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA DE  10\/08\/2023 DDLP-USLP-CI NO 344\/2023",
+    "nota": "DDLP-USLP-CI NO 344\/2023"
+  },
+  {
+    "codigo_de_predio": 666,
+    "estado": 84,
+    "fecha_de_inicio": "30\/08\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA DDLP-USDLP-CI No 375\/2023 DE 30\/08\/2023",
+    "nota": "DDLP-USDLP-CI No 375\/2023"
+  },
+  {
+    "codigo_de_predio": 705,
+    "estado": 58,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDA A ADMISIONES CON NOTA INRA-DDLP-UDST-SIRC-INT NRO. 1161\/2023 DE 16\/10\/2023",
+    "nota": "SIRC-INT NRO. 1161\/2023"
+  },
+  {
+    "codigo_de_predio": 709,
+    "estado": 85,
+    "fecha_de_inicio": "05\/10\/2023",
+    "responsable": 20,
+    "observacion": "06\/10\/2023--SE REMITIO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 461\/2023 DE 05\/10\/2023",
+    "nota": "DDLP-USLP-CI No 461\/2023"
+  },
+  {
+    "codigo_de_predio": 722,
+    "estado": 84,
+    "fecha_de_inicio": "28\/09\/2023",
+    "responsable": 20,
+    "observacion": "remitido a la nacional para su remision al Vice Ministerio de Tierras el 28\/09\/2023  CITE: DDLP-C-EXT No 851\/2023 HOJA DE RUTA DDLP HRE Nº  21486\/2023",
+    "nota": "DDLP-C-EXT No 851\/2023"
+  },
+  {
+    "codigo_de_predio": 733,
+    "estado": 85,
+    "fecha_de_inicio": "22\/09\/2023",
+    "responsable": 20,
+    "observacion": "10\/10\/2023-REMIDTIDO A ADMISIONES CON NOTA DDLP-CI No 1211\/2023 DE 22\/09\/2023",
+    "nota": "DDLP-CI No 1211\/2023"
+  },
+  {
+    "codigo_de_predio": 762,
+    "estado": 82,
+    "fecha_de_inicio": "07\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA INRA-DDLP-UDST-SIRC-INT No 1009\/2023 DE 07\/09\/2023",
+    "nota": "SIRC-INT No 1009\/2023"
+  },
+  {
+    "codigo_de_predio": 776,
+    "estado": 85,
+    "fecha_de_inicio": "30\/08\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO SUR CON NOTA DDLP-USLP-CI No 376\/2023 DE 30\/8\/2023",
+    "nota": "DDLP-USLP-CI No 376\/2023"
+  },
+  {
+    "codigo_de_predio": 782,
+    "estado": 66,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A ARCHIVO CON NOTA DDLP-USLP-CI No 408\/2023 Y HR 12354\/2023 DE 06\/09\/2023",
+    "nota": "DDLP-USLP-CI No 408\/2023"
+  },
+  {
+    "codigo_de_predio": 841,
+    "estado": 84,
+    "fecha_de_inicio": "18\/10\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDA A CAMPO NORTE CON NOTA DDLP-USLP-CI No 492\/2023 DE 18\/10\/2023",
+    "nota": "DDLP-USLP-CI No 492\/2023"
+  },
+  {
+    "codigo_de_predio": 863,
+    "estado": 71,
+    "fecha_de_inicio": "22\/08\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 354\/2023 EL 22\/08\/2023",
+    "nota": "DDLP-USLP-CI No 354\/2023"
+  },
+  {
+    "codigo_de_predio": 888,
+    "estado": 85,
+    "fecha_de_inicio": "03\/10\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO SUR CON NOTA DDLP-USLP-CI No 460\/2023  DE 03\/10\/2023 PARA SU INGRESO A CAMPO",
+    "nota": "DDLP-USLP-CI No 460\/2023"
+  },
+  {
+    "codigo_de_predio": 892,
+    "estado": 85,
+    "fecha_de_inicio": "08\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE  EL 08\/09\/2023 CON NOTA DDLP-USLP-CI No 410\/2023",
+    "nota": "DDLP-USLP-CI No 410\/2023"
+  },
+  {
+    "codigo_de_predio": 893,
+    "estado": 84,
+    "fecha_de_inicio": "14\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 427\/2023 DE 14\/09\/2023",
+    "nota": "DDLP-USLP-CI No 427\/2023"
+  },
+  {
+    "codigo_de_predio": 945,
+    "estado": 82,
+    "fecha_de_inicio": "05\/10\/2023",
+    "responsable": 20,
+    "observacion": "06\/10\/2023--SE REMITIO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 461\/2023 DE 05\/10\/2023",
+    "nota": "DDLP-USLP-CI No 461\/2023"
+  },
+  {
+    "codigo_de_predio": 951,
+    "estado": 84,
+    "fecha_de_inicio": "21\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO SUR 1 PALANCA",
+    "nota": "DDLP-USLP-CI No 316\/2023"
+  },
+  {
+    "codigo_de_predio": 956,
+    "estado": 84,
+    "fecha_de_inicio": "02\/08\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A JURIDICA CON HR 754\/2023 CON RECTIFICACION DE MEDIDAS PRECAUTORIAS CON NOTA DDLP CI No 918\/2023 DE 2\/08\/2023",
+    "nota": "DDLP CI No 918\/2023"
+  },
+  {
+    "codigo_de_predio": 1010,
+    "estado": 58,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDA A ADMISIONES CON NOTA INRA-DDLP-UDST-SIRC-INT NRO. 1161\/2023 DE 16\/10\/2023",
+    "nota": "SIRC-INT NRO. 1161\/2023"
+  },
+  {
+    "codigo_de_predio": 1053,
+    "estado": 65,
+    "fecha_de_inicio": "20\/11\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A LA NACIONAL CON CONTROL APROBADO EL 20\/11\/2023 CON NOTA DDLP-C-EXT No 1095\/2023 Y HR DDLP HRI No 16662\/2023",
+    "nota": "DDLP-C-EXT No 1095\/2023"
+  },
+  {
+    "codigo_de_predio": 1056,
+    "estado": 83,
+    "fecha_de_inicio": "09\/08\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 343\/2023 EL 09\/08\/2023",
+    "nota": "DDLP-USLP-CI No 343\/2023"
+  },
+  {
+    "codigo_de_predio": 1087,
+    "estado": 84,
+    "fecha_de_inicio": "09\/06\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDA A CAMPO SUR CON NOTA Cite: DDLP-USLP-CI No 242\/2023 DE FECHA 09\/06\/2023",
+    "nota": "DDLP-USLP-CI No 242\/2023"
+  },
+  {
+    "codigo_de_predio": 1097,
+    "estado": 85,
+    "fecha_de_inicio": "23\/10\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDA A JURIDICA NOTA DDLP-USLP-CI No 501\/2023 DE 23\/10\/2023",
+    "nota": "DDLP-USLP-CI No 501\/2023"
+  },
+  {
+    "codigo_de_predio": 100003,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 5,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 100042,
+    "estado": 28,
+    "fecha_de_inicio": "31\/05\/2022",
+    "responsable": 6,
+    "nota": "DDLP UDST INT N 494\/2022"
+  },
+  {
+    "codigo_de_predio": 100049,
+    "estado": 28,
+    "fecha_de_inicio": "17\/08\/2022",
+    "responsable": 2,
+    "nota": "DDLP-UDST-INT N 802\/2022"
+  },
+  {
+    "codigo_de_predio": 100061,
+    "estado": 28,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 7,
+    "nota": "UDST-AEV-INT No763\/2022"
+  },
+  {
+    "codigo_de_predio": 100083,
+    "estado": 28,
+    "fecha_de_inicio": "23\/09\/2022",
+    "responsable": 9,
+    "nota": "AEV-INT No1001\/2022"
+  },
+  {
+    "codigo_de_predio": 200063,
+    "estado": 28,
+    "fecha_de_inicio": "09\/09\/2022",
+    "responsable": 1,
+    "nota": "UDST-INT N°939\/2022"
+  },
+  {
+    "codigo_de_predio": 200067,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 18,
+    "observacion": "DDLP HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 200073,
+    "estado": 28,
+    "fecha_de_inicio": "10\/08\/2022",
+    "responsable": 7,
+    "nota": "UDST-INT No783\/2022"
+  },
+  {
+    "codigo_de_predio": 200074,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2023",
+    "responsable": 5,
+    "observacion": "DDLP  HRI Nº8562\/2023",
+    "nota": "DDLP-C-EXT Nº553\/2023"
+  },
+  {
+    "codigo_de_predio": 400015,
+    "estado": 27,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 7,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 400017,
+    "estado": 44,
+    "fecha_de_inicio": "21\/10\/2022",
+    "responsable": 12,
+    "nota": "DDLP-CI N° 674\/2022"
+  },
+  {
+    "codigo_de_predio": 400028,
+    "estado": 44,
+    "fecha_de_inicio": "21\/10\/2022",
+    "responsable": 0,
+    "nota": "DDLP-CI N°674\/2022"
+  },
+  {
+    "codigo_de_predio": 400029,
+    "estado": 44,
+    "fecha_de_inicio": "21\/10\/2022",
+    "responsable": 0,
+    "nota": "DDLP - CI N°674\/2022"
+  },
+  {
+    "codigo_de_predio": 400034,
+    "estado": 28,
+    "responsable": 0
+  },
+  {
+    "codigo_de_predio": 400044,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 1,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-C-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 400070,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 6,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 400072,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 3,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 400074,
+    "estado": 72,
+    "fecha_de_inicio": "02\/09\/2022",
+    "responsable": 2,
+    "nota": "DDLP HRI Nro.9630\/2022"
+  },
+  {
+    "codigo_de_predio": 400078,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 7,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 400079,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 8,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 400096,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 7,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 400099,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 7,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 400102,
+    "estado": 27,
+    "fecha_de_inicio": "12\/04\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 4186\/2023",
+    "nota": "DDLP-C-EXT N 264\/2023"
+  },
+  {
+    "codigo_de_predio": 400120,
+    "estado": 27,
+    "fecha_de_inicio": "03\/10\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 13575\/2023",
+    "nota": "DDLP-C-EXT N 854\/2023"
+  },
+  {
+    "codigo_de_predio": 400150,
+    "estado": 28,
+    "fecha_de_inicio": "13\/09\/2022",
+    "responsable": 1,
+    "nota": "UDST-INT N°959\/2022"
+  },
+  {
+    "codigo_de_predio": 400152,
+    "estado": 72,
+    "responsable": 5,
+    "nota": "DDLP- SPL-CI Nº 115\/2023"
+  },
+  {
+    "codigo_de_predio": 400154,
+    "estado": 72,
+    "responsable": 0,
+    "nota": "DDLP-USLP-CI-"
+  },
+  {
+    "codigo_de_predio": 400165,
+    "estado": 28,
+    "fecha_de_inicio": "21\/09\/2022",
+    "responsable": 2,
+    "nota": "UDST-INT N894\/2022"
+  },
+  {
+    "codigo_de_predio": 400166,
+    "estado": 28,
+    "fecha_de_inicio": "21\/09\/2022",
+    "responsable": 7,
+    "nota": "UDST-INT N894\/2022"
+  },
+  {
+    "codigo_de_predio": 400167,
+    "estado": 28,
+    "fecha_de_inicio": "21\/09\/2022",
+    "responsable": 9,
+    "nota": "UDST-INT N894\/2022"
+  },
+  {
+    "codigo_de_predio": 400168,
+    "estado": 28,
+    "fecha_de_inicio": "21\/09\/2022",
+    "responsable": 9,
+    "nota": "UDST-INT N894\/2022"
+  },
+  {
+    "codigo_de_predio": 400169,
+    "estado": 28,
+    "fecha_de_inicio": "21\/09\/2022",
+    "responsable": 7,
+    "nota": "UDST-INT N894\/2022"
+  },
+  {
+    "codigo_de_predio": 400171,
+    "estado": 28,
+    "fecha_de_inicio": "26\/09\/2022",
+    "responsable": 7,
+    "nota": "AEV-INT N° 1009\/2002"
+  },
+  {
+    "codigo_de_predio": 400172,
+    "estado": 28,
+    "fecha_de_inicio": "26\/09\/2022",
+    "responsable": 7,
+    "nota": "AEV-INT N°1009\/2022"
+  },
+  {
+    "codigo_de_predio": 400173,
+    "estado": 28,
+    "fecha_de_inicio": "26\/09\/2022",
+    "responsable": 7,
+    "nota": "AEV-INT N°1009\/2022"
+  },
+  {
+    "codigo_de_predio": 400174,
+    "estado": 28,
+    "fecha_de_inicio": "26\/09\/2022",
+    "responsable": 7,
+    "nota": "AEV-INT N°1009\/2022"
+  },
+  {
+    "codigo_de_predio": 400175,
+    "estado": 28,
+    "fecha_de_inicio": "27\/09\/2022",
+    "responsable": 1,
+    "nota": "USDT-INT N°1014\/2022"
+  },
+  {
+    "codigo_de_predio": 400176,
+    "estado": 28,
+    "fecha_de_inicio": "27\/09\/2022",
+    "responsable": 5,
+    "nota": "USDT-INT N°1018\/2022"
+  },
+  {
+    "codigo_de_predio": 400177,
+    "estado": 28,
+    "fecha_de_inicio": "27\/09\/2022",
+    "responsable": 1,
+    "nota": "UDST-INNT N°1013\/2022"
+  },
+  {
+    "codigo_de_predio": 400178,
+    "estado": 28,
+    "fecha_de_inicio": "27\/09\/2022",
+    "responsable": 1,
+    "nota": "UDST-INT N°1016\/2022"
+  },
+  {
+    "codigo_de_predio": 400179,
+    "estado": 28,
+    "fecha_de_inicio": "27\/09\/2022",
+    "responsable": 1,
+    "nota": "UDST-INT N° 1016\/2022"
+  },
+  {
+    "codigo_de_predio": 400182,
+    "estado": 28,
+    "fecha_de_inicio": "26\/09\/2022",
+    "responsable": 5,
+    "nota": "UDST-INT N°1010\/2022"
+  },
+  {
+    "codigo_de_predio": 400183,
+    "estado": 28,
+    "fecha_de_inicio": "26\/09\/2022",
+    "responsable": 5,
+    "nota": "UDST-INT N°1010\/2022"
+  },
+  {
+    "codigo_de_predio": 400184,
+    "estado": 28,
+    "fecha_de_inicio": "26\/09\/2022",
+    "responsable": 5,
+    "nota": "UDST-INT N°1010\/2022"
+  },
+  {
+    "codigo_de_predio": 400188,
+    "estado": 28,
+    "fecha_de_inicio": "10\/10\/2022",
+    "responsable": 9,
+    "nota": "DDLP-UDST-INT N°1063\/2022"
+  },
+  {
+    "codigo_de_predio": 400189,
+    "estado": 28,
+    "fecha_de_inicio": "10\/10\/2022",
+    "responsable": 9,
+    "nota": "DDLP-INT N°1063\/2022"
+  },
+  {
+    "codigo_de_predio": 400190,
+    "estado": 28,
+    "fecha_de_inicio": "10\/10\/2022",
+    "responsable": 0,
+    "nota": "DDLP-INT N°1063\/2022"
+  },
+  {
+    "codigo_de_predio": 400191,
+    "estado": 28,
+    "fecha_de_inicio": "12\/10\/2022",
+    "responsable": 7,
+    "nota": "UDST-AEV-INT N°1065\/2022"
+  },
+  {
+    "codigo_de_predio": 400193,
+    "estado": 28,
+    "fecha_de_inicio": "12\/10\/2022",
+    "responsable": 5,
+    "nota": "UDST- INT N°1064\/2022"
+  },
+  {
+    "codigo_de_predio": 400194,
+    "estado": 28,
+    "fecha_de_inicio": "12\/10\/2022",
+    "responsable": 5,
+    "nota": "UDST-INT N°1064\/2022"
+  },
+  {
+    "codigo_de_predio": 400195,
+    "estado": 28,
+    "fecha_de_inicio": "03\/10\/2022",
+    "responsable": 7,
+    "nota": "DDLP-UDST-INT N°1033\/2022"
+  },
+  {
+    "codigo_de_predio": 400196,
+    "estado": 28,
+    "fecha_de_inicio": "03\/10\/2022",
+    "responsable": 9,
+    "nota": "DDLP-UDST-INT N°1033\/2022"
+  },
+  {
+    "codigo_de_predio": 400197,
+    "estado": 28,
+    "fecha_de_inicio": "19\/10\/2022",
+    "responsable": 9,
+    "nota": "UDST-AEV-INT N°1069\/2022"
+  },
+  {
+    "codigo_de_predio": 400198,
+    "estado": 28,
+    "fecha_de_inicio": "05\/10\/2022",
+    "responsable": 7,
+    "nota": "UDST-AEV-INT-N° 1044\/2022"
+  },
+  {
+    "codigo_de_predio": 400199,
+    "estado": 28,
+    "fecha_de_inicio": "26\/09\/2022",
+    "responsable": 2,
+    "nota": "UDST-INT N°1004\/2022"
+  },
+  {
+    "codigo_de_predio": 400200,
+    "estado": 28,
+    "fecha_de_inicio": "26\/09\/2022",
+    "responsable": 2,
+    "nota": "UDST-INT-N °1004\/2022"
+  },
+  {
+    "codigo_de_predio": 400201,
+    "estado": 28,
+    "fecha_de_inicio": "04\/10\/2022",
+    "responsable": 9,
+    "nota": "UDST-INT N°1037\/2022"
+  },
+  {
+    "codigo_de_predio": 500060,
+    "estado": 28,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 0,
+    "nota": "DDLP-CI No452\/2022"
+  },
+  {
+    "codigo_de_predio": 500153,
+    "estado": 28,
+    "fecha_de_inicio": "29\/04\/2022",
+    "responsable": 6,
+    "nota": "DDLP-CI No 141\/2022"
+  },
+  {
+    "codigo_de_predio": 500160,
+    "estado": 28,
+    "fecha_de_inicio": "28\/06\/2022",
+    "responsable": 7,
+    "nota": "DDLP-CI No255\/2022"
+  },
+  {
+    "codigo_de_predio": 500161,
+    "estado": 28,
+    "fecha_de_inicio": "28\/06\/2022",
+    "responsable": 2,
+    "nota": "DDLP-CI No255\/2022"
+  },
+  {
+    "codigo_de_predio": 500162,
+    "estado": 28,
+    "fecha_de_inicio": "29\/04\/2022",
+    "responsable": 3,
+    "nota": "DDLP- CI No 141\/2022"
+  },
+  {
+    "codigo_de_predio": 500163,
+    "estado": 28,
+    "fecha_de_inicio": "28\/06\/2022",
+    "responsable": 1,
+    "nota": "DDLP-CI No255\/2022"
+  },
+  {
+    "codigo_de_predio": 500296,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 500346,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI No5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 500415,
+    "estado": 27,
+    "fecha_de_inicio": "29\/04\/2022",
+    "responsable": 7,
+    "observacion": "REMITIDO DE CONFLICTOS",
+    "nota": "DDLP-CI N141\/2022"
+  },
+  {
+    "codigo_de_predio": 500541,
+    "estado": 28,
+    "fecha_de_inicio": "29\/04\/2022",
+    "responsable": 1,
+    "observacion": "REMITIDO DE CONFLICTOS",
+    "nota": "DDLP-CI No141\/2022"
+  },
+  {
+    "codigo_de_predio": 500622,
+    "estado": 28,
+    "fecha_de_inicio": "28\/06\/2022",
+    "responsable": 5,
+    "nota": "DDLP-CI No256\/2022"
+  },
+  {
+    "codigo_de_predio": 500669,
+    "estado": 28,
+    "fecha_de_inicio": "28\/06\/2022",
+    "responsable": 5,
+    "nota": "DDLP-CI No256\/2022"
+  },
+  {
+    "codigo_de_predio": 500705,
+    "estado": 27,
+    "fecha_de_inicio": "29\/04\/2022",
+    "responsable": 2,
+    "observacion": "REMITIDO DE CONFLICTOS",
+    "nota": "DDLP-CI No141\/2022"
+  },
+  {
+    "codigo_de_predio": 500746,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI N 15249\/2023",
+    "nota": "DDLP-C-EXT N 970\/2023"
+  },
+  {
+    "codigo_de_predio": 500881,
+    "estado": 28,
+    "fecha_de_inicio": "29\/04\/2022",
+    "responsable": 5,
+    "observacion": "REMITIDO DE CONFLICTOS",
+    "nota": "DDLP-CI N141\/2022"
+  },
+  {
+    "codigo_de_predio": 500925,
+    "estado": 28,
+    "fecha_de_inicio": "31\/05\/2022",
+    "responsable": 8,
+    "nota": "DDLP-CI No205\/2022"
+  },
+  {
+    "codigo_de_predio": 505000,
+    "estado": 47,
+    "fecha_de_inicio": "26\/04\/2023",
+    "responsable": 1,
+    "nota": "DDLP-UDST-INT N 401\/2023"
+  },
+  {
+    "codigo_de_predio": 600159,
+    "estado": 80,
+    "responsable": 0
+  },
+  {
+    "codigo_de_predio": 834704,
+    "estado": 65,
+    "fecha_de_inicio": "04\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO  PARA CONTROL DE CALIDAD  A LA NACIONAL EN EL MES DE SEPTIEMBRE CON NOTA DDLP-C-EXT No 564\/2023 HR DDLP HRI Nro 8931\/2023 DE 04\/07\/2023",
+    "nota": "DDLP-C-EXT No 564\/2023"
+  },
+  {
+    "codigo_de_predio": 3007011,
+    "estado": 27,
+    "fecha_de_inicio": "14\/09\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 12532\/2023",
+    "nota": "DDLP-C -EXT N 783\/2023"
+  },
+  {
+    "codigo_de_predio": 3016197,
+    "estado": 84,
+    "fecha_de_inicio": "05\/10\/2023",
+    "responsable": 20,
+    "observacion": "06\/10\/2023--SE REMITIO A CAMPO NORTE CON NOTA DDLP-USLP-CI No 461\/2023 DE 05\/10\/2023",
+    "nota": "DDLP-USLP-CI No 461\/2023"
+  },
+  {
+    "codigo_de_predio": 3046540,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 13,
+    "observacion": "DDLP HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 4000164,
+    "estado": 28,
+    "fecha_de_inicio": "21\/09\/2022",
+    "responsable": 10,
+    "nota": "UDST-INT N894\/2022"
+  },
+  {
+    "codigo_de_predio": 4002004,
+    "estado": 28,
+    "fecha_de_inicio": "17\/10\/2022",
+    "responsable": 0,
+    "nota": "UDST-AEV-INT N° 1078\/2022"
+  },
+  {
+    "codigo_de_predio": 4002019,
+    "estado": 27,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 5,
+    "observacion": "DDLP  HRI Nº8562\/2023",
+    "nota": "DDLP-C-EXT Nº553\/2023"
+  },
+  {
+    "codigo_de_predio": 4002044,
+    "estado": 65,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 16,
+    "observacion": "\r\nDDLP HRI Nº8562\/2023\r\nDDLP HRI Nº8562\/2023",
+    "nota": "DDLP-C-EXT Nº 553\/2023"
+  },
+  {
+    "codigo_de_predio": 4002048,
+    "estado": 27,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 17,
+    "observacion": "DDLP  HRI Nº8562\/2023",
+    "nota": "DDLP-C-EXT Nº553\/2023"
+  },
+  {
+    "codigo_de_predio": 4002055,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 4002057,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 15,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 4002058,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 14,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 4002064,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 17,
+    "observacion": "DDL HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 4002065,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 14,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 4002066,
+    "estado": 27,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 13,
+    "observacion": "DDLP  HRI Nº8562\/2023",
+    "nota": "DDLP-C-EXT Nº553\/2023"
+  },
+  {
+    "codigo_de_predio": 4002076,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 7,
+    "observacion": "DDLP Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 4002079,
+    "estado": 27,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 18,
+    "observacion": "DDLP  HRI Nº8562\/2023\r\nDDLP  HRI Nº8562\/2023",
+    "nota": "DDLP-C-EXT Nº553\/2023"
+  },
+  {
+    "codigo_de_predio": 4002081,
+    "estado": 27,
+    "fecha_de_inicio": "24\/10\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 14863\/2023",
+    "nota": "DDLP-C-EXT N 943\/2023"
+  },
+  {
+    "codigo_de_predio": 4002083,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 14,
+    "observacion": "DDLP HRI N 14442\/2023",
+    "nota": "DDLP-C-EXT N 906\/2023"
+  },
+  {
+    "codigo_de_predio": 4002091,
+    "estado": 44,
+    "fecha_de_inicio": "26\/06\/2023",
+    "responsable": 0,
+    "nota": "DDLP-CI Nº279\/2023"
+  },
+  {
+    "codigo_de_predio": 4002092,
+    "estado": 44,
+    "fecha_de_inicio": "26\/06\/2023",
+    "responsable": 0,
+    "nota": "DDLP-CI Nº279\/2023"
+  },
+  {
+    "codigo_de_predio": 4002101,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 22,
+    "observacion": "\r\nDDLP HRI Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 4002112,
+    "estado": 28,
+    "fecha_de_inicio": "03\/06\/2023",
+    "responsable": 13,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 4002113,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 18,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 4002117,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 5,
+    "nota": "DDLP HRI N° 147372023"
+  },
+  {
+    "codigo_de_predio": 4002119,
+    "estado": 23,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 18
+  },
+  {
+    "codigo_de_predio": 4002131,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 22
+  },
+  {
+    "codigo_de_predio": 4002168,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2023",
+    "responsable": 6,
+    "nota": "DDLP HRI Nº11834\/2023"
+  },
+  {
+    "codigo_de_predio": 10000015,
+    "estado": 58,
+    "fecha_de_inicio": "04\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A ADMISIONES CON NOTA DDLP-USLP-CI No 404\/2023 DE 04\/09\/20233--KAREN SURCULENTO",
+    "nota": "DDLP-USLP-CI No 404\/2023"
+  },
+  {
+    "codigo_de_predio": 14249382,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 17,
+    "observacion": "DDL HRI Nº 7390\/2023 \r\nDDL HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 125935997,
+    "estado": 27,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 5,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 128786947,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 5,
+    "nota": "DDLP HRI N° 147372023"
+  },
+  {
+    "codigo_de_predio": 129264820,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 15,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 129431104,
+    "estado": 65,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A LA NACIONAL 2 CC CON  NOTA DDLP-C-EXT No 277\/2023 Y HR 11709\/2023 DE 06\/09\/2023",
+    "nota": "DDLP-C-EXT No 277\/2023"
+  },
+  {
+    "codigo_de_predio": 129469830,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 132923334,
+    "estado": 27,
+    "fecha_de_inicio": "19\/06\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI N 7884\/2023",
+    "nota": "DDLP-C-EXT N 7884\/2023"
+  },
+  {
+    "codigo_de_predio": 133032345,
+    "estado": 27,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 5,
+    "observacion": "DDLP  HRI Nº8562\/2023",
+    "nota": "DDLP-C-EXT Nº 553\/2023"
+  },
+  {
+    "codigo_de_predio": 133778859,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 5,
+    "observacion": "DDLP Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 134317999,
+    "estado": 28,
+    "fecha_de_inicio": "03\/06\/2023",
+    "responsable": 0,
+    "observacion": "\r\nDDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 134841671,
+    "estado": 27,
+    "fecha_de_inicio": "12\/04\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 4186\/2023",
+    "nota": "DDLP-C-EXT N 264\/2023"
+  },
+  {
+    "codigo_de_predio": 134841689,
+    "estado": 27,
+    "fecha_de_inicio": "12\/04\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 4186\/2023",
+    "nota": "DDLP-C-EXT N 264\/2023"
+  },
+  {
+    "codigo_de_predio": 138300490,
+    "estado": 83,
+    "fecha_de_inicio": "14\/08\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO SUR CON NOTA DDLP-USLP-CI No 346\/2023 DE 14\/08\/52023",
+    "nota": "DDLP-USLP-CI No 346\/2023"
+  },
+  {
+    "codigo_de_predio": 138300494,
+    "estado": 83,
+    "fecha_de_inicio": "14\/08\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A CAMPO SUR CON NOTA DDLP-USLP-CI No 346\/2023 DE 14\/08\/52023",
+    "nota": "DDLP-USLP-CI No 346\/2023"
+  },
+  {
+    "codigo_de_predio": 138837152,
+    "estado": 27,
+    "fecha_de_inicio": "19\/06\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 7884\/2023",
+    "nota": "DDLP-C-EXT N 504\/2023"
+  },
+  {
+    "codigo_de_predio": 139963064,
+    "estado": 65,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A LA NACIONAL 2 CC CON  NOTA DDLP-C-EXT No 277\/2023 Y HR 11709\/2023 DE 06\/09\/2023",
+    "nota": "DDLP-C-EXT No 277\/2023"
+  },
+  {
+    "codigo_de_predio": 140057781,
+    "estado": 27,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 3,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 140064545,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 6,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 140081339,
+    "estado": 65,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A LA NACIONAL 2 CC CON  NOTA DDLP-C-EXT No 277\/2023 Y HR 11709\/2023 DE 06\/09\/2023",
+    "nota": "DDLP-C-EXT No 277\/2023"
+  },
+  {
+    "codigo_de_predio": 140081350,
+    "estado": 84,
+    "fecha_de_inicio": "14\/07\/2023",
+    "responsable": 20,
+    "observacion": "5 (3 CUERPOS COSTURADOS + 2 FOLDER)",
+    "nota": "DDLP-USLP-CI No 306\/2023"
+  },
+  {
+    "codigo_de_predio": 140081478,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 5,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-C-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140081584,
+    "estado": 84,
+    "fecha_de_inicio": "14\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO 3 CUERPOS COSTURADOS A LA UNIDAD DE CAMPO SUR EN FECHA 14\/7\/2023 CON NOTA DDLP-USLP-CI No 307\/2023",
+    "nota": "DDLP-USLP-CI No 307\/2023"
+  },
+  {
+    "codigo_de_predio": 140082961,
+    "estado": 84,
+    "fecha_de_inicio": "08\/08\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO CA CAMPO SUR CON NOTA DDLP-USLP-CI No 342\/2023 EL 08\/08\/2023",
+    "nota": "DDLP-USLP-CI No 342\/2023"
+  },
+  {
+    "codigo_de_predio": 140354317,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 7,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 140480619,
+    "estado": 27,
+    "fecha_de_inicio": "31\/05\/2022",
+    "responsable": 2,
+    "nota": "DDLP-C-EXT N 497\/2022"
+  },
+  {
+    "codigo_de_predio": 140504847,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 2,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 140530302,
+    "estado": 27,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 6,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 140533203,
+    "estado": 27,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 7,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 140537323,
+    "estado": 28,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 2,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 140545254,
+    "estado": 27,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 1,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 140545616,
+    "estado": 27,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 3,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 140546319,
+    "estado": 27,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 3,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 140586067,
+    "estado": 27,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 1,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 140586149,
+    "estado": 27,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 1,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 140586230,
+    "estado": 27,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 1,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 140589442,
+    "estado": 27,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 5,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 140632180,
+    "estado": 27,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 2,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 140632327,
+    "estado": 27,
+    "fecha_de_inicio": "24\/06\/2022",
+    "responsable": 5,
+    "observacion": "DDLP HRI Nro. 6156\/2022",
+    "nota": "DDLP-C-EXT No. 588\/2022"
+  },
+  {
+    "codigo_de_predio": 140640642,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 6,
+    "observacion": "HR DDLP- HRI No 7777\/2022",
+    "nota": "DDLP-C-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140643727,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 8,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140650539,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 8,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140650937,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 6,
+    "observacion": "HR DDLP- HRI No 7777\/2022",
+    "nota": "DDLP-C-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140654226,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 8,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140666372,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 6,
+    "observacion": "HR DDLP- HRI No 7777\/2022",
+    "nota": "DDLP-C-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140668375,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 4,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 140668405,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 1,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-C-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140671121,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 8,
+    "observacion": "DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140675709,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 3,
+    "observacion": "DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-C-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140690940,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 5,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140702963,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 7,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140706995,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 2,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-C-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140713866,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 5,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-C-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140720809,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 6,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-C-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140721146,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 7,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140721647,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 7,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 140724992,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 3,
+    "observacion": "DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-C-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140725077,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 3,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-C-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140726345,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 5,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-C-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140731182,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 1,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-C-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140737250,
+    "estado": 27,
+    "fecha_de_inicio": "29\/07\/2022",
+    "responsable": 7,
+    "observacion": "HR DDLP-HRI No 7777\/2022",
+    "nota": "DDLP-EXT No695\/2022"
+  },
+  {
+    "codigo_de_predio": 140738873,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 6,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 140741179,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 2,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 140750422,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 1,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 140756581,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 1,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 140763798,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 6,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 140790027,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 1,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 140804590,
+    "estado": 27,
+    "fecha_de_inicio": "31\/08\/2022",
+    "responsable": 2,
+    "observacion": "DDLP HRI Nro. 9378\/2022",
+    "nota": "DDLP-C-EXT Nro. 819\/2022"
+  },
+  {
+    "codigo_de_predio": 140838363,
+    "estado": 27,
+    "fecha_de_inicio": "12\/04\/2023",
+    "responsable": 3,
+    "observacion": "DDLP HRI N 4186\/2023",
+    "nota": "DDLP-C-EXT N 264\/2023"
+  },
+  {
+    "codigo_de_predio": 140881408,
+    "estado": 27,
+    "fecha_de_inicio": "27\/09\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 13805\/2023",
+    "nota": "DDLP-C-EXT N 845\/2023"
+  },
+  {
+    "codigo_de_predio": 140881513,
+    "estado": 28,
+    "responsable": 0
+  },
+  {
+    "codigo_de_predio": 140899313,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 3,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 140961359,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI No5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 141012478,
+    "estado": 27,
+    "fecha_de_inicio": "12\/04\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 4186",
+    "nota": "DDLP-C-EXT N 264\/2023"
+  },
+  {
+    "codigo_de_predio": 141045516,
+    "estado": 27,
+    "fecha_de_inicio": "12\/04\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 4186\/2023",
+    "nota": "DDLP-C-EXT N 264\/2023"
+  },
+  {
+    "codigo_de_predio": 141068943,
+    "estado": 84,
+    "fecha_de_inicio": "08\/08\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDA A CAMPO NORTE CON NOTA DDLP-USLP-CI No 341\/2023 EL 08\/08\/2023",
+    "nota": "DDLP-USLP-CI No 341\/2023"
+  },
+  {
+    "codigo_de_predio": 141089298,
+    "estado": 27,
+    "fecha_de_inicio": "14\/07\/2023",
+    "observacion": "DDLP HRI No8417\/2023",
+    "nota": "DDLP-C-EXT No536\/2023"
+  },
+  {
+    "codigo_de_predio": 141091599,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 141103905,
+    "estado": 27,
+    "fecha_de_inicio": "12\/04\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 4186\/2023",
+    "nota": "DDLP-C-EXT N 264\/2023"
+  },
+  {
+    "codigo_de_predio": 141274400,
+    "estado": 28,
+    "responsable": 0
+  },
+  {
+    "codigo_de_predio": 141356014,
+    "estado": 27,
+    "fecha_de_inicio": "12\/04\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 4186\/2023",
+    "nota": "DDLP-C-EXT N 264\/2023"
+  },
+  {
+    "codigo_de_predio": 141376293,
+    "estado": 27,
+    "fecha_de_inicio": "12\/04\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 4186\/2023",
+    "nota": "DDLP-C-EXT N 264\/2023"
+  },
+  {
+    "codigo_de_predio": 141419611,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI No5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 141436453,
+    "estado": 27,
+    "fecha_de_inicio": "30\/05\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI No6674\/2023",
+    "nota": "DDLP-C-EXT No425\/2023"
+  },
+  {
+    "codigo_de_predio": 141443033,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI No5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 141443838,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 141444534,
+    "estado": 27,
+    "fecha_de_inicio": "26\/10\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 15249\/2023",
+    "nota": "DDLP-C-EXT N 970\/2023"
+  },
+  {
+    "codigo_de_predio": 141472053,
+    "estado": 27,
+    "fecha_de_inicio": "20\/04\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI N 4819\/2022",
+    "nota": "DDLP-C-EXT N295\/2022"
+  },
+  {
+    "codigo_de_predio": 141595859,
+    "estado": 27,
+    "responsable": 13
+  },
+  {
+    "codigo_de_predio": 141606425,
+    "estado": 27,
+    "responsable": 13,
+    "observacion": "DDLP HRI Nº 4526\/2023",
+    "nota": "DDLP-C-EXT Nº 275\/2023"
+  },
+  {
+    "codigo_de_predio": 141640910,
+    "estado": 27,
+    "fecha_de_inicio": "24\/10\/2023",
+    "responsable": 15,
+    "observacion": "DDLPHRI N 14863\/2023",
+    "nota": "DDLP-C-EXT N 943\/2023"
+  },
+  {
+    "codigo_de_predio": 141650554,
+    "estado": 27,
+    "fecha_de_inicio": "20\/04\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 4819\/2023",
+    "nota": "DDLP-C-EXT N 295\/2023"
+  },
+  {
+    "codigo_de_predio": 141650629,
+    "estado": 28,
+    "fecha_de_inicio": "20\/04\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 4819\/2023",
+    "nota": "DDLP-C-EXT N 295\/2023"
+  },
+  {
+    "codigo_de_predio": 141653684,
+    "estado": 27,
+    "fecha_de_inicio": "20\/04\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI N 4819\/2023",
+    "nota": "DDLP-C-EXT N 295\/2023"
+  },
+  {
+    "codigo_de_predio": 141665817,
+    "estado": 27,
+    "fecha_de_inicio": "14\/07\/2023",
+    "observacion": "DDLP HRI No8417\/2023",
+    "nota": "DDLP-C-EXT No536\/2023"
+  },
+  {
+    "codigo_de_predio": 141678072,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "responsable": 15,
+    "observacion": "DDLP HRI No5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 141680448,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI No 5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 141680882,
+    "estado": 27,
+    "fecha_de_inicio": "20\/04\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 4819\/2023",
+    "nota": "DDLP-C-EXT N 295\/2023"
+  },
+  {
+    "codigo_de_predio": 141684441,
+    "estado": 27,
+    "fecha_de_inicio": "20\/04\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 4819\/2023",
+    "nota": "DDLP-C-EXT N 295\/2023"
+  },
+  {
+    "codigo_de_predio": 141684786,
+    "estado": 27,
+    "fecha_de_inicio": "29\/08\/2023",
+    "responsable": 15,
+    "observacion": "DDLP HRI N 9506\/2023",
+    "nota": "DDLP-C-EXT N 596\/2023"
+  },
+  {
+    "codigo_de_predio": 141684926,
+    "estado": 27,
+    "fecha_de_inicio": "20\/04\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI N 4819\/2023",
+    "nota": "DDLP-C-EXTN 295\/2023"
+  },
+  {
+    "codigo_de_predio": 141686046,
+    "estado": 27,
+    "fecha_de_inicio": "30\/05\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI No6674\/2023",
+    "nota": "DDLP-C-EXT No425\/2023"
+  },
+  {
+    "codigo_de_predio": 141691846,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI No5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 141695736,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI No5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 141695966,
+    "estado": 27,
+    "fecha_de_inicio": "12\/05\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI No5447\/2023",
+    "nota": "DDLP-C-EXT No341\/2023"
+  },
+  {
+    "codigo_de_predio": 141735585,
+    "estado": 27,
+    "fecha_de_inicio": "30\/05\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI No6674\/2023",
+    "nota": "DDLP-D-EXT No425\/2023"
+  },
+  {
+    "codigo_de_predio": 141775861,
+    "estado": 65,
+    "fecha_de_inicio": "27\/07\/2023",
+    "responsable": 20,
+    "observacion": "APROBADO REMITIDO A LA NACIONAL REMITIDO A LA NACIONAL 27\/07\/2023 DDLP HRI No 10028\/2023 NOTA DDLP-USLP-C-EXT No 249\/2023",
+    "nota": "DDLP-USLP-C-EXT No 249\/23"
+  },
+  {
+    "codigo_de_predio": 141778434,
+    "estado": 27,
+    "fecha_de_inicio": "20\/04\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI N 4819\/2023",
+    "nota": "DDLP-C-EXT N 295\/2023"
+  },
+  {
+    "codigo_de_predio": 141786182,
+    "estado": 27,
+    "fecha_de_inicio": "20\/04\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI 4819\/2023",
+    "nota": "DDLP-C-EXT N 295\/2023"
+  },
+  {
+    "codigo_de_predio": 141786236,
+    "estado": 27,
+    "fecha_de_inicio": "30\/05\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI No6674\/2023",
+    "nota": "DDLP-C-EXT No425\/2023"
+  },
+  {
+    "codigo_de_predio": 141799573,
+    "estado": 65,
+    "fecha_de_inicio": "27\/07\/2023",
+    "responsable": 20,
+    "observacion": "APROBADO REMITIDO A LA NACIONAL REMITIDO A LA NACIONAL 27\/07\/2023 DDLP HRI No 10028\/2023 NOTA DDLP-USLP-C-EXT No 249\/2023",
+    "nota": "DDLP-USLP-C-EXT No 249\/23"
+  },
+  {
+    "codigo_de_predio": 141806432,
+    "estado": 27,
+    "fecha_de_inicio": "07\/06\/2023",
+    "responsable": 15,
+    "observacion": "DDLP HRI No7424\/2023",
+    "nota": "DDLP-C-EXT No 456\/2023"
+  },
+  {
+    "codigo_de_predio": 141817860,
+    "estado": 27,
+    "fecha_de_inicio": "14\/07\/2023",
+    "observacion": "DDLP HRI No8417\/2023",
+    "nota": "DDLP-C-EXT No536\/2023"
+  },
+  {
+    "codigo_de_predio": 141827816,
+    "estado": 27,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 18,
+    "observacion": "DDLP HRI Nº8562\/2023",
+    "nota": "DDLP-C-EXT Nº 553\/2023"
+  },
+  {
+    "codigo_de_predio": 141853596,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 18,
+    "observacion": "DDL HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 142005406,
+    "estado": 27,
+    "fecha_de_inicio": "19\/06\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 7884\/2023",
+    "nota": "DDLP-C-EXT N 504\/2023"
+  },
+  {
+    "codigo_de_predio": 142015829,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 5,
+    "observacion": "DDLP HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 142023739,
+    "estado": 27,
+    "fecha_de_inicio": "20\/04\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 4819\/2023",
+    "nota": "DDLP-C-EXT N 295\/2023"
+  },
+  {
+    "codigo_de_predio": 142025576,
+    "estado": 27,
+    "fecha_de_inicio": "30\/05\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI No6674\/2023",
+    "nota": "DDLP-C-EXT No425\/2023"
+  },
+  {
+    "codigo_de_predio": 142028235,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 15249\/2023",
+    "nota": "DDLP-C-EXT N 970\/2023"
+  },
+  {
+    "codigo_de_predio": 142028768,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 5,
+    "observacion": "DDL HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 142031893,
+    "estado": 27,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 17,
+    "observacion": "DDLP HRI Nº8562\/2023",
+    "nota": "DDLP-C-EXT Nº 553\/2023"
+  },
+  {
+    "codigo_de_predio": 142168049,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 13,
+    "observacion": "DDLP HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 142168055,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 17,
+    "observacion": "DDL HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/202"
+  },
+  {
+    "codigo_de_predio": 142168128,
+    "estado": 27,
+    "fecha_de_inicio": "19\/06\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI N 7884\/2023",
+    "nota": "DDLP-C-EXT N 504\/2023"
+  },
+  {
+    "codigo_de_predio": 142168537,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 15249\/2023",
+    "nota": "DDLP-C-EXT N 970\/2023"
+  },
+  {
+    "codigo_de_predio": 142168762,
+    "estado": 28,
+    "fecha_de_inicio": "22\/05\/2023",
+    "responsable": 13,
+    "observacion": "DDLP HR Nº 6439\/2023",
+    "nota": "DDLP-C-EXT Nº 403\/2023"
+  },
+  {
+    "codigo_de_predio": 142170806,
+    "estado": 65,
+    "fecha_de_inicio": "27\/07\/2023",
+    "responsable": 20,
+    "observacion": "APROBADO REMITIDO A LA NACIONAL REMITIDO A LA NACIONAL 27\/07\/2023 DDLP HRI No 10028\/2023 NOTA DDLP-USLP-C-EXT No 249\/2023",
+    "nota": "DDLP-USLP-C-EXT No 249\/23"
+  },
+  {
+    "codigo_de_predio": 142172226,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 16,
+    "observacion": "DDLP HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 142173648,
+    "estado": 27,
+    "fecha_de_inicio": "21\/07\/2023",
+    "responsable": 22,
+    "nota": "DDLP HRI Nro 9852\/2023"
+  },
+  {
+    "codigo_de_predio": 142178475,
+    "estado": 27,
+    "fecha_de_inicio": "19\/06\/2023",
+    "responsable": 9,
+    "observacion": "DDLPHRI N 7884\/2023",
+    "nota": "DDLP-C-EXT N 504\/2023"
+  },
+  {
+    "codigo_de_predio": 142179179,
+    "estado": 27,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 13,
+    "observacion": "DDLP HRI Nº8562\/2023",
+    "nota": "DDLP-C-EXT Nº 553\/2023"
+  },
+  {
+    "codigo_de_predio": 142179198,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 750\/2023",
+    "nota": "DDLP-C-EXT N 11834\/2023"
+  },
+  {
+    "codigo_de_predio": 142179745,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 1442\/2023",
+    "nota": "DDLP-C-EXT N 906\/2023"
+  },
+  {
+    "codigo_de_predio": 142181635,
+    "estado": 27,
+    "fecha_de_inicio": "14\/07\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI N 8417\/2023",
+    "nota": "DDLP C EXT N 536\/2023"
+  },
+  {
+    "codigo_de_predio": 142184871,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 5,
+    "observacion": "DDLP HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 142185069,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 17,
+    "observacion": "DDL HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 142187461,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 14,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 142187663,
+    "estado": 27,
+    "fecha_de_inicio": "27\/09\/2023",
+    "responsable": 14,
+    "observacion": "DDLP HRI N 13508\/2023",
+    "nota": "DDLP-C-EXT N 845\/2023"
+  },
+  {
+    "codigo_de_predio": 142192518,
+    "estado": 28,
+    "fecha_de_inicio": "03\/06\/2023",
+    "responsable": 13,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142206996,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 14442\/2023",
+    "nota": "DDLP-C-EXT N 906\/2023"
+  },
+  {
+    "codigo_de_predio": 142211490,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 18,
+    "observacion": "DDL HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 142227963,
+    "estado": 27,
+    "fecha_de_inicio": "30\/05\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI No6674\/2023",
+    "nota": "DDLP-C-EXT No425\/2023"
+  },
+  {
+    "codigo_de_predio": 142246858,
+    "estado": 28,
+    "fecha_de_inicio": "05\/06\/2023",
+    "responsable": 18,
+    "observacion": "DDLP HRI Nº 7390\/2023",
+    "nota": "DDLP-C-EXT Nº455\/2023"
+  },
+  {
+    "codigo_de_predio": 142256120,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 142259989,
+    "estado": 27,
+    "fecha_de_inicio": "19\/06\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 7884\/2023",
+    "nota": "DDLP-C-EXT N 504\/2023"
+  },
+  {
+    "codigo_de_predio": 142264234,
+    "estado": 27,
+    "fecha_de_inicio": "14\/07\/2023",
+    "observacion": "DDLP HRI No8417\/2023",
+    "nota": "DDLP-C-EXT No536\/2023"
+  },
+  {
+    "codigo_de_predio": 142264586,
+    "estado": 27,
+    "fecha_de_inicio": "14\/07\/2023",
+    "responsable": 21,
+    "observacion": "DDLP HRI N 8417\/2023",
+    "nota": "DDLP C EXT N 536\/2023"
+  },
+  {
+    "codigo_de_predio": 142265061,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 17,
+    "observacion": "\r\nDDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142265062,
+    "estado": 28,
+    "fecha_de_inicio": "03\/06\/2023",
+    "responsable": 17,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142274497,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 9,
+    "observacion": "DDLP Nº 4006\/202",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142315392,
+    "estado": 27,
+    "fecha_de_inicio": "30\/05\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI No6674\/2023",
+    "nota": "DDLP-C-EXT No425\/2023"
+  },
+  {
+    "codigo_de_predio": 142344462,
+    "estado": 27,
+    "fecha_de_inicio": "19\/06\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 7884\/2023",
+    "nota": "DDLP-C-EXT N 504\/2023"
+  },
+  {
+    "codigo_de_predio": 142346253,
+    "estado": 27,
+    "fecha_de_inicio": "30\/05\/2023",
+    "responsable": 14,
+    "observacion": "DDLP HRI No6674\/2023",
+    "nota": "DDLP-C-EXT No425\/2023"
+  },
+  {
+    "codigo_de_predio": 142355862,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 12535\/2023",
+    "nota": "DDLP-C-EXT N 783\/2023"
+  },
+  {
+    "codigo_de_predio": 142359638,
+    "estado": 27,
+    "fecha_de_inicio": "21\/07\/2023",
+    "responsable": 16,
+    "nota": "DDLP HRI Nro 9852\/2023"
+  },
+  {
+    "codigo_de_predio": 142373422,
+    "estado": 27,
+    "fecha_de_inicio": "07\/06\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI No7424\/2023",
+    "nota": "DDLP-C-EXT No 456\/2023"
+  },
+  {
+    "codigo_de_predio": 142383512,
+    "estado": 27,
+    "fecha_de_inicio": "14\/07\/2023",
+    "responsable": 14,
+    "observacion": "DDLP HRI N 8417\/2023",
+    "nota": "DDLP C EXT N 536\/2023"
+  },
+  {
+    "codigo_de_predio": 142387786,
+    "estado": 28,
+    "fecha_de_inicio": "03\/06\/2023",
+    "responsable": 13,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142396380,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 13,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142396678,
+    "estado": 27,
+    "fecha_de_inicio": "19\/06\/2023",
+    "responsable": 14,
+    "observacion": "DDLP HRI N 7884\/2023",
+    "nota": "DDLP-C-EXT N 504\/2023"
+  },
+  {
+    "codigo_de_predio": 142408521,
+    "estado": 27,
+    "fecha_de_inicio": "14\/07\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI N 8417\/2023",
+    "nota": "DDLP C EXT N 536\/2023"
+  },
+  {
+    "codigo_de_predio": 142415040,
+    "estado": 27,
+    "fecha_de_inicio": "21\/07\/2023",
+    "responsable": 13,
+    "nota": "DDLP HRI Nro 9852\/2023"
+  },
+  {
+    "codigo_de_predio": 142429835,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 14442\/2023",
+    "nota": "DDLP-C-EXT N 906\/2023"
+  },
+  {
+    "codigo_de_predio": 142430180,
+    "estado": 28,
+    "fecha_de_inicio": "03\/06\/2023",
+    "responsable": 18,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142430616,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 142431895,
+    "estado": 27,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 18,
+    "observacion": "\r\nDDLP HRI Nº8562\/2023",
+    "nota": "DDLP-C-EXT Nº 553\/2023"
+  },
+  {
+    "codigo_de_predio": 142431928,
+    "estado": 27,
+    "fecha_de_inicio": "19\/06\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 7884\/2023",
+    "nota": "DDLP-C-EXT N 504\/2023"
+  },
+  {
+    "codigo_de_predio": 142432873,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 142432881,
+    "estado": 27,
+    "fecha_de_inicio": "27\/09\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 13192\/2023",
+    "nota": "DDLP-C-EXT N 821\/2023"
+  },
+  {
+    "codigo_de_predio": 142432889,
+    "estado": 27,
+    "fecha_de_inicio": "19\/06\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 7884\/2023",
+    "nota": "DDLP-C-EXT N 504\/2023"
+  },
+  {
+    "codigo_de_predio": 142432919,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 142432926,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 142432932,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 142436157,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 142438146,
+    "estado": 27,
+    "fecha_de_inicio": "21\/07\/2023",
+    "responsable": 16,
+    "nota": "DDLP HRI Nro 9852\/2023"
+  },
+  {
+    "codigo_de_predio": 142448137,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 5,
+    "observacion": "DDLP HRI Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142448270,
+    "estado": 27,
+    "fecha_de_inicio": "07\/06\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI No7424\/2023",
+    "nota": "DDLP-C-EXT No456\/2023"
+  },
+  {
+    "codigo_de_predio": 142463294,
+    "estado": 27,
+    "fecha_de_inicio": "14\/07\/2023",
+    "responsable": 15,
+    "observacion": "DDLP HRI N 8417\/2023",
+    "nota": "DDLP C EXT N 536\/2023"
+  },
+  {
+    "codigo_de_predio": 142463447,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 0,
+    "observacion": "DDLP Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142465844,
+    "estado": 27,
+    "fecha_de_inicio": "14\/07\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 8417\/2023",
+    "nota": "DDLP-C EXT N536\/2023"
+  },
+  {
+    "codigo_de_predio": 142467675,
+    "estado": 28,
+    "fecha_de_inicio": "03\/06\/2023",
+    "responsable": 22,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142473604,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 9,
+    "observacion": "\r\nDDLP Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142473622,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 14442\/2023",
+    "nota": "DDLP-C-EXT N 906\/2023"
+  },
+  {
+    "codigo_de_predio": 142482528,
+    "estado": 27,
+    "fecha_de_inicio": "27\/09\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 13192\/2023",
+    "nota": "DDLP-C-EXT N 821\/2023"
+  },
+  {
+    "codigo_de_predio": 142482613,
+    "estado": 27,
+    "fecha_de_inicio": "14\/07\/2023",
+    "observacion": "DDLP HRI No8417\/2023",
+    "nota": "DDLP-C-EXT No536\/2023"
+  },
+  {
+    "codigo_de_predio": 142504273,
+    "estado": 27,
+    "fecha_de_inicio": "30\/05\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI No6674\/2023",
+    "nota": "DDLP-C EXT No425\/2023"
+  },
+  {
+    "codigo_de_predio": 142504945,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 22,
+    "observacion": "DDLP HRI Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142507600,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 18,
+    "observacion": "DDLP HRI Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142514622,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 9,
+    "observacion": "DDLP Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142515273,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 9,
+    "observacion": "DDLP Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142527952,
+    "estado": 27,
+    "fecha_de_inicio": "27\/09\/2023",
+    "responsable": 4,
+    "observacion": "DDLP HRI N 13508\/2023",
+    "nota": "DDLP-C-EXT N 845\/2023"
+  },
+  {
+    "codigo_de_predio": 142528010,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 7,
+    "observacion": "DDLP Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142528067,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 0,
+    "observacion": "DDLP Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142536358,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 23,
+    "observacion": "DDLP Nº 4006\/2023\r\nDDLP Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142556310,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 15,
+    "observacion": "DDLP Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142560395,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 16,
+    "observacion": "DDLP HRI Nº 4006\/2023\r\nDDLP HRI Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142569615,
+    "estado": 27,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 5,
+    "observacion": "DDLP HRI Nº 8562\/2023",
+    "nota": "DDLP-C-EXT Nº 553\/2023"
+  },
+  {
+    "codigo_de_predio": 142600164,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 2,
+    "observacion": "DDLP Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142602322,
+    "estado": 27,
+    "fecha_de_inicio": "27\/09\/2023",
+    "responsable": 14,
+    "observacion": "DDLP HRI Nº 13192\/2023",
+    "nota": "DDLP-C-EXT Nº 821\/2023"
+  },
+  {
+    "codigo_de_predio": 142608201,
+    "estado": 28,
+    "fecha_de_inicio": "03\/06\/2023",
+    "responsable": 18,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142609143,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 18,
+    "nota": "DDLP HRI N° 14737\/2023"
+  },
+  {
+    "codigo_de_predio": 142629631,
+    "estado": 27,
+    "fecha_de_inicio": "27\/09\/2023",
+    "responsable": 15,
+    "observacion": "DDLP HRI N 13192\/2023",
+    "nota": "DDLP-C-EXT N 821\/2023"
+  },
+  {
+    "codigo_de_predio": 142630653,
+    "estado": 28,
+    "fecha_de_inicio": "03\/06\/2023",
+    "responsable": 23,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142634327,
+    "estado": 27,
+    "fecha_de_inicio": "03\/04\/2023",
+    "responsable": 22,
+    "observacion": "DDLP HRI Nº 4006\/2023",
+    "nota": "DDLP-C-EXT Nº 256\/2023"
+  },
+  {
+    "codigo_de_predio": 142655009,
+    "estado": 28,
+    "fecha_de_inicio": "03\/06\/2023",
+    "responsable": 17,
+    "observacion": "\r\nDDLP HRI Nº 5401\/2023\r\nDDLP HRI Nº 5401\/2023\r\nDDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142655170,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 23,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142655664,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142684862,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 142698622,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 15,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142701652,
+    "estado": 27,
+    "fecha_de_inicio": "31\/10\/2023",
+    "responsable": 15
+  },
+  {
+    "codigo_de_predio": 142701665,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 15,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142702373,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 15,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142715641,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 22,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142740134,
+    "estado": 65,
+    "fecha_de_inicio": "04\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO  PARA CONTROL DE CALIDAD  A LA NACIONAL EN EL MES DE SEPTIEMBRE CON NOTA DDLP-C-EXT No 564\/2023 HR DDLP HRI Nro 8931\/2023 DE 04\/07\/2023",
+    "nota": "DDLP-C-EXT No 564\/2023"
+  },
+  {
+    "codigo_de_predio": 142762343,
+    "estado": 28,
+    "fecha_de_inicio": "03\/05\/2023",
+    "responsable": 13,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  },
+  {
+    "codigo_de_predio": 142817496,
+    "estado": 27,
+    "fecha_de_inicio": "26\/10\/2023",
+    "responsable": 9,
+    "observacion": "DDLPHRI N 15492\/2023",
+    "nota": "DDLP-C-EXT N 970\/2023"
+  },
+  {
+    "codigo_de_predio": 142840053,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 14442\/2023",
+    "nota": "DDLP-C-EXT N 906\/2023"
+  },
+  {
+    "codigo_de_predio": 142847544,
+    "estado": 27,
+    "fecha_de_inicio": "24\/10\/2023",
+    "responsable": 15,
+    "observacion": "DDLP HRI N 14863\/2023",
+    "nota": "DDLP-C-EXT N 943\/2023"
+  },
+  {
+    "codigo_de_predio": 142848125,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 15249\/2023",
+    "nota": "DDLP-C-EXT N 970\/2023"
+  },
+  {
+    "codigo_de_predio": 142874692,
+    "estado": 65,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 22,
+    "nota": "DDLP HRI N° 147372023"
+  },
+  {
+    "codigo_de_predio": 142893287,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 11834\/2023",
+    "nota": "DDLP-C-EXT N 750\/2023"
+  },
+  {
+    "codigo_de_predio": 142896853,
+    "estado": 27,
+    "fecha_de_inicio": "31\/10\/2023",
+    "responsable": 0,
+    "observacion": "DDLP HRI N 15528\/2023",
+    "nota": "DDLP-C-EXT N 1007\/2023"
+  },
+  {
+    "codigo_de_predio": 142937222,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 22,
+    "nota": "DDLP HRI N° 147372023"
+  },
+  {
+    "codigo_de_predio": 142943100,
+    "estado": 65,
+    "fecha_de_inicio": "04\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO  PARA CONTROL DE CALIDAD  A LA NACIONAL EN EL MES DE SEPTIEMBRE CON NOTA DDLP-C-EXT No 564\/2023 HR DDLP HRI Nro 8931\/2023 DE 04\/07\/2023",
+    "nota": "DDLP-C-EXT No 564\/2023"
+  },
+  {
+    "codigo_de_predio": 142944093,
+    "estado": 65,
+    "fecha_de_inicio": "04\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO A LA NACIONAL EN EL MES DE SEPTIEMBRE CON NOTA DDLP-C-EXT No 564\/2023 HR DDLP HRI Nro 8931\/2023 DE 04\/07\/2023",
+    "nota": "DDLP-C-EXT No 564\/2023"
+  },
+  {
+    "codigo_de_predio": 142944393,
+    "estado": 65,
+    "fecha_de_inicio": "04\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO  PARA CONTROL DE CALIDAD  A LA NACIONAL EN EL MES DE SEPTIEMBRE CON NOTA DDLP-C-EXT No 564\/2023 HR DDLP HRI Nro 8931\/2023 DE 04\/07\/2023",
+    "nota": "DDLP-C-EXT No 564\/2023"
+  },
+  {
+    "codigo_de_predio": 142956779,
+    "estado": 65,
+    "fecha_de_inicio": "04\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO PARA CONTROL DE CALIDAD A LA NACIONAL EN EL MES DE SEPTIEMBRE CON NOTA DDLP-C-EXT No 564\/2023 HR DDLP HRI Nro 8931\/2023 DE 04\/07\/2023",
+    "nota": "DDLP-C-EXT No 564\/2023"
+  },
+  {
+    "codigo_de_predio": 142958219,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 13,
+    "nota": "DDLP HRI N° 147372023"
+  },
+  {
+    "codigo_de_predio": 142965487,
+    "estado": 27,
+    "fecha_de_inicio": "24\/10\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 14863\/2023",
+    "nota": "DDLP-C-EXT N 943\/2023"
+  },
+  {
+    "codigo_de_predio": 142986054,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 5,
+    "nota": "DDLP HRI N° 147372023"
+  },
+  {
+    "codigo_de_predio": 143050021,
+    "estado": 27,
+    "fecha_de_inicio": "06\/09\/2023",
+    "responsable": 9,
+    "observacion": "DDLP HRI N 12532\/2023",
+    "nota": "DDLP-C-EXT N 783\/2023"
+  },
+  {
+    "codigo_de_predio": 143073830,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 22,
+    "nota": "DDLP HRI N° 14737\/2023"
+  },
+  {
+    "codigo_de_predio": 143078855,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 14442\/2023",
+    "nota": "DDLP-C-EXT N 906\/2023"
+  },
+  {
+    "codigo_de_predio": 143084446,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 5,
+    "nota": "DDLP HRI N° 147372023"
+  },
+  {
+    "codigo_de_predio": 143092782,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 15249\/2023",
+    "nota": "DDLP-C-EXT N 970\/2023"
+  },
+  {
+    "codigo_de_predio": 143092988,
+    "estado": 65,
+    "fecha_de_inicio": "04\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO PARA CONTROL DE CALIDAD A LA NACIONAL EN EL MES DE SEPTIEMBRE CON NOTA DDLP-C-EXT No 564\/2023 HR DDLP HRI Nro 8931\/2023 DE 04\/07\/2023",
+    "nota": "DDLP-C-EXT No 564\/2023"
+  },
+  {
+    "codigo_de_predio": 143092997,
+    "estado": 65,
+    "fecha_de_inicio": "04\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO PARA CONTROL DE CALIDAD A LA NACIONAL EN EL MES DE SEPTIEMBRE CON NOTA DDLP-C-EXT No 564\/2023 HR DDLP HRI Nro 8931\/2023 DE 04\/07\/2023",
+    "nota": "DDLP-C-EXT No 564\/2023"
+  },
+  {
+    "codigo_de_predio": 143093691,
+    "estado": 65,
+    "fecha_de_inicio": "04\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO PARA CONTROL DE CALIDAD A LA NACIONAL EN EL MES DE SEPTIEMBRE CON NOTA DDLP-C-EXT No 564\/2023 HR DDLP HRI Nro 8931\/2023 DE 04\/07\/2023",
+    "nota": "DDLP-C-EXT No 564\/2023"
+  },
+  {
+    "codigo_de_predio": 143093864,
+    "estado": 65,
+    "fecha_de_inicio": "04\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO PARA CONTROL DE CALIDAD A LA NACIONAL EN EL MES DE SEPTIEMBRE CON NOTA DDLP-C-EXT No 564\/2023 HR DDLP HRI Nro 8931\/2023 DE 04\/07\/2023",
+    "nota": "DDLP-C-EXT No 564\/2023"
+  },
+  {
+    "codigo_de_predio": 143102210,
+    "estado": 27,
+    "fecha_de_inicio": "24\/10\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 14863\/2023",
+    "nota": "DDLP-C-EXT N 943\/2023"
+  },
+  {
+    "codigo_de_predio": 143102367,
+    "estado": 27,
+    "fecha_de_inicio": "24\/10\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 14863\/2023",
+    "nota": "DDLP-C-EXT N 943\/2023"
+  },
+  {
+    "codigo_de_predio": 143117926,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 5,
+    "nota": "DDLP HRI N° 14737\/2023"
+  },
+  {
+    "codigo_de_predio": 143137586,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 15,
+    "observacion": "DDLP HRI N 14442\/2023",
+    "nota": "DDLP-C-EXT N 906\/2023"
+  },
+  {
+    "codigo_de_predio": 143149782,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 15,
+    "observacion": "DDLP HRI N 14442\/2023",
+    "nota": "DDLP-C-EXT N 906\/2023"
+  },
+  {
+    "codigo_de_predio": 143153610,
+    "estado": 28,
+    "fecha_de_inicio": "26\/10\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI N 15289\/2023",
+    "nota": "DDLP-C-EXT N 977\/2023"
+  },
+  {
+    "codigo_de_predio": 143171901,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 14442\/2023",
+    "nota": "DDLP-C-EXT N 906\/2023"
+  },
+  {
+    "codigo_de_predio": 143172056,
+    "estado": 27,
+    "fecha_de_inicio": "16\/10\/2023",
+    "responsable": 5,
+    "nota": "DDLP HRI N° 147372023"
+  },
+  {
+    "codigo_de_predio": 143173701,
+    "estado": 47,
+    "fecha_de_inicio": "29\/06\/2023",
+    "responsable": 9,
+    "nota": "DDLP-UDST-INT N 776\/2023"
+  },
+  {
+    "codigo_de_predio": 143186047,
+    "estado": 65,
+    "fecha_de_inicio": "04\/07\/2023",
+    "responsable": 20,
+    "observacion": "REMITIDO PARA CONTROL DE CALIDAD A LA NACIONAL EN EL MES DE SEPTIEMBRE CON NOTA DDLP-C-EXT No 564\/2023 HR DDLP HRI Nro 8931\/2023 DE 04\/07\/2023",
+    "nota": "DDLP-C-EXT No 564\/2023"
+  },
+  {
+    "codigo_de_predio": 143229029,
+    "estado": 27,
+    "fecha_de_inicio": "26\/10\/2023",
+    "responsable": 2,
+    "observacion": "DDLP HRI N 15249\/2023",
+    "nota": "DDLP-C-EXT N 970\/2023"
+  },
+  {
+    "codigo_de_predio": 1400813501,
+    "estado": 84,
+    "fecha_de_inicio": "14\/07\/2023",
+    "responsable": 20,
+    "observacion": "2 CUERPOS COSTURADOS",
+    "nota": "DDLP-USLP-CI No 306\/2023"
+  },
+  {
+    "codigo_de_predio": 1426884862,
+    "estado": 28,
+    "fecha_de_inicio": "03\/06\/2023",
+    "responsable": 7,
+    "observacion": "DDLP HRI Nº 5401\/2023",
+    "nota": "DDLP-C-EXT Nº 340\/2023"
+  }
+]

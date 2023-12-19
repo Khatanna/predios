@@ -1799,6 +1799,126 @@
       "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
       "typeId": "ce04928c-16eb-4946-a49d-26894d527bc2",
       "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "bdf73dc0-16cd-4a3f-9747-f24435ebe27b",
+      "names": "JAVIER",
+      "firstLastName": "HERRERA",
+      "secondLastName": " ",
+      "username": "javier.herrera",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "6075c4d5-a8fc-4ee4-b16b-a842f0203bc8",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "5d495e56-849e-4fda-9d9e-5099e710c406",
+      "names": "MIRIAM",
+      "firstLastName": "CALLISAYA",
+      "secondLastName": " ",
+      "username": "miriam.callisaya",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "6075c4d5-a8fc-4ee4-b16b-a842f0203bc8",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "bba83966-a07e-45a7-927d-a545288741a9",
+      "names": "OMAR ABEL",
+      "firstLastName": "MAMANI",
+      "secondLastName": "MAMANI",
+      "username": "omar.mamani",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "055c3d81-5421-4235-8eb8-78fab2fa51bd",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "07c0086e-e241-435f-9066-2f3e8608bc6d",
+      "names": "LUIS",
+      "firstLastName": "CANAVIRI",
+      "secondLastName": "CONDORI",
+      "username": "luis.canaviri",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "055c3d81-5421-4235-8eb8-78fab2fa51bd",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "0320a00c-3c0d-4876-bafa-5ebe9b37ecdd",
+      "names": "ALEIDA DENISSE",
+      "firstLastName": "SAN MARTIN",
+      "secondLastName": "GABRIEL",
+      "username": "denisse.gabriel",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "6075c4d5-a8fc-4ee4-b16b-a842f0203bc8",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "dacacb44-ffc1-418c-b72c-56d624687318",
+      "names": "MILENKA",
+      "firstLastName": "ESCOBAR",
+      "secondLastName": " ",
+      "username": "milenka.escobar",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "6075c4d5-a8fc-4ee4-b16b-a842f0203bc8",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "d48ee8cd-8ff2-4091-ac4c-f12479014d86",
+      "names": "SUSAN",
+      "firstLastName": "ALANOCA",
+      "secondLastName": " ",
+      "username": "susan.alanoca",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "6075c4d5-a8fc-4ee4-b16b-a842f0203bc8",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "aba07378-fd50-4dac-9d17-750c2e74bbf9",
+      "names": "EMILIO",
+      "firstLastName": "CONDORI",
+      "secondLastName": "QUINO",
+      "username": "emilio.condori",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "ce04928c-16eb-4946-a49d-26894d527bc2",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "22deb7ad-2bf9-4eb5-b34d-d877f8334627",
+      "names": "GUADALUPE",
+      "firstLastName": "MAYTA",
+      "secondLastName": " ",
+      "username": "guadalupe.mayta",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "ce04928c-16eb-4946-a49d-26894d527bc2",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "13ff2569-8728-4d18-93da-c21a9da64070",
+      "names": "REYNALDO",
+      "firstLastName": "SEGOVIA",
+      "secondLastName": "ALBORNOZ",
+      "username": "reynaldo.segovia",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "ce04928c-16eb-4946-a49d-26894d527bc2",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "5af90191-af23-49ba-a27d-ed25dd1be98a",
+      "names": "LOURDES",
+      "firstLastName": "QUISPE",
+      "secondLastName": " ",
+      "username": "lourdes.quispe",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "ce04928c-16eb-4946-a49d-26894d527bc2",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "c39244f8-244c-4aad-9d76-12c533d909fc",
+      "names": "LUIS",
+      "firstLastName": "SIÑANI",
+      "secondLastName": " ",
+      "username": "luis.siñani",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "ce04928c-16eb-4946-a49d-26894d527bc2",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
     }
   ]
 }

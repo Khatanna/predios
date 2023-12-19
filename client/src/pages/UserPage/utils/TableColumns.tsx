@@ -48,6 +48,7 @@ export const columns: TableColumn<User>[] = [
     name: "Tipo",
     selector: ({ type: { name } }) => name,
     reorder: true,
+    sortable: true
   },
   {
     name: "Conexión",
