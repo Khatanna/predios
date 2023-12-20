@@ -83,12 +83,12 @@ function App() {
                   {isAdmin && <Route path='create' Component={PropertyForm}></Route>}
                   <Route path=':id' Component={Property}></Route>
                 </Route>
+                {/* <Route path="*" element={<LazyComponent Component={NotFoundPage} />}></Route> */}
               </Route>
               <Route path="/auth">
                 <Route index Component={LoginPage} />
               </Route>
 
-              <Route path="*" element={<LazyComponent Component={NotFoundPage} />}></Route>
             </Routes>
           </SeekerProvider>
         </AuthProvider>

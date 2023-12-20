@@ -64,64 +64,64 @@ const columns: TableColumn<{
   createdAt: string;
   user: User;
 }>[] = [
-  {
-    name: "Nro",
-    selector: (_row, index) => (index || 0) + 1,
-    width: "80px",
-    sortFunction: (a, b) => Number(a.createdAt) - Number(b.createdAt),
-  },
-  {
-    name: "Nombre",
-    selector: (row) => row.permission.name,
-    wrap: true,
-    reorder: true,
-  },
-  {
-    name: "Descripción",
-    selector: (row) => row.permission.description,
-    wrap: true,
-    reorder: true,
-    grow: 2,
-  },
-  {
-    name: "Recurso",
-    cell: (row) => (
-      <Chip
-        text={resources[row.permission.resource as Resource]}
-        background={row.permission.resource}
-      />
-    ),
-    reorder: true,
-    sortFunction: (a, b) =>
-      a.permission.resource.localeCompare(b.permission.resource),
-  },
-  {
-    name: "Nivel de acceso",
-    cell: (row) => (
-      <Chip
-        text={levels[row.permission.level as Level]}
-        background={row.permission.level}
-        outline={true}
-      />
-    ),
-    reorder: true,
-    sortFunction: (a, b) =>
-      a.permission.level.localeCompare(b.permission.level),
-  },
-  {
-    name: "Estado",
-    cell: ({ status }) => <StateCell status={status} values={StateOfStatus} />,
-    reorder: true,
-    sortFunction: (a, b) => a.status.localeCompare(b.status),
-  },
-  {
-    id: "dropdown",
-    cell: (row) => <DropdownMenuOfPermission permissionOfUser={row} />,
-    button: true,
-    width: "30px",
-    allowOverflow: true,
-  },
-];
+    {
+      name: "Nro",
+      selector: (_row, index) => (index || 0) + 1,
+      width: "80px",
+      sortFunction: (a, b) => Number(a.createdAt) - Number(b.createdAt),
+    },
+    {
+      name: "Nombre",
+      selector: (row) => row.permission.name,
+      wrap: true,
+      reorder: true,
+    },
+    {
+      name: "Descripción",
+      selector: (row) => row.permission.description,
+      wrap: true,
+      reorder: true,
+      grow: 2,
+    },
+    {
+      name: "Recurso",
+      cell: (row) => (
+        <Chip
+          text={resources[row.permission.resource as Resource]}
+          background={row.permission.resource}
+        />
+      ),
+      reorder: true,
+      sortFunction: (a, b) =>
+        a.permission.resource.localeCompare(b.permission.resource),
+    },
+    {
+      name: "Nivel de acceso",
+      cell: (row) => (
+        <Chip
+          text={levels[row.permission.level as Level]}
+          background={row.permission.level}
+          outline={true}
+        />
+      ),
+      reorder: true,
+      sortFunction: (a, b) =>
+        a.permission.level.localeCompare(b.permission.level),
+    },
+    {
+      name: "Estado",
+      cell: ({ status }) => <StateCell status={status} values={StateOfStatus} />,
+      reorder: true,
+      sortFunction: (a, b) => a.status.localeCompare(b.status),
+    },
+    {
+      id: "dropdown",
+      cell: (row) => <DropdownMenuOfPermission permissionOfUser={row} />,
+      button: true,
+      width: "30px",
+      allowOverflow: true,
+    },
+  ];
 
 const LocalResources = Object.entries(resources);
 const LocalLevels = Object.entries(levels);
@@ -225,21 +225,21 @@ const Permission: React.FC = () => {
         columns={columns}
         data={data?.data.permissions ?? []}
         progressPending={isLoading}
-        actions={
-          data?.data.permissions.length === LocalResources.length * 4 ? null : (
-            <Tooltip
-              placement="left"
-              label="Crear nuevos permisos para el usuario"
-            >
-              <PlusCircle
-                size={32}
-                color="orange"
-                role="button"
-                onClick={handleShow}
-              />
-            </Tooltip>
-          )
-        }
+        // actions={
+        //   data?.data.permissions.length === LocalResources.length * 4 ? null : (
+        //     <Tooltip
+        //       placement="left"
+        //       label="Crear nuevos permisos para el usuario"
+        //     >
+        //       <PlusCircle
+        //         size={32}
+        //         color="orange"
+        //         role="button"
+        //         onClick={handleShow}
+        //       />
+        //     </Tooltip>
+        //   )
+        // }
         title={`Permisos del usuario: ${state.names.concat(
           " ",
           state.firstLastName,

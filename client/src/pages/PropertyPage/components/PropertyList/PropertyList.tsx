@@ -8,6 +8,7 @@ import { HouseAdd } from "react-bootstrap-icons";
 import { TableColumn } from "react-data-table-component";
 import { Table } from "../../../../components/Table";
 import { useAuth } from "../../../../hooks";
+import { Alert } from "react-bootstrap";
 
 export type PropertyListProps = {};
 const columns: TableColumn<Property>[] = [
@@ -95,8 +96,15 @@ const PropertyList: React.FC<PropertyListProps> = ({ }) => {
     GET_ALL_PROPERTIES_QUERY,
     ["getAllProperties", { page, limit, orderBy }],
   );
+
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div className="my-2">
+        <Alert variant="danger">
+          {error ?? "Ocurrio un error al listar los predios"}
+        </Alert>
+      </div>
+    );
   }
 
   return (

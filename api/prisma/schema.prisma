@@ -155,7 +155,7 @@ model UserPermission {
 
 model PermissionProfile {
   id          String       @id @default(uuid())
-  name        String       @map("nombre")
+  name        String       @unique @map("nombre")
   permissions Permission[]
 }
 

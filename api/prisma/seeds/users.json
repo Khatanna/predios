@@ -131,16 +131,6 @@
       "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
     },
     {
-      "id": "11e7d090-9156-4ff1-a6fa-7738696a3afb",
-      "names": "OMAR ABEL",
-      "firstLastName": "MAMANI",
-      "secondLastName": "MAMANI",
-      "username": "omar.mamani",
-      "password": "$2a$10$IPki/oUEKuIhSYntfQEd5esMKq2RaSrroZ2uq5cO0Cu86fYNrxyJq",
-      "typeId": "6075c4d5-a8fc-4ee4-b16b-a842f0203bc8",
-      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
-    },
-    {
       "id": "141264c3-b9ec-4245-bd12-d06c1e8947e5",
       "names": "DINO NELSON",
       "firstLastName": "QUISPE",
@@ -1916,6 +1906,46 @@
       "firstLastName": "SIÑANI",
       "secondLastName": " ",
       "username": "luis.siñani",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "ce04928c-16eb-4946-a49d-26894d527bc2",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "51fe0ff5-03a6-4140-ab4e-f5cf8ec78059",
+      "names": "KARINA",
+      "firstLastName": "RODRIGUEZ",
+      "secondLastName": " ",
+      "username": "karina.rodriguez",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "6075c4d5-a8fc-4ee4-b16b-a842f0203bc8",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "5fdc2394-68ee-464b-b2ce-01c023cc39b4",
+      "names": "OMAR RICARDO",
+      "firstLastName": "FLADINE",
+      "secondLastName": "RUIZ",
+      "username": "omar.fladine",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "ce04928c-16eb-4946-a49d-26894d527bc2",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "ccba33fd-dd81-4735-8143-91a6adf720e8",
+      "names": "PABLO",
+      "firstLastName": "MAMANI",
+      "secondLastName": "PAUCARA",
+      "username": "pablo.mamani",
+      "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
+      "typeId": "ce04928c-16eb-4946-a49d-26894d527bc2",
+      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "38e23241-a707-413c-bd5e-729d5f28789d",
+      "names": "EDWIN",
+      "firstLastName": "SIÑANI",
+      "secondLastName": " ",
+      "username": "edwin.siñani",
       "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
       "typeId": "ce04928c-16eb-4946-a49d-26894d527bc2",
       "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"

@@ -30,6 +30,15 @@ export const createUser = async (
 ) => {
   try {
     hasPermission(userContext, "CREATE", "USER");
+    const profile = await prisma.permissionProfile.findFirstOrThrow({
+      where: {
+        name: 'administrador'
+      },
+      include: {
+        permissions: true,
+      }
+    });
+
     return prisma.user.create({
       data: {
         names,
@@ -42,6 +51,11 @@ export const createUser = async (
         },
         role: {
           connect: role,
+        },
+        permissions: {
+          createMany: {
+            data: profile.permissions.map(permission => ({ permissionId: permission.id }))
+          }
         },
       },
     });

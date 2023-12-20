@@ -166,6 +166,8 @@ async function main() {
       observacion_tecnica,
       segunda_observacion,
       referencia,
+      tecnico,
+      juridico
     }) => {
       const observations: { observation: string }[] = [];
 
@@ -181,6 +183,66 @@ async function main() {
         observations.push({ observation: referencia });
       }
 
+      const technicalUsername = tecnico?.toLowerCase() === 'ariel lucana' ? 'ariel.lucana' :
+        tecnico?.toLowerCase() === 'beltran alavi' ? 'beltran.alavi' :
+          tecnico?.toLowerCase() === 'claudia garnica' ? 'claudia.garnica' :
+            tecnico?.toLowerCase() === 'cristina mamani' ? 'cristina.mamani' :
+              tecnico?.toLowerCase() === 'david canaviri' ? 'david.canaviri' :
+                tecnico?.toLowerCase() === 'david oscar' ? 'david.mamani' :
+                  tecnico?.toLowerCase() === 'edgar paredes' ? 'edgar.paredes' :
+                    tecnico?.toLowerCase() === 'edgar tola' ? 'edgar.tola' :
+                      tecnico?.toLowerCase() === 'edwin aruquipa' ? 'edwin.aruquipa' :
+                        tecnico?.toLowerCase() === 'edwin mamani' ? 'edwin.mamani' :
+                          tecnico?.toLowerCase() === 'edwin siñani' ? 'edwin.siñani' :
+                            tecnico?.toLowerCase() === 'emilio condori' ? 'emilio.condori' :
+                              tecnico?.toLowerCase() === 'franz troche' ? 'franz.troche' :
+                                tecnico?.toLowerCase() === 'gloria silva' ? 'gloria.silva' :
+                                  tecnico?.toLowerCase() === 'guadalupe mayta' ? 'guadalupe.mayta' :
+                                    tecnico?.toLowerCase() === 'javier limachi' ? 'javier.limachi' :
+                                      tecnico?.toLowerCase() === 'joel ruiz' ? 'marcelo.ruiz' :
+                                        tecnico?.toLowerCase() === 'lorenzo viquini' ? 'lorenzo.viquini' :
+                                          tecnico?.toLowerCase() === 'lourdes quispe' ? 'lourdes.quispe' :
+                                            tecnico?.toLowerCase() === 'luis siñani' ? 'luis.siñani' :
+                                              tecnico?.toLowerCase() === 'marco a. ergueta' ? 'marco.ergueta' :
+                                                tecnico?.toLowerCase() === 'max arias' ? 'maximo.arias' :
+                                                  tecnico?.toLowerCase() === 'olivia quispe' ? 'olivia.quispe' :
+                                                    tecnico?.toLowerCase() === 'omar fladine' ? 'omar.fladine' :
+                                                      tecnico?.toLowerCase() === 'pablo mamani' ? 'pablo.mamani' :
+                                                        tecnico?.toLowerCase() === 'reynaldo segovia' ? 'reynaldo.segovia' :
+                                                          tecnico?.toLowerCase() === 'roger chura' ? 'roger.chura' :
+                                                            tecnico?.toLowerCase() === 'roger magne' ? 'roger.magne' :
+                                                              tecnico?.toLowerCase() === 'ruddy bautista' ? 'ruddy.bautista' :
+                                                                tecnico?.toLowerCase() === 'samuel calle' ? 'samuel.calle' :
+                                                                  tecnico?.toLowerCase() === 'vilma vargas' ? 'vilma.vargas' : undefined;
+      const legalUsername = juridico?.toLowerCase() === 'abrahan luna' ? 'abraham.luna' :
+        juridico?.toLowerCase() === 'aleida san martin' ? 'denisse.gabriel' :
+          juridico?.toLowerCase() === 'andrea villarroel' ? 'andrea.villarroel' :
+            juridico?.toLowerCase() === 'carmen m. acapa' ? 'carmen.acapa' :
+              juridico?.toLowerCase() === 'caterin cartagena' ? 'katherine.cartagena' :
+                juridico?.toLowerCase() === 'cristina centellas' ? 'cristina.centellas' :
+                  juridico?.toLowerCase() === 'delmira endara cespedes' ? 'delmira.endara' :
+                    juridico?.toLowerCase() === 'franz isla' ? 'franz.isla' :
+                      juridico?.toLowerCase() === 'javier herrera' ? 'javier.herrera' :
+                        juridico?.toLowerCase() === 'karen rojas' ? 'tatiana.rojas' :
+                          juridico?.toLowerCase() === 'karina rodriguez' ? 'karina.rodriguez' :
+                            juridico?.toLowerCase() === 'lisbeth soliz' ? 'lisbeth.soliz' :
+                              juridico?.toLowerCase() === 'lizeth castillo' ? 'lizeth.castillo' :
+                                juridico?.toLowerCase() === 'luis canaviri' ? 'luis.canaviri' :
+                                  juridico?.toLowerCase() === 'marco zeballos' ? 'marco.zeballos' :
+                                    juridico?.toLowerCase() === 'maria lopez' ? 'maria.lopez' :
+                                      juridico?.toLowerCase() === 'mariela yarichime' ? 'mariela.yarichime' :
+                                        juridico?.toLowerCase() === 'mayra ramirez' ? 'mayra.ramirez' :
+                                          juridico?.toLowerCase() === 'milenka escobar' ? 'milenka.escobar' :
+                                            juridico?.toLowerCase() === 'miriam callisaya' ? 'miriam.callisaya' :
+                                              juridico?.toLowerCase() === 'miriam castañeta' ? 'miriam.castañeta' :
+                                                juridico?.toLowerCase() === 'nelson alcon vargas' ? 'nelson.alcon' :
+                                                  juridico?.toLowerCase() === 'norma merida' ? 'norma.merida' :
+                                                    juridico?.toLowerCase() === 'omar mamani' ? 'omar.mamani' :
+                                                      juridico?.toLowerCase() === 'regina tarqui' ? 'regina.tarqui' :
+                                                        juridico?.toLowerCase() === 'roxana rodriguez' ? 'constancia.rodriguez' :
+                                                          juridico?.toLowerCase() === 'sharon' ? 'sharon.laura' :
+                                                            juridico?.toLowerCase() === 'susan alanoca' ? 'susan.alanoca' :
+                                                              juridico?.toLowerCase() === 'zulema mollinedo' ? 'zulema.mollinedo' : undefined;
       return prisma.property.create({
         data: {
           code: codigo ? codigo + "" : "",
@@ -352,15 +414,24 @@ async function main() {
             }
             : undefined,
           technicalObservation: observacion_tecnica ? observacion_tecnica : "",
-          // legal: {
-          //   connectOrCreate: {
-          //     where: {
-          //       user: {
-          //         username:
-          //       }
-          //     }
-          //   }
-          // }
+          legal: legalUsername ? {
+            create: {
+              user: {
+                connect: {
+                  username: legalUsername
+                }
+              }
+            }
+          } : undefined,
+          technical: technicalUsername ? {
+            create: {
+              user: {
+                connect: {
+                  username: technicalUsername
+                }
+              }
+            }
+          } : undefined
         },
       });
     },
@@ -536,8 +607,6 @@ async function main() {
 
     return []
   }).flat();
-
-  // console.log(trackingsMapped);
 
   await prisma.$transaction(trackingsMapped);
 
