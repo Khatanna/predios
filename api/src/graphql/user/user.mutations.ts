@@ -30,13 +30,12 @@ export const createUser = async (
 ) => {
   try {
     hasPermission(userContext, "CREATE", "USER");
-    const profile = await prisma.permissionProfile.findFirstOrThrow({
+    const permissions = await prisma.permission.findMany({
       where: {
-        name: 'administrador'
+        roles: {
+          some: role,
+        },
       },
-      include: {
-        permissions: true,
-      }
     });
 
     return prisma.user.create({
@@ -54,8 +53,10 @@ export const createUser = async (
         },
         permissions: {
           createMany: {
-            data: profile.permissions.map(permission => ({ permissionId: permission.id }))
-          }
+            data: permissions.map((permission) => ({
+              permissionId: permission.id,
+            })),
+          },
         },
       },
     });
@@ -85,6 +86,23 @@ export const updateUserByUsername = async (
 ) => {
   try {
     hasPermission(userContext, "UPDATE", "USER");
+    const permissions = await prisma.permission.findMany({
+      where: {
+        roles: {
+          some: role,
+        },
+      },
+    });
+
+    // TODO cuidado con el username a la hora de actualizar
+    await prisma.userPermission.deleteMany({
+      where: {
+        user: {
+          username,
+        },
+      },
+    });
+
     const user = await prisma.user.update({
       where: {
         username,
@@ -93,7 +111,7 @@ export const updateUserByUsername = async (
         names,
         firstLastName,
         secondLastName,
-        username, // TODO construir el username
+        username,
         password: bcrypt.hashSync(password, 10),
         status,
         type: {
@@ -101,6 +119,13 @@ export const updateUserByUsername = async (
         },
         role: {
           connect: role,
+        },
+        permissions: {
+          createMany: {
+            data: permissions.map((permission) => ({
+              permissionId: permission.id,
+            })),
+          },
         },
       },
     });
