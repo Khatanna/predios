@@ -10,7 +10,7 @@ export const getAllRecords = async (
   try {
     hasPermission(userContext, "READ", "RECORD");
     return prisma.record.findMany({
-      include: { user: { include: { type: true, permissions: true } } },
+      include: { user: { include: { type: true } } },
       where: {
         resource
       },

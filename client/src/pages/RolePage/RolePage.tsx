@@ -1,0 +1,187 @@
+"use client";
+import { gql, useMutation, useQuery } from '@apollo/client';
+import { useState } from 'react';
+import { Accordion, Button, Col, Form, Modal } from 'react-bootstrap';
+import { FileEarmarkPlus } from 'react-bootstrap-icons';
+import { useParams } from 'react-router';
+import { Chip } from '../../components/Chip';
+import { Tooltip } from '../../components/Tooltip';
+import { levels, resources } from '../../utilities/constants';
+import { PermissionTable } from '../PermissionPage/PermissionPage';
+import { Role } from '../UserPage/models/types';
+import { useForm } from 'react-hook-form';
+import { Resource } from '../UserPage/components/Permission/Permission';
+import { Permission } from '../PermissionPage/models/types';
+export type RolePageProps = {
+	// types...
+}
+
+const GET_ROLE_QUERY = gql`
+	query GetRole($name: String) {
+    role: getRole(name: $name) {
+      name
+			permissions {
+				status
+				permission {
+					name
+					description
+					level
+					resource
+					status
+				}
+			}
+    }
+  }
+`
+
+const CREATE_PERMISSION_FOR_ROLE_MUTATION = gql`
+	mutation createPermissionForRole($role: String, $permissions: [PermissionsInput]) {
+		role: createPermissionForRole(role: $role, permissions: $permissions) {
+			name
+		}
+	}
+`
+const LocalResources = Object.entries(resources);
+const LocalLevels = Object.entries(levels);
+type Level = keyof typeof levels;
+interface FormValues {
+	permissions: Record<Resource, { resource: Resource; levels: Level[] }>;
+}
+const RolePage: React.FC<RolePageProps> = ({ }) => {
+	const [show, setShow] = useState(false);
+	const { role } = useParams();
+	const { register, handleSubmit } = useForm<FormValues>({
+		defaultValues: {
+			permissions: Object.keys(resources).reduce(
+				(
+					acc: Record<Resource, { resource: Resource; levels: Level[] }>,
+					resource,
+				) => {
+					acc[resource as Resource] = {
+						resource: resource as Resource,
+						levels: [],
+					};
+
+					return acc;
+				},
+				{} as Record<Resource, { resource: Resource; levels: Level[] }>,
+			),
+		},
+	});
+	const { data, loading } = useQuery<{ role: Role }>(GET_ROLE_QUERY, { variables: { name: role } })
+	const handleClose = () => {
+		setShow(false)
+	}
+
+	const [createPermissionForRole] = useMutation<{ role: Role }, { role: string, permissions: { resource: Resource; levels: Level[] }[] }>(CREATE_PERMISSION_FOR_ROLE_MUTATION);
+
+	const submit = (data: FormValues) => {
+		console.log(Object.values(data.permissions))
+		createPermissionForRole({
+			variables: {
+				role: role!,
+				permissions: Object.values(data.permissions)
+			}
+		})
+	}
+	return (
+		<div>
+			<PermissionTable
+				name={`permisos para el perfil de ${role}`}
+				isLoading={loading}
+				permissions={data?.role.permissions.map(e => ({ ...e.permission, status: e.status })) ?? []}
+				actions={
+					<div className="d-flex gap-2">
+						<Tooltip placement="left" label="Agregar un permiso">
+							<div className="text-primary" role="button">
+								<FileEarmarkPlus size={30} onClick={() => setShow(true)} />
+							</div>
+						</Tooltip>
+					</div >
+				}
+			/>
+			<Modal show={show} onHide={handleClose}>
+				<Modal.Header closeButton>
+					<Modal.Title>
+						Crear permisos para: <strong>{role}</strong>
+					</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<Form
+						className="row g-3 justify-content-center"
+						onSubmit={handleSubmit(submit)}
+					>
+						<Col xs="10">
+							<Form.Group>
+								<Accordion>
+									{LocalResources.filter(([localResource]) => {
+										const levels =
+											data?.role.permissions.reduce(
+												(
+													acc: string[],
+													{ permission: { resource, level } },
+												) => {
+													if (localResource === resource) {
+														acc.push(level);
+													}
+
+													return acc;
+												},
+												[],
+											) ?? [];
+
+										return levels.length !== 4;
+									}).map(([resource, name]) => {
+										return (
+											<Accordion.Item
+												eventKey={resource}
+												key={crypto.randomUUID()}
+											>
+												<Accordion.Header className="d-flex align-items-center">
+													<div className="d-flex gap-2 align-items-center">
+														Permisos de:{" "}
+														<Chip text={name} background={resource} />
+													</div>
+												</Accordion.Header>
+												<Accordion.Body>
+													{LocalLevels.filter(([level]) => {
+														return !data?.role.permissions.some(
+															({ permission }) =>
+																permission.level === level &&
+																permission.resource === resource,
+														);
+													}).map(([level, name]) => (
+														<Form.Check
+															type={"checkbox"}
+															label={name}
+															value={level}
+															id={crypto.randomUUID()}
+															{...register(
+																`permissions.${resource as Resource}.levels`,
+															)}
+														/>
+													))}
+												</Accordion.Body>
+											</Accordion.Item>
+										);
+									})}
+								</Accordion>
+							</Form.Group>
+						</Col>
+						<Col xs="10">
+							<Button
+								variant="success"
+								className="text-white shadow float-end"
+								type="submit"
+							>
+								Crear permisos para este perfil
+							</Button>
+						</Col>
+					</Form>
+				</Modal.Body>
+			</Modal>
+		</div >
+	);
+};
+
+export default RolePage;

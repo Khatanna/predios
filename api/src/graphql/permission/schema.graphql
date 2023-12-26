@@ -12,7 +12,6 @@ type Permission {
   description: String!
   resource: String!
   level: Level!
-  users: [User]!
   status: String
   createdAt: String!
 }

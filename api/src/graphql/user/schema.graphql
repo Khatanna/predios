@@ -76,17 +76,17 @@ type Mutation {
   updateUserByUsername(username: String, input: UserInput): User
   updateUserById(id: ID, input: UserInput): User
   updateStateUserByUsername(username: String, input: UserInput): User
-  updateStateOfPermissionUserByUsername(
-    input: UpdateStateOfPermissionUserByUsernameInput
-  ): UserPermissionUpdate
+  # updateStateOfPermissionUserByUsername(
+  #    input: UpdateStateOfPermissionUserByUsernameInput
+  #  ): UserPermissionUpdate
   updateStateUsersByUsername(
     input: UpdateStateOfPermissionUsersByUsernameInput
   ): UserStatusChangeMany
   deleteUserById(id: ID): User
   deleteUserByUsername(username: String): User
-  deletePermissionOfUserByUsername(
-    input: DeletePermissionOfUserByUsernameInput
-  ): UserPermissionDelete
+  # deletePermissionOfUserByUsername(
+  #   input: DeletePermissionOfUserByUsernameInput
+  # ): UserPermissionDelete
   createPermissionForUser(
     input: UpdatePermissionsUserByUsernameInput
   ): UserUpdatePermission

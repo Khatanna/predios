@@ -2,12 +2,12 @@ import { memo } from "react";
 import { PersonFill } from "react-bootstrap-icons";
 import { Role } from "../../models/types";
 
-export type RoleIconProps = Role;
+export type RoleIconProps = Pick<Role, 'name'>;
 
 const RoleIcon: React.FC<RoleIconProps> = memo(({ name }) => {
   return (
     <div className="d-flex align-items-center gap-2">
-      <PersonFill size={20} color={name === "Usuario" ? "orange" : "green"} />
+      <PersonFill size={20} color={name === "usuario" ? "orange" : "green"} />
       {name}
     </div>
   );

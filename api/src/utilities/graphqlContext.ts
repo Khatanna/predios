@@ -6,6 +6,7 @@ import { isOperationAuthLess } from "./isOperationAuthLess";
 import { throwUnAuthenticateError } from "./throwUnAuthenticateError";
 import { PubSub } from 'graphql-subscriptions';
 import dns from 'dns';
+import { throwUnauthorizedError } from "./throwUnauthorizedError";
 export const prisma = new PrismaClient();
 export const pubSub = new PubSub();
 const actions: Record<string, LevelPermission> = {
@@ -79,18 +80,15 @@ export const graphqlContext = async ({
         select: {
           username: true,
           status: true,
-          permissions: {
-            select: {
-              status: true,
-              permission: {
-                select: {
-                  level: true,
-                  resource: true,
-                  status: true,
-                },
+          role: {
+            include: {
+              permissions: {
+                include: {
+                  permission: true,
+                }
               },
-            },
-          },
+            }
+          }
         },
       }),
       pubSub

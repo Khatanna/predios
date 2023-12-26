@@ -68,7 +68,7 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({ beneficiary, index, r
 				customSwalSuccess("Beneficiario eliminado correctamente", `Se ha eliminado al beneficiario: (${name}) de este predio`);
 				remove(index);
 			},
-			onError(error, { index, input }) {
+			onError(error) {
 				customSwalError(error, "Ocurrio un error al intentar eliminar el beneficiario")
 				// append
 			},
@@ -91,7 +91,7 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({ beneficiary, index, r
 			<div className="ms-1 me-auto">
 				{beneficiary.name}
 			</div>
-			{role === 'Administrador' && <div className="d-flex gap-1">
+			{role === 'administrador' && <div className="d-flex gap-1">
 				<Tooltip label="Editar beneficiario">
 					<Badge bg="info" role="button" onClick={() => setEdit(true)}>
 						<Pencil />

@@ -67,7 +67,6 @@ model User {
   createdAt      DateTime              @default(now())
   updatedAt      DateTime              @updatedAt
   token          String?               @db.MediumText
-  permissions    UserPermission[]
   type           UserType              @relation(fields: [typeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   role           Role                  @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   status         Status                @default(ENABLE) @map("estado")
@@ -81,12 +80,12 @@ model User {
 }
 
 model Role {
-  id          String       @id @default(uuid())
-  name        String       @unique @map("nombre")
+  id          String              @id @default(uuid())
+  name        String              @unique @map("nombre")
   users       User[]
-  permissions Permission[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  permissions RoleHasPermission[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
 }
 
 model TechnicalOnProperty {
@@ -124,34 +123,33 @@ model DeletedUser {
 }
 
 model Permission {
-  id          String           @id @default(uuid())
-  name        String           @map("nombre")
-  level       LevelPermission  @map("nivel_de_acceso")
-  resource    Resource         @map("recurso")
-  description String           @map("descripcion")
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  users       UserPermission[]
-  status      Status           @default(ENABLE) @map("estado")
-  roles       Role[]
+  id          String              @id @default(uuid())
+  name        String              @map("nombre")
+  level       LevelPermission     @map("nivel_de_acceso")
+  resource    Resource            @map("recurso")
+  description String              @map("descripcion")
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  status      Status              @default(ENABLE) @map("estado")
+  roles       RoleHasPermission[]
 
   @@unique([resource, level])
   @@index([resource, level])
   @@map("permiso")
 }
 
-model UserPermission {
+model RoleHasPermission {
   id           String     @id @default(uuid())
   status       Status     @default(ENABLE) @map("estado")
-  userId       String     @map("usuario_id")
+  roleId       String     @map("rol_id")
   permissionId String     @map("permiso_id")
-  user         User       @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  role         Role       @relation(fields: [roleId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   permission   Permission @relation(fields: [permissionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  assignedAt   DateTime   @default(now())
+  assignedBy   String
 
-  @@unique([userId, permissionId])
-  @@map("permiso_de_usuario")
+  @@unique([roleId, permissionId])
+  @@map("rol_permiso")
 }
 
 model UserType {

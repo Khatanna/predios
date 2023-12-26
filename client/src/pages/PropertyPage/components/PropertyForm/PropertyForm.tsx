@@ -559,7 +559,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                 )}
                               </Col>
                             </Row>
-                            {role === "Administrador" && (
+                            {role === "administrador" && (
                               <Row className="align-self-end">
                                 <Col>
                                   <Button
@@ -602,7 +602,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                               </Alert>
                             </Row>
                           )}
-                          {role === "Administrador" && (
+                          {role === "administrador" && (
                             <Row>
                               <Button
                                 size="sm"
@@ -651,7 +651,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                             </Alert>
                           </Row>
                         )}
-                        {role === "Administrador" && (
+                        {role === "administrador" && (
                           <Row>
                             <Button
                               size="sm"
@@ -761,7 +761,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                   </Row>
                 </Col>
               </Row>
-              {role === "Administrador" && (
+              {role === "administrador" && (
                 <Row className="my-2">
                   <Col className="d-flex justify-content-end gap-2">
                     {!property && (

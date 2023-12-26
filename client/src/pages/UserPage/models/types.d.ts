@@ -1,12 +1,20 @@
 import { StateOfStatus } from "../../../utilities/constants";
+import { Permission } from "../../PermissionPage/models/types";
 
 export type UserType = {
   id: string;
   name: string;
 };
 
+export type RoleHasPermission = {
+  status: string;
+  permission: Permission;
+  assignedBy: string;
+}
+
 export type Role = {
   name: string;
+  permissions: RoleHasPermission[]
 };
 
 export type Status = keyof typeof StateOfStatus;

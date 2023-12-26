@@ -138,7 +138,7 @@ const PropertyList: React.FC<PropertyListProps> = ({ }) => {
       }}
       onChangeRowsPerPage={setLimit}
       actions={
-        role === "Administrador" &&
+        role === "administrador" &&
         <Tooltip label="Crear predio">
           <Link to={"create"}>
             <HouseAdd size={30} />

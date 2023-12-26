@@ -2,11 +2,11 @@
   "roles": [
     {
       "id": "9b8a7068-c716-4abf-8664-b53c2851b714",
-      "name": "Administrador"
+      "name": "administrador"
     },
     {
       "id": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5",
-      "name": "Usuario"
+      "name": "usuario"
     }
   ]
 }

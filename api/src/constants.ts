@@ -12,7 +12,7 @@ export const AuthErrorMessage = {
 
 type Operation = 'READ' | 'CREATE' | 'UPDATE' | 'DELETE'
 
-export const PermissionErrorMessage: { [K in `${Operation}_${Resource}` | 'DISABLE_GLOBAL' | 'DISABLE_FOR_YOU']: string } = {
+export const PermissionErrorMessage: { [K in `${Operation}_${Resource}` | 'DISABLE_GLOBAL' | 'DISABLE_FOR_ROLE']: string } = {
   READ_USER: "No tiene permiso para ver a los usuarios del sistema",
   CREATE_USER: "No tiene permiso para crear nuevos usuarios del sistema",
   UPDATE_USER: 'No tiene permiso para modificar usuarios del sistema',
@@ -118,8 +118,8 @@ export const PermissionErrorMessage: { [K in `${Operation}_${Resource}` | 'DISAB
   UPDATE_TRACKING: 'No tiene permiso para modificar los seguimientos del sistema',
   DELETE_TRACKING: 'No tiene permiso para eliminar los seguimientos del sistema',
 
-  DISABLE_GLOBAL: "El permiso ha sido deshabilitado por el administrador",
-  DISABLE_FOR_YOU: "Es administrador ha deshabilitado su acceso a este permiso"
+  DISABLE_GLOBAL: "El permiso esta desahabilitado",
+  DISABLE_FOR_ROLE: "El permiso ha sido deshabilitado para este rol"
 } as const
 
 export const TokenErrorMessage = {

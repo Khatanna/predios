@@ -1,6 +1,28 @@
+type RoleHasPermission {
+  status: String
+  assignedAt: String
+  assignedBy: String
+  permission: Permission
+}
+
 type Role { 
   id: ID!
-  name: String  
+  name: String 
+  permissions: [RoleHasPermission] 
+}
+
+type Query {
+  getAllRoles: [Role]
+  getRole(name: String): Role
+}
+
+input PermissionsInput {
+  resource: String
+  levels: [String]
+}
+
+type Mutation { 
+  createPermissionForRole(role: String, permissions: [PermissionsInput]): Role
 }
 
 input RoleInput {

@@ -14,6 +14,7 @@ import { AuthProvider } from './context/AuthContext';
 import { SeekerProvider } from './context/SeekerContext';
 import { useAuth } from './hooks';
 import UserPage from './pages/UserPage/UserPage';
+import { RolePage } from './pages/RolePage';
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"))
 const Permission = lazy(() => import("./pages/UserPage/components/Permission/Permission"))
 const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
@@ -33,7 +34,7 @@ const LazyComponent = ({ Component }: { Component: React.ComponentType<NonNullab
 
 function App() {
   const { role } = useAuth();
-  const isAdmin = role === "Administrador"
+  const isAdmin = role === "administrador"
 
   return (
     <BrowserRouter>
@@ -67,6 +68,7 @@ function App() {
 
                       return <FormCreatePermission permission={state} />
                     }}></Route>
+                    <Route path=':role' element={<LazyComponent Component={RolePage} />}></Route>
                   </Route>
 
                   <Route path="activities" element={<LazyComponent Component={ActivityPage} />} />

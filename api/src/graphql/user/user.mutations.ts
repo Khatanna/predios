@@ -1,11 +1,8 @@
 import {
-  LevelPermission,
-  Resource,
   Role,
   Status,
-  Status as StatusDB,
   Type,
-  User,
+  User
 } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { Context } from "../../types";
@@ -30,14 +27,6 @@ export const createUser = async (
 ) => {
   try {
     hasPermission(userContext, "CREATE", "USER");
-    const permissions = await prisma.permission.findMany({
-      where: {
-        roles: {
-          some: role,
-        },
-      },
-    });
-
     return prisma.user.create({
       data: {
         names,
@@ -50,13 +39,6 @@ export const createUser = async (
         },
         role: {
           connect: role,
-        },
-        permissions: {
-          createMany: {
-            data: permissions.map((permission) => ({
-              permissionId: permission.id,
-            })),
-          },
         },
       },
     });
@@ -94,15 +76,6 @@ export const updateUserByUsername = async (
       },
     });
 
-    // TODO cuidado con el username a la hora de actualizar
-    await prisma.userPermission.deleteMany({
-      where: {
-        user: {
-          username,
-        },
-      },
-    });
-
     const user = await prisma.user.update({
       where: {
         username,
@@ -119,13 +92,6 @@ export const updateUserByUsername = async (
         },
         role: {
           connect: role,
-        },
-        permissions: {
-          createMany: {
-            data: permissions.map((permission) => ({
-              permissionId: permission.id,
-            })),
-          },
         },
       },
     });
@@ -197,151 +163,150 @@ export const createPermissionForUser = async (
 ) => {
   try {
     hasPermission(userContext, "CREATE", "USERPERMISSION");
-    const elements = data.flatMap(({ resource, levels }) =>
-      levels.map((level) =>
-        prisma.userPermission.create({
-          data: {
-            user: {
-              connect: {
-                username,
-              },
-            },
-            permission: {
-              connect: {
-                resource_level: {
-                  resource: resource as Resource,
-                  level: level as LevelPermission,
-                },
-              },
-            },
-          },
-          select: {
-            permission: true,
-          },
-        }),
-      ),
-    );
-    const permissions = await prisma.$transaction(elements);
-    await pubSub.publish("USER_PERMISSION_STATUS_UPDATED", {
-      userPermissionStatusUpdated: data
-        .flatMap(({ resource, levels }) =>
-          levels.map((level) => ({
-            resource,
-            level,
-          })),
-        )
-        .reduce(
-          (acc: string[], { level, resource }) => [
-            ...acc,
-            level.concat("_", resource),
-          ],
-          [],
-        ),
-    });
+    // const elements = data.flatMap(({ resource, levels }) =>
+    //   levels.map((level) =>
+    //     prisma.userPermission.create({
+    //       data: {
+    //         user: {
+    //           connect: {
+    //             username,
+    //           },
+    //         },
+    //         permission: {
+    //           connect: {
+    //             resource_level: {
+    //               resource: resource as Resource,
+    //               level: level as LevelPermission,
+    //             },
+    //           },
+    //         },
+    //       },
+    //       select: {
+    //         permission: true,
+    //       },
+    //     }),
+    //   ),
+    // );
+    // const permissions = await prisma.$transaction(elements);
+    // await pubSub.publish("USER_PERMISSION_STATUS_UPDATED", {
+    //   userPermissionStatusUpdated: data
+    //     .flatMap(({ resource, levels }) =>
+    //       levels.map((level) => ({
+    //         resource,
+    //         level,
+    //       })),
+    //     )
+    //     .reduce(
+    //       (acc: string[], { level, resource }) => [
+    //         ...acc,
+    //         level.concat("_", resource),
+    //       ],
+    //       [],
+    //     ),
+    // });
     return {
       created: true,
-      permissions,
     };
   } catch (e) {
     throw e;
   }
 };
 
-export const updateStateOfPermissionUserByUsername = async (
-  _parent: any,
-  {
-    input: {
-      username,
-      data: { resource, level, status },
-    },
-  }: GraphQLInput<{
-    username: string;
-    data: { resource: Resource; level: LevelPermission; status: StatusDB };
-  }>,
-  { prisma, userContext, pubSub }: Context,
-) => {
-  try {
-    hasPermission(userContext, "UPDATE", "USERPERMISSION");
-    const userPermission = await prisma.userPermission.findFirst({
-      where: {
-        user: {
-          username,
-        },
-        permission: {
-          level,
-          resource,
-        },
-      },
-    });
-    const updated = await prisma.userPermission.update({
-      where: {
-        id: userPermission?.id,
-      },
-      data: {
-        status,
-      },
-      include: {
-        permission: true,
-      },
-    });
+// export const updateStateOfPermissionUserByUsername = async (
+//   _parent: any,
+//   {
+//     input: {
+//       username,
+//       data: { resource, level, status },
+//     },
+//   }: GraphQLInput<{
+//     username: string;
+//     data: { resource: Resource; level: LevelPermission; status: StatusDB };
+//   }>,
+//   { prisma, userContext, pubSub }: Context,
+// ) => {
+//   try {
+//     hasPermission(userContext, "UPDATE", "USERPERMISSION");
+//     const userPermission = await prisma.userPermission.findFirst({
+//       where: {
+//         user: {
+//           username,
+//         },
+//         permission: {
+//           level,
+//           resource,
+//         },
+//       },
+//     });
+//     const updated = await prisma.userPermission.update({
+//       where: {
+//         id: userPermission?.id,
+//       },
+//       data: {
+//         status,
+//       },
+//       include: {
+//         permission: true,
+//       },
+//     });
 
-    await pubSub.publish("USER_PERMISSION_STATUS_UPDATED", {
-      userPermissionStatusUpdated: [level.concat("_", resource)],
-    });
+//     await pubSub.publish("USER_PERMISSION_STATUS_UPDATED", {
+//       userPermissionStatusUpdated: [level.concat("_", resource)],
+//     });
 
-    return {
-      updated: Boolean(updated),
-      permission: updated,
-    };
-  } catch (e) {
-    throw e;
-  }
-};
+//     return {
+//       updated: Boolean(updated),
+//       permission: updated,
+//     };
+//   } catch (e) {
+//     throw e;
+//   }
+// };
 
-export const deletePermissionOfUserByUsername = async (
-  _parent: any,
-  {
-    input: {
-      username,
-      data: { resource, level },
-    },
-  }: GraphQLInput<{
-    username: string;
-    data: { resource: Resource; level: LevelPermission };
-  }>,
-  { prisma, userContext, pubSub }: Context,
-) => {
-  try {
-    hasPermission(userContext, "DELETE", "USERPERMISSION");
-    const userPermission = await prisma.userPermission.findFirst({
-      where: {
-        user: {
-          username,
-        },
-        permission: {
-          level,
-          resource,
-        },
-      },
-    });
+// export const deletePermissionOfUserByUsername = async (
+//   _parent: any,
+//   {
+//     input: {
+//       username,
+//       data: { resource, level },
+//     },
+//   }: GraphQLInput<{
+//     username: string;
+//     data: { resource: Resource; level: LevelPermission };
+//   }>,
+//   { prisma, userContext, pubSub }: Context,
+// ) => {
+//   try {
+//     hasPermission(userContext, "DELETE", "USERPERMISSION");
+//     const userPermission = await prisma.userPermission.findFirst({
+//       where: {
+//         user: {
+//           username,
+//         },
+//         permission: {
+//           level,
+//           resource,
+//         },
+//       },
+//     });
 
-    const permission = await prisma.userPermission.delete({
-      where: {
-        id: userPermission!.id,
-      },
-    });
+//     const permission = await prisma.userPermission.delete({
+//       where: {
+//         id: userPermission!.id,
+//       },
+//     });
 
-    await pubSub.publish("USER_PERMISSION_STATUS_UPDATED", {
-      userPermissionStatusUpdated: [level.concat("_", resource)],
-    });
-    return {
-      deleted: Boolean(permission),
-      permission,
-    };
-  } catch (e) {
-    throw e;
-  }
-};
+//     await pubSub.publish("USER_PERMISSION_STATUS_UPDATED", {
+//       userPermissionStatusUpdated: [level.concat("_", resource)],
+//     });
+//     return {
+//       deleted: Boolean(permission),
+//       permission,
+//     };
+//   } catch (e) {
+//     throw e;
+//   }
+// };
 
 export const updateStateUsersByUsername = async (
   _parent: any,

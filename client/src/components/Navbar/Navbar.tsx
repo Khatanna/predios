@@ -30,36 +30,6 @@ const NavbarComponent: React.FC = () => {
       }
     }
   });
-  // useEffect(() => {
-  //   client.on('connected', () => {
-  //     console.log("conectados");
-  //   })
-
-  //   client.subscribe<{ userConnected: boolean }>({
-  //     query: `
-  //       subscription Subscription {
-  //       userConnected
-  //     }
-  //   `},
-  //     {
-  //       next({ data }) {
-  //         console.log(data)
-  //         if (data?.userConnected) {
-  //           queryClient.invalidateQueries(['getAllUsers'])
-  //         }
-  //       },
-  //       error(error) {
-  //         console.log(error)
-  //       },
-  //       complete() {
-  //         console.log("conectados completado")
-  //       },
-  //     })
-
-  //   return () => {
-  //     client.dispose()
-  //   }
-  // }, [queryClient])
 
   if (!isAuth) {
     return <Navigate to={"/auth"} />;
@@ -73,8 +43,8 @@ const NavbarComponent: React.FC = () => {
             <img
               src={logo}
               alt="Inra"
-              width={32}
-              height={32}
+              width={42}
+              height={42}
               className="img-responsive"
             />
           </Navbar.Brand>

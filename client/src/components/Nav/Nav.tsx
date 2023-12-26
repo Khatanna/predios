@@ -12,47 +12,25 @@ const routes: Route[] = [
     path: "/users",
     name: "Usuarios",
     icon: <PersonCircle color="green" size={size} />,
-    role: 'Administrador'
+    role: 'administrador'
   },
   {
     path: "/admin/permissions",
     name: "Permisos",
     icon: <ShieldLock color="red" size={size} />,
-    role: 'Administrador'
+    role: 'administrador'
   },
   {
     path: '/properties',
     name: 'Predios',
     icon: <House color="orange" size={size} />,
-    role: 'Usuario'
+    role: 'usuario'
   },
-  // {
-  //   path: '/admin',
-  //   name: 'Ubicaciones',
-  //   children: [
-  //     {
-  //       path: '/admin/localizations',
-  //       name: 'Ver todos',
-  //     },
-  //     {
-  //       path: '/admin/cities',
-  //       name: 'Departamentos'
-  //     },
-  //     {
-  //       path: '/admin/provinces',
-  //       name: 'Provincias'
-  //     },
-  //     {
-  //       path: '/admin/municipalities',
-  //       name: 'Municipios'
-  //     }
-  //   ]
-  // },
   {
     path: "/admin/records",
     name: "Historial",
     icon: <Calendar3 color="blue" size={size} />,
-    role: 'Administrador'
+    role: 'administrador'
   }
 ];
 
@@ -60,7 +38,7 @@ const NavComponent: React.FC = () => {
   const { role } = useAuth();
   return (
     <Nav className="me-auto gap-3">
-      {routes.filter(r => role === 'Administrador' ? r : r.role === role).map(({ path, name, icon, children }) => (
+      {routes.filter(r => role === 'administrador' ? r : r.role === role).map(({ path, name, icon, children }) => (
         <Nav.Item key={crypto.randomUUID()} as="div">
           {children ? (
             <LinkStyled $isActive={false}>

@@ -11,7 +11,7 @@ export const hasPermission = (
   if (!user)
     throw throwUnAuthenticateError(AuthResponses.UNAUTHENTICATED);
 
-  const permission = user.permissions.find(
+  const permission = user.role.permissions.find(
     ({ permission }) =>
       permission.level === level &&
       permission.resource === resource
@@ -24,7 +24,7 @@ export const hasPermission = (
     throw new Error(PermissionErrorMessage.DISABLE_GLOBAL);
 
   if (permission.status === "DISABLE")
-    throw new Error(PermissionErrorMessage.DISABLE_FOR_YOU);
+    throw new Error(PermissionErrorMessage.DISABLE_FOR_ROLE);
 
   return true;
 };
