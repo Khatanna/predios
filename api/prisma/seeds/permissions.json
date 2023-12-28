@@ -51,25 +51,25 @@
     {
       "name": "Lectura de los permisos de usuario",
       "level": "READ",
-      "resource": "USERPERMISSION",
+      "resource": "ROLE",
       "description": "Permite ver la información de los permisos de usuarios en el sistema."
     },
     {
       "name": "Creación de permisos de usuario",
       "level": "CREATE",
-      "resource": "USERPERMISSION",
+      "resource": "ROLE",
       "description": "Permite crear nuevos permisos de usuario en el sistema."
     },
     {
       "name": "Actualización de permisos de usuario",
       "level": "UPDATE",
-      "resource": "USERPERMISSION",
+      "resource": "ROLE",
       "description": "Permite modificar la información de los permisos de usuarios existentes en el sistema."
     },
     {
       "name": "Eliminación de los permisos de usuario",
       "level": "DELETE",
-      "resource": "USERPERMISSION",
+      "resource": "ROLE",
       "description": "Permite eliminar los permisos de usuario del sistema."
     },
     {

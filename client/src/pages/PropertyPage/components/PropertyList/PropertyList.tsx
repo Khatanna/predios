@@ -4,7 +4,7 @@ import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { Property } from "../../models/types";
 import { Tooltip } from "../../../../components/Tooltip";
 import { Link } from "react-router-dom";
-import { HouseAdd } from "react-bootstrap-icons";
+import { FiletypePdf, HouseAdd } from "react-bootstrap-icons";
 import { TableColumn } from "react-data-table-component";
 import { Table } from "../../../../components/Table";
 import { useAuth } from "../../../../hooks";
@@ -19,7 +19,7 @@ const columns: TableColumn<Property>[] = [
     compact: true,
     width: "40px",
     sortable: true,
-    sortField: 'registryNumber',
+    sortField: "registryNumber",
   },
   {
     name: "Nombre del predio",
@@ -44,11 +44,12 @@ const columns: TableColumn<Property>[] = [
     sortable: true,
   },
   {
-    name: 'Ubicación',
-    selector: ({ city, province, municipality }) => `${city?.name} - ${province?.name} / ${municipality?.name}`,
+    name: "Ubicación",
+    selector: ({ city, province, municipality }) =>
+      `${city?.name} - ${province?.name} / ${municipality?.name}`,
     grow: 2,
     sortable: true,
-  }
+  },
 ];
 
 const GET_ALL_PROPERTIES_QUERY = `
@@ -86,16 +87,15 @@ const GET_ALL_PROPERTIES_QUERY = `
 	}
 `;
 
-const PropertyList: React.FC<PropertyListProps> = ({ }) => {
+const PropertyList: React.FC<PropertyListProps> = ({}) => {
   const navigate = useNavigate();
   const { role } = useAuth();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
-  const [orderBy, setOrderBy] = useState('asc');
-  const { data, isLoading, error } = useCustomQuery<{ results: { total: number, properties: Property[] } }>(
-    GET_ALL_PROPERTIES_QUERY,
-    ["getAllProperties", { page, limit, orderBy }],
-  );
+  const [orderBy, setOrderBy] = useState("asc");
+  const { data, isLoading, error } = useCustomQuery<{
+    results: { total: number; properties: Property[] };
+  }>(GET_ALL_PROPERTIES_QUERY, ["getAllProperties", { page, limit, orderBy }]);
 
   if (error) {
     return (
@@ -116,14 +116,14 @@ const PropertyList: React.FC<PropertyListProps> = ({ }) => {
       dense
       defaultSortAsc={false}
       onSort={(column) => {
-        if (column.sortField === 'registryNumber') {
+        if (column.sortField === "registryNumber") {
           setOrderBy((current) => {
-            if (current === 'asc') {
-              return 'desc'
+            if (current === "asc") {
+              return "desc";
             }
 
-            return 'asc'
-          })
+            return "asc";
+          });
         }
       }}
       onRowDoubleClicked={(row) => {
@@ -134,16 +134,26 @@ const PropertyList: React.FC<PropertyListProps> = ({ }) => {
       paginationPerPage={20}
       paginationRowsPerPageOptions={[10, 20, 30, 50, 100, 200]}
       onChangePage={(page) => {
-        setPage(page)
+        setPage(page);
       }}
       onChangeRowsPerPage={setLimit}
       actions={
-        role === "administrador" &&
-        <Tooltip label="Crear predio">
-          <Link to={"create"}>
-            <HouseAdd size={30} />
-          </Link>
-        </Tooltip>
+        <>
+          {role === "administrador" && (
+            <>
+              <Tooltip label="Generar reporte">
+                <Link to={"/report"}>
+                  <FiletypePdf size={30} />
+                </Link>
+              </Tooltip>
+              <Tooltip label="Crear predio">
+                <Link to={"create"}>
+                  <HouseAdd size={30} />
+                </Link>
+              </Tooltip>
+            </>
+          )}
+        </>
       }
     />
   );

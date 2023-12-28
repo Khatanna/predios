@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Button, ListGroup, Modal } from "react-bootstrap";
+import { Alert, Button, Dropdown, ListGroup, Modal } from "react-bootstrap";
 import { TableColumn } from "react-data-table-component";
 import { useNavigate } from "react-router";
 import { Chip } from "../../components/Chip";
@@ -34,7 +34,7 @@ const GET_ALL_ROLES = gql`
       name
     }
   }
-`
+`;
 
 const columns: TableColumn<Permission>[] = [
   {
@@ -85,33 +85,46 @@ const columns: TableColumn<Permission>[] = [
     reorder: true,
     sortFunction: (a, b) => a.status.localeCompare(b.status),
   },
-  {
-    cell: (row) => <OptionMenu permission={row} />,
-    button: true,
-    width: "30px",
-  },
 ];
 
-export const PermissionTable: React.FC<{ name: string, permissions: Permission[], isLoading: boolean, actions?: React.ReactNode }> = ({ name, permissions, isLoading, actions }) => {
-  return <Table
-    name={name}
-    columns={columns}
-    data={permissions}
-    onRowDoubleClicked={(row) => { }
-      // navigate("/admin/permissions/edit", { state: row })
-    }
-    progressPending={isLoading}
-    actions={actions}
-  />
-}
+export const PermissionTable: React.FC<{
+  name: string;
+  permissions: Permission[];
+  isLoading: boolean;
+  actions?: React.ReactNode;
+  Dropdown: React.FC<{ permission: Permission }>;
+}> = ({ name, permissions, isLoading, actions, Dropdown }) => {
+  const navigate = useNavigate();
+
+  return (
+    <Table
+      name={name}
+      columns={[
+        ...columns,
+        {
+          cell: (row) => <Dropdown permission={row} />,
+          button: true,
+          width: "30px",
+        },
+      ]}
+      data={permissions}
+      onRowDoubleClicked={(row) => {
+        navigate("/admin/permissions/edit", { state: row });
+      }}
+      progressPending={isLoading}
+      actions={actions}
+    />
+  );
+};
 
 const PermissionsLayout: React.FC = () => {
-  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const { data, error, isLoading } = useCustomQuery<{
     permissions: Permission[];
   }>(GET_ALL_PERMISSIONS_QUERY, ["getAllPermissions"]);
-  const { data: profiles } = useQuery<{ roles: Pick<Role, 'name'>[] }>(GET_ALL_ROLES);
+  const { data: profiles } = useQuery<{ roles: Pick<Role, "name">[] }>(
+    GET_ALL_ROLES,
+  );
 
   if (error) {
     return (
@@ -125,12 +138,17 @@ const PermissionsLayout: React.FC = () => {
     <>
       <PermissionTable
         name="permisos"
+        Dropdown={OptionMenu}
         permissions={data?.permissions ?? []}
         isLoading={isLoading}
         actions={
           <div className="d-flex gap-2">
             <Tooltip placement="left" label="Perfiles">
-              <div className="text-primary" role="button" onClick={() => setShow(true)}>
+              <div
+                className="text-primary"
+                role="button"
+                onClick={() => setShow(true)}
+              >
                 <PersonBadge size={30} />
               </div>
             </Tooltip>
@@ -140,17 +158,16 @@ const PermissionsLayout: React.FC = () => {
               </Link>
             </Tooltip>
           </div>
-        } />
+        }
+      />
       <Modal show={show} onHide={() => setShow(false)} size="sm">
         <Modal.Header closeButton>
           <Modal.Title>
-            <div>
-              Lista de perfiles
-            </div>
+            <div>Lista de perfiles</div>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ListGroup >
+          <ListGroup>
             {profiles?.roles.map(({ name }) => (
               <ListGroup.Item action as={Link} to={`${name}`}>
                 {capitalizeString(name)}

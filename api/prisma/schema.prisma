@@ -36,7 +36,8 @@ enum Resource {
   CITY           @map("departamento")
   PROVINCE       @map("provincia")
   MUNICIPALITY   @map("municipio")
-  USERPERMISSION @map("permiso_de_usuario")
+  // USERPERMISSION @map("permiso_de_usuario")
+  ROLE           @map("rol")
   CLASIFICATION  @map("clasificación")
   ACTIVITY       @map("actividad")
   STATE          @map("estado")
@@ -139,7 +140,7 @@ model Permission {
 }
 
 model RoleHasPermission {
-  id           String     @id @default(uuid())
+  // id           String     @id @default(uuid())
   status       Status     @default(ENABLE) @map("estado")
   roleId       String     @map("rol_id")
   permissionId String     @map("permiso_id")

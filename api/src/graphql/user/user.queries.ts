@@ -18,7 +18,6 @@ export const getAllUsersPaginateWithCursor = async (
 ) => {
   try {
     hasPermission(userContext, "READ", "USER");
-    // console.log({ nextCursor, prevCursor, numberOfResults, filterText })
     const filterTextParts =
       filterText && filterText.includes(" ")
         ? filterText.trim().split(" ")
@@ -26,65 +25,62 @@ export const getAllUsersPaginateWithCursor = async (
     const skip = nextCursor ? 1 : prevCursor ? 0 : 0;
     const users = await prisma.user.findMany({
       where: {
-        // NOT: {
-        //   username: userContext!.username,
-        // },
         OR: filterText
           ? [
-            {
-              names: {
-                contains: filterText.trim(),
+              {
+                names: {
+                  contains: filterText.trim(),
+                },
               },
-            },
-            {
-              firstLastName: {
-                contains: filterText.trim(),
+              {
+                firstLastName: {
+                  contains: filterText.trim(),
+                },
               },
-            },
-            {
-              secondLastName: {
-                contains: filterText.trim(),
+              {
+                secondLastName: {
+                  contains: filterText.trim(),
+                },
               },
-            },
-            {
-              username: {
-                contains: filterText.trim(),
+              {
+                username: {
+                  contains: filterText.trim(),
+                },
               },
-            },
-            {
-              OR:
-                filterTextParts.length === 2
-                  ? [
-                    {
-                      names: {
-                        contains: filterTextParts[0],
-                      },
-                      firstLastName: {
-                        contains: filterTextParts[1],
-                      },
-                    },
-                  ]
-                  : [],
-            },
-            {
-              OR:
-                filterTextParts.length === 3
-                  ? [
-                    {
-                      names: {
-                        contains: filterTextParts[0],
-                      },
-                      firstLastName: {
-                        contains: filterTextParts[1],
-                      },
-                      secondLastName: {
-                        contains: filterTextParts[2],
-                      },
-                    },
-                  ]
-                  : [],
-            },
-          ]
+              {
+                OR:
+                  filterTextParts.length === 2
+                    ? [
+                        {
+                          names: {
+                            contains: filterTextParts[0],
+                          },
+                          firstLastName: {
+                            contains: filterTextParts[1],
+                          },
+                        },
+                      ]
+                    : [],
+              },
+              {
+                OR:
+                  filterTextParts.length === 3
+                    ? [
+                        {
+                          names: {
+                            contains: filterTextParts[0],
+                          },
+                          firstLastName: {
+                            contains: filterTextParts[1],
+                          },
+                          secondLastName: {
+                            contains: filterTextParts[2],
+                          },
+                        },
+                      ]
+                    : [],
+              },
+            ]
           : undefined,
       },
       include: {
@@ -95,18 +91,17 @@ export const getAllUsersPaginateWithCursor = async (
       cursor: nextCursor
         ? { id: nextCursor }
         : prevCursor
-          ? { id: prevCursor }
-          : undefined,
+        ? { id: prevCursor }
+        : undefined,
       orderBy: {
         id: "asc",
       },
       take: nextCursor
         ? numberOfResults
         : prevCursor
-          ? numberOfResults * -1
-          : numberOfResults,
+        ? numberOfResults * -1
+        : numberOfResults,
     });
-    // console.log(users.map(u => u.username))
     const prevUserCursor = await prisma.user.findFirst({
       where: {
         NOT: {
@@ -128,8 +123,8 @@ export const getAllUsersPaginateWithCursor = async (
       total: filterText
         ? users.length
         : await prisma.user.count({
-          where: { NOT: { username: userContext?.username } },
-        }),
+            where: { NOT: { username: userContext?.username } },
+          }),
       users,
     };
   } catch (e) {
@@ -148,65 +143,64 @@ export const getAllUsers = async (
       filterText && filterText.includes(" ")
         ? filterText.trim().split(" ")
         : [];
-    console.log(filterText);
     return prisma.user.findMany({
       where: {
         OR: filterText
           ? [
-            {
-              names: {
-                contains: filterText.trim(),
+              {
+                names: {
+                  contains: filterText.trim(),
+                },
               },
-            },
-            {
-              firstLastName: {
-                contains: filterText.trim(),
+              {
+                firstLastName: {
+                  contains: filterText.trim(),
+                },
               },
-            },
-            {
-              secondLastName: {
-                contains: filterText.trim(),
+              {
+                secondLastName: {
+                  contains: filterText.trim(),
+                },
               },
-            },
-            {
-              username: {
-                contains: filterText.trim(),
+              {
+                username: {
+                  contains: filterText.trim(),
+                },
               },
-            },
-            {
-              OR:
-                filterTextParts.length === 2
-                  ? [
-                    {
-                      names: {
-                        contains: filterTextParts[0],
-                      },
-                      firstLastName: {
-                        contains: filterTextParts[1],
-                      },
-                    },
-                  ]
-                  : [],
-            },
-            {
-              OR:
-                filterTextParts.length === 3
-                  ? [
-                    {
-                      names: {
-                        contains: filterTextParts[0],
-                      },
-                      firstLastName: {
-                        contains: filterTextParts[1],
-                      },
-                      secondLastName: {
-                        contains: filterTextParts[2],
-                      },
-                    },
-                  ]
-                  : [],
-            },
-          ]
+              {
+                OR:
+                  filterTextParts.length === 2
+                    ? [
+                        {
+                          names: {
+                            contains: filterTextParts[0],
+                          },
+                          firstLastName: {
+                            contains: filterTextParts[1],
+                          },
+                        },
+                      ]
+                    : [],
+              },
+              {
+                OR:
+                  filterTextParts.length === 3
+                    ? [
+                        {
+                          names: {
+                            contains: filterTextParts[0],
+                          },
+                          firstLastName: {
+                            contains: filterTextParts[1],
+                          },
+                          secondLastName: {
+                            contains: filterTextParts[2],
+                          },
+                        },
+                      ]
+                    : [],
+              },
+            ]
           : undefined,
       },
       include: {
@@ -214,10 +208,10 @@ export const getAllUsers = async (
           include: {
             permissions: {
               include: {
-                permission: true
-              }
-            }
-          }
+                permission: true,
+              },
+            },
+          },
         },
         type: true,
       },
@@ -226,34 +220,6 @@ export const getAllUsers = async (
     throw e;
   }
 };
-// export const allUsers = async (
-//   _parent: any,
-//   _args: any,
-//   { prisma, userContext }: Context,
-// ) => {
-//   try {
-//     hasPermission(userContext, "READ", "USER");
-//     return prisma.user.findMany({
-//       where: {
-//         NOT: {
-//           username: userContext!.username,
-//         },
-//       },
-//       include: {
-//         permissions: {
-//           select: {
-//             status: true,
-//             permission: true,
-//             user: true,
-//           },
-//         },
-//         type: true,
-//       },
-//     });
-//   } catch (e) {
-//     throw e;
-//   }
-// };
 
 export const getUserById = async (
   _: any,
@@ -298,10 +264,10 @@ export const getUserByUsername = async (
                 },
               },
               include: {
-                permission: true
-              }
-            }
-          }
+                permission: true,
+              },
+            },
+          },
         },
       },
     });
@@ -330,8 +296,8 @@ export const getUser = async (
       cursor: nextCursor
         ? { id: nextCursor }
         : prevCursor
-          ? { id: prevCursor }
-          : undefined,
+        ? { id: prevCursor }
+        : undefined,
       orderBy: {
         id: nextCursor ? "asc" : prevCursor ? "desc" : "asc",
       },
@@ -376,80 +342,80 @@ export const getUsers = async (
       where: {
         type: type
           ? {
-            name: type,
-          }
+              name: type,
+            }
           : undefined,
         OR: filterText
           ? [
-            {
-              names: {
-                contains: filterText.trim(),
+              {
+                names: {
+                  contains: filterText.trim(),
+                },
               },
-            },
-            {
-              firstLastName: {
-                contains: filterText.trim(),
+              {
+                firstLastName: {
+                  contains: filterText.trim(),
+                },
               },
-            },
-            {
-              secondLastName: {
-                contains: filterText.trim(),
+              {
+                secondLastName: {
+                  contains: filterText.trim(),
+                },
               },
-            },
-            {
-              username: {
-                contains: filterText.trim(),
+              {
+                username: {
+                  contains: filterText.trim(),
+                },
               },
-            },
-            {
-              OR:
-                filterTextParts.length === 2
-                  ? [
-                    {
-                      names: {
-                        contains: filterTextParts[0],
-                      },
-                      firstLastName: {
-                        contains: filterTextParts[1],
-                      },
-                    },
-                  ]
-                  : [],
-            },
-            {
-              OR:
-                filterTextParts.length === 3
-                  ? [
-                    {
-                      names: {
-                        contains: filterTextParts[0],
-                      },
-                      firstLastName: {
-                        contains: filterTextParts[1],
-                      },
-                      secondLastName: {
-                        contains: filterTextParts[2],
-                      },
-                    },
-                  ]
-                  : [],
-            },
-            {
-              OR:
-                filterTextParts.length === 3
-                  ? [
-                    {
-                      firstLastName: {
-                        contains: filterTextParts[1],
-                      },
-                      secondLastName: {
-                        contains: filterTextParts[2],
-                      },
-                    },
-                  ]
-                  : [],
-            },
-          ]
+              {
+                OR:
+                  filterTextParts.length === 2
+                    ? [
+                        {
+                          names: {
+                            contains: filterTextParts[0],
+                          },
+                          firstLastName: {
+                            contains: filterTextParts[1],
+                          },
+                        },
+                      ]
+                    : [],
+              },
+              {
+                OR:
+                  filterTextParts.length === 3
+                    ? [
+                        {
+                          names: {
+                            contains: filterTextParts[0],
+                          },
+                          firstLastName: {
+                            contains: filterTextParts[1],
+                          },
+                          secondLastName: {
+                            contains: filterTextParts[2],
+                          },
+                        },
+                      ]
+                    : [],
+              },
+              {
+                OR:
+                  filterTextParts.length === 3
+                    ? [
+                        {
+                          firstLastName: {
+                            contains: filterTextParts[1],
+                          },
+                          secondLastName: {
+                            contains: filterTextParts[2],
+                          },
+                        },
+                      ]
+                    : [],
+              },
+            ]
           : undefined,
       },
     });

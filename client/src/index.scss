@@ -24,7 +24,7 @@ $custom-chip-colors: (
   CITY: $red-700,
   BENEFICIARY: $yellow-700,
   MUNICIPALITY: $pink-700,
-  USERPERMISSION: $blue-600,
+  ROLE: $blue-600,
   USERTYPE: $green-600,
   STAGE: $black,
   READ: $blue,
@@ -36,8 +36,7 @@ $custom-chip-colors: (
   TRACKING: $yellow-800,
 );
 
-@each $type,
-$color in $custom-chip-colors {
+@each $type, $color in $custom-chip-colors {
   .chip-#{$type} {
     font-size: 0.8rem;
     text-align: center;
