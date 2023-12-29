@@ -23,20 +23,6 @@ const UserList: React.FC = () => {
     );
   }
 
-  // subscribeToMore({
-  //   document: gql``,
-  //   updateQuery: (prev, { subscriptionData }) => {
-  //     if(!subscriptionData.data) return prev;
-
-  //     const newFeddItem = subscriptionData.data.users;
-
-  //     return Object.assign({}, prev.users.map(user => ({
-  //       ...user,
-  //       status: subscriptionData.data.
-  //     })));
-  //   } 
-  // })
-
   return (
     <Table
       name="usuarios"

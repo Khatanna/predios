@@ -23,7 +23,7 @@ import {
   InfoCircle,
   PeopleFill,
   PersonGear,
-  PersonWorkspace
+  PersonWorkspace,
 } from "react-bootstrap-icons";
 import {
   Controller,
@@ -58,7 +58,12 @@ import { StateSelect } from "../StateSelect";
 import { SubdirectorySelect } from "../SubdirectorySelect";
 import { TrackingList } from "../TrackingList";
 import { TypeSelect } from "../TypeSelect";
-import { CREATE_PROPERTY_MUTATION, GET_PROPERTY_QUERY, UPDATE_PROPERTY_MUTATION } from '../../graphQL/types';
+import {
+  CREATE_PROPERTY_MUTATION,
+  GET_PROPERTY_QUERY,
+  UPDATE_PROPERTY_MUTATION,
+} from "../../graphQL/types";
+import { Cursor } from "../../../../components/Cursor";
 
 const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
   const { role } = useAuth();
@@ -502,9 +507,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                 <SubdirectorySelect readOnly={!!property} />
                               </Col>
                               <Col xs={4}>
-                                <ResponsibleUnitSelect
-                                  readOnly={!!property}
-                                />
+                                <ResponsibleUnitSelect readOnly={!!property} />
                               </Col>
                               <Col>
                                 <CustomLabel
@@ -624,7 +627,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                 disabled={
                                   !!methods.getValues("id") &&
                                   methods.getValues("trackings")?.length >
-                                  (property?.trackings?.length ?? 0)
+                                    (property?.trackings?.length ?? 0)
                                 }
                               >
                                 Añadir seguimiento
@@ -801,10 +804,11 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                 </Row>
               )}
             </Col>
-          </Row >
-        </Form >
-      </FormProvider >
-    </Container >
+          </Row>
+        </Form>
+      </FormProvider>
+      <Cursor />
+    </Container>
   );
 };
 

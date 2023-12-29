@@ -7,6 +7,17 @@ type OnConnection {
   connected: Boolean
 }
 
+type OnCursorMove {
+  username: String
+  positionX: Int
+  positionY: Int
+}
+
 type Subscription {
   userConnected: OnConnection
+  cursorMove: OnCursorMove
+}
+
+type Mutation {
+  cursorMove(username: String, positionX: Int, positionY: Int): String
 }

@@ -151,17 +151,17 @@ async function main() {
       provincia,
       municipio,
       observacion,
-      tipo_de_predio,
+      tipo,
       ubicación_de_carpeta,
       actividad,
-      clasificación,
+      clasificacion,
       expediente,
       unidad_responsable,
       estado_agrupado,
       estado_2,
       estado,
       codigo_de_busqueda,
-      id_de_agrupacion_social,
+      id_de_agrupacion,
       beneficiario,
       observacion_tecnica,
       segunda_observacion,
@@ -187,126 +187,126 @@ async function main() {
         tecnico?.toLowerCase() === "ariel lucana"
           ? "ariel.lucana"
           : tecnico?.toLowerCase() === "beltran alavi"
-            ? "beltran.alavi"
-            : tecnico?.toLowerCase() === "claudia garnica"
-              ? "claudia.garnica"
-              : tecnico?.toLowerCase() === "cristina mamani"
-                ? "cristina.mamani"
-                : tecnico?.toLowerCase() === "david canaviri"
-                  ? "david.canaviri"
-                  : tecnico?.toLowerCase() === "david oscar"
-                    ? "david.mamani"
-                    : tecnico?.toLowerCase() === "edgar paredes"
-                      ? "edgar.paredes"
-                      : tecnico?.toLowerCase() === "edgar tola"
-                        ? "edgar.tola"
-                        : tecnico?.toLowerCase() === "edwin aruquipa"
-                          ? "edwin.aruquipa"
-                          : tecnico?.toLowerCase() === "edwin mamani"
-                            ? "edwin.mamani"
-                            : tecnico?.toLowerCase() === "edwin siñani"
-                              ? "edwin.siñani"
-                              : tecnico?.toLowerCase() === "emilio condori"
-                                ? "emilio.condori"
-                                : tecnico?.toLowerCase() === "franz troche"
-                                  ? "franz.troche"
-                                  : tecnico?.toLowerCase() === "gloria silva"
-                                    ? "gloria.silva"
-                                    : tecnico?.toLowerCase() === "guadalupe mayta"
-                                      ? "guadalupe.mayta"
-                                      : tecnico?.toLowerCase() === "javier limachi"
-                                        ? "javier.limachi"
-                                        : tecnico?.toLowerCase() === "joel ruiz"
-                                          ? "marcelo.ruiz"
-                                          : tecnico?.toLowerCase() === "lorenzo viquini"
-                                            ? "lorenzo.viquini"
-                                            : tecnico?.toLowerCase() === "lourdes quispe"
-                                              ? "lourdes.quispe"
-                                              : tecnico?.toLowerCase() === "luis siñani"
-                                                ? "luis.siñani"
-                                                : tecnico?.toLowerCase() === "marco a. ergueta"
-                                                  ? "marco.ergueta"
-                                                  : tecnico?.toLowerCase() === "max arias"
-                                                    ? "maximo.arias"
-                                                    : tecnico?.toLowerCase() === "olivia quispe"
-                                                      ? "olivia.quispe"
-                                                      : tecnico?.toLowerCase() === "omar fladine"
-                                                        ? "omar.fladine"
-                                                        : tecnico?.toLowerCase() === "pablo mamani"
-                                                          ? "pablo.mamani"
-                                                          : tecnico?.toLowerCase() === "reynaldo segovia"
-                                                            ? "reynaldo.segovia"
-                                                            : tecnico?.toLowerCase() === "roger chura"
-                                                              ? "roger.chura"
-                                                              : tecnico?.toLowerCase() === "roger magne"
-                                                                ? "roger.magne"
-                                                                : tecnico?.toLowerCase() === "ruddy bautista"
-                                                                  ? "ruddy.bautista"
-                                                                  : tecnico?.toLowerCase() === "samuel calle"
-                                                                    ? "samuel.calle"
-                                                                    : tecnico?.toLowerCase() === "vilma vargas"
-                                                                      ? "vilma.vargas"
-                                                                      : undefined;
+          ? "beltran.alavi"
+          : tecnico?.toLowerCase() === "claudia garnica"
+          ? "claudia.garnica"
+          : tecnico?.toLowerCase() === "cristina mamani"
+          ? "cristina.mamani"
+          : tecnico?.toLowerCase() === "david canaviri"
+          ? "david.canaviri"
+          : tecnico?.toLowerCase() === "david oscar"
+          ? "david.mamani"
+          : tecnico?.toLowerCase() === "edgar paredes"
+          ? "edgar.paredes"
+          : tecnico?.toLowerCase() === "edgar tola"
+          ? "edgar.tola"
+          : tecnico?.toLowerCase() === "edwin aruquipa"
+          ? "edwin.aruquipa"
+          : tecnico?.toLowerCase() === "edwin mamani"
+          ? "edwin.mamani"
+          : tecnico?.toLowerCase() === "edwin siñani"
+          ? "edwin.siñani"
+          : tecnico?.toLowerCase() === "emilio condori"
+          ? "emilio.condori"
+          : tecnico?.toLowerCase() === "franz troche"
+          ? "franz.troche"
+          : tecnico?.toLowerCase() === "gloria silva"
+          ? "gloria.silva"
+          : tecnico?.toLowerCase() === "guadalupe mayta"
+          ? "guadalupe.mayta"
+          : tecnico?.toLowerCase() === "javier limachi"
+          ? "javier.limachi"
+          : tecnico?.toLowerCase() === "joel ruiz"
+          ? "marcelo.ruiz"
+          : tecnico?.toLowerCase() === "lorenzo viquini"
+          ? "lorenzo.viquini"
+          : tecnico?.toLowerCase() === "lourdes quispe"
+          ? "lourdes.quispe"
+          : tecnico?.toLowerCase() === "luis siñani"
+          ? "luis.siñani"
+          : tecnico?.toLowerCase() === "marco a. ergueta"
+          ? "marco.ergueta"
+          : tecnico?.toLowerCase() === "max arias"
+          ? "maximo.arias"
+          : tecnico?.toLowerCase() === "olivia quispe"
+          ? "olivia.quispe"
+          : tecnico?.toLowerCase() === "omar fladine"
+          ? "omar.fladine"
+          : tecnico?.toLowerCase() === "pablo mamani"
+          ? "pablo.mamani"
+          : tecnico?.toLowerCase() === "reynaldo segovia"
+          ? "reynaldo.segovia"
+          : tecnico?.toLowerCase() === "roger chura"
+          ? "roger.chura"
+          : tecnico?.toLowerCase() === "roger magne"
+          ? "roger.magne"
+          : tecnico?.toLowerCase() === "ruddy bautista"
+          ? "ruddy.bautista"
+          : tecnico?.toLowerCase() === "samuel calle"
+          ? "samuel.calle"
+          : tecnico?.toLowerCase() === "vilma vargas"
+          ? "vilma.vargas"
+          : undefined;
       const legalUsername =
         juridico?.toLowerCase() === "abrahan luna"
           ? "abraham.luna"
           : juridico?.toLowerCase() === "aleida san martin"
-            ? "denisse.gabriel"
-            : juridico?.toLowerCase() === "andrea villarroel"
-              ? "andrea.villarroel"
-              : juridico?.toLowerCase() === "carmen m. acapa"
-                ? "carmen.acapa"
-                : juridico?.toLowerCase() === "caterin cartagena"
-                  ? "katherine.cartagena"
-                  : juridico?.toLowerCase() === "cristina centellas"
-                    ? "cristina.centellas"
-                    : juridico?.toLowerCase() === "delmira endara cespedes"
-                      ? "delmira.endara"
-                      : juridico?.toLowerCase() === "franz isla"
-                        ? "franz.isla"
-                        : juridico?.toLowerCase() === "javier herrera"
-                          ? "javier.herrera"
-                          : juridico?.toLowerCase() === "karen rojas"
-                            ? "tatiana.rojas"
-                            : juridico?.toLowerCase() === "karina rodriguez"
-                              ? "karina.rodriguez"
-                              : juridico?.toLowerCase() === "lisbeth soliz"
-                                ? "lisbeth.soliz"
-                                : juridico?.toLowerCase() === "lizeth castillo"
-                                  ? "lizeth.castillo"
-                                  : juridico?.toLowerCase() === "luis canaviri"
-                                    ? "luis.canaviri"
-                                    : juridico?.toLowerCase() === "marco zeballos"
-                                      ? "marco.zeballos"
-                                      : juridico?.toLowerCase() === "maria lopez"
-                                        ? "maria.lopez"
-                                        : juridico?.toLowerCase() === "mariela yarichime"
-                                          ? "mariela.yarichime"
-                                          : juridico?.toLowerCase() === "mayra ramirez"
-                                            ? "mayra.ramirez"
-                                            : juridico?.toLowerCase() === "milenka escobar"
-                                              ? "milenka.escobar"
-                                              : juridico?.toLowerCase() === "miriam callisaya"
-                                                ? "miriam.callisaya"
-                                                : juridico?.toLowerCase() === "miriam castañeta"
-                                                  ? "miriam.castañeta"
-                                                  : juridico?.toLowerCase() === "nelson alcon vargas"
-                                                    ? "nelson.alcon"
-                                                    : juridico?.toLowerCase() === "norma merida"
-                                                      ? "norma.merida"
-                                                      : juridico?.toLowerCase() === "omar mamani"
-                                                        ? "omar.mamani"
-                                                        : juridico?.toLowerCase() === "regina tarqui"
-                                                          ? "regina.tarqui"
-                                                          : juridico?.toLowerCase() === "roxana rodriguez"
-                                                            ? "constancia.rodriguez"
-                                                            : juridico?.toLowerCase() === "sharon"
-                                                              ? "sharon.laura"
-                                                              : juridico?.toLowerCase() === "susan alanoca"
-                                                                ? "susan.alanoca"
-                                                                : juridico?.toLowerCase() === "zulema mollinedo"
-                                                                  ? "zulema.mollinedo"
-                                                                  : undefined;
+          ? "denisse.gabriel"
+          : juridico?.toLowerCase() === "andrea villarroel"
+          ? "andrea.villarroel"
+          : juridico?.toLowerCase() === "carmen m. acapa"
+          ? "carmen.acapa"
+          : juridico?.toLowerCase() === "caterin cartagena"
+          ? "katherine.cartagena"
+          : juridico?.toLowerCase() === "cristina centellas"
+          ? "cristina.centellas"
+          : juridico?.toLowerCase() === "delmira endara cespedes"
+          ? "delmira.endara"
+          : juridico?.toLowerCase() === "franz isla"
+          ? "franz.isla"
+          : juridico?.toLowerCase() === "javier herrera"
+          ? "javier.herrera"
+          : juridico?.toLowerCase() === "karen rojas"
+          ? "tatiana.rojas"
+          : juridico?.toLowerCase() === "karina rodriguez"
+          ? "karina.rodriguez"
+          : juridico?.toLowerCase() === "lisbeth soliz"
+          ? "lisbeth.soliz"
+          : juridico?.toLowerCase() === "lizeth castillo"
+          ? "lizeth.castillo"
+          : juridico?.toLowerCase() === "luis canaviri"
+          ? "luis.canaviri"
+          : juridico?.toLowerCase() === "marco zeballos"
+          ? "marco.zeballos"
+          : juridico?.toLowerCase() === "maria lopez"
+          ? "maria.lopez"
+          : juridico?.toLowerCase() === "mariela yarichime"
+          ? "mariela.yarichime"
+          : juridico?.toLowerCase() === "mayra ramirez"
+          ? "mayra.ramirez"
+          : juridico?.toLowerCase() === "milenka escobar"
+          ? "milenka.escobar"
+          : juridico?.toLowerCase() === "miriam callisaya"
+          ? "miriam.callisaya"
+          : juridico?.toLowerCase() === "miriam castañeta"
+          ? "miriam.castañeta"
+          : juridico?.toLowerCase() === "nelson alcon vargas"
+          ? "nelson.alcon"
+          : juridico?.toLowerCase() === "norma merida"
+          ? "norma.merida"
+          : juridico?.toLowerCase() === "omar mamani"
+          ? "omar.mamani"
+          : juridico?.toLowerCase() === "regina tarqui"
+          ? "regina.tarqui"
+          : juridico?.toLowerCase() === "roxana rodriguez"
+          ? "constancia.rodriguez"
+          : juridico?.toLowerCase() === "sharon"
+          ? "sharon.laura"
+          : juridico?.toLowerCase() === "susan alanoca"
+          ? "susan.alanoca"
+          : juridico?.toLowerCase() === "zulema mollinedo"
+          ? "zulema.mollinedo"
+          : undefined;
       return prisma.property.create({
         data: {
           code: codigo ? codigo + "" : "",
@@ -319,10 +319,10 @@ async function main() {
           sheets: fojas ? +fojas : 0,
           fileNumber: expediente
             ? {
-              create: {
-                number: expediente,
-              },
-            }
+                create: {
+                  number: expediente,
+                },
+              }
             : undefined,
           reference: {
             connectOrCreate: {
@@ -341,120 +341,120 @@ async function main() {
           },
           province: provincia
             ? {
-              connect: {
-                name: provincia,
-              },
-            }
+                connect: {
+                  name: provincia,
+                },
+              }
             : {
-              connect: {
-                name: "Por definir",
+                connect: {
+                  name: "Por definir",
+                },
               },
-            },
           municipality: municipio
             ? {
-              connect: {
-                name: municipio,
-              },
-            }
+                connect: {
+                  name: municipio,
+                },
+              }
             : {
-              connect: {
-                name: "Por definir",
+                connect: {
+                  name: "Por definir",
+                },
               },
-            },
           responsibleUnit: unidad_responsable
             ? {
-              connectOrCreate: {
-                where: {
-                  name: unidad_responsable,
+                connectOrCreate: {
+                  where: {
+                    name: unidad_responsable,
+                  },
+                  create: {
+                    name: unidad_responsable,
+                  },
                 },
-                create: {
-                  name: unidad_responsable,
-                },
-              },
-            }
+              }
             : undefined,
           activity: actividad
             ? {
-              connectOrCreate: {
-                where: {
-                  name: actividad,
+                connectOrCreate: {
+                  where: {
+                    name: actividad,
+                  },
+                  create: {
+                    name: actividad,
+                  },
                 },
-                create: {
-                  name: actividad,
-                },
-              },
-            }
+              }
             : undefined,
-          clasification: clasificación
+          clasification: clasificacion
             ? {
-              connectOrCreate: {
-                where: {
-                  name: clasificación,
+                connectOrCreate: {
+                  where: {
+                    name: clasificacion,
+                  },
+                  create: {
+                    name: clasificacion,
+                  },
                 },
-                create: {
-                  name: clasificación,
-                },
-              },
-            }
+              }
             : undefined,
-          type: tipo_de_predio
+          type: tipo
             ? {
-              connectOrCreate: {
-                where: {
-                  name: tipo_de_predio,
+                connectOrCreate: {
+                  where: {
+                    name: tipo,
+                  },
+                  create: {
+                    name: tipo,
+                  },
                 },
-                create: {
-                  name: tipo_de_predio,
-                },
-              },
-            }
+              }
             : undefined,
           folderLocation: ubicación_de_carpeta
             ? {
-              connectOrCreate: {
-                where: {
-                  name: ubicación_de_carpeta,
+                connectOrCreate: {
+                  where: {
+                    name: ubicación_de_carpeta,
+                  },
+                  create: {
+                    name: ubicación_de_carpeta,
+                  },
                 },
-                create: {
-                  name: ubicación_de_carpeta,
-                },
-              },
-            }
+              }
             : undefined,
           state: estado
             ? {
-              connectOrCreate: {
-                where: {
-                  name: estado,
-                },
-                create: {
-                  name: estado,
-                  stage: {
-                    connectOrCreate: {
-                      where: {
-                        name: "Departamental",
-                      },
-                      create: {
-                        name: "Departamental",
+                connectOrCreate: {
+                  where: {
+                    name: estado,
+                  },
+                  create: {
+                    name: estado,
+                    stage: {
+                      connectOrCreate: {
+                        where: {
+                          name: "Departamental",
+                        },
+                        create: {
+                          name: "Departamental",
+                        },
                       },
                     },
                   },
                 },
-              },
-            }
+              }
             : undefined,
           secondState: estado_2 ? estado_2 : "",
           groupedState: estado_agrupado
             ? {
-              connectOrCreate: {
-                where: {
-                  name: estado_agrupado,
+                connectOrCreate: {
+                  where: {
+                    name: estado_agrupado,
+                  },
+                  create: {
+                    name: estado_agrupado,
+                  },
                 },
-                create: {
-                  name: estado_agrupado,
-                },
-              },
-            }
+              }
             : undefined,
           codeOfSearch: codigo_de_busqueda,
           observations: {
@@ -462,43 +462,41 @@ async function main() {
               data: observations,
             },
           },
-          agrupationIdentifier: id_de_agrupacion_social
-            ? id_de_agrupacion_social + ""
-            : "",
+          agrupationIdentifier: id_de_agrupacion ? id_de_agrupacion + "" : "",
           beneficiaries: beneficiario
             ? {
-              connectOrCreate: {
-                where: {
-                  name: beneficiario,
+                connectOrCreate: {
+                  where: {
+                    name: beneficiario,
+                  },
+                  create: {
+                    name: beneficiario,
+                  },
                 },
-                create: {
-                  name: beneficiario,
-                },
-              },
-            }
+              }
             : undefined,
           technicalObservation: observacion_tecnica ? observacion_tecnica : "",
           legal: legalUsername
             ? {
-              create: {
-                user: {
-                  connect: {
-                    username: legalUsername,
+                create: {
+                  user: {
+                    connect: {
+                      username: legalUsername,
+                    },
                   },
                 },
-              },
-            }
+              }
             : undefined,
           technical: technicalUsername
             ? {
-              create: {
-                user: {
-                  connect: {
-                    username: technicalUsername,
+                create: {
+                  user: {
+                    connect: {
+                      username: technicalUsername,
+                    },
                   },
                 },
-              },
-            }
+              }
             : undefined,
         },
       });
@@ -603,96 +601,96 @@ async function main() {
           +estado === 27
             ? "Con Proyecto de Resolucion elaborado"
             : +estado === 23
-              ? "RFS remitida a Control de Calidad"
-              : +estado === 28
-                ? "Elaboracion de Proyecto de Resolucion"
-                : +estado === 44
-                  ? "Paralizado/Observado"
-                  : +estado === 47
-                    ? "Control de Calidad Relevamiento en campo"
-                    : +estado === 58
-                      ? "SOLICITUD ADMITIDA"
-                      : +estado === 61
-                        ? "RELEVAMIENTO DE INFORMACION EN CAMPO TERMINADO"
-                        : +estado === 65
-                          ? "CON PROYECTO DE RESOLUCION FINAL DE SANEAMIENTO"
-                          : +estado === 66
-                            ? "FALTA DE DOCUMENTOS"
-                            : +estado === 67
-                              ? "PARALIZADA POR OPOSICION AL SANEAMIENTO"
-                              : +estado === 71
-                                ? "POR REPLANTEO"
-                                : +estado === 72
-                                  ? "CON SENTENCIA DE TRIBUNAL AGROAMBIENTAL"
-                                  : +estado === 80
-                                    ? "REMITIDA A OTRAS INSTITUCIONES"
-                                    : +estado === 81
-                                      ? "CONFLICTO LIMITE POLITICO ADMINISTRATIVO"
-                                      : +estado === 82
-                                        ? "CONFLICTO ORGANICO"
-                                        : +estado === 83
-                                          ? "COMPLEMENTACION EN CAMPO"
-                                          : +estado === 84
-                                            ? "CONFLICTO DE DERECHO PROPIETARIO"
-                                            : +estado === 85
-                                              ? "CONFLICTO DE LIMITES ENTRE PREDIOS"
-                                              : +estado === 128
-                                                ? "Conflicto"
-                                                : pivot!.name;
+            ? "RFS remitida a Control de Calidad"
+            : +estado === 28
+            ? "Elaboracion de Proyecto de Resolucion"
+            : +estado === 44
+            ? "Paralizado/Observado"
+            : +estado === 47
+            ? "Control de Calidad Relevamiento en campo"
+            : +estado === 58
+            ? "SOLICITUD ADMITIDA"
+            : +estado === 61
+            ? "RELEVAMIENTO DE INFORMACION EN CAMPO TERMINADO"
+            : +estado === 65
+            ? "CON PROYECTO DE RESOLUCION FINAL DE SANEAMIENTO"
+            : +estado === 66
+            ? "FALTA DE DOCUMENTOS"
+            : +estado === 67
+            ? "PARALIZADA POR OPOSICION AL SANEAMIENTO"
+            : +estado === 71
+            ? "POR REPLANTEO"
+            : +estado === 72
+            ? "CON SENTENCIA DE TRIBUNAL AGROAMBIENTAL"
+            : +estado === 80
+            ? "REMITIDA A OTRAS INSTITUCIONES"
+            : +estado === 81
+            ? "CONFLICTO LIMITE POLITICO ADMINISTRATIVO"
+            : +estado === 82
+            ? "CONFLICTO ORGANICO"
+            : +estado === 83
+            ? "COMPLEMENTACION EN CAMPO"
+            : +estado === 84
+            ? "CONFLICTO DE DERECHO PROPIETARIO"
+            : +estado === 85
+            ? "CONFLICTO DE LIMITES ENTRE PREDIOS"
+            : +estado === 128
+            ? "Conflicto"
+            : pivot!.name;
 
         const username =
           +responsable === 1
             ? "constancia.rodriguez"
             : +responsable === 2
-              ? "miriam.castañeta"
-              : +responsable === 3
-                ? "milenka.escobar"
-                : +responsable === 4
-                  ? "mayra.ramirez"
-                  : +responsable === 5
-                    ? "lizeth.castillo"
-                    : +responsable === 6
-                      ? "cristina.centellas"
-                      : +responsable === 7
-                        ? "andrea.villarroel"
-                        : +responsable === 8
-                          ? "javier.herrera"
-                          : +responsable === 9
-                            ? "carmen.acapa"
-                            : +responsable === 10
-                              ? "miriam.callisaya"
-                              : +responsable === 12
-                                ? "zulema.mollinedo"
-                                : +responsable === 13
-                                  ? "nelson.alcon"
-                                  : +responsable === 14
-                                    ? "franz.isla"
-                                    : +responsable === 15
-                                      ? "lisbeth.soliz"
-                                      : +responsable === 16
-                                        ? "denisse.gabriel"
-                                        : +responsable === 17
-                                          ? "abraham.luna"
-                                          : +responsable === 18
-                                            ? "regina.tarqui"
-                                            : +responsable === 20
-                                              ? "delmira.endara"
-                                              : +responsable === 21
-                                                ? "benito.flores"
-                                                : +responsable === 22
-                                                  ? "omar.mamani"
-                                                  : +responsable === 23
-                                                    ? "luis.canaviri"
-                                                    : undefined;
+            ? "miriam.castañeta"
+            : +responsable === 3
+            ? "milenka.escobar"
+            : +responsable === 4
+            ? "mayra.ramirez"
+            : +responsable === 5
+            ? "lizeth.castillo"
+            : +responsable === 6
+            ? "cristina.centellas"
+            : +responsable === 7
+            ? "andrea.villarroel"
+            : +responsable === 8
+            ? "javier.herrera"
+            : +responsable === 9
+            ? "carmen.acapa"
+            : +responsable === 10
+            ? "miriam.callisaya"
+            : +responsable === 12
+            ? "zulema.mollinedo"
+            : +responsable === 13
+            ? "nelson.alcon"
+            : +responsable === 14
+            ? "franz.isla"
+            : +responsable === 15
+            ? "lisbeth.soliz"
+            : +responsable === 16
+            ? "denisse.gabriel"
+            : +responsable === 17
+            ? "abraham.luna"
+            : +responsable === 18
+            ? "regina.tarqui"
+            : +responsable === 20
+            ? "delmira.endara"
+            : +responsable === 21
+            ? "benito.flores"
+            : +responsable === 22
+            ? "omar.mamani"
+            : +responsable === 23
+            ? "luis.canaviri"
+            : undefined;
         if (propertyIDS[codigo_de_predio]) {
           return prisma.tracking.create({
             data: {
               dateOfInit: fecha_de_inicio
                 ? fecha_de_inicio
-                  .replace(/\//g, "-")
-                  .split("-")
-                  .reverse()
-                  .join("-")
+                    .replace(/\//g, "-")
+                    .split("-")
+                    .reverse()
+                    .join("-")
                 : "12/12/2023",
               observation: observacion ? observacion : "Sin observacion",
               numberOfNote: nota ? nota : "Sin nota",
@@ -724,8 +722,8 @@ async function main() {
               responsible: {
                 connect: username
                   ? {
-                    username,
-                  }
+                      username,
+                    }
                   : undefined,
               },
             },
@@ -741,18 +739,27 @@ async function main() {
 
   for (const permission of permissions) {
     await new Promise((resolve) => setTimeout(resolve, delay));
+
+    const roles: { roleId: string; assignedBy: string }[] = [];
+
+    if (permission.level === "READ") {
+      roles.push({
+        roleId: "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5",
+        assignedBy: "carlos.chambi",
+      });
+    }
+    roles.push({
+      roleId: "9b8a7068-c716-4abf-8664-b53c2851b714",
+      assignedBy: "carlos.chambi",
+    });
+
     await prisma.permission.create({
       data: {
         ...permission,
         roles: {
-          create: {
-            role: {
-              connect: {
-                name: 'administrador'
-              }
-            },
-            assignedBy: 'carlos.chambi'
-          }
+          createMany: {
+            data: roles,
+          },
         },
       },
     });
@@ -762,16 +769,16 @@ async function main() {
   for (const username of ["carlos.chambi", "daniel.chipana"]) {
     await prisma.user.update({
       where: {
-        username
+        username,
       },
       data: {
         role: {
           connect: {
-            name: 'administrador'
-          }
-        }
-      }
-    })
+            name: "administrador",
+          },
+        },
+      },
+    });
   }
 }
 

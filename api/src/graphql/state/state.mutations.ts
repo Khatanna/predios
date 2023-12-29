@@ -2,57 +2,61 @@ import { State, Stage } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createState = (_parent: any, { input: { name, stage } }: { input: State & { stage: Stage } }, { userContext, prisma }: Context) => {
-  // console.log({
-  //   name,
-  //   order,
-  //   stage
-  // })
-
+export const createState = (
+  _parent: any,
+  { input: { name, stage } }: { input: State & { stage: Stage } },
+  { userContext, prisma }: Context,
+) => {
   try {
-    hasPermission(userContext, 'CREATE', 'STATE')
+    hasPermission(userContext, "CREATE", "STATE");
     return prisma.state.create({
       data: {
         name,
         stage: {
-          connect: stage
-        }
-      }
-    })
+          connect: stage,
+        },
+      },
+    });
   } catch (e) {
     throw e;
   }
 };
 
-export const updateState = (_parent: any, { name, item }: { name: string, item: State & { stage: Stage } }, { userContext, prisma }: Context) => {
+export const updateState = (
+  _parent: any,
+  { name, item }: { name: string; item: State & { stage: Stage } },
+  { userContext, prisma }: Context,
+) => {
   try {
-    hasPermission(userContext, 'UPDATE', 'STATE')
+    hasPermission(userContext, "UPDATE", "STATE");
     return prisma.state.update({
       where: {
-        name
+        name,
       },
       data: {
         name: item.name,
-        /// order: item.order,
         stage: {
-          connect: item.stage
-        }
-      }
-    })
+          connect: item.stage,
+        },
+      },
+    });
   } catch (e) {
     throw e;
   }
 };
 
-export const deleteState = (_parent: any, { name }: { name: string }, { userContext, prisma }: Context) => {
+export const deleteState = (
+  _parent: any,
+  { name }: { name: string },
+  { userContext, prisma }: Context,
+) => {
   try {
-    hasPermission(userContext, 'DELETE', 'STATE')
+    hasPermission(userContext, "DELETE", "STATE");
     return prisma.state.delete({
       where: {
-        name
-      }
-    }
-    )
+        name,
+      },
+    });
   } catch (e) {
     throw e;
   }

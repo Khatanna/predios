@@ -191,7 +191,6 @@ export const createProperty = async (
 export const updateProperty = async (_parent: any, { input: { id, name, area, expertiseOfArea, plots, bodies, sheets, code, codeOfSearch, agrupationIdentifier, secondState, polygone, fileNumber, technicalObservation, activity, clasification, state, groupedState, city, province, municipality, folderLocation, technical, legal, type, responsibleUnit, reference } }: { input: PropertyInput }, { prisma, userContext }: Context) => {
 
   hasPermission(userContext, 'UPDATE', 'PROPERTY');
-  console.log({ fileNumber })
   const propertyUpdated = await prisma.property.update({
     where: {
       id
