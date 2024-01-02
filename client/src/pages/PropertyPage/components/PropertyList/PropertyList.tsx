@@ -4,12 +4,13 @@ import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { Property } from "../../models/types";
 import { Tooltip } from "../../../../components/Tooltip";
 import { Link } from "react-router-dom";
-import { FiletypePdf, HouseAdd } from "react-bootstrap-icons";
+import { FiletypePdf, FiletypeXls, FiletypeXlsx, HouseAdd } from "react-bootstrap-icons";
 import { TableColumn } from "react-data-table-component";
 import { Table } from "../../../../components/Table";
 import { useAuth } from "../../../../hooks";
 import { Alert } from "react-bootstrap";
-
+import * as XLSX from 'xlsx';
+import { saveAs } from "file-saver";
 export type PropertyListProps = {};
 const columns: TableColumn<Property>[] = [
   {
@@ -52,6 +53,25 @@ const columns: TableColumn<Property>[] = [
   },
 ];
 
+const ExportExcelButton = ({ data }: { data: Array<Property> }) => {
+  const exportToExcel = () => {
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const fileExtension = '.xlsx';
+    const exportData = data.map(({ name, registryNumber, code, state, type, city, province, municipality, codeOfSearch }) => ({ 'Numero de registro': registryNumber, Nombre: name, Codigo: code, 'Codigo de busqueda': codeOfSearch, Estado: state?.name, Tipo: type?.name, Departamento: city?.name, Provincia: province?.name, Municipio: municipality?.name }));
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+    const blob = new Blob([excelBuffer], { type: fileType });
+    const fileName = `reporte-${new Date().toISOString().substring(0, 10)}${fileExtension}`;
+    saveAs(blob, fileName);
+  };
+
+  return (
+    <FiletypeXls size={30} color="green" role="button" onClick={exportToExcel} />
+  );
+};
+
 const GET_ALL_PROPERTIES_QUERY = `
 	query GetProperties($page: Int, $limit: Int, $orderBy: String) {
 		results: getProperties(page: $page, limit: $limit, orderBy: $orderBy) {
@@ -87,7 +107,7 @@ const GET_ALL_PROPERTIES_QUERY = `
 	}
 `;
 
-const PropertyList: React.FC<PropertyListProps> = ({}) => {
+const PropertyList: React.FC<PropertyListProps> = ({ }) => {
   const navigate = useNavigate();
   const { role } = useAuth();
   const [page, setPage] = useState(1);
@@ -140,18 +160,22 @@ const PropertyList: React.FC<PropertyListProps> = ({}) => {
       actions={
         <>
           {role === "administrador" && (
-            <>
-              <Tooltip label="Generar reporte">
-                <Link to={"/report"}>
-                  <FiletypePdf size={30} />
-                </Link>
-              </Tooltip>
+            <div className="d-flex gap-3">
               <Tooltip label="Crear predio">
                 <Link to={"create"}>
                   <HouseAdd size={30} />
                 </Link>
               </Tooltip>
-            </>
+              {/* <Tooltip label="Generar reporte">
+                <Link to={"/report"}>
+                  <FiletypePdf size={30} color="red" />
+                </Link>
+              </Tooltip> */}
+
+              <Tooltip label="Generar reporte">
+                <ExportExcelButton data={data?.results.properties ?? []} />
+              </Tooltip>
+            </div>
           )}
         </>
       }

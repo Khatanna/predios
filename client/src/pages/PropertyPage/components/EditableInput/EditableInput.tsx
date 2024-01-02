@@ -24,11 +24,8 @@ const EditableInput: React.FC<EditableInputProps> = ({ isEdit = false, size, ren
 	const [edit, setEdit] = useState(isEdit);
 	const { getValues } = useFormContext<Property>();
 	const { role } = useAuth();
-	// const changeEdit = role === "Administrador" ? (value: boolean) => setEdit(value) : () => {
-	// 	customSwalError("Usted no tiene los permisos suficientes para poder editar los campos de este predio", "No tiene permiso para usar esta acción")
-	// };
 
-	if (!edit && role === "Administrador") {
+	if (!edit && role === "administrador") {
 		return <Tooltip label='Haz doble click para editar este campo'
 		>
 			<InputGroup size={size} onDoubleClick={(e) => {

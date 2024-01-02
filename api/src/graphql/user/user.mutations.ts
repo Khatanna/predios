@@ -63,13 +63,13 @@ export const updateUserByUsername = async (
 ) => {
   try {
     hasPermission(userContext, "UPDATE", "USER");
-    const permissions = await prisma.permission.findMany({
-      where: {
-        roles: {
-          some: role,
-        },
-      },
-    });
+    // const permissions = await prisma.permission.findMany({
+    //   where: {
+    //     roles: {
+    //       some: role,
+    //     },
+    //   },
+    // });
 
     const user = await prisma.user.update({
       where: {

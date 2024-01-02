@@ -57,11 +57,11 @@ function App() {
         <AuthProvider>
           <SeekerProvider>
             <Routes>
-              <Route
-                path="/report"
-                element={<LazyComponent Component={ReportPage} />}
-              />
               <Route path="/" element={<LazyComponent Component={NavBar} />}>
+                <Route
+                  path="/report"
+                  element={<LazyComponent Component={ReportPage} />}
+                />
                 <Route index element={<LazyComponent Component={HomePage} />} />
                 {isAdmin && (
                   <Route path="/users">

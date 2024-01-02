@@ -226,12 +226,12 @@ export const updateProperty = async (_parent: any, { input: { id, name, area, ex
           propertyId: id
         }
       } : undefined,
-      activity: {
+      activity: activity?.name ? {
         connect: activity
-      },
-      clasification: {
+      } : undefined,
+      clasification: clasification?.name ? {
         connect: clasification
-      },
+      } : undefined,
       state: {
         connect: state
       },
