@@ -16,7 +16,8 @@ import { useAuth } from "./hooks";
 import UserPage from "./pages/UserPage/UserPage";
 import { RolePage } from "./pages/RolePage";
 import { ReportPage } from "./pages/ReportPage";
-const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"));
+
+// const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"));
 const Permission = lazy(
   () => import("./pages/UserPage/components/Permission/Permission"),
 );

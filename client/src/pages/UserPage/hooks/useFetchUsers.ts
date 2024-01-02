@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
-import { GET_ALL_USERS_QUERY } from "../graphQL/types";
+import { useState } from "react";
 import { userListAdapter } from "../adapters/userList.adapter";
+import { GET_ALL_USERS_QUERY } from "../graphQL/types";
 import { User } from "../models/types";
 import { useUsersStore } from "../state/useUsersStore";
 
@@ -14,14 +15,19 @@ type QueryVariables = {
 
 export const useFetchUsers = () => {
   const { filterText } = useUsersStore();
+  const [data, setData] = useState<User[]>([]);
   const query = useQuery<QueryResult, QueryVariables>(GET_ALL_USERS_QUERY, {
     variables: {
       filterText,
+    },
+    onCompleted(data) {
+      setData(userListAdapter(data?.users));
     },
   });
 
   return {
     ...query,
-    data: userListAdapter(query.data?.users),
+    data,
+    setData,
   };
 };

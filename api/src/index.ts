@@ -5,7 +5,7 @@ import { graphqlContext } from "./utilities";
 config();
 async function main() {
   await server.start();
-  app.use('/', expressMiddleware(server, { context: graphqlContext }))
+  app.use("/", expressMiddleware(server, { context: graphqlContext }));
 
   httpsServer.listen({ port: process.env.PORT ?? 3001 });
 

@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
-import { useParams } from 'react-router';
-import { useCustomQuery } from '../../../../hooks/useCustomQuery';
-import { Property } from '../../models/types';
-import { PropertyForm } from '../PropertyForm';
-import { usePaginationStore } from '../../state/usePaginationStore';
+import { useEffect } from "react";
+import { useParams } from "react-router";
+import { useCustomQuery } from "../../../../hooks/useCustomQuery";
+import { Property } from "../../models/types";
+import { PropertyForm } from "../PropertyForm";
+import { usePaginationStore } from "../../state/usePaginationStore";
 
 const GET_PROPERTY_BY_ID_QUERY = `
 query GetPropertyById($id: String) {
@@ -97,33 +97,33 @@ query GetPropertyById($id: String) {
 				}
 			}
 	}
-}`
+}`;
 
 const Property: React.FC = () => {
-	const { id } = useParams();
+  const { id } = useParams();
 
-	const { setState } = usePaginationStore();
-	const { isLoading } = useCustomQuery<{ property: Property }>(GET_PROPERTY_BY_ID_QUERY, ['getPropertyById', { id }], {
-		onSuccess({ property }) {
-			setState({ property, nextCursor: property.id });
-		},
-		refetchOnWindowFocus: false,
-	})
-	// const { isLoading } = useCustomQuery<{ result: { nextCursor?: string, prevCursor?: string, property: Property } }>(GET_PROPERTY_BY_ID_QUERY, ['getProperty', { nextCursor: undefined, prevCursor: undefined }], {
-	// 	onSuccess({ result: { prevCursor, nextCursor, property } }) {
-	// 		// console.log({ prevCursor, nextCursor })
-	// 		setState({ property, nextCursor, prevCursor })
-	// 		// navigate(`../${nextCursor}`)
-	// 	},
-	// })
+  const { setState } = usePaginationStore();
+  const { isLoading } = useCustomQuery<{ property: Property }>(
+    GET_PROPERTY_BY_ID_QUERY,
+    ["getPropertyById", { id }],
+    {
+      onSuccess({ property }) {
+        setState({ property, nextCursor: property.id });
+      },
+      refetchOnWindowFocus: false,
+      cacheTime: 0,
+    },
+  );
 
-	if (isLoading) {
-		return <div>cargando...</div>
-	}
+  if (isLoading) {
+    return <div>cargando...</div>;
+  }
 
-	return <>
-		<PropertyForm newItem />
-	</>
+  return (
+    <>
+      <PropertyForm newItem />
+    </>
+  );
 };
 
 export default Property;

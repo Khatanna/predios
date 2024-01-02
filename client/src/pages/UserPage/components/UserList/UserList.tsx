@@ -7,11 +7,44 @@ import { columns } from "../../utils/TableColumns";
 import { getConditionalRowStyle } from "../../utils/getConditionalRowStyle";
 import { SubHeaderComponent } from "../SubHeaderComponent";
 import { UserActions } from "../UserActions";
+import { gql, useSubscription } from "@apollo/client";
+const ON_CONNECTED_SUBCRIPTION = gql`
+  subscription OnUserConnected {
+    userConnected {
+      username
+      connected
+    }
+  }
+`;
 
 const UserList: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  const { loading, error, data } = useFetchUsers();
+  const { loading, error, data, setData } = useFetchUsers();
+
+  useSubscription<{
+    userConnected: { username: string; connected: boolean };
+  }>(ON_CONNECTED_SUBCRIPTION, {
+    onData({ data }) {
+      if (data.data && data.data.userConnected) {
+        setData((currentData) => {
+          return currentData.map((user) => {
+            if (user.username === data.data?.userConnected.username) {
+              return {
+                ...user,
+                connection: data.data?.userConnected.connected
+                  ? "ONLINE"
+                  : "OFFLINE",
+              };
+            }
+
+            return user;
+          });
+        });
+      }
+    },
+  });
+
   const conditionalRowStyle = getConditionalRowStyle(user);
   if (error) {
     return (
@@ -22,20 +55,6 @@ const UserList: React.FC = () => {
       </div>
     );
   }
-
-  // subscribeToMore({
-  //   document: gql``,
-  //   updateQuery: (prev, { subscriptionData }) => {
-  //     if(!subscriptionData.data) return prev;
-
-  //     const newFeddItem = subscriptionData.data.users;
-
-  //     return Object.assign({}, prev.users.map(user => ({
-  //       ...user,
-  //       status: subscriptionData.data.
-  //     })));
-  //   } 
-  // })
 
   return (
     <Table

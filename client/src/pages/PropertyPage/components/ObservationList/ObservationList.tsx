@@ -1,33 +1,28 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { Alert, Button, Form, Row } from "react-bootstrap";
+import {
+  CheckCircle,
+  DashCircle,
+  InfoCircle,
+  PencilSquare,
+  PlusCircle,
+  Trash,
+  XCircle,
+} from "react-bootstrap-icons";
+import {
+  UseFieldArrayReturn,
+  useFieldArray,
+  useFormContext,
+} from "react-hook-form";
+import { Tooltip } from "../../../../components/Tooltip";
 import { useAuth, useCustomMutation } from "../../../../hooks";
-import { Observation } from "../../../ObservationPage/models/types";
 import {
   customSwalError,
   customSwalSuccess,
 } from "../../../../utilities/alerts";
-import { usePaginationStore } from "../../state/usePaginationStore";
-import { UseFieldArrayReturn, useFormContext } from "react-hook-form";
+import { Observation } from "../../../ObservationPage/models/types";
 import { Property } from "../../models/types";
-import { Row, Form, InputGroup } from "react-bootstrap";
-import { Tooltip } from "../../../../components/Tooltip";
-import {
-  Check,
-  CheckCircle,
-  DashCircle,
-  HouseAdd,
-  Pencil,
-  PencilFill,
-  PencilSquare,
-  Plus,
-  PlusCircle,
-  Trash,
-  X,
-  XCircle,
-} from "react-bootstrap-icons";
-import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-export type ObservationListProps = {
-  observations: Pick<Observation, "observation" | "id">[];
-} & Pick<UseFieldArrayReturn<Property, "observations">, "update" | "remove">;
 
 const CREATE_OBSERVATION_MUTATION = `
 	mutation CreateObservation($propertyId: String, $input: ObservationInput) {
@@ -119,12 +114,11 @@ const ObservationItem: React.FC<
     },
   });
   const { role } = useAuth();
-  // const { property } = usePaginationStore();
   const length = defaultValues?.observations?.length ?? 0;
   const isNew = index >= length;
   const [edit, setEdit] = useState(false);
   return (
-    <Row className="position-relative mb-2 pt-3">
+    <Row className="position-relative mb-2">
       <Form.Control
         as="textarea"
         rows={2}
@@ -139,7 +133,7 @@ const ObservationItem: React.FC<
           "position-absolute top-0 end-0 mt-2 d-flex gap-1 justify-content-end"
         }
       >
-        {role === "Administrador" && (
+        {role === "administrador" && (
           <>
             {isNew ? (
               <>
@@ -241,13 +235,58 @@ const ObservationItem: React.FC<
   );
 };
 
-const ObservationList: React.FC<ObservationListProps> = ({
-  observations,
-  ...props
-}) => {
-  return observations.map((observation, index) => (
-    <ObservationItem observation={observation} index={index} {...props} />
-  ));
+const ObservationList: React.FC = () => {
+  const { control } = useFormContext<Property>();
+  const { role } = useAuth();
+  const {
+    fields: observations,
+    append,
+    remove,
+    update,
+  } = useFieldArray({
+    control,
+    name: "observations",
+  });
+  if (!observations.length) {
+    return (
+      <Row>
+        <Alert className="d-flex flex-row gap-2" variant="info">
+          <InfoCircle size={24} />
+          Este predio aun no tiene observaciones
+        </Alert>
+      </Row>
+    );
+  }
+
+  return (
+    <>
+      {observations.map((observation, index) => (
+        <ObservationItem
+          observation={observation}
+          index={index}
+          update={update}
+          remove={remove}
+        />
+      ))}
+      {role === "administrador" && (
+        <Row>
+          <Button
+            size="sm"
+            className="text-white"
+            variant="info"
+            onClick={() => {
+              append({
+                id: crypto.randomUUID(),
+                observation: "",
+              });
+            }}
+          >
+            Añadir observación
+          </Button>
+        </Row>
+      )}
+    </>
+  );
 };
 
 export default ObservationList;

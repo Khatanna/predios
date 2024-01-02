@@ -1,41 +1,20 @@
 import { ApolloServer } from "@apollo/server";
-import fs from "fs";
-import path from "path";
 import { unwrapResolverError } from "@apollo/server/errors";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import { Prisma } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import cors from "cors";
-import express, { Express, RequestHandler } from "express";
+import express from "express";
+import fs from "fs";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { GraphQLError } from "graphql/error";
 import https from "https";
+import path from "path";
 import { WebSocketServer } from "ws";
 import { Code, Status } from "../constants";
 import { prisma, pubSub, throwUnauthorizedError } from "../utilities";
 import { getError } from "../utilities/getError";
 import { throwPrismaError } from "../utilities/throwPrismaError";
 import { schema } from "./schema";
-
-// interface IServer {
-//   init(): void
-// }
-// class Server implements IServer {
-//   private httpsServer: https.Server
-//   constructor(private app: Express) {
-//     // this.app.use(express.json());
-//     this.httpsServer = https.createServer(
-//       {
-//         key: fs.readFileSync(path.join(__dirname, "../key.pem")),
-//         cert: fs.readFileSync(path.join(__dirname, "../cert.pem")),
-//       },
-//       app,
-//     );
-//   }
-
-//   init() {
-//     this.app.listen();
-//   }
-// }
 
 export const app = express();
 export const httpsServer = https.createServer(
@@ -51,6 +30,7 @@ app.use(
     origin: [
       "https://172.18.0.202:4173",
       "https://172.18.0.202:5173",
+      "https://192.168.100.2:5173",
       "https://localhost:5173",
       // "https://localhost:4173",
     ],
@@ -67,8 +47,47 @@ const wsServer = new WebSocketServer({
 const serverCleanup = useServer(
   {
     schema,
-    onConnect(ctx) {
-      // console.log("usuarios conectado: ", ctx)
+    async onConnect({ connectionParams }) {
+      const { user } = connectionParams as { user: User };
+      if (!user.username) return;
+      console.log("usuario conectado: ", { user });
+      await prisma.user.update({
+        where: {
+          username: user.username,
+        },
+        data: {
+          connection: "ONLINE",
+        },
+      });
+      await pubSub.publish("USER_CONNECTED", {
+        userConnected: {
+          username: user.username,
+          connected: true,
+        },
+      });
+    },
+    async onDisconnect({ connectionParams }) {
+      const { user } = connectionParams as { user: User };
+      if (!user.username) return;
+      console.log("usuario desconectado: ", { user });
+      await prisma.user.update({
+        where: {
+          username: user.username,
+        },
+        data: {
+          connection: "OFFLINE",
+        },
+      });
+      const count = await prisma.position.count();
+      if (count > 0) {
+        await prisma.position.delete({ where: { username: user.username } });
+      }
+      await pubSub.publish("USER_CONNECTED", {
+        userConnected: {
+          username: user.username,
+          connected: false,
+        },
+      });
     },
     // retirar prisma para conservar la seguridad
     context: () => {

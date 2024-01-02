@@ -1,3 +1,4 @@
+import { LevelPermission, Resource } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
@@ -246,7 +247,7 @@ export const getUserByUsername = async (
   { prisma, userContext }: Context,
 ) => {
   try {
-    // hasPermission(userContext, "READ", "USERPERMISSION");
+    hasPermission(userContext, "READ", "USER");
 
     const result = await prisma.user.findUnique({
       where: {
@@ -420,6 +421,35 @@ export const getUsers = async (
       },
     });
     return result;
+  } catch (e) {
+    throw e;
+  }
+};
+export const getConnectUsers = (
+  _parent: any,
+  _args: Record<string, unknown>,
+  { prisma, userContext }: Context,
+) => {
+  try {
+    hasPermission(userContext, "READ", "USER");
+    return prisma.user.findMany({
+      where: {
+        connection: "ONLINE",
+      },
+    });
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const can = (
+  _parent: any,
+  { resource, level }: { resource: Resource; level: LevelPermission },
+  { prisma, userContext }: Context,
+) => {
+  try {
+    console.log({ resource, level });
+    return hasPermission(userContext, level, resource);
   } catch (e) {
     throw e;
   }

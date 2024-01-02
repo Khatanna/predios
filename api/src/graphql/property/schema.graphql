@@ -60,13 +60,23 @@ type Query {
   getProperties(page: Int, limit: Int, orderBy: String): PropertiesPaginate
   getProperty(nextCursor: String, prevCursor: String): getPropertyWithCursor
   getPropertyById(id: String): Property
-  searchPropertyByAttribute(page: Int, limit: Int, orderBy: String, code: String, codeOfSearch: String, agrupationIdentifier: String, name: String, beneficiary: String): PropertiesPaginate
+  searchPropertyByAttribute(
+    page: Int
+    limit: Int
+    orderBy: String
+    code: String
+    codeOfSearch: String
+    agrupationIdentifier: String
+    name: String
+    beneficiary: String
+  ): PropertiesPaginate
 }
 
 # Mutations
 type Mutation {
   createProperty(input: PropertyInput): Property
   updateProperty(id: String, input: PropertyInput): Property
+  updateField(id: String, fieldName: String, value: String): Property
 }
 
 # input TrackingInput {
