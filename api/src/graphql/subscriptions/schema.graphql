@@ -8,16 +8,38 @@ type OnConnection {
 }
 
 type OnCursorMove {
+  contextId: String
   username: String
   positionX: Int
   positionY: Int
 }
 
+type OnFocusInput {
+  contextId: String
+  name: String
+  isFocused: Boolean
+  username: String
+}
+
+type OnChangeInput {
+  name: String
+  value: String
+}
+
 type Subscription {
   userConnected: OnConnection
-  cursorMove: OnCursorMove
+  cursorMove: [OnCursorMove]
+  focusedInput: OnFocusInput
+  changeInput: OnChangeInput
 }
 
 type Mutation {
-  cursorMove(username: String, positionX: Int, positionY: Int): String
+  cursorMove(
+    contextId: String
+    username: String
+    positionX: Int
+    positionY: Int
+  ): String
+  focusInput(contextId: String, name: String, isFocused: Boolean): String
+  changeInput(name: String, value: String): String
 }

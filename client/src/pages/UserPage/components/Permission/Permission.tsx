@@ -7,7 +7,7 @@ import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import {
   StateOfStatus,
   levels,
-  resources
+  resources,
 } from "../../../../utilities/constants";
 import { Permission } from "../../../PermissionPage/models/types";
 import { User } from "../../models/types";
@@ -31,68 +31,71 @@ const GET_PERMISSION_BY_USERNAME = `query ($username: String) {
 }`;
 
 export type Resource = keyof typeof resources;
-type Level = keyof typeof levels;
+export type Level = keyof typeof levels;
 
 const columns: TableColumn<{
   status: string;
-  assignedBy: string
+  assignedBy: string;
   permission: Permission;
 }>[] = [
-    {
-      name: "Nro",
-      selector: (_row, index) => (index || 0) + 1,
-      width: "80px",
-      sortFunction: (a, b) => Number(a.permission.createdAt) - Number(b.permission.createdAt),
-    },
-    {
-      name: "Nombre",
-      selector: (row) => row.permission.name,
-      wrap: true,
-      reorder: true,
-    },
-    {
-      name: "Descripción",
-      selector: (row) => row.permission.description,
-      wrap: true,
-      reorder: true,
-      grow: 2,
-    },
-    {
-      name: "Recurso",
-      cell: (row) => (
-        <Chip
-          text={resources[row.permission.resource as Resource]}
-          background={row.permission.resource}
-        />
-      ),
-      reorder: true,
-      sortFunction: (a, b) =>
-        a.permission.resource.localeCompare(b.permission.resource),
-    },
-    {
-      name: "Nivel de acceso",
-      cell: (row) => (
-        <Chip
-          text={levels[row.permission.level as Level]}
-          background={row.permission.level}
-          outline={true}
-        />
-      ),
-      reorder: true,
-      sortFunction: (a, b) =>
-        a.permission.level.localeCompare(b.permission.level),
-    },
-    {
-      name: "Estado",
-      cell: ({ permission: { status } }) => <StateCell status={status} values={StateOfStatus} />,
-      reorder: true,
-      sortFunction: (a, b) => a.status.localeCompare(b.status),
-    },
-    {
-      name: 'Asignado por',
-      selector: (row) => row.assignedBy
-    },
-  ];
+  {
+    name: "Nro",
+    selector: (_row, index) => (index || 0) + 1,
+    width: "80px",
+    sortFunction: (a, b) =>
+      Number(a.permission.createdAt) - Number(b.permission.createdAt),
+  },
+  {
+    name: "Nombre",
+    selector: (row) => row.permission.name,
+    wrap: true,
+    reorder: true,
+  },
+  {
+    name: "Descripción",
+    selector: (row) => row.permission.description,
+    wrap: true,
+    reorder: true,
+    grow: 2,
+  },
+  {
+    name: "Recurso",
+    cell: (row) => (
+      <Chip
+        text={resources[row.permission.resource as Resource]}
+        background={row.permission.resource}
+      />
+    ),
+    reorder: true,
+    sortFunction: (a, b) =>
+      a.permission.resource.localeCompare(b.permission.resource),
+  },
+  {
+    name: "Nivel de acceso",
+    cell: (row) => (
+      <Chip
+        text={levels[row.permission.level as Level]}
+        background={row.permission.level}
+        outline={true}
+      />
+    ),
+    reorder: true,
+    sortFunction: (a, b) =>
+      a.permission.level.localeCompare(b.permission.level),
+  },
+  {
+    name: "Estado",
+    cell: ({ permission: { status } }) => (
+      <StateCell status={status} values={StateOfStatus} />
+    ),
+    reorder: true,
+    sortFunction: (a, b) => a.status.localeCompare(b.status),
+  },
+  {
+    name: "Asignado por",
+    selector: (row) => row.assignedBy,
+  },
+];
 
 const Permission: React.FC = () => {
   const { state } = useLocation();
@@ -107,13 +110,13 @@ const Permission: React.FC = () => {
         user: User;
       }[];
       role: {
-        name: string
+        name: string;
         permissions: {
           status: string;
           permission: Permission;
-          assignedBy: string
-        }[]
-      }
+          assignedBy: string;
+        }[];
+      };
     };
   }>(GET_PERMISSION_BY_USERNAME, ["getPermissionByUsername", { username }]);
 

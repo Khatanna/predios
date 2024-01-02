@@ -56,6 +56,15 @@ enum Resource {
   @@map("recurso")
 }
 
+model Position {
+  username  String @unique @db.VarChar(128)
+  contextId String
+  positionX Int
+  positionY Int
+
+  @@map("posicion")
+}
+
 model User {
   id             String                @id @default(uuid())
   names          String?               @map("nombre") @db.VarChar(30)

@@ -8,33 +8,25 @@ import { BackButton } from "../BackButton";
 import { Nav } from "../Nav";
 import { SeekerModal } from "../SeekerModal";
 import { gql, useSubscription } from "@apollo/client";
-import { toast } from "sonner";
 
-const WS_QUERY = gql`
-subscription OnUserConnect {
-  userConnected {
-    username
-    connected
+const ON_CONNECTED_SUBCRIPTION = gql`
+  subscription OnUserConnected {
+    userConnected {
+      username
+      connected
+    }
   }
-}
-`
+`;
 
 const NavbarComponent: React.FC = () => {
   const { isAuth } = useAuth();
   const { isModalOpen } = useSeeker();
-  useSubscription<{ userConnected: { username: string, connected: boolean } }>(WS_QUERY, {
-    onData({ data }) {
-      if (data.data) {
-        const { connected, username } = data.data.userConnected;
-        toast.info(`El usuario: ${username} se ha ${connected ? 'conectado' : 'desconectado'}`)
-      }
-    }
-  });
+
+  useSubscription(ON_CONNECTED_SUBCRIPTION);
 
   if (!isAuth) {
     return <Navigate to={"/auth"} />;
   }
-
   return (
     <div className="d-flex flex-column vh-100">
       <Navbar expand="sm" sticky="top" bg="body-tertiary" className="shadow-sm">

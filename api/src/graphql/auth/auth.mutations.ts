@@ -23,7 +23,12 @@ export const login = async (
       select: {
         username: true,
         password: true,
-        status: true
+        status: true,
+        role: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
     if (user.status === "DISABLE") {
@@ -37,31 +42,14 @@ export const login = async (
     if (!verifyPassword(password, user.password)) {
       throw throwLoginError(AuthErrorMessage.INVALID_PASSWORD);
     }
-    const userUpdated = await prisma.user.update({
-      where: {
-        username: user.username,
-      },
-      data: {
-        connection: "ONLINE",
-      },
-      select: {
-        username: true,
-        status: true,
-        connection: true,
-        role: {
-          select: {
-            name: true,
-          }
-        }
-      },
-    });
+
     const accessToken = generateToken(
-      userUpdated,
+      user,
       process.env.ACCESS_TOKEN_SECRET!,
       LifeTimeToken.day,
     );
     const refreshToken = generateToken(
-      userUpdated,
+      user,
       process.env.REFRESH_TOKEN_SECRET!,
       LifeTimeToken.week,
     );
@@ -75,13 +63,6 @@ export const login = async (
       },
     });
 
-    console.log("Enviando usuario conectado")
-    await pubSub.publish("USER_CONNECTED", {
-      userConnected: {
-        username: user.username,
-        connected: true,
-      }
-    });
     return { accessToken, refreshToken };
     // throw throwLoginError(AuthErrorMessage.UNREGISTERED_USER);
   } catch (e) {
@@ -101,17 +82,17 @@ export const logout = async (
         token,
       },
       data: {
-        connection: "OFFLINE",
+        // connection: "OFFLINE",
         token: undefined,
       },
     });
 
-    await pubSub.publish("USER_CONNECTED", {
-      userConnected: {
-        username: user.username,
-        connected: false
-      }
-    });
+    // await pubSub.publish("USER_CONNECTED", {
+    //   userConnected: {
+    //     username: user.username,
+    //     connected: false,
+    //   },
+    // });
     return Boolean(user);
   } catch (e) {
     throw e;
@@ -132,9 +113,9 @@ export const getNewAccessToken = async (
         connection: true,
         role: {
           select: {
-            name: true
-          }
-        }
+            name: true,
+          },
+        },
       },
     });
 

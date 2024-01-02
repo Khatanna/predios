@@ -194,7 +194,7 @@ export const SelectNameable: React.FC<
                 : ""
             }`}
           />
-          {props.readOnly && role === "Administrador" && (
+          {props.readOnly && role === "administrador" && (
             <InputGroup.Text>
               <DropdownMenu
                 options={optionsReadOnly}
