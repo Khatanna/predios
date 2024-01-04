@@ -28,6 +28,7 @@ const createRecord = async (
   username: string,
   ip?: string,
 ) => {
+  if (model.toLocaleUpperCase() === "POSITION") return await query(args);
   const result = await query(args);
   if (model !== "Record") {
     await prisma.record.create({

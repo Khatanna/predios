@@ -13,7 +13,7 @@ import { SubDirectory } from "../../SubDirectoryPage/models/types";
 import { Tracking } from "../../TrackingPage/models/types";
 import { Type } from "../../TypePage/models/types";
 import { User } from "../../UserPage/models/types";
-
+import { UseFormRegisterReturn, FieldPath, RegisterOptions } from 'react-hook-form';
 type UserOnProperty = {
   property: Property;
   user: User;
@@ -79,25 +79,22 @@ export interface FormUpdateProps extends FormCreateProps {
 
 export type FormControlElement = HTMLInputElement | HTMLTextAreaElement;
 
-export type TUseInputSubscription = {
-  onFocus: (e: React.FocusEvent<FormControlElement>) => void;
-  onChange: (e: React.ChangeEvent<FormControlElement>) => void;
-  onBlur: (e: React.ChangeEvent<FormControlElement>) => void;
+type UseFieldRegister = {
+  readOnly: boolean;
+  disabled: boolean;
+  onFocus: (e: React.ChangeEvent<FormControlElement>) => Promise<void>;
+  onChange: (e: React.ChangeEvent<FormControlElement>) => Promise<void>;
+  onBlur: (e: React.ChangeEvent<FormControlElement>) => Promise<void>;
 };
 export type ReturnTUseInputSubscription = {
-  isCurrentInput: boolean;
-  isSelected: boolean;
-  itsMe: boolean;
-  isFocused: boolean;
+  isFocus: boolean;
   username: string;
-  subscribe: TUseInputSubscription;
-  propertyExists: boolean;
-  isCurrentContext: boolean;
+  subscribe: UseFormRegisterReturn<FieldPath<Property>> & UseFieldRegister;
 };
 
 export type TFucused = { contextId: string; isFocused: boolean; name: string };
 export type TUseInputSubscriptionParams = {
   name: FieldPath<Property>;
-  events?: Partial<TUseInputSubscription>;
+  events?: Partial<Pick<UseFieldRegister, 'onBlur' | 'onChange' | 'onFocus'>>;
   options?: RegisterOptions<Property>;
 };

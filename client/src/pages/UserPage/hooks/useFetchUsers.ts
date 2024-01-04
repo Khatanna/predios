@@ -27,7 +27,7 @@ export const useFetchUsers = () => {
 
   return {
     ...query,
-    data,
+    data: userListAdapter(query.data?.users),
     setData,
   };
 };

@@ -22,6 +22,7 @@ import {
 } from "../../../../utilities/alerts";
 import { useModalStore } from "../../state/useModalStore";
 import { SelectNameable } from "../../../HomePage/HomePage";
+import { useInputSubscription } from "../../hooks/useInputSubscription";
 
 const GET_ALL_CITIES_QUERY = `
 	query GetAllCities {
@@ -95,7 +96,20 @@ const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
     },
   );
   const { setModal } = useModalStore();
-
+  const { subscribe: citySuscribe } = useInputSubscription({
+    name: "city.name"
+  })
+  const { subscribe: provinceSuscribe } = useInputSubscription({
+    name: "province.name",
+    events: {
+      onChange: async () => {
+        setValue("municipality.name", "undefined");
+      },
+    }
+  })
+  const { subscribe: municipalitySuscribe } = useInputSubscription({
+    name: "municipality.name"
+  })
   return (
     <>
       <Col>
@@ -111,8 +125,13 @@ const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
             render={({ field }) => (
               <SelectNameable
                 {...field}
+                {...citySuscribe}
+                onChange={(e) => {
+                  field.onChange(e)
+                  citySuscribe.onChange(e)
+                }}
                 size="sm"
-                readOnly={readOnly}
+                // readOnly={readOnly}
                 highlight
                 placeholder="Departamento"
                 options={cities.map(({ name }) => ({
@@ -179,12 +198,17 @@ const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
             render={({ field }) => (
               <SelectNameable
                 {...field}
-                readOnly={readOnly}
-                highlight
+                {...provinceSuscribe}
                 onChange={(e) => {
-                  field.onChange(e);
-                  setValue("municipality.name", "undefined");
+                  field.onChange(e)
+                  provinceSuscribe.onChange(e)
                 }}
+                // readOnly={readOnly}
+                highlight
+                // onChange={(e) => {
+                //   field.onChange(e);
+                //   setValue("municipality.name", "undefined");
+                // }}
                 disabled={city === "undefined"}
                 size="sm"
                 placeholder={"Provincia"}
@@ -252,7 +276,13 @@ const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
             render={({ field }) => (
               <SelectNameable
                 {...field}
-                readOnly={readOnly}
+                {...municipalitySuscribe}
+                onChange={(e) => {
+                  field.onChange(e)
+                  municipalitySuscribe.onChange(e)
+                }}
+                // readOnly={readOnly}
+                value={municipalities.map(e => e.name).includes(field.value) ? field.value : "undefined"}
                 disabled={province === "undefined"}
                 highlight
                 size="sm"

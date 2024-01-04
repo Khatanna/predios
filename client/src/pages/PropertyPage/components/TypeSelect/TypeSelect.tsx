@@ -12,6 +12,9 @@ import { SelectNameable } from "../../../HomePage/HomePage";
 import { Form } from "react-bootstrap";
 import { CustomLabel } from "../CustomLabel";
 import { ListColumns } from "react-bootstrap-icons";
+import { CustomSelect } from "../CustomSelect";
+import { gql } from "@apollo/client";
+import { useInputSubscription } from "../../hooks/useInputSubscription";
 
 const GET_ALL_TYPES_QUERY = `
 	query GetAllTypes {
@@ -19,6 +22,13 @@ const GET_ALL_TYPES_QUERY = `
 			name
 		}
 	}
+`;
+const GET_ALL_TYPES = gql`
+  query GetAllTypes {
+    options: getAllTypes {
+      name
+    }
+  }
 `;
 
 const TypeSelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
@@ -38,7 +48,9 @@ const TypeSelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
       },
     },
   );
-
+  const { subscribe } = useInputSubscription({
+    name: 'type.name'
+  });
   return (
     <Form.Group>
       <CustomLabel
@@ -52,7 +64,12 @@ const TypeSelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
         render={({ field }) => (
           <SelectNameable
             {...field}
-            readOnly={readOnly}
+            {...subscribe}
+            onChange={(e) => {
+              field.onChange(e)
+              subscribe.onChange(e)
+            }}
+            // readOnly={readOnly}
             size="sm"
             placeholder={"Tipo de predio"}
             options={types.map(({ name }) => ({ label: name, value: name }))}

@@ -13,6 +13,7 @@ import { SelectNameable } from "../../../HomePage/HomePage";
 import { Form } from "react-bootstrap";
 import { CustomLabel } from "../CustomLabel";
 import { Diagram3 } from "react-bootstrap-icons";
+import { useInputSubscription } from "../../hooks/useInputSubscription";
 
 const GET_ALL_CLASIFICATIONS_QUERY = `
 	query GetAllClasifications {
@@ -41,7 +42,9 @@ const ClasificationSelect: React.FC<{ readOnly?: boolean }> = ({
       },
     },
   );
-
+  const { subscribe } = useInputSubscription({
+    name: 'clasification.name'
+  });
   return (
     <Form.Group>
       <CustomLabel
@@ -55,8 +58,12 @@ const ClasificationSelect: React.FC<{ readOnly?: boolean }> = ({
         render={({ field }) => (
           <SelectNameable
             {...field}
+            {...subscribe}
+            onChange={(e) => {
+              field.onChange(e)
+              subscribe.onChange(e)
+            }}
             size="sm"
-            readOnly={readOnly}
             placeholder={"Clasificación"}
             options={clasifications.map(({ name }) => ({
               label: name,

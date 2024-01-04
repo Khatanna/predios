@@ -11,6 +11,7 @@ import { customSwalError, customSwalSuccess } from '../../../../utilities/alerts
 import { Form } from 'react-bootstrap';
 import { CustomLabel } from '../CustomLabel';
 import { Box2 } from 'react-bootstrap-icons';
+import { useInputSubscription } from '../../hooks/useInputSubscription';
 
 export type GroupedStateSelectProps = {
 	readOnly: boolean
@@ -36,7 +37,9 @@ const GroupedStateSelect: React.FC<GroupedStateSelectProps> = ({ readOnly }) => 
 			setGroupedStates(groupedStates)
 		}
 	})
-
+	const { subscribe } = useInputSubscription({
+		name: 'groupedState.name'
+	});
 	return <Form.Group>
 		<CustomLabel
 			label="Estado agrupado"
@@ -49,7 +52,11 @@ const GroupedStateSelect: React.FC<GroupedStateSelectProps> = ({ readOnly }) => 
 			render={({ field }) => (
 				<SelectNameable
 					{...field}
-					readOnly={readOnly}
+					{...subscribe}
+					onChange={(e) => {
+						field.onChange(e)
+						subscribe.onChange(e)
+					}}
 					size="sm"
 					highlight
 					placeholder={"Estado agrupado"}

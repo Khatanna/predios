@@ -1,14 +1,14 @@
 import React from "react";
 import { Form, FormControlProps } from "react-bootstrap";
-import { FieldPath, RegisterOptions } from "react-hook-form";
-import { Property, TUseInputSubscription } from "../../models/types";
+import { FieldPath, RegisterOptions, useFormContext } from "react-hook-form";
 import { PillUser } from "../../../../components/PillUser";
-import { useCan } from "../../../../hooks/useCan";
 import { useInputSubscription } from "../../hooks/useInputSubscription";
+import { Property } from "../../models/types";
+import { Error } from "../../../LoginPage/styled-components/Error";
 
 export type CustomInputProps = Omit<
   FormControlProps,
-  keyof TUseInputSubscription
+  "onBlur" | "onFocus" | "onChange"
 > & {
   rows?: number;
   name: FieldPath<Property>;
@@ -22,33 +22,17 @@ const CustomInput: React.FC<CustomInputProps> = ({
   noWrap = false,
   ...props
 }) => {
-  const { can: canEdit, refetch } = useCan();
-  const { isSelected, subscribe, username, propertyExists } =
+  const { subscribe, username, isFocus } =
     useInputSubscription({
       name: name,
-      events: {
-        onFocus() {
-          const level = propertyExists ? "UPDATE" : "CREATE";
-
-          refetch({
-            variables: {
-              resource: "PROPERTY",
-              level,
-            },
-          });
-        },
-      },
       options,
     });
-  const focusCondition = isSelected && canEdit;
   if (noWrap) {
     return (
       <Form.Control
         {...subscribe}
         autoComplete="off"
-        disabled={focusCondition}
-        className={focusCondition ? "border border-success" : ""}
-        readOnly={!canEdit}
+        className={isFocus ? "border border-success" : ""}
         {...props}
       />
     );
@@ -56,14 +40,13 @@ const CustomInput: React.FC<CustomInputProps> = ({
 
   return (
     <div className="position-relative">
-      {focusCondition && <PillUser username={username} />}
+      {isFocus && <PillUser username={username} />}
       <Form.Control
         {...subscribe}
         autoComplete="off"
-        disabled={focusCondition}
-        readOnly={!canEdit}
         {...props}
       />
+      {/* <Error>{getFieldState(name).error?.message}</Error> */}
     </div>
   );
 };

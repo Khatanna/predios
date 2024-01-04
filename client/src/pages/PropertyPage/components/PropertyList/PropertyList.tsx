@@ -32,6 +32,8 @@ const columns: TableColumn<Property>[] = [
   {
     name: "Codigo",
     selector: (row) => row.code ?? "Sin codigo",
+    sortable: true,
+    sortFunction: (a, b) => Number(a.code) - Number(b.code),
   },
   {
     name: "Estado",
@@ -68,7 +70,9 @@ const ExportExcelButton = ({ data }: { data: Array<Property> }) => {
   };
 
   return (
-    <FiletypeXls size={30} color="green" role="button" onClick={exportToExcel} />
+    <Tooltip label="Generar reporte">
+      <FiletypeXls size={30} color="green" role="button" onClick={exportToExcel} />
+    </Tooltip>
   );
 };
 
@@ -158,26 +162,16 @@ const PropertyList: React.FC<PropertyListProps> = ({ }) => {
       }}
       onChangeRowsPerPage={setLimit}
       actions={
-        <>
+        <div className="d-flex gap-3">
           {role === "administrador" && (
-            <div className="d-flex gap-3">
-              <Tooltip label="Crear predio">
-                <Link to={"create"}>
-                  <HouseAdd size={30} />
-                </Link>
-              </Tooltip>
-              {/* <Tooltip label="Generar reporte">
-                <Link to={"/report"}>
-                  <FiletypePdf size={30} color="red" />
-                </Link>
-              </Tooltip> */}
-
-              <Tooltip label="Generar reporte">
-                <ExportExcelButton data={data?.results.properties ?? []} />
-              </Tooltip>
-            </div>
+            <Tooltip label="Crear predio">
+              <Link to={"create"}>
+                <HouseAdd size={30} />
+              </Link>
+            </Tooltip>
           )}
-        </>
+          <ExportExcelButton data={data?.results.properties ?? []} />
+        </div>
       }
     />
   );

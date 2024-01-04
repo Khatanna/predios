@@ -11,6 +11,7 @@ import { useCustomQuery } from '../../../../hooks/useCustomQuery';
 import { CustomLabel } from '../CustomLabel';
 import { Link45deg } from 'react-bootstrap-icons';
 import { Form } from 'react-bootstrap';
+import { useInputSubscription } from '../../hooks/useInputSubscription';
 
 export type ReferenceSelectProps = {
 	readOnly: boolean
@@ -42,7 +43,9 @@ const ReferenceSelect: React.FC<ReferenceSelectProps> = ({ readOnly }) => {
 			},
 		},
 	);
-
+	const { subscribe } = useInputSubscription({
+		name: 'reference.name'
+	})
 	return <Form.Group>
 		<CustomLabel
 			label="Referencia"
@@ -55,8 +58,13 @@ const ReferenceSelect: React.FC<ReferenceSelectProps> = ({ readOnly }) => {
 			render={({ field }) => (
 				<SelectNameable
 					{...field}
+					{...subscribe}
+					onChange={(e) => {
+						field.onChange(e)
+						subscribe.onChange(e)
+					}}
 					size="sm"
-					readOnly={readOnly}
+					// readOnly={readOnly}
 					placeholder={"Referencia"}
 					options={references.map(({ name }) => ({
 						label: name,

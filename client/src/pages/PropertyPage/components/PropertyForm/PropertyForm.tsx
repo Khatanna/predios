@@ -336,7 +336,12 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                   label="Nro. de expediente"
                                   icon={<Hash color="#d44da2" />}
                                 />
-                                <EditableInput
+                                <CustomInput
+                                  name="fileNumber.number"
+                                  placeholder="Nro de expediente"
+                                  size="sm"
+                                />
+                                {/* <EditableInput
                                   size="sm"
                                   isEdit={!property}
                                   render={({ edit }) => (
@@ -348,7 +353,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                       autoFocus={edit}
                                     />
                                   )}
-                                />
+                                /> */}
                               </Col>
                             </Row>
                           </Col>
@@ -450,7 +455,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                   <Col className="d-flex justify-content-end gap-2">
                     {!property && (
                       <>
-                        <Button
+                        {/* <Button
                           variant="primary"
                           onClick={() => {
                             methods.reset(undefined);
@@ -461,8 +466,8 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                           }}
                         >
                           Limpiar
-                        </Button>
-                        <Button
+                        </Button> */}
+                        {/* <Button
                           variant="success"
                           onClick={() => {
                             setPropertyForm({
@@ -471,7 +476,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                           }}
                         >
                           Guardar
-                        </Button>
+                        </Button> */}
                       </>
                     )}
                     <Button type="submit" variant="warning">
@@ -483,7 +488,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
             </Col>
           </Row>
         </Form>
-        {methods.getValues("id") && <Cursor />}
+        {/* {methods.getValues("id") && <Cursor />} */}
       </FormProvider>
     </Container>
   );

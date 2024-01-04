@@ -16,26 +16,38 @@ export const cursorMove = async (
   { pubSub, prisma, userContext }: Context,
 ) => {
   try {
-    if (!username) return;
-    await prisma.position.upsert({
+    const currentPosition = await prisma.position.findUnique({
       where: {
-        username,
-      },
-      update: {
-        contextId,
-        positionX,
-        positionY,
-      },
-      create: {
-        username,
-        contextId,
-        positionX,
-        positionY,
+        username: userContext?.username,
       },
     });
 
-    const cursors = await prisma.position.findMany({});
-    return pubSub.publish("CURSOR_MOVE", {
+    if (currentPosition) {
+      console.log("actualizando")
+      await prisma.position.update({
+        where: {
+          username: userContext?.username
+        },
+        data: {
+          contextId,
+          positionX,
+          positionY,
+        },
+      })
+    } else {
+      console.log("creando")
+      await prisma.position.create({
+        data: {
+          username: userContext!.username,
+          contextId,
+          positionX,
+          positionY,
+        },
+      })
+    }
+
+    const cursors = await prisma.position.findMany();
+    return await pubSub.publish("CURSOR_MOVE", {
       cursorMove: cursors,
     });
   } catch (e) {

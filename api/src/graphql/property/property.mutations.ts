@@ -20,6 +20,7 @@ import {
 } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
+import { resolveNestedField } from "../../utilities/resolveNestedField";
 
 type TrackingInput = {
   state: State;
@@ -220,19 +221,7 @@ export const updateProperty = async (
   {
     input: {
       id,
-      name,
-      area,
-      expertiseOfArea,
-      plots,
-      bodies,
-      sheets,
-      code,
-      codeOfSearch,
-      agrupationIdentifier,
-      secondState,
-      polygone,
       fileNumber,
-      technicalObservation,
       activity,
       clasification,
       state,
@@ -256,68 +245,56 @@ export const updateProperty = async (
       id,
     },
     data: {
-      name,
-      area,
-      expertiseOfArea,
-      plots,
-      bodies,
-      sheets,
-      code,
-      codeOfSearch,
-      agrupationIdentifier,
-      secondState,
-      polygone,
-      technicalObservation,
-      fileNumber: fileNumber && fileNumber.number ? {
-        upsert: {
-          where: {
-            propertyId: id,
-          },
-          create: {
-            number: fileNumber.number
-          },
-          update: {
-            number: fileNumber.number
-          }
-        },
-      } : fileNumber.number?.length === 0 ? {
-        delete: {
-          propertyId: id
-        }
-      } : undefined,
-      activity: {
-        connect: activity
-      },
-      clasification: {
-        connect: clasification
-      },
-      state: {
-        connect: state,
-      },
-      groupedState: {
-        connect: groupedState,
-      },
-      city: {
-        connect: city,
-      },
-      province: {
-        connect: province,
-      },
-      municipality: {
-        connect: municipality,
-      },
-      folderLocation: {
-        connect: folderLocation,
-      },
-      type: {
-        connect: type,
-      },
-      responsibleUnit: {
-        connect: responsibleUnit,
-      },
-      reference: {
-        connect: reference,
-      },
+      // fileNumber: fileNumber && fileNumber.number ? {
+      //   upsert: {
+      //     where: {
+      //       propertyId: id,
+      //     },
+      //     create: {
+      //       number: fileNumber.number
+      //     },
+      //     update: {
+      //       number: fileNumber.number
+      //     }
+      //   },
+      // } : fileNumber.number?.length === 0 ? {
+      //   delete: {
+      //     propertyId: id
+      //   }
+      // } : undefined,
+      // activity: {
+      //   connect: activity
+      // },
+      // clasification: {
+      //   connect: clasification
+      // },
+      // state: {
+      //   connect: state,
+      // },
+      // groupedState: {
+      //   connect: groupedState,
+      // },
+      // city: {
+      //   connect: city,
+      // },
+      // province: {
+      //   connect: province,
+      // },
+      // municipality: {
+      //   connect: municipality,
+      // },
+      // folderLocation: {
+      //   connect: folderLocation,
+      // },
+      // type: {
+      //   connect: type,
+      // },
+      // responsibleUnit: {
+      //   connect: responsibleUnit,
+      // },
+      // reference: {
+      //   connect: reference,
+      // },
       technical:
         technical && technical.user
           ? {
@@ -354,6 +331,45 @@ export const updateField = async (
   { prisma, userContext }: Context,
 ) => {
   hasPermission(userContext, "UPDATE", "PROPERTY");
+  let propertyUpdated;
+  console.log({ fieldName, value });
+  if (fieldName === "fileNumber.number") {
+    propertyUpdated = await prisma.property.update({
+      where: {
+        id,
+      },
+      data: {
+        fileNumber: resolveFileNumber(value, id)
+      }
+    });
+  }
+  else if (fieldName.includes(".")) {
+    propertyUpdated = await prisma.property.update({
+      where: {
+        id,
+      },
+      data: { ...resolveNestedField({}, fieldName.split("."), value) },
+    });
+  } else {
+    propertyUpdated = await prisma.property.update({
+      where: {
+        id,
+      },
+      data: {
+        [fieldName]: value,
+      },
+    });
+  }
+
+  return propertyUpdated;
+};
+export const updateFieldNumber = async (
+  _parent: any,
+  { id, fieldName, value }: { id: string; fieldName: string; value: number },
+  { prisma, userContext }: Context,
+) => {
+  hasPermission(userContext, "UPDATE", "PROPERTY");
+  console.log({ fieldName, value })
   const propertyUpdated = await prisma.property.update({
     where: {
       id,
@@ -364,4 +380,26 @@ export const updateField = async (
   });
 
   return propertyUpdated;
+};
+
+const resolveFileNumber = (value: string, propertyId: string) => {
+  return value.length === 0
+    ? {
+      delete: {
+        propertyId,
+      },
+    }
+    : {
+      upsert: {
+        where: {
+          propertyId,
+        },
+        create: {
+          number: value,
+        },
+        update: {
+          number: value,
+        },
+      },
+    };
 };

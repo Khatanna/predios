@@ -23,6 +23,7 @@ export const useCan = () => {
     onError() {
       setCan(false);
       toast.info("No tiene permisos para editar este campo");
+      // toast.info(JSON.stringify(error));
     },
     fetchPolicy: "no-cache",
   });

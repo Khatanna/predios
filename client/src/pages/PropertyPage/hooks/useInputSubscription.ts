@@ -9,6 +9,7 @@ import {
   TFucused,
   TUseInputSubscriptionParams,
 } from "../models/types";
+import { useCan } from "../../../hooks/useCan";
 
 const FOCUSED_INPUT_MUTATION = gql`
   mutation FocusInput($contextId: String, $name: String, $isFocused: Boolean) {
@@ -32,6 +33,7 @@ const CHANGE_INPUT_MUTATION = gql`
     changeInput(name: $name, value: $value)
   }
 `;
+
 const CHANGE_INPUT_SUBSCRIPTION = gql`
   subscription ChangeInput {
     changeInput {
@@ -44,6 +46,14 @@ const CHANGE_INPUT_SUBSCRIPTION = gql`
 const UPDATE_FIELD_MUTATION = gql`
   mutation UpdateField($id: String, $fieldName: String, $value: String) {
     property: updateField(id: $id, fieldName: $fieldName, value: $value) {
+      name
+    }
+  }
+`;
+
+const UPDATE_FIELD_NUMBER_MUTATION = gql`
+  mutation UpdateField($id: String, $fieldName: String, $value: Int) {
+    property: updateFieldNumber(id: $id, fieldName: $fieldName, value: $value) {
       name
     }
   }
@@ -105,12 +115,8 @@ export const useInputSubscription = ({
   };
   const [updateField] = useMutation<
     { property: Property },
-    { id: string; fieldName: string; value: string }
-  >(UPDATE_FIELD_MUTATION, {
-    onError() {
-      toast.error("Ocurrio un error al intentar actualizar este campo");
-    },
-  });
+    { id: string; fieldName: string; value: string | number }
+  >(options?.valueAsNumber ? UPDATE_FIELD_NUMBER_MUTATION : UPDATE_FIELD_MUTATION);
 
   const [onChangeMutation] = useMutation<
     string,
@@ -124,45 +130,58 @@ export const useInputSubscription = ({
   }>(CHANGE_INPUT_SUBSCRIPTION, {
     onData({ data: { data } }) {
       if (data && isCurrentContext) {
+        /// @ts-ignore
         setValue(data.changeInput.name, data.changeInput.value);
       }
     },
   });
-
+  const { can: canEdit, refetch } = useCan();
   return {
-    propertyExists: !!getValues("id"),
     username,
-    isCurrentInput,
-    isCurrentContext,
-    itsMe,
-    isFocused,
-    isSelected: isCurrentInput && isFocused && !itsMe,
+    isFocus: isCurrentInput && isFocused && !itsMe && canEdit,
     subscribe: {
       ...rest,
-      onFocus: (e) => {
+      disabled: isCurrentInput && isFocused && !itsMe,
+      readOnly: !canEdit,
+      onFocus: async (e) => {
         if (getValues("id")) {
           handleFocused(true);
         }
+        const level = getValues("id") ? "UPDATE" : "CREATE";
 
+        refetch({
+          variables: {
+            resource: "PROPERTY",
+            level,
+          },
+        });
         events?.onFocus?.(e);
       },
-      onBlur: (e) => {
+      onBlur: async (e) => {
         if (getValues("id")) {
           handleFocused(false);
         }
         events?.onBlur?.(e);
         onBlur(e);
         if (getValues("id") && isDirty && isCurrentContext) {
-          updateField({
+          const promise = updateField({
             variables: {
               fieldName: name,
               id: getValues("id"),
               value: getValues(name),
             },
+            onCompleted() {
+              setIsDirty(false)
+            }
           });
+          toast.promise(promise, {
+            loading: 'Actualizando campo',
+            success: 'Se ha actualizado este campo',
+            error: 'Ocurrio un error al intentar actualizar este campo'
+          })
         }
       },
-      onChange: (e) => {
+      onChange: async (e) => {
         if (isCurrentContext) {
           setIsDirty(true);
           onChangeMutation({

@@ -247,27 +247,24 @@ const ObservationList: React.FC = () => {
     control,
     name: "observations",
   });
-  if (!observations.length) {
-    return (
-      <Row>
-        <Alert className="d-flex flex-row gap-2" variant="info">
-          <InfoCircle size={24} />
-          Este predio aun no tiene observaciones
-        </Alert>
-      </Row>
-    );
-  }
 
   return (
     <>
-      {observations.map((observation, index) => (
+      {observations.length ? observations.map((observation, index) => (
         <ObservationItem
           observation={observation}
           index={index}
           update={update}
           remove={remove}
         />
-      ))}
+      )) : (
+        <Row>
+          <Alert className="d-flex flex-row gap-2" variant="info">
+            <InfoCircle size={24} />
+            Este predio aun no tiene observaciones
+          </Alert>
+        </Row>
+      )}
       {role === "administrador" && (
         <Row>
           <Button

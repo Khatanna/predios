@@ -1,5 +1,5 @@
 import { gql, useMutation, useSubscription } from "@apollo/client";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { Badge } from "react-bootstrap";
 import { CursorFill } from "react-bootstrap-icons";
 import { useAuth } from "../../hooks";
@@ -47,7 +47,7 @@ const Cursor: React.FC = () => {
   const [updateCursorPosition] = useMutation<string, TCursor>(
     CURSOR_MOVE_MUTATION,
   );
-  const { data } = useSubscription<
+  const { data, loading } = useSubscription<
     {
       cursorMove: TCursor[];
     },
@@ -57,12 +57,26 @@ const Cursor: React.FC = () => {
     onError(error) {
       toast.error(JSON.stringify(error));
     },
+    fetchPolicy: 'no-cache'
   });
+
+  // const updateMousePosition = useCallback(() => (e: MouseEvent) => {
+  //   toast.info(JSON.stringify({ user, id: getValues('id') }))
+  //   if (!user) return;
+
+  //   updateCursorPosition({
+  //     variables: {
+  //       contextId: getValues("id"),
+  //       username: user.username,
+  //       positionX: e.clientX,
+  //       positionY: e.clientY,
+  //     },
+  //   });
+  // }, [getValues, user, updateCursorPosition])
 
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
-      if (!user) return;
-
+      if (!user || !getValues('id')) return;
       updateCursorPosition({
         variables: {
           contextId: getValues("id"),
@@ -82,6 +96,8 @@ const Cursor: React.FC = () => {
 
   return (
     <div>
+      {JSON.stringify(data?.cursorMove)}
+      {JSON.stringify(loading)}
       {data?.cursorMove
         .filter(
           (e) =>
@@ -91,7 +107,7 @@ const Cursor: React.FC = () => {
           return (
             <>
               <CursorFill
-                className="position-absolute z-2"
+                className="position-absolute z-3"
                 style={{
                   rotate: "-90deg",
                   left: `${e.positionX - 10}px`,
@@ -99,7 +115,7 @@ const Cursor: React.FC = () => {
                 }}
               />
               <div
-                className="position-absolute z-2"
+                className="position-absolute z-3"
                 style={{
                   left: `${e.positionX}px`,
                   top: `${e.positionY}px`,

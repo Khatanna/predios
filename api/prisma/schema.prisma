@@ -57,7 +57,7 @@ enum Resource {
 }
 
 model Position {
-  username  String @unique @db.VarChar(128)
+  username  String @id
   contextId String
   positionX Int
   positionY Int

@@ -59,6 +59,10 @@ const serverCleanup = useServer(
           connection: "ONLINE",
         },
       });
+      // const cursorMove = await prisma.position.findMany()
+      // await pubSub.publish("CURSOR_MOVE", {
+      //   cursorMove
+      // })
       await pubSub.publish("USER_CONNECTED", {
         userConnected: {
           username: user.username,
@@ -82,6 +86,10 @@ const serverCleanup = useServer(
       if (count > 0) {
         await prisma.position.delete({ where: { username: user.username } });
       }
+      // const cursorMove = await prisma.position.findMany()
+      // await pubSub.publish("CURSOR_MOVE", {
+      //   cursorMove
+      // })
       await pubSub.publish("USER_CONNECTED", {
         userConnected: {
           username: user.username,
@@ -116,10 +124,6 @@ export const server = new ApolloServer({
   // introspection: false,
   // plugins: [ApolloServerPluginLandingPageDisabled()],
   formatError(formattedError, error) {
-    if (unwrapResolverError(error) instanceof Error) {
-      console.log("error normal");
-    }
-
     if (
       unwrapResolverError(error) instanceof Prisma.PrismaClientKnownRequestError
     ) {
@@ -141,17 +145,17 @@ export const server = new ApolloServer({
           ? "P1001"
           : "default"
       ];
-      throw new GraphQLError(errorMessage, {
-        extensions: {
-          code: Code.BAD_REQUEST,
-          http: { status: Status.BAD_REQUEST },
-        },
-      });
+      throw new GraphQLError(errorMessage);
     }
 
     if (error instanceof GraphQLError) {
       console.log(error);
       throw throwUnauthorizedError(error.message);
+    }
+
+    if (unwrapResolverError(error) instanceof Error) {
+      const normalError = unwrapResolverError(error) as Error;
+      throw new GraphQLError(normalError.message);
     }
 
     return formattedError;

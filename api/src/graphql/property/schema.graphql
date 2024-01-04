@@ -77,6 +77,7 @@ type Mutation {
   createProperty(input: PropertyInput): Property
   updateProperty(id: String, input: PropertyInput): Property
   updateField(id: String, fieldName: String, value: String): Property
+  updateFieldNumber(id: String, fieldName: String, value: Int): Property
 }
 
 # input TrackingInput {

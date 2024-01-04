@@ -16,6 +16,7 @@ import { SelectNameable } from "../../../HomePage/HomePage";
 import { Form } from "react-bootstrap";
 import { Folder } from "react-bootstrap-icons";
 import { CustomLabel } from "../CustomLabel";
+import { useInputSubscription } from "../../hooks/useInputSubscription";
 
 const GET_ALL_SUBDIRECTORIES_QUERY = `
 	query GetAllSubdirectories {
@@ -43,7 +44,9 @@ const SubdirectorySelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
       },
     },
   );
-
+  const { subscribe } = useInputSubscription({
+    name: 'folderLocation.name'
+  });
   return (
     <Form.Group>
       <CustomLabel
@@ -57,8 +60,12 @@ const SubdirectorySelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
         render={({ field }) => (
           <SelectNameable
             {...field}
+            {...subscribe}
+            onChange={(e) => {
+              field.onChange(e)
+              subscribe.onChange(e)
+            }}
             size="sm"
-            readOnly={readOnly}
             placeholder={"Ubicación de carpeta"}
             options={subdirectories.map(({ name }) => ({
               label: name,

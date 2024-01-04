@@ -104,145 +104,68 @@ export const SelectNameable: React.FC<
   highlight,
   ...props
 }) => {
-  const [readOnly, setReadOnly] = useState(props.readOnly);
-  const { role } = useAuth();
-  const currentValue = useMemo(() => props.value, []);
-  const optionsMenu: DropdownItemComposedProps[] = [
-    {
-      item: ["➕ Crear", { onClick: onCreate, show: Boolean(onCreate) }],
-    },
-    {
-      item: [
-        "✏ Editar",
-        {
-          onClick: onEdit,
-          show: Boolean(onEdit) && props.value !== "undefined",
-        },
-      ],
-    },
-    {
-      item: [
-        "🗑 Eliminar",
-        {
-          onClick: onDelete,
-          show: Boolean(onDelete) && props.value !== "undefined",
-        },
-      ],
-    },
-  ];
-
-  const optionsReadOnly: DropdownItemComposedProps[] = [
-    {
-      item: [
-        "✍ Modificar",
-        {
-          onClick: () => {
-            setReadOnly(false);
+    const { role } = useAuth();
+    const optionsMenu: DropdownItemComposedProps[] = [
+      {
+        item: ["➕ Crear", { onClick: onCreate, show: Boolean(onCreate) }],
+      },
+      {
+        item: [
+          "✏ Editar",
+          {
+            onClick: onEdit,
+            show: Boolean(onEdit) && props.value !== "undefined",
           },
-        },
-      ],
-    },
-  ];
-
-  const optionsCancelReadOnly: DropdownItemComposedProps[] = [
-    {
-      item: [
-        "❌ Cancelar",
-        {
-          onClick: () => {
-            if (props.onChange && props.value !== currentValue) {
-              props.onChange(currentValue);
-            }
-            setReadOnly(true);
+        ],
+      },
+      {
+        item: [
+          "🗑 Eliminar",
+          {
+            onClick: onDelete,
+            show: Boolean(onDelete) && props.value !== "undefined",
           },
-        },
-      ],
-    },
-    {
-      item: [
-        "✔ Confirmar",
-        {
-          onClick: () => {
-            setReadOnly(true);
-          },
-        },
-      ],
-    },
-  ];
+        ],
+      },
+    ];
 
-  if (readOnly || props.disabled) {
     return (
-      <Tooltip
-        label={readOnly ? "Campo de solo lectura" : "Campo deshabilitado"}
-      >
-        <InputGroup size={props.size}>
-          <Form.Control
-            placeholder={placeholder || (props.value as string)}
-            value={
-              readOnly && props.value !== "undefined"
-                ? (props.value as string)
-                : placeholder
-            }
-            size={props.size}
-            readOnly={readOnly}
-            disabled={props.disabled || dirty}
-            className={`${
-              props.disabled
-                ? "text-body-tertiary"
-                : (readOnly && props.value === "undefined") || highlight
-                ? "text-danger fw-bold"
-                : ""
-            }`}
-          />
-          {props.readOnly && role === "administrador" && (
-            <InputGroup.Text>
-              <DropdownMenu
-                options={optionsReadOnly}
-                toggleProps={togglePropsx}
-              />
-            </InputGroup.Text>
-          )}
-        </InputGroup>
-      </Tooltip>
-    );
-  }
-
-  return (
-    <InputGroup size={props.size}>
-      <Form.Select
-        {...props}
-        className={`${
-          props.value === "undefined" || !props.value
+      <InputGroup size={props.size}>
+        <Form.Select
+          {...props}
+          className={`${props.value === "undefined" || !props.value
             ? "text-body-tertiary"
             : highlight
-            ? "text-danger fw-bold"
-            : "text-black"
-        }`}
-      >
-        <option value="undefined" className="text-body-tertiary" disabled>
-          {placeholder}
-        </option>
-        {options.map((option) => (
-          <option
-            value={option.value}
-            key={crypto.randomUUID()}
-            style={{ color: "black" }}
-          >
-            {option.label}
+              ? "text-danger fw-bold"
+              : "text-black"
+            }`}
+          style={{
+            pointerEvents: role === "administrador" ? "auto" : 'none'
+          }}
+        >
+          <option value="undefined" className="text-body-tertiary" disabled>
+            {placeholder}
           </option>
-        ))}
-      </Form.Select>
-      {(onCreate || onEdit || onDelete) && (
-        <InputGroup.Text>
-          <DropdownMenu
-            options={props.readOnly ? optionsCancelReadOnly : optionsMenu}
-            toggleProps={togglePropsx}
-          />
-        </InputGroup.Text>
-      )}
-    </InputGroup>
-  );
-};
+          {options.map((option) => (
+            <option
+              value={option.value}
+              style={{ color: "black" }}
+            >
+              {option.label}
+            </option>
+          ))}
+        </Form.Select>
+        {(onCreate || onEdit || onDelete) && role === "administrador" && (
+          <InputGroup.Text>
+            <DropdownMenu
+              options={optionsMenu}
+              toggleProps={togglePropsx}
+            />
+          </InputGroup.Text>
+        )}
+      </InputGroup>
+    );
+  };
 
 const HomePage: React.FC = () => {
   return <Navigate to={"/properties"} />;

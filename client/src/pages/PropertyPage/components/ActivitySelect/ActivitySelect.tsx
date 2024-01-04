@@ -15,6 +15,7 @@ import { Property } from "../../models/types";
 import { useModalStore } from "../../state/useModalStore";
 import { Form } from "react-bootstrap";
 import { CustomLabel } from "../CustomLabel";
+import { useInputSubscription } from "../../hooks/useInputSubscription";
 
 const GET_ALL_ACTIVITIES_QUERY = `
 	query GetAllActivities {
@@ -41,7 +42,9 @@ const ActivitySelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
       },
     },
   );
-
+  const { subscribe } = useInputSubscription({
+    name: 'activity.name'
+  });
   return (
     <Form.Group>
       <CustomLabel
@@ -55,8 +58,12 @@ const ActivitySelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
         render={({ field }) => (
           <SelectNameable
             {...field}
+            {...subscribe}
+            onChange={(e) => {
+              field.onChange(e)
+              subscribe.onChange(e)
+            }}
             size="sm"
-            readOnly={readOnly}
             placeholder={"Actividad"}
             options={activities.map(({ name }) => ({ label: name, value: name }))}
             onCreate={() => {

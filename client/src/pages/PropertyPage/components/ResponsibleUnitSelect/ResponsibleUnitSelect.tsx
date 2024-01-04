@@ -16,6 +16,7 @@ import { SelectNameable } from "../../../HomePage/HomePage";
 import { Form } from "react-bootstrap";
 import { CustomLabel } from "../CustomLabel";
 import { People } from "react-bootstrap-icons";
+import { useInputSubscription } from "../../hooks/useInputSubscription";
 
 const GET_ALL_RESPONSIBLE_UNITS_QUERY = `
 	query GetAllResponsibleUnits {
@@ -45,6 +46,9 @@ const ResponsibleUnitSelect: React.FC<{ readOnly?: boolean }> = ({
       },
     },
   );
+  const { subscribe } = useInputSubscription({
+    name: 'responsibleUnit.name'
+  });
   return (
     <Form.Group>
       <CustomLabel
@@ -58,8 +62,12 @@ const ResponsibleUnitSelect: React.FC<{ readOnly?: boolean }> = ({
         render={({ field }) => (
           <SelectNameable
             {...field}
+            {...subscribe}
+            onChange={(e) => {
+              field.onChange(e)
+              subscribe.onChange(e)
+            }}
             size="sm"
-            readOnly={readOnly}
             placeholder={"Unidad responsable"}
             options={responsibleUnits.map(({ name }) => ({
               label: name,
