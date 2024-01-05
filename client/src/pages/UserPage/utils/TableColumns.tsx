@@ -4,6 +4,7 @@ import { RoleIcon } from "../components/RoleIcon";
 import { StateCell } from "../../../components/StateCell";
 import { StateOfStatus, StatusConnection } from "../../../utilities/constants";
 import { DropdownMenu } from "../components/DropdownMenu";
+import { capitalizeString } from "./capitalizeString";
 
 export const columns: TableColumn<User>[] = [
   {
@@ -39,7 +40,7 @@ export const columns: TableColumn<User>[] = [
   },
   {
     name: "Rol",
-    cell: ({ role: { name } }) => <RoleIcon name={name} />,
+    cell: ({ role: { name } }) => <RoleIcon name={capitalizeString(name)} />,
     reorder: true,
     sortFunction: (a, b) => a.role.name.localeCompare(b.role.name),
     sortable: true,
@@ -48,7 +49,7 @@ export const columns: TableColumn<User>[] = [
     name: "Tipo",
     selector: ({ type: { name } }) => name,
     reorder: true,
-    sortable: true
+    sortable: true,
   },
   {
     name: "Conexión",

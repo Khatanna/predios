@@ -45,3 +45,12 @@ export const DELETE_USER_BY_USERNAME_MUTATION = gql`
     }
   }
 `;
+
+export const ON_CONNECTED_USER_SUBCRIPTION = gql`
+  subscription OnUserConnected {
+    userConnected {
+      username
+      connection
+    }
+  }
+`;

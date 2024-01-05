@@ -1,6 +1,6 @@
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useCallback, useState } from 'react';
+import { useCallback, useState } from "react";
 import {
   Alert,
   Button,
@@ -13,20 +13,20 @@ import {
 } from "react-bootstrap";
 import { CheckCircle, ExclamationTriangle } from "react-bootstrap-icons";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from 'sonner';
+import { toast } from "sonner";
 import * as yup from "yup";
 import { Tooltip } from "../../../../components/Tooltip";
 import { useCustomQuery } from "../../../../hooks/useCustomQuery";
-import {
-  customSwalError
-} from "../../../../utilities/alerts";
+import { customSwalError } from "../../../../utilities/alerts";
 import { status } from "../../../../utilities/constants";
 import { SelectNameable } from "../../../HomePage/HomePage";
 import { Error } from "../../../LoginPage/styled-components/Error";
-import { GET_ALL_USERS_QUERY } from '../../graphQL/types';
+import { GET_ALL_USERS_QUERY } from "../../graphQL/types";
 import { useFetchCreateUser } from "../../hooks";
-import { User, UserInput, UserType } from "../../models/types";
-import { useUsersStore } from '../../state/useUsersStore';
+import { Role, User, UserInput, UserType } from "../../models/types";
+import { useUsersStore } from "../../state/useUsersStore";
+import { CustomSelect } from "../../../PropertyPage/components/CustomSelect";
+import { capitalizeString } from "../../utils/capitalizeString";
 
 export interface FormCreateUserProps {
   user?: User;
@@ -112,41 +112,48 @@ const SelectUserType: React.FC<FormSelectProps> = (props) => {
     />
   );
 };
+
+const GET_ALL_ROLES = gql`
+  query GetAllRoles {
+    roles: getAllRoles {
+      name
+    }
+  }
+`;
+
 const SelectRol: React.FC<FormSelectProps> = (props) => {
-  // const { data, error, isLoading } = useCustomQuery<{ userTypes: UserType[] }>(
-  //   GET_ALL_USER_TYPES_QUERY,
-  //   ["getAllUserTypes"],
-  // );
+  const { data, loading, error } = useQuery<{ roles: Role[] }>(GET_ALL_ROLES);
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center">
+        <Spinner variant="danger" />
+      </div>
+    );
+  }
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="d-flex justify-content-center">
-  //       <Spinner variant="danger" />
-  //     </div>
-  //   );
-  // }
-
-  // if (error) {
-  //   return (
-  //     <Alert variant="warning" className="p-1 py-2 m-0">
-  //       <small>
-  //         <div className="d-flex align-items-center gap-2">
-  //           <ExclamationTriangle size={16} color="red" />
-  //           <div>No tienes permisos para ver los tipos de usuario</div>
-  //         </div>
-  //       </small>
-  //     </Alert>
-  //   );
-  // }
+  if (error) {
+    return (
+      <Alert variant="warning" className="p-1 py-2 m-0">
+        <small>
+          <div className="d-flex align-items-center gap-2">
+            <ExclamationTriangle size={16} color="red" />
+            <div>{error.message}</div>
+          </div>
+        </small>
+      </Alert>
+    );
+  }
 
   return (
     <SelectNameable
       {...props}
       placeholder="Rol"
-      options={[{ name: 'Administrador' }, { name: 'Usuario' }].map(({ name }) => ({
-        label: name,
-        value: name,
-      }))}
+      options={
+        data?.roles.map((r) => ({
+          label: capitalizeString(r.name),
+          value: r.name,
+        })) ?? []
+      }
     />
   );
 };
@@ -166,7 +173,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
     watch,
     formState: { errors },
   } = useForm<UserInput>({
-    values: { ...userUpdated, password: user ? 'Inra12345' : '' },
+    values: { ...userUpdated, password: user ? "Inra12345" : "" },
     resolver: yupResolver<UserInput>(schema),
   });
   const names = watch("names");
@@ -181,12 +188,12 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
     optimisticResponse: ({ input }) => {
       setUserUpdated(input);
       return {
-        __typename: 'Mutation',
+        __typename: "Mutation",
         user: {
-          __typename: 'User',
-          ...input
-        }
-      }
+          __typename: "User",
+          ...input,
+        },
+      };
     },
     update: (cache, { data }) => {
       if (!data || !data.user) return;
@@ -194,19 +201,19 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
       const query = cache.readQuery<{ users: User[] }, { filterText: string }>({
         query: GET_ALL_USERS_QUERY,
         variables: {
-          filterText
-        }
-      })
+          filterText,
+        },
+      });
 
-      if (!query) return
+      if (!query) return;
 
-      const updatedUsers = query.users.map(user => {
+      const updatedUsers = query.users.map((user) => {
         if (user.username === data?.user.username) {
-          return data.user
+          return data.user;
         }
 
         return user;
-      })
+      });
 
       cache.writeQuery<{ users: User[] }>({
         query: GET_ALL_USERS_QUERY,
@@ -214,10 +221,10 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
           users: updatedUsers!,
         },
         variables: {
-          filterText
-        }
-      })
-    }
+          filterText,
+        },
+      });
+    },
   });
 
   const handleSetCredentials = useCallback(() => {
@@ -243,26 +250,29 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
       );
       setValue("password", "Inra12345", { shouldValidate: true });
     }
-  }, [getValues, setValue])
+  }, [getValues, setValue]);
 
   const submit = (data: UserInput) => {
     if (user) {
       delete data.connection;
       delete data.createdAt;
-      toast.promise(updateUser({
-        variables: {
-          username: user.username,
-          input: data
-        }
-      }), {
-        loading: 'Actualizando usuario',
-        success: ({ data }) => {
-          return `Se actualizo el usuario: ${data?.user.username}`
+      toast.promise(
+        updateUser({
+          variables: {
+            username: user.username,
+            input: data,
+          },
+        }),
+        {
+          loading: "Actualizando usuario",
+          success: ({ data }) => {
+            return `Se actualizo el usuario: ${data?.user.username}`;
+          },
+          error(error) {
+            return `Error ${error}`;
+          },
         },
-        error(error) {
-          return `Error ${error}`
-        }
-      });
+      );
     } else {
       createUser({
         input: data,

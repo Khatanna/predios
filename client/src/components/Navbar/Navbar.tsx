@@ -7,22 +7,24 @@ import { Avatar } from "../Avatar";
 import { BackButton } from "../BackButton";
 import { Nav } from "../Nav";
 import { SeekerModal } from "../SeekerModal";
-import { gql, useSubscription } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
+import { useConnectionSubscription } from "../../pages/UserPage/hooks/useConnectionSubscription";
 
-const ON_CONNECTED_SUBCRIPTION = gql`
-  subscription OnUserConnected {
-    userConnected {
-      username
-      connected
-    }
-  }
-`;
+// const ON_CONNECTED_SUBCRIPTION = gql`
+//   subscription OnUserConnected {
+//     userConnected {
+//       username
+//       connected
+//     }
+//   }
+// `;
 
 const NavbarComponent: React.FC = () => {
   const { isAuth } = useAuth();
   const { isModalOpen } = useSeeker();
+  const client = useApolloClient();
 
-  useSubscription(ON_CONNECTED_SUBCRIPTION);
+  useConnectionSubscription(client);
 
   if (!isAuth) {
     return <Navigate to={"/auth"} />;

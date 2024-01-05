@@ -22,16 +22,19 @@ const Avatar: React.FC = () => {
   >(
     LOGOUT,
     {
-      onSuccess({ logout }) {
-        if (logout) {
-          customSwalSuccess(
-            "Mensaje de sesión",
-            "Se ha cerrado la sesión correctamente",
-          );
-        }
-      },
+      // onSuccess({ logout }) {
+      //   if (logout) {
+      //     customSwalSuccess(
+      //       "Mensaje de sesión",
+      //       "Se ha cerrado la sesión correctamente",
+      //     );
+      //   }
+      // },
       onError(error) {
         customSwalError("Ocurrio un error al intentar cerrar la sesión", error);
+      },
+      onSettled() {
+        logout();
       },
     },
     { headers: { operation: "Logout" } },
@@ -41,7 +44,6 @@ const Avatar: React.FC = () => {
     if (user && refreshToken) {
       logoutOfBackend({ username: user.username, token: refreshToken });
       queryClient.clear();
-      logout();
     }
   };
 
@@ -58,8 +60,8 @@ const Avatar: React.FC = () => {
           <Dropdown align={"end"} role="button">
             <Dropdown.Toggle as={PersonCircle} fontSize={32} />
             <Dropdown.Menu>
-              <Dropdown.Item>👁‍🗨 Mi cuenta</Dropdown.Item>
-              <Dropdown.Item>⚙ Configuraciones</Dropdown.Item>
+              {/* <Dropdown.Item>👁‍🗨 Mi cuenta</Dropdown.Item>
+              <Dropdown.Item>⚙ Configuraciones</Dropdown.Item> */}
               <Dropdown.Item onClick={handleLogout}>
                 🔐 Cerrar sesión
               </Dropdown.Item>

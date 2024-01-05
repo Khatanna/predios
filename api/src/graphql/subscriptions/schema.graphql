@@ -4,7 +4,7 @@ type Subscription {
 
 type OnConnection {
   username: String
-  connected: Boolean
+  connection: String
 }
 
 type OnCursorMove {

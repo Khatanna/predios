@@ -7,44 +7,13 @@ import { columns } from "../../utils/TableColumns";
 import { getConditionalRowStyle } from "../../utils/getConditionalRowStyle";
 import { SubHeaderComponent } from "../SubHeaderComponent";
 import { UserActions } from "../UserActions";
-import { gql, useSubscription } from "@apollo/client";
-const ON_CONNECTED_SUBCRIPTION = gql`
-  subscription OnUserConnected {
-    userConnected {
-      username
-      connected
-    }
-  }
-`;
+import { useConnectionSubscription } from "../../hooks/useConnectionSubscription";
 
 const UserList: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  const { loading, error, data, setData } = useFetchUsers();
-
-  useSubscription<{
-    userConnected: { username: string; connected: boolean };
-  }>(ON_CONNECTED_SUBCRIPTION, {
-    onData({ data }) {
-      if (data.data && data.data.userConnected) {
-        setData((currentData) => {
-          return currentData.map((user) => {
-            if (user.username === data.data?.userConnected.username) {
-              return {
-                ...user,
-                connection: data.data?.userConnected.connected
-                  ? "ONLINE"
-                  : "OFFLINE",
-              };
-            }
-
-            return user;
-          });
-        });
-      }
-    },
-  });
-
+  const { loading, error, data, client } = useFetchUsers();
+  useConnectionSubscription(client);
   const conditionalRowStyle = getConditionalRowStyle(user);
   if (error) {
     return (

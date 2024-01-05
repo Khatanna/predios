@@ -59,14 +59,11 @@ const serverCleanup = useServer(
           connection: "ONLINE",
         },
       });
-      // const cursorMove = await prisma.position.findMany()
-      // await pubSub.publish("CURSOR_MOVE", {
-      //   cursorMove
-      // })
+
       await pubSub.publish("USER_CONNECTED", {
         userConnected: {
           username: user.username,
-          connected: true,
+          connection: "ONLINE",
         },
       });
     },
@@ -86,14 +83,11 @@ const serverCleanup = useServer(
       if (count > 0) {
         await prisma.position.delete({ where: { username: user.username } });
       }
-      // const cursorMove = await prisma.position.findMany()
-      // await pubSub.publish("CURSOR_MOVE", {
-      //   cursorMove
-      // })
+
       await pubSub.publish("USER_CONNECTED", {
         userConnected: {
           username: user.username,
-          connected: false,
+          connection: "OFFLINE",
         },
       });
     },
