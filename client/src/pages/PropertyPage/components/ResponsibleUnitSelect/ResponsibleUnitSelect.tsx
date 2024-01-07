@@ -26,9 +26,7 @@ const GET_ALL_RESPONSIBLE_UNITS_QUERY = `
 	} 
 `;
 
-const ResponsibleUnitSelect: React.FC<{ readOnly?: boolean }> = ({
-  readOnly,
-}) => {
+const ResponsibleUnitSelect: React.FC = () => {
   const { control, getValues, watch, resetField } = useFormContext<Property>();
   const { setItems: setResposibleUnits, items: responsibleUnits } =
     useResponsibleUnitStore();
@@ -47,7 +45,13 @@ const ResponsibleUnitSelect: React.FC<{ readOnly?: boolean }> = ({
     },
   );
   const { subscribe } = useInputSubscription({
-    name: 'responsibleUnit.name'
+    name: "responsibleUnit.name",
+    options: {
+      pattern: {
+        value: /^(?!undefined$).*$/gi,
+        message: "Este campo es obligatorio",
+      },
+    },
   });
   return (
     <Form.Group>
@@ -64,8 +68,8 @@ const ResponsibleUnitSelect: React.FC<{ readOnly?: boolean }> = ({
             {...field}
             {...subscribe}
             onChange={(e) => {
-              field.onChange(e)
-              subscribe.onChange(e)
+              field.onChange(e);
+              subscribe.onChange(e);
             }}
             size="sm"
             placeholder={"Unidad responsable"}

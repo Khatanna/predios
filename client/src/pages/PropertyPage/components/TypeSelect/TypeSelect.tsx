@@ -32,7 +32,13 @@ const GET_ALL_TYPES = gql`
 `;
 
 const TypeSelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
-  const { control, resetField, getValues, watch } = useFormContext<Property>();
+  const {
+    control,
+    resetField,
+    getValues,
+    watch,
+    formState: { errors },
+  } = useFormContext<Property>();
   const { setItems: setTypes, items: types } = useTypeStore();
   const { mutationDelete: mutationTypeDelete } = useTypeMutations<{
     type: Type;
@@ -49,14 +55,17 @@ const TypeSelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
     },
   );
   const { subscribe } = useInputSubscription({
-    name: 'type.name'
+    name: "type.name",
+    options: {
+      pattern: {
+        value: /^(?!undefined$).*$/gi,
+        message: "Este campo es obligatorio",
+      },
+    },
   });
   return (
     <Form.Group>
-      <CustomLabel
-        label="Tipo de predio"
-        icon={<ListColumns />}
-      />
+      <CustomLabel label="Tipo de predio" icon={<ListColumns />} />
       <Controller
         name="type.name"
         control={control}
@@ -66,10 +75,9 @@ const TypeSelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
             {...field}
             {...subscribe}
             onChange={(e) => {
-              field.onChange(e)
-              subscribe.onChange(e)
+              field.onChange(e);
+              subscribe.onChange(e);
             }}
-            // readOnly={readOnly}
             size="sm"
             placeholder={"Tipo de predio"}
             options={types.map(({ name }) => ({ label: name, value: name }))}

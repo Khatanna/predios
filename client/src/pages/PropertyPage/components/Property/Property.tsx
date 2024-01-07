@@ -1,129 +1,133 @@
-import { useEffect } from "react";
 import { useParams } from "react-router";
-import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { Property } from "../../models/types";
 import { PropertyForm } from "../PropertyForm";
 import { usePaginationStore } from "../../state/usePaginationStore";
+import { gql, useQuery } from "@apollo/client";
+import { toast } from "sonner";
 
-const GET_PROPERTY_BY_ID_QUERY = `
-query GetPropertyById($id: String) {
-		property: getPropertyById(id: $id) {
-			id
-			name
-			registryNumber
-			code
-			codeOfSearch
-			plots
-			bodies
-			sheets
-			area
-			polygone
-			expertiseOfArea
-			secondState
-			agrupationIdentifier
-			technicalObservation
-			technical {
-				user {
-					names
-					firstLastName
-					secondLastName
-					username
-				}
-			}
-			legal {
-				user {
-					names
-					firstLastName
-					secondLastName
-					username
-				}
-			}
-			fileNumber {
-				number
-			}
-			groupedState {
-				name
-			}
-			beneficiaries {
-				name
-			}
-			city {
-				name
-			}
-			province {
-				name
-			}
-			municipality {
-				name
-			}
-			type {
-				name
-			}
-			activity {
-				name
-			}
-			clasification {
-				name
-			}
-			observations {
-				id
-				observation
-			}
-			reference {
-				name
-			}
-			responsibleUnit {
-				name
-			}
-			folderLocation {
-				name
-			}
-			state {
-				name
-			}
-			trackings {
-				id
-				observation
-				numberOfNote
-				dateOfInit
-				state {
-					name
-				}
-				responsible {
-					names
-					firstLastName
-					secondLastName
-					username
-				}
-			}
-	}
-}`;
+const GET_PROPERTY_BY_ID_QUERY = gql`
+  query GetPropertyByRegistryNumber($id: String) {
+    result: getPropertyByRegistryNumber(id: $id) {
+      next
+      prev
+      property {
+        id
+        name
+        registryNumber
+        code
+        codeOfSearch
+        plots
+        bodies
+        sheets
+        area
+        polygone
+        expertiseOfArea
+        secondState
+        agrupationIdentifier
+        technicalObservation
+        technical {
+          user {
+            names
+            firstLastName
+            secondLastName
+            username
+          }
+        }
+        legal {
+          user {
+            names
+            firstLastName
+            secondLastName
+            username
+          }
+        }
+        fileNumber {
+          number
+        }
+        groupedState {
+          name
+        }
+        beneficiaries {
+          name
+        }
+        city {
+          name
+        }
+        province {
+          name
+        }
+        municipality {
+          name
+        }
+        type {
+          name
+        }
+        activity {
+          name
+        }
+        clasification {
+          name
+        }
+        observations {
+          id
+          observation
+        }
+        reference {
+          name
+        }
+        responsibleUnit {
+          name
+        }
+        folderLocation {
+          name
+        }
+        state {
+          name
+        }
+        trackings {
+          id
+          observation
+          numberOfNote
+          dateOfInit
+          state {
+            name
+          }
+          responsible {
+            names
+            firstLastName
+            secondLastName
+            username
+          }
+        }
+      }
+    }
+  }
+`;
 
 const Property: React.FC = () => {
   const { id } = useParams();
-
   const { setState } = usePaginationStore();
-  const { isLoading } = useCustomQuery<{ property: Property }>(
-    GET_PROPERTY_BY_ID_QUERY,
-    ["getPropertyById", { id }],
-    {
-      onSuccess({ property }) {
-        setState({ property, nextCursor: property.id });
-      },
-      refetchOnWindowFocus: false,
-      cacheTime: 0,
+  useQuery<
+    { result: { property: Property; next: string; prev: string } },
+    { id: string }
+  >(GET_PROPERTY_BY_ID_QUERY, {
+    variables: {
+      id: id!,
     },
-  );
+    onCompleted({ result }) {
+      setState(result);
+    },
+    onError(error) {
+      toast.info(error.message);
+    },
+  });
 
-  if (isLoading) {
-    return <div>cargando...</div>;
-  }
+  // if (loading) {
+  //TODO poner un esqueleton
+  //   return <div>cargando...</div>;
+  // }
 
-  return (
-    <>
-      <PropertyForm newItem />
-    </>
-  );
+  return <PropertyForm />;
 };
 
 export default Property;

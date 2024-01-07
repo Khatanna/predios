@@ -26,7 +26,7 @@ const GET_ALL_SUBDIRECTORIES_QUERY = `
 	} 
 `;
 
-const SubdirectorySelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
+const SubdirectorySelect: React.FC = () => {
   const { control, getValues, watch, resetField } = useFormContext<Property>();
   const setModal = useModalStore((s) => s.setModal);
   const { setItems: setSubdirectories, items: subdirectories } =
@@ -45,7 +45,13 @@ const SubdirectorySelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
     },
   );
   const { subscribe } = useInputSubscription({
-    name: 'folderLocation.name'
+    name: "folderLocation.name",
+    options: {
+      pattern: {
+        value: /^(?!undefined$).*$/gi,
+        message: "Este campo es obligatorio",
+      },
+    },
   });
   return (
     <Form.Group>
@@ -62,8 +68,8 @@ const SubdirectorySelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
             {...field}
             {...subscribe}
             onChange={(e) => {
-              field.onChange(e)
-              subscribe.onChange(e)
+              field.onChange(e);
+              subscribe.onChange(e);
             }}
             size="sm"
             placeholder={"Ubicación de carpeta"}

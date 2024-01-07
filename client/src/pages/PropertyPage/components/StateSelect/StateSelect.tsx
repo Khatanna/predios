@@ -12,6 +12,7 @@ import { SelectNameable } from "../../../HomePage/HomePage";
 import { Form } from "react-bootstrap";
 import { CustomLabel } from "../CustomLabel";
 import { DeviceSsd } from "react-bootstrap-icons";
+import { useInputSubscription } from "../../hooks/useInputSubscription";
 
 const GET_ALL_STATES_QUERY = `
 	query GetAllStates {
@@ -26,8 +27,7 @@ const GET_ALL_STATES_QUERY = `
 
 const StateSelect: React.FC<{
   name: "state.name" | `trackings.${number}.state.name`;
-  readOnly?: boolean;
-}> = ({ name, readOnly }) => {
+}> = ({ name }) => {
   const { control, getValues, watch, resetField } = useFormContext<Property>();
   const setModal = useModalStore((s) => s.setModal);
   const { setItems: setStates, items: states } = useStateStore();
@@ -35,6 +35,15 @@ const StateSelect: React.FC<{
     state: State;
   }>();
   const state = watch(name);
+  const { subscribe } = useInputSubscription({
+    name,
+    options: {
+      pattern: {
+        value: /^(?!undefined$).*$/gi,
+        message: "Este campo es obligatorio",
+      },
+    },
+  });
   const { error } = useCustomQuery<{ states: State[] }>(
     GET_ALL_STATES_QUERY,
     ["getAllStates"],
@@ -46,10 +55,7 @@ const StateSelect: React.FC<{
   );
   return (
     <Form.Group>
-      <CustomLabel
-        label="Estado"
-        icon={<DeviceSsd color="#ff5e00" />}
-      />
+      <CustomLabel label="Estado" icon={<DeviceSsd color="#ff5e00" />} />
       <Controller
         name={name}
         control={control}
@@ -57,8 +63,12 @@ const StateSelect: React.FC<{
         render={({ field }) => (
           <SelectNameable
             {...field}
+            {...subscribe}
+            onChange={(e) => {
+              field.onChange(e);
+              subscribe.onChange(e);
+            }}
             size="sm"
-            readOnly={readOnly}
             highlight
             placeholder={"Estado"}
             options={states.map(({ name }) => ({ label: name, value: name }))}

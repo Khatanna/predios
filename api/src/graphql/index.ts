@@ -10,7 +10,6 @@ import { GraphQLError } from "graphql/error";
 import https from "https";
 import path from "path";
 import { WebSocketServer } from "ws";
-import { Code, Status } from "../constants";
 import { prisma, pubSub, throwUnauthorizedError } from "../utilities";
 import { getError } from "../utilities/getError";
 import { throwPrismaError } from "../utilities/throwPrismaError";

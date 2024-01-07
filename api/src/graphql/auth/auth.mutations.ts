@@ -82,17 +82,11 @@ export const logout = async (
         token,
       },
       data: {
-        // connection: "OFFLINE",
+        connection: "OFFLINE",
         token: undefined,
       },
     });
 
-    // await pubSub.publish("USER_CONNECTED", {
-    //   userConnected: {
-    //     username: user.username,
-    //     connected: false,
-    //   },
-    // });
     return Boolean(user);
   } catch (e) {
     throw e;

@@ -14,7 +14,6 @@ import { Province } from "../../../ProvincePage/models/types";
 import { Municipality } from "../../../MunicipalityPage/models/types";
 import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { CustomLabel } from "../CustomLabel";
-import { EnhancedSelect } from "../EnhancedSelect";
 import { GeoAlt, GlobeAmericas, Map } from "react-bootstrap-icons";
 import {
   customSwalError,
@@ -48,7 +47,7 @@ const GET_MUNICIPALITIES_BY_PROVINCE_NAME = `
 	}
 `;
 
-const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
+const Localization: React.FC<{ readOnly?: boolean }> = () => {
   const { control, resetField, getValues, watch, setValue } =
     useFormContext<Property>();
   const { mutationDelete: mutationCityDelete } = useCityMutations<{
@@ -97,19 +96,37 @@ const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
   );
   const { setModal } = useModalStore();
   const { subscribe: citySuscribe } = useInputSubscription({
-    name: "city.name"
-  })
+    name: "city.name",
+    options: {
+      pattern: {
+        value: /^(?!undefined$).*$/gi,
+        message: "Este campo es obligatorio",
+      },
+    },
+  });
   const { subscribe: provinceSuscribe } = useInputSubscription({
     name: "province.name",
+    options: {
+      pattern: {
+        value: /^(?!undefined$).*$/gi,
+        message: "Este campo es obligatorio",
+      },
+    },
     events: {
       onChange: async () => {
         setValue("municipality.name", "undefined");
       },
-    }
-  })
+    },
+  });
   const { subscribe: municipalitySuscribe } = useInputSubscription({
-    name: "municipality.name"
-  })
+    name: "municipality.name",
+    options: {
+      pattern: {
+        value: /^(?!undefined$).*$/gi,
+        message: "Este campo es obligatorio",
+      },
+    },
+  });
   return (
     <>
       <Col>
@@ -127,11 +144,10 @@ const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
                 {...field}
                 {...citySuscribe}
                 onChange={(e) => {
-                  field.onChange(e)
-                  citySuscribe.onChange(e)
+                  field.onChange(e);
+                  citySuscribe.onChange(e);
                 }}
                 size="sm"
-                // readOnly={readOnly}
                 highlight
                 placeholder="Departamento"
                 options={cities.map(({ name }) => ({
@@ -200,10 +216,9 @@ const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
                 {...field}
                 {...provinceSuscribe}
                 onChange={(e) => {
-                  field.onChange(e)
-                  provinceSuscribe.onChange(e)
+                  field.onChange(e);
+                  provinceSuscribe.onChange(e);
                 }}
-                // readOnly={readOnly}
                 highlight
                 // onChange={(e) => {
                 //   field.onChange(e);
@@ -278,11 +293,15 @@ const Localization: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
                 {...field}
                 {...municipalitySuscribe}
                 onChange={(e) => {
-                  field.onChange(e)
-                  municipalitySuscribe.onChange(e)
+                  field.onChange(e);
+                  municipalitySuscribe.onChange(e);
                 }}
                 // readOnly={readOnly}
-                value={municipalities.map(e => e.name).includes(field.value) ? field.value : "undefined"}
+                value={
+                  municipalities.map((e) => e.name).includes(field.value)
+                    ? field.value
+                    : "undefined"
+                }
                 disabled={province === "undefined"}
                 highlight
                 size="sm"

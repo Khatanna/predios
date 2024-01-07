@@ -150,10 +150,7 @@ const TrackingItem: React.FC<
     <Row className="border border-1 border-dark-subtle d-flex py-2 rounded-1 position-relative mb-2">
       <Col>
         <Form.Group>
-          <StateSelect
-            readOnly={!isNew}
-            name={`trackings.${index}.state.name`}
-          />
+          <StateSelect name={`trackings.${index}.state.name`} />
         </Form.Group>
       </Col>
       <Col xs={2}>
@@ -300,7 +297,7 @@ const TrackingItem: React.FC<
 };
 
 const TrackingList: React.FC = () => {
-  const { control, getValues } = useFormContext<Property>();
+  const { control } = useFormContext<Property>();
   const { role } = useAuth();
   const {
     fields: trackings,
@@ -348,10 +345,6 @@ const TrackingList: React.FC = () => {
                 dateOfInit: new Date().toISOString().substring(0, 10),
               })
             }
-            // disabled={
-            //   !!getValues("id") &&
-            //   getValues("trackings")?.length > (trackings.length ?? 0)
-            // }
           >
             Añadir seguimiento
           </Button>

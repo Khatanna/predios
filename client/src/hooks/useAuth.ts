@@ -12,38 +12,54 @@ const GET_NEW_ACCESS_TOKEN_QUERY = `
 
 const baseURL = import.meta.env.VITE_API_URL;
 export const useAuth = () => {
-  const { user, isAuth, reset, accessToken, setAccessToken, expirationAccessToken, role } =
-    useAuthStore();
-  const { refreshToken, deleteRefreshToken, setRefreshToken, expirationRefreshToken } =
-    useSessionStore();
+  const {
+    user,
+    isAuth,
+    reset,
+    accessToken,
+    setAccessToken,
+    expirationAccessToken,
+    role,
+  } = useAuthStore();
+  const {
+    refreshToken,
+    deleteRefreshToken,
+    setRefreshToken,
+    expirationRefreshToken,
+  } = useSessionStore();
 
   const logout = () => {
     deleteRefreshToken();
-    // logoutOfBackend({ username: user!.username, token: refreshToken! });
     reset();
   };
 
-  const { mutate: getNewAccessToken } = useMutation<AxiosResponse<{ accessToken: string }>, AxiosError<GraphQLErrorResponse>, { refreshToken: string }>({
+  const { mutate: getNewAccessToken } = useMutation<
+    AxiosResponse<{ accessToken: string }>,
+    AxiosError<GraphQLErrorResponse>,
+    { refreshToken: string }
+  >({
     async mutationFn({ refreshToken }) {
-      return (await axios.post(
-        baseURL,
-        {
-          query: GET_NEW_ACCESS_TOKEN_QUERY,
-          variables: {
-            refreshToken,
+      return (
+        await axios.post(
+          baseURL,
+          {
+            query: GET_NEW_ACCESS_TOKEN_QUERY,
+            variables: {
+              refreshToken,
+            },
           },
-        },
-        { headers: { operation: "Login" } },
-      )).data;
+          { headers: { operation: "Login" } },
+        )
+      ).data;
     },
     onSuccess({ data }) {
-      setAccessToken(data.accessToken)
+      setAccessToken(data.accessToken);
     },
     onError(e) {
       customSwalError(e.response!.data.errors[0].message, "Mensaje de sesión");
       logout();
-    }
-  })
+    },
+  });
 
   return {
     isAuth,
@@ -56,6 +72,6 @@ export const useAuth = () => {
     expirationRefreshToken,
     user,
     role,
-    getNewAccessToken
+    getNewAccessToken,
   };
 };

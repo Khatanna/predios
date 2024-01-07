@@ -25,7 +25,7 @@ const GET_ALL_ACTIVITIES_QUERY = `
 	}
 `;
 
-const ActivitySelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
+const ActivitySelect: React.FC = ({}) => {
   const { control, getValues, watch, resetField } = useFormContext<Property>();
   const setModal = useModalStore((s) => s.setModal);
   const activity = watch("activity.name");
@@ -43,14 +43,17 @@ const ActivitySelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
     },
   );
   const { subscribe } = useInputSubscription({
-    name: 'activity.name'
+    name: "activity.name",
+    options: {
+      pattern: {
+        value: /^(?!undefined$).*$/gi,
+        message: "Este campo es obligatorio",
+      },
+    },
   });
   return (
     <Form.Group>
-      <CustomLabel
-        label="Actividad"
-        icon={<ActivityIcon color="red" />}
-      />
+      <CustomLabel label="Actividad" icon={<ActivityIcon color="red" />} />
       <Controller
         name="activity.name"
         control={control}
@@ -60,12 +63,15 @@ const ActivitySelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
             {...field}
             {...subscribe}
             onChange={(e) => {
-              field.onChange(e)
-              subscribe.onChange(e)
+              field.onChange(e);
+              subscribe.onChange(e);
             }}
             size="sm"
             placeholder={"Actividad"}
-            options={activities.map(({ name }) => ({ label: name, value: name }))}
+            options={activities.map(({ name }) => ({
+              label: name,
+              value: name,
+            }))}
             onCreate={() => {
               setModal({
                 form: "createActivity",

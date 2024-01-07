@@ -1,20 +1,18 @@
-import React from 'react';
-import { Form } from 'react-bootstrap';
+import React from "react";
+import { Form } from "react-bootstrap";
 
 export type CustomLabelProps = {
-	label: string
-	icon: React.ReactNode
-}
+  label: string;
+  icon: React.ReactNode;
+};
 
 const CustomLabel: React.FC<CustomLabelProps> = ({ label, icon }) => {
-	return <Form.Label>
-		<div className="d-flex gap-2 align-items-center ">
-			{icon}
-			<div className='text-dark fw-bolder '>
-				{label}:
-			</div>
-		</div>
-	</Form.Label>;
+  return (
+    <div className="d-flex gap-1 align-items-center mb-1">
+      {icon}
+      <Form.Label className="text-dark fw-bolder m-0">{label}:</Form.Label>
+    </div>
+  );
 };
 
 export default CustomLabel;

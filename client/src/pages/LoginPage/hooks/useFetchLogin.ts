@@ -1,35 +1,39 @@
-import { useAuth } from '../../../hooks';
-import { useCustomMutation } from '../../../hooks/useCustomMutation';
-import type { LoginResponse, FormLoginValues } from "../models/types";
-import { customSwalError } from '../../../utilities/alerts';
+import { gql, useMutation } from "@apollo/client";
+import { useAuth } from "../../../hooks";
+import { customSwalError } from "../../../utilities/alerts";
+import type { FormLoginValues, LoginResponse } from "../models/types";
 
-const LOGIN_MUTATION = `
-	mutation Login($username: String, $password: String)	{
-		auth: login(username: $username, password: $password) {
+const LOGIN_MUTATION = gql`
+  mutation Login($username: String, $password: String) {
+    auth: login(username: $username, password: $password) {
       accessToken
       refreshToken
     }
-	}
+  }
 `;
 
 export const useFetchLogin = () => {
-  const { setRefreshToken, setAccessToken } = useAuth()
-  const [login, { isLoading }] = useCustomMutation<LoginResponse, FormLoginValues>(LOGIN_MUTATION, {
-    onSuccess({ auth: { accessToken, refreshToken } }) {
-      setRefreshToken(refreshToken);
-      setAccessToken(accessToken);
+  const { setRefreshToken, setAccessToken } = useAuth();
+  const [login, { loading }] = useMutation<LoginResponse, FormLoginValues>(
+    LOGIN_MUTATION,
+    {
+      onCompleted({ auth: { accessToken, refreshToken } }) {
+        setRefreshToken(refreshToken);
+        setAccessToken(accessToken);
+      },
+      onError(error) {
+        customSwalError(error.message, "Intento de inicio de sesión fallido");
+      },
+      context: {
+        headers: {
+          operation: "Login",
+        },
+      },
     },
-    onError(error) {
-      customSwalError(error, 'Intento de inicio de sesión fallido')
-    }
-  }, {
-    headers: {
-      operation: 'Login',
-    }
-  });
+  );
 
   return {
-    isLoading,
-    login
-  }
-}
+    isLoading: loading,
+    login,
+  };
+};

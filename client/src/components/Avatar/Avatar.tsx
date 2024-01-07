@@ -1,12 +1,13 @@
+import { gql, useMutation } from "@apollo/client";
 import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { Dropdown } from "react-bootstrap";
 import { PersonCircle } from "react-bootstrap-icons";
-import { useAuth, useCustomMutation } from "../../hooks";
-import { customSwalError, customSwalSuccess } from "../../utilities/alerts";
+import { toast } from "sonner";
+import { useAuth } from "../../hooks";
 import { Tooltip } from "../Tooltip";
 
-const LOGOUT = `
+const LOGOUT = gql`
   mutation Logout($username: String, $token: String) {
     logout(username: $username, token: $token)
   }
@@ -14,35 +15,28 @@ const LOGOUT = `
 
 const Avatar: React.FC = () => {
   const queryClient = useQueryClient();
-  const { logout, user, refreshToken, role } = useAuth();
+  const { logout: logoutLocal, user, refreshToken, role } = useAuth();
 
-  const [logoutOfBackend] = useCustomMutation<
+  const [logout] = useMutation<
     { logout: boolean },
     { username: string; token: string }
-  >(
-    LOGOUT,
-    {
-      // onSuccess({ logout }) {
-      //   if (logout) {
-      //     customSwalSuccess(
-      //       "Mensaje de sesión",
-      //       "Se ha cerrado la sesión correctamente",
-      //     );
-      //   }
-      // },
-      onError(error) {
-        customSwalError("Ocurrio un error al intentar cerrar la sesión", error);
-      },
-      onSettled() {
-        logout();
-      },
+  >(LOGOUT, {
+    onCompleted({ logout }) {
+      if (logout) {
+        logoutLocal();
+      }
     },
-    { headers: { operation: "Logout" } },
-  );
+  });
 
   const handleLogout = () => {
     if (user && refreshToken) {
-      logoutOfBackend({ username: user.username, token: refreshToken });
+      const promise = logout({
+        variables: { username: user.username, token: refreshToken },
+      });
+      toast.promise(promise, {
+        loading: "Cerrando sesión",
+      });
+
       queryClient.clear();
     }
   };

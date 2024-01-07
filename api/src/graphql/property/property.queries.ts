@@ -60,6 +60,115 @@ export const getAllProperties = async (
   }
 };
 
+export const getPropertyByRegistryNumber = async (
+  _parent: any,
+  { id }: { id: string },
+  context: Context,
+) => {
+  try {
+    const property = await prisma.property.findFirstOrThrow({
+      where: {
+        id,
+      },
+      include: {
+        beneficiaries: {
+          include: {
+            properties: true,
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+        activity: true,
+        clasification: true,
+        observations: {
+          include: {
+            property: true,
+          },
+        },
+        type: true,
+        folderLocation: true,
+        groupedState: true,
+        reference: true,
+        responsibleUnit: true,
+        state: {
+          include: {
+            stage: true,
+          },
+        },
+        city: {
+          include: {
+            provinces: {
+              include: {
+                municipalities: true,
+              },
+            },
+          },
+        },
+        province: {
+          include: {
+            municipalities: true,
+          },
+        },
+        municipality: true,
+        technical: {
+          include: {
+            user: true,
+          },
+        },
+        legal: {
+          include: {
+            user: true,
+          },
+        },
+        fileNumber: true,
+        trackings: {
+          include: {
+            responsible: true,
+            state: true,
+          },
+        },
+      },
+    });
+
+    const next = await prisma.property.findFirst({
+      where: {
+        registryNumber: {
+          gt: property.registryNumber,
+        },
+      },
+      select: {
+        id: true,
+      },
+      orderBy: {
+        registryNumber: "asc",
+      },
+    });
+
+    const prev = await prisma.property.findFirst({
+      where: {
+        registryNumber: {
+          lt: property.registryNumber,
+        },
+      },
+      select: {
+        id: true,
+      },
+      orderBy: {
+        registryNumber: "desc",
+      },
+    });
+
+    return {
+      property,
+      next: next?.id,
+      prev: prev?.id,
+    };
+  } catch (e) {
+    throw e;
+  }
+};
+
 export const getProperty = async (
   _parent: any,
   { nextCursor, prevCursor }: { nextCursor?: string; prevCursor?: string },
@@ -143,10 +252,10 @@ export const getProperty = async (
     });
     let prevProperty;
 
-    if (nextCursor || prevCursor) {
+    if (nextCursor || prevCursor || property) {
       prevProperty = await context.prisma.property.findFirst({
         cursor: {
-          id: nextCursor ?? prevCursor,
+          id: nextCursor ?? prevCursor ?? property.id,
         },
         take: -1,
         skip: 1,
@@ -165,7 +274,8 @@ export const getProperty = async (
     throw e;
   }
 };
-export const getPropertyById = async (
+
+export const getPropertyById = (
   _parent: any,
   { id }: { id: string },
   { prisma, userContext }: Context,
@@ -173,7 +283,7 @@ export const getPropertyById = async (
   try {
     hasPermission(userContext, "READ", "PROPERTY");
 
-    const property = await prisma.property.findUniqueOrThrow({
+    return prisma.property.findUniqueOrThrow({
       where: {
         id,
       },
@@ -237,8 +347,6 @@ export const getPropertyById = async (
         fileNumber: true,
       },
     });
-
-    return property;
   } catch (e) {
     throw e;
   }
@@ -400,31 +508,26 @@ export const searchPropertyByAttribute = async (
   }
 };
 
-export const getProperties = (
+export const getProperties = async (
   _parent: any,
   {
-    page,
+    page = 1,
     limit = 20,
     orderBy = "asc",
-  }: { page: number; limit?: number; orderBy: "asc" | "desc" },
+    all = false,
+  }: { page: number; limit?: number; orderBy: "asc" | "desc"; all: boolean },
   { prisma, userContext }: Context,
 ) => {
   try {
     hasPermission(userContext, "READ", "PROPERTY");
-    const properties = prisma.property.findMany({
+    const total = await prisma.property.count();
+    console.log({ page, limit, orderBy, all });
+    const properties = await prisma.property.findMany({
       include: {
-        beneficiaries: {
-          include: {
-            properties: true,
-          },
-        },
+        beneficiaries: true,
         activity: true,
         clasification: true,
-        observations: {
-          include: {
-            property: true,
-          },
-        },
+        observations: true,
         type: true,
         folderLocation: true,
         groupedState: true,
@@ -450,14 +553,24 @@ export const getProperties = (
           },
         },
         municipality: true,
+        fileNumber: true,
+        legal: {
+          include: {
+            user: true,
+          },
+        },
+        technical: {
+          include: {
+            user: true,
+          },
+        },
       },
-      skip: (page - 1) * limit,
-      take: limit,
+      skip: all ? 0 : (page - 1) * limit,
+      take: all ? total : limit,
       orderBy: {
         registryNumber: orderBy,
       },
     });
-    const total = prisma.property.count();
     return {
       total,
       properties,

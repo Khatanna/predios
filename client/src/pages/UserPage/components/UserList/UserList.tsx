@@ -7,13 +7,12 @@ import { columns } from "../../utils/TableColumns";
 import { getConditionalRowStyle } from "../../utils/getConditionalRowStyle";
 import { SubHeaderComponent } from "../SubHeaderComponent";
 import { UserActions } from "../UserActions";
-import { useConnectionSubscription } from "../../hooks/useConnectionSubscription";
 
 const UserList: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  const { loading, error, data, client } = useFetchUsers();
-  useConnectionSubscription(client);
+  const { loading, error, data } = useFetchUsers();
+
   const conditionalRowStyle = getConditionalRowStyle(user);
   if (error) {
     return (

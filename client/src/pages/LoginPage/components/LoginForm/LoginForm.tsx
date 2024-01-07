@@ -1,28 +1,31 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button, Col, FloatingLabel, Form, Spinner } from "react-bootstrap";
-import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
+import { CapslockFill } from "react-bootstrap-icons";
+import { normalizeString } from "../../../UserPage/utils/normalizeString";
 import { useFetchLogin, useFormLogin } from "../../hooks";
-import { Error } from "../../styled-components/Error";
+import { FormLoginValues } from "../../models/types";
+import { ShowPassword } from "../ShowPassword";
 
-const iconEyeProps = {
-  color: "black",
-  role: "button",
-  size: 20,
-  className: "position-absolute top-50 end-0 translate-middle",
+const normalizeValues = (values: FormLoginValues): FormLoginValues => {
+  return {
+    ...values,
+    username: normalizeString(values.username),
+  };
 };
 
 const LoginForm: React.FC = () => {
-  const { register, handleSubmit, errors, getValues } = useFormLogin();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+    getFieldState,
+    watch,
+  } = useFormLogin();
   const { isLoading, login } = useFetchLogin();
   const [showPassword, setShowPassword] = useState(false);
   const [capsLock, setCapsLock] = useState(false);
-
-  const normalizeValues = () => {
-    return {
-      ...getValues(),
-      username: getValues("username").trim(),
-    };
-  };
+  const password = watch("password");
 
   if (isLoading) {
     return <Spinner variant="primary" />;
@@ -30,48 +33,69 @@ const LoginForm: React.FC = () => {
 
   return (
     <Col xs={11} sm={8} md={6} lg={4}>
-      <h1 className="display-6 mb-3 border-bottom border-2">Iniciar sesión</h1>
+      <h1 className="display-6 mb-3 pb-2 border-bottom border-3 border-success ">
+        Iniciar sesión
+      </h1>
       <Form
-        onSubmit={handleSubmit(() => login(normalizeValues()))}
+        noValidate
+        onSubmit={handleSubmit(() =>
+          login({ variables: normalizeValues(getValues()) }),
+        )}
         onKeyDown={(e) => setCapsLock(e.getModifierState("CapsLock"))}
       >
         <FloatingLabel
           controlId="floatingInputUsername"
           label="Nombre de usuario"
-          className="mb-2 text-body-tertiary"
+          className="mb-3 text-body-tertiary"
         >
           <Form.Control
-            type="text"
-            placeholder="username"
             {...register("username")}
+            type="text"
+            isValid={getFieldState("username").isTouched && !errors.username}
+            isInvalid={!!errors.username}
+            placeholder="username"
             autoComplete="off"
           />
-          <Error>{errors.username?.message}</Error>
+          {errors.username && (
+            <Form.Control.Feedback type="invalid">
+              {errors.username.message}
+            </Form.Control.Feedback>
+          )}
         </FloatingLabel>
+
         <FloatingLabel
           controlId="floatingInputPassword"
           label="Contraseña"
-          className="mb-2 text-body-tertiary"
+          className="mb-3 text-body-tertiary"
         >
           <Form.Control
+            {...register("password")}
+            isValid={getFieldState("password").isTouched && !errors.password}
+            isInvalid={!!errors.password}
             type={showPassword ? "text" : "password"}
             placeholder="password"
-            {...register("password")}
             autoComplete="off"
           />
-          {showPassword ? (
-            <EyeFill {...iconEyeProps} onClick={() => setShowPassword(false)} />
-          ) : (
-            <EyeSlashFill
-              {...iconEyeProps}
-              onClick={() => setShowPassword(true)}
+          {password.length >= 8 && (
+            <ShowPassword
+              show={showPassword}
+              onClick={() => {
+                setShowPassword(!showPassword);
+              }}
             />
           )}
+          {errors.password && (
+            <Form.Control.Feedback type="invalid">
+              {errors.password.message}
+            </Form.Control.Feedback>
+          )}
         </FloatingLabel>
-        <Error className="mb-3">{errors.password?.message}</Error>
         {capsLock && (
-          <div className="text-warning fw-bold">
-            Tiene las MAYUSCULAS activadas
+          <div className="text-info d-flex gap-2">
+            <CapslockFill size={20} />
+            <div>
+              Tiene las <b>MAYUSCULAS</b> activadas
+            </div>
           </div>
         )}
         <Button variant="primary" type="submit" className="float-end">

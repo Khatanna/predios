@@ -4,6 +4,7 @@ import {
   Badge,
   Button,
   Col,
+  Dropdown,
   Form,
   InputGroup,
   ListGroup,
@@ -14,7 +15,6 @@ import {
   InfoCircle,
   Pencil,
   PeopleFill,
-  ThreeDotsVertical,
   Trash,
   X,
 } from "react-bootstrap-icons";
@@ -26,9 +26,10 @@ import {
   customSwalSuccess,
 } from "../../../../utilities/alerts";
 import { Beneficiary } from "../../../BeneficiaryPage/models/types";
-import { DropdownMenu } from "../../../HomePage/HomePage";
+// import { DropdownMenu } from "../../../HomePage/HomePage";
 import { Property } from "../../models/types";
 import { CustomLabel } from "../CustomLabel";
+import { DropdownMenu } from "../../../../components/DropdownMenu";
 
 export type BeneficiaryListProps = {
   maxHeight: number;
@@ -206,77 +207,53 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
         autoFocus
       />
       <InputGroup.Text>
-        <DropdownMenu
-          options={[
-            {
-              item: [
-                "Cancelar",
-                {
-                  onClick: () => {
-                    if (edit) {
-                      setEdit(false);
-                    } else {
-                      remove(index);
-                    }
-                  },
-                },
-              ],
-              icon: [
-                X,
-                {
-                  fontSize: 24,
-                  color: "red",
-                },
-              ],
-            },
-            {
-              item: [
-                "Confirmar",
-                {
-                  onClick: () => {
-                    const name = getValues(`beneficiaries.${index}.name`);
+        <DropdownMenu>
+          <Dropdown.Item
+            onClick={() => {
+              if (edit) {
+                setEdit(false);
+              } else {
+                remove(index);
+              }
+            }}
+          >
+            <X fontSize={24} color="red"></X>
+            Cancelar
+          </Dropdown.Item>
+          <Dropdown.Item
+            onClick={() => {
+              const name = getValues(`beneficiaries.${index}.name`);
 
-                    if (name.length > 0) {
-                      if (edit) {
-                        updateBeneficiary({
-                          index,
-                          input: { name },
-                          name: oldName,
-                        });
-                      } else if (getValues("id")) {
-                        createBeneficiary({
-                          propertyId: getValues("id"),
-                          input: { name },
-                          index,
-                        });
-                      } else {
-                        update(index, {
-                          name: getValues(`beneficiaries.${index}.name`),
-                        });
-                      }
-                    } else {
-                      customSwalError(
-                        "El beneficiario debe tener al menos 1 nombre",
-                        "Beneficiario sin nombre",
-                      );
-                    }
-                  },
-                },
-              ],
-              icon: [
-                Check,
-                {
-                  fontSize: 24,
-                  color: "green",
-                },
-              ],
-            },
-          ]}
-          toggleProps={{
-            as: ThreeDotsVertical,
-            role: "button",
-          }}
-        />
+              if (name.length > 0) {
+                if (edit) {
+                  updateBeneficiary({
+                    index,
+                    input: { name },
+                    name: oldName,
+                  });
+                } else if (getValues("id")) {
+                  createBeneficiary({
+                    propertyId: getValues("id"),
+                    input: { name },
+                    index,
+                  });
+                } else {
+                  update(index, {
+                    name: getValues(`beneficiaries.${index}.name`),
+                  });
+                }
+              } else {
+                customSwalError(
+                  "El beneficiario debe tener al menos 1 nombre",
+                  "Beneficiario sin nombre",
+                );
+              }
+            }}
+          >
+            <Check fontSize={24} color="green" />
+            Confirmar
+          </Dropdown.Item>
+        </DropdownMenu>
       </InputGroup.Text>
     </InputGroup>
   );

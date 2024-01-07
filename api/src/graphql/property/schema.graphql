@@ -54,11 +54,23 @@ type getPropertyWithCursor {
   property: Property
 }
 
+type getPropertyWithRegistryNumber {
+  next: String
+  prev: String
+  property: Property
+}
+
 # Queries
 type Query {
   getAllProperties: [Property]
-  getProperties(page: Int, limit: Int, orderBy: String): PropertiesPaginate
+  getProperties(
+    page: Int
+    limit: Int
+    orderBy: String
+    all: Boolean
+  ): PropertiesPaginate
   getProperty(nextCursor: String, prevCursor: String): getPropertyWithCursor
+  getPropertyByRegistryNumber(id: String): getPropertyWithRegistryNumber
   getPropertyById(id: String): Property
   searchPropertyByAttribute(
     page: Int

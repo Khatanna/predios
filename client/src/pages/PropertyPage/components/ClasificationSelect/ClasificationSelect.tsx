@@ -23,9 +23,7 @@ const GET_ALL_CLASIFICATIONS_QUERY = `
 	}
 `;
 
-const ClasificationSelect: React.FC<{ readOnly?: boolean }> = ({
-  readOnly,
-}) => {
+const ClasificationSelect: React.FC = () => {
   const { control, getValues, watch, resetField } = useFormContext<Property>();
   const { setItems: setClasifications, items: clasifications } =
     useClasificationStore();
@@ -43,14 +41,17 @@ const ClasificationSelect: React.FC<{ readOnly?: boolean }> = ({
     },
   );
   const { subscribe } = useInputSubscription({
-    name: 'clasification.name'
+    name: "clasification.name",
+    options: {
+      pattern: {
+        value: /^(?!undefined$).*$/gi,
+        message: "Este campo es obligatorio",
+      },
+    },
   });
   return (
     <Form.Group>
-      <CustomLabel
-        label="Clasificación"
-        icon={<Diagram3 color="green" />}
-      />
+      <CustomLabel label="Clasificación" icon={<Diagram3 color="green" />} />
       <Controller
         name="clasification.name"
         control={control}
@@ -60,8 +61,8 @@ const ClasificationSelect: React.FC<{ readOnly?: boolean }> = ({
             {...field}
             {...subscribe}
             onChange={(e) => {
-              field.onChange(e)
-              subscribe.onChange(e)
+              field.onChange(e);
+              subscribe.onChange(e);
             }}
             size="sm"
             placeholder={"Clasificación"}

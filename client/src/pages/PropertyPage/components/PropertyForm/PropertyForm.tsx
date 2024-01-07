@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import {
   Button,
   Col,
@@ -21,7 +21,6 @@ import {
   PersonWorkspace,
 } from "react-bootstrap-icons";
 import { Controller, FormProvider, useForm } from "react-hook-form";
-import { Cursor } from "../../../../components/Cursor";
 import { useAuth, useCustomMutation } from "../../../../hooks";
 import {
   customSwalError,
@@ -32,7 +31,6 @@ import {
   UPDATE_PROPERTY_MUTATION,
 } from "../../graphQL/types";
 import { Property } from "../../models/types";
-import { useFormStore } from "../../state/useFormStore";
 import { useModalStore } from "../../state/useModalStore";
 import { usePaginationStore } from "../../state/usePaginationStore";
 import { ActivitySelect } from "../ActivitySelect";
@@ -40,7 +38,6 @@ import { BeneficiaryList } from "../BeneficiaryList";
 import { ClasificationSelect } from "../ClasificationSelect";
 import { CustomInput } from "../CustomInput";
 import { CustomLabel } from "../CustomLabel";
-import { EditableInput } from "../EditableInput";
 import { GroupedStateSelect } from "../GroupedStateSelect";
 import { Localization } from "../Localization";
 import ModalForm from "../ModalForm/ModalForm";
@@ -53,20 +50,15 @@ import { StateSelect } from "../StateSelect";
 import { SubdirectorySelect } from "../SubdirectorySelect";
 import { TrackingList } from "../TrackingList";
 import { TypeSelect } from "../TypeSelect";
+import { toast } from "sonner";
 
-const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
+const PropertyForm: React.FC = () => {
   const { role } = useAuth();
-  const { propertyForm, setPropertyForm } = useFormStore();
-  const { property } = usePaginationStore((s) => {
-    if (!newItem) {
-      return { ...s, property: undefined };
-    }
-
-    return s;
-  });
+  // const { propertyForm } = useFormStore();
+  const { property, reset } = usePaginationStore();
   const colRef = useRef<HTMLDivElement | null>(null);
   const { handleSubmit, register, ...methods } = useForm<Property>({
-    values: property ?? propertyForm,
+    values: property,
   });
 
   const [createProperty] = useCustomMutation<
@@ -78,7 +70,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
         "Predio creado",
         "Se ha creado un nuevo predio correctamente",
       );
-      setPropertyForm({ propertyForm: undefined });
+      methods.reset();
     },
     onError(error) {
       customSwalError(error, "Ocurrio un error al intentar crear el predio");
@@ -104,18 +96,25 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
   });
   const submit = (data: Property) => {
     console.log(data);
-    if (!property) {
+    if (!methods.getValues("id")) {
       createProperty({
         input: data,
       });
     } else {
-      console.log("update");
       updateProperty({
         input: data,
       });
     }
   };
   const { setModal, ...modal } = useModalStore();
+  useEffect(() => {
+    // methods.getValues()
+    return () => {
+      if (methods.getValues("id")) {
+        reset();
+      }
+    };
+  }, []);
 
   return (
     <Container fluid>
@@ -166,25 +165,23 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                         </Form.Group>
                       </Row>
                       <Row>
-                        <Col className="d-flex">
-                          <InputGroup size="sm">
-                            <InputGroup.Text>
-                              <Hexagon color="purple" className="me-1" />
-                              <Form.Label column="sm" className="fw-bold">
-                                Poligono
-                              </Form.Label>
-                            </InputGroup.Text>
-                            <CustomInput
-                              size="sm"
-                              name="polygone"
-                              placeholder="Poligono"
-                              noWrap
+                        <InputGroup size="sm">
+                          <InputGroup.Text>
+                            <CustomLabel
+                              label="Poligono"
+                              icon={<Hexagon color="purple" />}
                             />
-                          </InputGroup>
-                        </Col>
+                          </InputGroup.Text>
+                          <CustomInput
+                            size="sm"
+                            name="polygone"
+                            placeholder="Poligono"
+                            noWrap
+                          />
+                        </InputGroup>
                       </Row>
                     </Col>
-                    <Col xs={4}>
+                    <Col xs={5}>
                       <Row className="mb-1">
                         <Form.Label column="sm" className="fw-bold">
                           Codigo de busqueda:
@@ -227,7 +224,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                     </Col>
                   </Row>
                   <Row className="border border-1 py-2 border-dark-subtle rounded-1">
-                    <Localization readOnly={!!property} />
+                    <Localization />
                   </Row>
                   <Row>
                     <Tabs
@@ -240,10 +237,7 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                           <Col xs={8}>
                             <Row className="gy-2" ref={colRef}>
                               <Col xs={12}>
-                                <StateSelect
-                                  name="state.name"
-                                  readOnly={!!property}
-                                />
+                                <StateSelect name="state.name" />
                               </Col>
                               <Col xs={12}>
                                 <Form.Group>
@@ -317,19 +311,19 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                                 </Form.Group>
                               </Col>
                               <Col xs={4}>
-                                <TypeSelect readOnly={!!property} />
+                                <TypeSelect />
                               </Col>
                               <Col xs={4}>
-                                <ClasificationSelect readOnly={!!property} />
+                                <ClasificationSelect />
                               </Col>
                               <Col xs={4}>
-                                <ActivitySelect readOnly={!!property} />
+                                <ActivitySelect />
                               </Col>
                               <Col xs={4}>
-                                <SubdirectorySelect readOnly={!!property} />
+                                <SubdirectorySelect />
                               </Col>
                               <Col xs={4}>
-                                <ResponsibleUnitSelect readOnly={!!property} />
+                                <ResponsibleUnitSelect />
                               </Col>
                               <Col>
                                 <CustomLabel
@@ -379,61 +373,55 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
                 <Col xs={3}>
                   <Row className="border border-1 py-2 border-dark-subtle rounded-1 gap-2 h-100 align-content-start">
                     <Col xs={12}>
-                      <Form.Group>
-                        <CustomLabel
-                          label="Estado 2"
-                          icon={<Icon2Circle color="gray" />}
-                        />
-                        <CustomInput
-                          name="secondState"
-                          size="sm"
-                          placeholder="Estado 2"
-                        />
-                      </Form.Group>
+                      <CustomLabel
+                        label="Estado 2"
+                        icon={<Icon2Circle color="gray" />}
+                      />
+                      <CustomInput
+                        name="secondState"
+                        size="sm"
+                        placeholder="Estado 2"
+                      />
                     </Col>
                     <Col xs={12}>
-                      <GroupedStateSelect readOnly={!!property} />
+                      <GroupedStateSelect />
                     </Col>
                     <Col xs={12}>
-                      <Form.Group>
-                        <CustomLabel
-                          label="Juridico"
-                          icon={<PersonWorkspace color="green" />}
-                        />
-                        <Controller
-                          name="legal.user"
-                          control={methods.control}
-                          render={({ field }) => (
-                            <SelectUser
-                              {...field}
-                              placeholder="Juridico"
-                              type="juridico"
-                            />
-                          )}
-                        />
-                      </Form.Group>
+                      <CustomLabel
+                        label="Juridico"
+                        icon={<PersonWorkspace color="green" />}
+                      />
+                      <Controller
+                        name="legal.user"
+                        control={methods.control}
+                        render={({ field }) => (
+                          <SelectUser
+                            {...field}
+                            placeholder="Juridico"
+                            type="juridico"
+                          />
+                        )}
+                      />
                     </Col>
                     <Col xs={12}>
-                      <Form.Group>
-                        <CustomLabel
-                          label="Tecnico"
-                          icon={<PersonGear color="brown" />}
-                        />
-                        <Controller
-                          name="technical.user"
-                          control={methods.control}
-                          render={({ field }) => (
-                            <SelectUser
-                              {...field}
-                              type="tecnico"
-                              placeholder="Tecnico"
-                            />
-                          )}
-                        />
-                      </Form.Group>
+                      <CustomLabel
+                        label="Tecnico"
+                        icon={<PersonGear color="brown" />}
+                      />
+                      <Controller
+                        name="technical.user"
+                        control={methods.control}
+                        render={({ field }) => (
+                          <SelectUser
+                            {...field}
+                            type="tecnico"
+                            placeholder="Tecnico"
+                          />
+                        )}
+                      />
                     </Col>
                     <Col xs={12}>
-                      <ReferenceSelect readOnly={!!property} />
+                      <ReferenceSelect />
                     </Col>
                     <Col xs={12}>
                       <CustomLabel
@@ -488,7 +476,6 @@ const PropertyForm: React.FC<{ newItem: boolean }> = ({ newItem }) => {
             </Col>
           </Row>
         </Form>
-        {/* {methods.getValues("id") && <Cursor />} */}
       </FormProvider>
     </Container>
   );
