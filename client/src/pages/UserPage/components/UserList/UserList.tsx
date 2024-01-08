@@ -7,7 +7,8 @@ import { columns } from "../../utils/TableColumns";
 import { getConditionalRowStyle } from "../../utils/getConditionalRowStyle";
 import { SubHeaderComponent } from "../SubHeaderComponent";
 import { UserActions } from "../UserActions";
-
+import { InfoCircle } from "react-bootstrap-icons";
+// import { } from 'react-bootstrap-icons'
 const UserList: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
@@ -18,7 +19,10 @@ const UserList: React.FC = () => {
     return (
       <div className="my-2">
         <Alert variant="danger">
-          {error?.message ?? "Ocurrio un error al listar los usuarios"}
+          <div className="fw-bold fs-5 d-flex gap-3">
+            <InfoCircle fontSize={32} />
+            {error.message ?? "Ocurrio un error al listar los usuarios"}
+          </div>
         </Alert>
       </div>
     );

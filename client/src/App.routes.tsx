@@ -1,41 +1,36 @@
+import { ApolloProvider } from "@apollo/client";
 import { Suspense, lazy } from "react";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
+import { client } from "./config/wsClient";
+import { AuthProvider } from "./context/AuthContext";
 import { AxiosProvider } from "./context/AxiosContext";
+import { SeekerProvider } from "./context/SeekerContext";
+import { useAuth } from "./hooks";
 import { LoginPage } from "./pages/LoginPage";
 import { FormCreatePermission } from "./pages/PermissionPage/components/FormCreatePermission";
 import { Property } from "./pages/PropertyPage/components/Property";
-import { FormCreateUser } from "./pages/UserPage/components/FormCreateUser";
-import { PropertyList } from "./pages/PropertyPage/components/PropertyList";
-import { LocalizationPage } from "./pages/LocalizationPage";
-import { LocalizationList } from "./pages/LocalizationPage/components/LocalizationList";
-import { CityPage } from "./pages/CityPage";
 import { PropertyForm } from "./pages/PropertyPage/components/PropertyForm";
-import { AuthProvider } from "./context/AuthContext";
-import { SeekerProvider } from "./context/SeekerContext";
-import { useAuth } from "./hooks";
+import { PropertyList } from "./pages/PropertyPage/components/PropertyList";
 import UserPage from "./pages/UserPage/UserPage";
-import { RolePage } from "./pages/RolePage";
-import { ReportPage } from "./pages/ReportPage";
-import { ApolloProvider } from "@apollo/client";
-import { client } from "./config/wsClient";
+import { FormCreateUser } from "./pages/UserPage/components/FormCreateUser";
 
-// const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"));
 const Permission = lazy(
   () => import("./pages/UserPage/components/Permission/Permission"),
 );
 const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
-const ActivityPage = lazy(() => import("./pages/ActivityPage/ActivityPage"));
-const BeneficiaryPage = lazy(
-  () => import("./pages/BeneficiaryPage/BeneficiaryPage"),
-);
 const PermissionPage = lazy(
   () => import("./pages/PermissionPage/PermissionPage"),
 );
 const PropertyPage = lazy(() => import("./pages/PropertyPage/PropertyPage"));
 const RecordPage = lazy(() => import("./pages/RecordPage/RecordPage"));
-const UserList = lazy(
-  () => import("./pages/UserPage/components/UserList/UserList"),
-);
 const NavBar = lazy(() => import("./components/Navbar/Navbar"));
 
 const LazyComponent = ({
@@ -50,8 +45,19 @@ const LazyComponent = ({
   );
 };
 
+const ProtectedRoute: React.ComponentType<{
+  isAllowed: boolean;
+  redirectTo: string;
+}> = ({ isAllowed, redirectTo }) => {
+  if (isAllowed) {
+    return <Outlet />;
+  }
+
+  return <Navigate to={redirectTo} />;
+};
+
 function App() {
-  const { role } = useAuth();
+  const { role, isAuth } = useAuth();
   const isAdmin = role === "administrador";
 
   return (
@@ -63,15 +69,40 @@ function App() {
               <Routes>
                 <Route path="/" element={<LazyComponent Component={NavBar} />}>
                   <Route
-                    path="/report"
-                    element={<LazyComponent Component={ReportPage} />}
-                  />
-                  <Route
-                    index
-                    element={<LazyComponent Component={HomePage} />}
-                  />
-                  {isAdmin && (
-                    <Route path="/users">
+                    element={
+                      <ProtectedRoute isAllowed={isAuth} redirectTo="/auth" />
+                    }
+                  >
+                    <Route
+                      index
+                      element={<LazyComponent Component={HomePage} />}
+                    />
+                    <Route
+                      path="properties"
+                      element={<LazyComponent Component={PropertyPage} />}
+                    >
+                      <Route index Component={PropertyList} />
+                      <Route
+                        element={
+                          <ProtectedRoute
+                            isAllowed={isAdmin}
+                            redirectTo="../"
+                          />
+                        }
+                      >
+                        <Route path="create" Component={PropertyForm} />
+                      </Route>
+                      <Route path=":id" Component={Property} />
+                    </Route>
+                    <Route
+                      path="/users"
+                      element={
+                        <ProtectedRoute
+                          isAllowed={isAdmin}
+                          redirectTo="/properties"
+                        />
+                      }
+                    >
                       <Route
                         index
                         element={<LazyComponent Component={UserPage} />}
@@ -90,11 +121,15 @@ function App() {
                         element={<LazyComponent Component={Permission} />}
                       />
                     </Route>
-                  )}
-
-                  {isAdmin && (
-                    <Route path="/admin">
-                      {/* <Route index Component={AdminPage} /> */}
+                    <Route
+                      path="/admin"
+                      element={
+                        <ProtectedRoute
+                          isAllowed={isAdmin}
+                          redirectTo="/properties"
+                        />
+                      }
+                    >
                       <Route
                         path="records"
                         element={<LazyComponent Component={RecordPage} />}
@@ -112,50 +147,16 @@ function App() {
 
                             return <FormCreatePermission permission={state} />;
                           }}
-                        ></Route>
-                        <Route
-                          path=":role"
-                          element={<LazyComponent Component={RolePage} />}
-                        ></Route>
+                        />
                       </Route>
-
-                      <Route
-                        path="activities"
-                        element={<LazyComponent Component={ActivityPage} />}
-                      />
-                      <Route
-                        path="beneficiaries"
-                        element={<LazyComponent Component={BeneficiaryPage} />}
-                      />
-                      <Route
-                        path="localizations"
-                        element={<LazyComponent Component={LocalizationPage} />}
-                      >
-                        <Route index Component={LocalizationList}></Route>
-                      </Route>
-                      <Route
-                        path="cities"
-                        element={<LazyComponent Component={CityPage} />}
-                      ></Route>
-                      <Route path="provinces"></Route>
-                      <Route path="municipalities"></Route>
                     </Route>
-                  )}
-                  <Route
-                    path="properties"
-                    element={<LazyComponent Component={PropertyPage} />}
-                  >
-                    <Route index Component={PropertyList}></Route>
-                    {isAdmin && (
-                      <Route path="create" Component={PropertyForm}></Route>
-                    )}
-                    <Route path=":id" Component={Property}></Route>
                   </Route>
-                  {/* <Route path="*" element={<LazyComponent Component={NotFoundPage} />}></Route> */}
                 </Route>
-                <Route path="/auth">
-                  <Route index Component={LoginPage} />
-                </Route>
+                <Route
+                  path="*"
+                  element={<LazyComponent Component={NotFoundPage} />}
+                />
+                <Route path="/auth" Component={LoginPage} />
               </Routes>
             </SeekerProvider>
           </AuthProvider>

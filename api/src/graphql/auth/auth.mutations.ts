@@ -32,15 +32,15 @@ export const login = async (
       },
     });
     if (user.status === "DISABLE") {
-      throw throwLoginError(AuthErrorMessage.USER_DISABLE);
+      throw new Error(AuthErrorMessage.USER_DISABLE);
     }
 
     if (!verifyUsername(username, user.username)) {
-      throw throwLoginError(AuthErrorMessage.UNREGISTERED_USER);
+      throw new Error(AuthErrorMessage.UNREGISTERED_USER);
     }
 
     if (!verifyPassword(password, user.password)) {
-      throw throwLoginError(AuthErrorMessage.INVALID_PASSWORD);
+      throw new Error(AuthErrorMessage.INVALID_PASSWORD);
     }
 
     const accessToken = generateToken(

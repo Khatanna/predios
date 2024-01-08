@@ -120,9 +120,14 @@ export const server = new ApolloServer({
     if (
       unwrapResolverError(error) instanceof Prisma.PrismaClientKnownRequestError
     ) {
-      throw throwPrismaError(
+      const e = throwPrismaError(
         unwrapResolverError(error) as Prisma.PrismaClientKnownRequestError,
       );
+      // if (e.message.includes("No User found")) {
+      //   throw new GraphQLError("Este usuario no existe en el sistema XD");
+      // }
+
+      throw new GraphQLError(e.message);
     }
 
     if (
@@ -138,12 +143,13 @@ export const server = new ApolloServer({
           ? "P1001"
           : "default"
       ];
+      console.log({ errorMessage });
       throw new GraphQLError(errorMessage);
     }
 
     if (error instanceof GraphQLError) {
-      console.log(error);
-      throw throwUnauthorizedError(error.message);
+      console.log({ error });
+      throw new GraphQLError(error.message);
     }
 
     if (unwrapResolverError(error) instanceof Error) {
