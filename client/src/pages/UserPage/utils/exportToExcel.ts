@@ -30,13 +30,10 @@ export const exportToExcel = ({ data }: { data: Array<Property> }) => {
       activity,
       clasification,
       reference,
-      beneficiaries,
       bodies,
       fileNumber,
-      observations,
       plots,
       sheets,
-      technicalObservation,
       agrupationIdentifier,
       area,
       expertiseOfArea,
@@ -48,7 +45,7 @@ export const exportToExcel = ({ data }: { data: Array<Property> }) => {
       secondState,
       technical,
     }) => ({
-      "Numero de registro": registryNumber,
+      Numero: registryNumber,
       Nombre: name,
       Codigo: code,
       "Codigo de busqueda": codeOfSearch,
@@ -66,12 +63,7 @@ export const exportToExcel = ({ data }: { data: Array<Property> }) => {
       ["Nro de expediente"]: fileNumber?.number,
       Superficie: area,
       ["Superficie de pericia"]: expertiseOfArea,
-      Obervaciones: observations
-        .map((o) => o.observation)
-        .concat(technicalObservation)
-        .join("\n"),
       Poligono: polygone,
-      Beneficiarios: beneficiaries.map((b) => b.name).join("\n"),
       ["Estado agrupado"]: groupedState?.name,
       ["Ubicación de carpeta"]: folderLocation,
       ["Unidad responsable"]: responsibleUnit,
@@ -82,7 +74,8 @@ export const exportToExcel = ({ data }: { data: Array<Property> }) => {
     }),
   );
   const ws = XLSX.utils.json_to_sheet(exportData);
-  const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+  const sheetName = `${data.length}-Predios`;
+  const wb = { Sheets: { [sheetName]: ws }, SheetNames: [sheetName] };
   const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
 
   const blob = new Blob([excelBuffer], { type: fileType });

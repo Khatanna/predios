@@ -14,9 +14,9 @@ const schema = yup.object({
     .max(32, "La contraseña no debe tener mas de 32 caracteres"),
 });
 
-export const useFormLogin = () => {
+export const useFormLogin = (defaultValues?: Partial<FormLoginValues>) => {
   return useForm<FormLoginValues>({
     resolver: yupResolver(schema),
-    defaultValues: { username: "", password: "" },
+    defaultValues: { username: "", password: "", ...defaultValues },
   });
 };

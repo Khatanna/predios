@@ -1,6 +1,6 @@
 import { gql, useLazyQuery } from "@apollo/client";
-import { Button, Col, Form, Spinner } from "react-bootstrap";
-import { FiletypeXlsx } from "react-bootstrap-icons";
+import { Button, Col, FloatingLabel, Form, Spinner } from "react-bootstrap";
+import { FileEarmarkSpreadsheet, FiletypeXlsx } from "react-bootstrap-icons";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { exportToExcel } from "../../../UserPage/utils/exportToExcel";
@@ -39,7 +39,7 @@ const GET_ALL_PROPERTIES_QUERY_GQL = gql`
         expertiseOfArea
         secondState
         agrupationIdentifier
-        technicalObservation
+        # technicalObservation
         technical {
           user {
             names
@@ -62,9 +62,6 @@ const GET_ALL_PROPERTIES_QUERY_GQL = gql`
         groupedState {
           name
         }
-        beneficiaries {
-          name
-        }
         city {
           name
         }
@@ -82,10 +79,6 @@ const GET_ALL_PROPERTIES_QUERY_GQL = gql`
         }
         clasification {
           name
-        }
-        observations {
-          id
-          observation
         }
         reference {
           name
@@ -112,28 +105,26 @@ const FormReport: React.FC<{ max: number }> = ({ max }) => {
     getFieldState,
     watch,
     reset,
-  } = useForm<TReport>();
+  } = useForm<TReport>({
+    defaultValues: {
+      all: false,
+      numberOfRecords: undefined,
+    },
+  });
   const [numberOfRecods, all] = watch(["numberOfRecords", "all"]);
   const [getProperties, { loading }] = useLazyQuery<{
     results: { total: number; properties: Property[] };
   }>(GET_ALL_PROPERTIES_QUERY_GQL);
 
   const submit = ({ all, numberOfRecords }: TReport) => {
-    const variables = all
-      ? {
-          variables: {
-            all,
-          },
-        }
-      : {
-          variables: {
-            page: 1,
-            limit: numberOfRecords,
-            orderBy: "asc",
-          },
-        };
+    const variables = {
+      page: 1,
+      limit: numberOfRecords,
+      orderBy: "asc",
+      all,
+    };
 
-    toast.promise(getProperties(variables), {
+    toast.promise(getProperties({ variables, fetchPolicy: "no-cache" }), {
       loading: "Generando reporte",
       success: ({ data }) => {
         if (data) {
@@ -153,41 +144,56 @@ const FormReport: React.FC<{ max: number }> = ({ max }) => {
     <Form noValidate onSubmit={handleSubmit(submit)} className="row g-3">
       {!all && (
         <Col>
-          <Form.Control
-            type="number"
-            isValid={
-              !all &&
-              getFieldState("numberOfRecords").isDirty &&
-              !errors.numberOfRecords
+          <FloatingLabel
+            controlId="floatingInput"
+            label={
+              <div className="d-flex gap-2 align-items-center">
+                <FileEarmarkSpreadsheet color="green" />
+                Número de registros{" "}
+              </div>
             }
-            isInvalid={!all && !!errors.numberOfRecords}
-            placeholder="Número de registros"
-            {...register("numberOfRecords", {
-              max: {
-                message: `El valor maximo es ${max}`,
-                value: max,
-              },
-              min: {
-                message: "Debe tener minimo 1 registro",
-                value: 1,
-              },
-              required: {
-                message: "Debe completar este campo",
-                value: !all && true,
-              },
-              valueAsNumber: true,
-            })}
-          />
-          {errors.numberOfRecords && (
-            <Form.Control.Feedback type="invalid">
-              {errors.numberOfRecords.message}
-            </Form.Control.Feedback>
-          )}
+          >
+            <Form.Control
+              type="number"
+              isValid={
+                !all &&
+                getFieldState("numberOfRecords").isDirty &&
+                !errors.numberOfRecords
+              }
+              isInvalid={!all && !!errors.numberOfRecords}
+              placeholder="Número de registros"
+              {...register("numberOfRecords", {
+                max: {
+                  message: `El valor maximo es ${max}`,
+                  value: max,
+                },
+                min: {
+                  message: "Debe tener minimo 1 registro",
+                  value: 1,
+                },
+                required: {
+                  message: "Debe completar este campo",
+                  value: !all && true,
+                },
+                valueAsNumber: true,
+              })}
+            />
+            {errors.numberOfRecords && (
+              <Form.Control.Feedback type="invalid">
+                {errors.numberOfRecords.message}
+              </Form.Control.Feedback>
+            )}
+          </FloatingLabel>
         </Col>
       )}
       {!numberOfRecods && (
         <Col xs={12}>
-          <Form.Check label="Obtener todos" id="all" {...register("all")} />
+          <Form.Check
+            label="Obtener todos"
+            id="all"
+            {...register("all")}
+            disabled={loading}
+          />
         </Col>
       )}
       <Col xs={12} className="d-flex justify-content-end">

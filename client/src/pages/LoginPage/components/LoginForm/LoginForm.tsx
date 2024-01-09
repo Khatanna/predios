@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import { Button, Col, FloatingLabel, Form, Spinner } from "react-bootstrap";
-import { CapslockFill } from "react-bootstrap-icons";
+import {
+  CapslockFill,
+  InfoCircle,
+  Key,
+  Person,
+  PersonLock,
+} from "react-bootstrap-icons";
 import { normalizeString } from "../../../UserPage/utils/normalizeString";
 import { useFetchLogin, useFormLogin } from "../../hooks";
 import { FormLoginValues } from "../../models/types";
 import { ShowPassword } from "../ShowPassword";
+import { Tooltip } from "../../../../components/Tooltip";
+import { useRememberStore } from "../../state/useRememberStore";
 
 const normalizeValues = (values: FormLoginValues): FormLoginValues => {
   return {
@@ -14,6 +22,7 @@ const normalizeValues = (values: FormLoginValues): FormLoginValues => {
 };
 
 const LoginForm: React.FC = () => {
+  const { remember, isRemember, setRemember, username } = useRememberStore();
   const {
     register,
     handleSubmit,
@@ -21,7 +30,9 @@ const LoginForm: React.FC = () => {
     getValues,
     getFieldState,
     watch,
-  } = useFormLogin();
+  } = useFormLogin({
+    username: username ?? "",
+  });
   const { isLoading, login } = useFetchLogin();
   const [showPassword, setShowPassword] = useState(false);
   const [capsLock, setCapsLock] = useState(false);
@@ -38,14 +49,24 @@ const LoginForm: React.FC = () => {
       </h1>
       <Form
         noValidate
-        onSubmit={handleSubmit(() =>
-          login({ variables: normalizeValues(getValues()) }),
-        )}
+        onSubmit={handleSubmit(async () => {
+          if (isRemember) {
+            remember(getValues("username"));
+          }
+          await login({
+            variables: normalizeValues(getValues()),
+          });
+        })}
         onKeyDown={(e) => setCapsLock(e.getModifierState("CapsLock"))}
       >
         <FloatingLabel
           controlId="floatingInputUsername"
-          label="Nombre de usuario"
+          label={
+            <div className="d-flex gap-2 align-items-center">
+              <Person color="red" fontSize={18} />
+              Nombre de usuario
+            </div>
+          }
           className="mb-3 text-body-tertiary"
         >
           <Form.Control
@@ -65,7 +86,12 @@ const LoginForm: React.FC = () => {
 
         <FloatingLabel
           controlId="floatingInputPassword"
-          label="Contraseña"
+          label={
+            <div className="d-flex gap-2 align-items-center">
+              <PersonLock color="red" fontSize={18} />
+              Contraseña{" "}
+            </div>
+          }
           className="mb-3 text-body-tertiary"
         >
           <Form.Control
@@ -90,6 +116,20 @@ const LoginForm: React.FC = () => {
             </Form.Control.Feedback>
           )}
         </FloatingLabel>
+        <Form.Group className="d-flex gap-2 align-items-center">
+          <Form.Check
+            type="switch"
+            label="Recordar más tarde"
+            id={"remember"}
+            checked={isRemember}
+            onChange={() => {
+              setRemember(!isRemember);
+            }}
+          />
+          <Tooltip label="El sistema guardara su nombre de usuario para sesiones futuras">
+            <InfoCircle color="green"></InfoCircle>
+          </Tooltip>
+        </Form.Group>
         {capsLock && (
           <div className="text-info d-flex gap-2">
             <CapslockFill size={20} />

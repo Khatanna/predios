@@ -25,7 +25,6 @@ import { GET_ALL_USERS_QUERY } from "../../graphQL/types";
 import { useFetchCreateUser } from "../../hooks";
 import { Role, User, UserInput, UserType } from "../../models/types";
 import { useUsersStore } from "../../state/useUsersStore";
-import { CustomSelect } from "../../../PropertyPage/components/CustomSelect";
 import { capitalizeString } from "../../utils/capitalizeString";
 
 export interface FormCreateUserProps {
@@ -102,14 +101,14 @@ const SelectUserType: React.FC<FormSelectProps> = (props) => {
   }
 
   return (
-    <SelectNameable
-      {...props}
-      placeholder="Tipo de usuario"
-      options={data?.userTypes.map(({ name }) => ({
-        label: name,
-        value: name,
-      }))}
-    />
+    <Form.Select {...props}>
+      <option value="undefined" disabled>
+        Tipo de usuario
+      </option>
+      {data?.userTypes.map(({ name }) => (
+        <option value={name}>{name}</option>
+      ))}
+    </Form.Select>
   );
 };
 
@@ -145,16 +144,14 @@ const SelectRol: React.FC<FormSelectProps> = (props) => {
   }
 
   return (
-    <SelectNameable
-      {...props}
-      placeholder="Rol"
-      options={
-        data?.roles.map((r) => ({
-          label: capitalizeString(r.name),
-          value: r.name,
-        })) ?? []
-      }
-    />
+    <Form.Select {...props}>
+      <option value="undefined" disabled>
+        Rol
+      </option>
+      {data?.roles.map(({ name }) => (
+        <option value={name}>{capitalizeString(name)}</option>
+      ))}
+    </Form.Select>
   );
 };
 
@@ -392,7 +389,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               <Controller
                 name="role.name"
                 control={control}
-                defaultValue={"Usuario"}
+                defaultValue={"usuario"}
                 render={({ field }) => <SelectRol {...field} />}
               />
               <Error>{errors.type?.name?.message}</Error>
