@@ -47,7 +47,7 @@ export const exportToExcel = ({ data }: { data: Array<Property> }) => {
     }) => ({
       Numero: registryNumber,
       Nombre: name,
-      Codigo: code,
+      Codigo: code ? (+code) : '',
       "Codigo de busqueda": codeOfSearch,
       Estado: state?.name,
       Tipo: type?.name,

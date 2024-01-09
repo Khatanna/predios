@@ -10,7 +10,7 @@ const RoleIcon: React.FC<RoleIconProps> = memo(({ name }) => {
     <div className="d-flex align-items-center gap-2">
       <PersonFill
         size={20}
-        color={normalizeString(name) === "usuario" ? "orange" : "green"}
+        color={normalizeString(name).includes("usuario") ? "orange" : "green"}
       />
       {name}
     </div>

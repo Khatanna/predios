@@ -56,6 +56,8 @@ export const columns: TableColumn<User>[] = [
     cell: ({ connection }) => (
       <StateCell status={connection} values={StatusConnection} />
     ),
+    sortable: true,
+    sortFunction: (a, b) => a.connection.localeCompare(b.connection)
   },
   {
     name: "Estado",

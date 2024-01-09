@@ -48,78 +48,9 @@ const { groupedStates }: { groupedStates: GroupedState } =
 const { references }: { references: Reference } = getData("references");
 const { roles }: { roles: Role } = getData("roles");
 const delay = 1;
-const properties: Record<string, string>[] = getData("DAT_PREDIO");
+const properties: Record<string, string>[] = getData("DAT_PREDIO_2");
 const trackings: Record<string, string>[] = getData("FechaEst");
 console.log("initializing seed");
-const createTypes = async () => {
-  await prisma.type.createMany({
-    data: types,
-    skipDuplicates: true,
-  });
-};
-
-const createFolderLocations = async () => {
-  await prisma.folderLocation.createMany({
-    data: folderLocations,
-    skipDuplicates: true,
-  });
-};
-
-const createActivities = async () => {
-  await prisma.activity.createMany({
-    data: activities,
-    skipDuplicates: true,
-  });
-};
-
-const createClasifications = async () => {
-  await prisma.clasification.createMany({
-    data: clasifications,
-    skipDuplicates: true,
-  });
-};
-
-const createUnits = async () => {
-  await prisma.unit.createMany({
-    data: units,
-    skipDuplicates: true,
-  });
-};
-
-const createStages = async () => {
-  await prisma.stage.createMany({
-    data: stages,
-    skipDuplicates: true,
-  });
-};
-
-const createStates = async () => {
-  for (let state of states) {
-    await prisma.state.create({
-      data: {
-        name: state.name,
-        // order: state.order,
-        stage: {
-          connect: state.stage,
-        },
-      },
-    });
-  }
-};
-
-const createGroupedStates = async () => {
-  await prisma.groupedState.createMany({
-    data: groupedStates,
-    skipDuplicates: true,
-  });
-};
-
-const createReferences = async () => {
-  await prisma.reference.createMany({
-    data: references,
-    skipDuplicates: true,
-  });
-};
 
 const createRoles = () => {
   return prisma.role.createMany({
@@ -128,46 +59,37 @@ const createRoles = () => {
 };
 
 async function main() {
-  // await createTypes();
-  // await createFolderLocations();
-  // await createActivities();
-  // await createClasifications();
-  // await createUnits();
-  // await createStages();
-  // await createStates();
-  // await createGroupedStates();
-  // await createReferences();
   const propertiesMapped = properties.map(
     ({
-      codigo,
+      nombre,
+      beneficiario,
+      poligono,
       superficie,
       superficie_pericia,
-      nombre,
-      poligono,
-      cuerpos,
-      fojas,
-      parcelas,
-      departamento,
-      provincia,
-      municipio,
       observacion,
+      parcelas,
+      estado,
       tipo,
       ubicacion_de_carpeta,
       actividad,
       clasificacion,
+      cuerpos,
+      fojas,
       expediente,
-      unidad_responsable,
-      estado_agrupado,
-      estado_2,
-      estado,
       codigo_de_busqueda,
-      id_de_agrupacion,
-      beneficiario,
+      unidad_responsable,
       observacion_tecnica,
       segunda_observacion,
-      referencia,
+      departamento,
+      provincia,
+      municipio,
+      codigo,
       tecnico,
+      estado_agrupado,
+      referencia,
       juridico,
+      id_de_agrupacion,
+      estado_2,
     }) => {
       const observations: { observation: string }[] = [];
 
@@ -750,6 +672,14 @@ async function main() {
         assignedBy: "carlos.chambi",
       });
     }
+
+    if (permission.resource !== "USER") {
+      roles.push({
+        roleId: "354c1d7d-3935-4ae8-9058-ca1c01c9af0d",
+        assignedBy: "carlos.chambi"
+      })
+    }
+
     roles.push({
       roleId: "9b8a7068-c716-4abf-8664-b53c2851b714",
       assignedBy: "carlos.chambi",

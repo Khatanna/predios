@@ -888,7 +888,7 @@
       "username": "hermo.huayta",
       "password": "$2a$10$Iut4z0dj9siWrWZWLY1lKuJas0l7XSzZrM1kehhFJNigFNR9RTvLi",
       "typeId": "ce04928c-16eb-4946-a49d-26894d527bc2",
-      "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+      "roleId": "354c1d7d-3935-4ae8-9058-ca1c01c9af0d"
     },
     {
       "id": "74dc9fa7-d22d-49c7-a2cb-eaf346873117",
@@ -1949,6 +1949,16 @@
       "password": "$2a$10$vSmXUvTDOgNMdxCCncZAMe7Yah44OtoXN5B4.u4TmHpvCJEaN5.Me",
       "typeId": "ce04928c-16eb-4946-a49d-26894d527bc2",
       "roleId": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5"
+    },
+    {
+      "id": "e5ea1279-3b41-40fd-a2bd-ef20213ad0c1",
+      "names": "Cielo Adriana",
+      "firstLastName": "Quisbert",
+      "secondLastName": "Quisbert",
+      "username": "cielo.quisbert",
+      "password": "$2a$10$l5FstqeT6ffAD9guwOH/feYVwLUAzw.N/q2MmedBW2d.rkDODeVxW",
+      "typeId": "a54ec6aa-bc29-48d5-8770-14c2f7fcf9dc",
+      "roleId": "354c1d7d-3935-4ae8-9058-ca1c01c9af0d"
     }
   ]
 }

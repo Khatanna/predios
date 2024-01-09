@@ -5,8 +5,12 @@
       "name": "administrador"
     },
     {
+      "id": "354c1d7d-3935-4ae8-9058-ca1c01c9af0d",
+      "name": "usuario editor"
+    },
+    {
       "id": "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5",
-      "name": "usuario"
+      "name": "usuario lector"
     }
   ]
 }
