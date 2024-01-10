@@ -20,6 +20,11 @@ import { PropertyForm } from "./pages/PropertyPage/components/PropertyForm";
 import { PropertyList } from "./pages/PropertyPage/components/PropertyList";
 import UserPage from "./pages/UserPage/UserPage";
 import { FormCreateUser } from "./pages/UserPage/components/FormCreateUser";
+import { useCan } from "./hooks/useCan";
+import {
+  Level,
+  Resource,
+} from "./pages/UserPage/components/Permission/Permission";
 
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"));
 const Permission = lazy(
@@ -43,6 +48,25 @@ const LazyComponent = ({
       <Component />
     </Suspense>
   );
+};
+
+const ProtectedRouteWithPermission: React.ComponentType<{
+  level: Level;
+  resource: Resource;
+}> = ({ level, resource }) => {
+  const { data, loading } = useCan({
+    can: [{ resource, level }],
+  });
+
+  if (loading) {
+    return <div>Verificando sus permisos</div>;
+  }
+
+  if (data[`${level}@${resource}`]) {
+    return <Outlet />;
+  }
+
+  return <Navigate to={"../"} />;
 };
 
 const ProtectedRoute: React.ComponentType<{
@@ -81,7 +105,74 @@ function App() {
                       path="properties"
                       element={<LazyComponent Component={PropertyPage} />}
                     >
-                      <Route index Component={PropertyList} />
+                      <Route
+                        element={
+                          <ProtectedRouteWithPermission
+                            resource="PROPERTY"
+                            level="READ"
+                          />
+                        }
+                      >
+                        <Route index Component={PropertyList} />
+                        <Route path=":id" Component={Property} />
+                      </Route>
+                      <Route
+                        element={
+                          <ProtectedRouteWithPermission
+                            resource="PROPERTY"
+                            level="CREATE"
+                          />
+                        }
+                      >
+                        <Route path="create" Component={PropertyForm} />
+                      </Route>
+                    </Route>
+                    <Route
+                      path="/users"
+                      element={
+                        <ProtectedRouteWithPermission
+                          level="READ"
+                          resource="USER"
+                        />
+                      }
+                    >
+                      <Route
+                        index
+                        element={<LazyComponent Component={UserPage} />}
+                      />
+                      <Route
+                        path="permissions"
+                        element={<LazyComponent Component={Permission} />}
+                      />
+                      <Route
+                        element={
+                          <ProtectedRouteWithPermission
+                            level="CREATE"
+                            resource="USER"
+                          />
+                        }
+                      >
+                        <Route path="create" Component={FormCreateUser} />
+                        <Route
+                          element={
+                            <ProtectedRouteWithPermission
+                              level="UPDATE"
+                              resource="USER"
+                            />
+                          }
+                        >
+                          <Route
+                            path="edit"
+                            Component={() => {
+                              const { state } = useLocation();
+
+                              return <FormCreateUser user={state} />;
+                            }}
+                          />
+                        </Route>
+                      </Route>
+                    </Route>
+                    <Route path="/admin">
                       <Route
                         element={
                           <ProtectedRoute
@@ -90,64 +181,59 @@ function App() {
                           />
                         }
                       >
-                        <Route path="create" Component={PropertyForm} />
+                        <Route
+                          path="records"
+                          element={<LazyComponent Component={RecordPage} />}
+                        />
                       </Route>
-                      <Route path=":id" Component={Property} />
-                    </Route>
-                    <Route
-                      path="/users"
-                      element={
-                        <ProtectedRoute
-                          isAllowed={isAdmin}
-                          redirectTo="/properties"
-                        />
-                      }
-                    >
-                      <Route
-                        index
-                        element={<LazyComponent Component={UserPage} />}
-                      />
-                      <Route path="create" Component={FormCreateUser} />
-                      <Route
-                        path="edit"
-                        Component={() => {
-                          const { state } = useLocation();
-
-                          return <FormCreateUser user={state} />;
-                        }}
-                      />
-                      <Route
-                        path="permissions"
-                        element={<LazyComponent Component={Permission} />}
-                      />
-                    </Route>
-                    <Route
-                      path="/admin"
-                      element={
-                        <ProtectedRoute
-                          isAllowed={isAdmin}
-                          redirectTo="/properties"
-                        />
-                      }
-                    >
-                      <Route
-                        path="records"
-                        element={<LazyComponent Component={RecordPage} />}
-                      />
                       <Route path="permissions">
                         <Route
-                          index
-                          element={<LazyComponent Component={PermissionPage} />}
-                        />
-                        <Route path="create" Component={FormCreatePermission} />
+                          element={
+                            <ProtectedRouteWithPermission
+                              level="READ"
+                              resource="PERMISSION"
+                            />
+                          }
+                        >
+                          <Route
+                            index
+                            element={
+                              <LazyComponent Component={PermissionPage} />
+                            }
+                          />
+                        </Route>
                         <Route
-                          path="edit"
-                          Component={() => {
-                            const { state } = useLocation();
+                          element={
+                            <ProtectedRouteWithPermission
+                              level="CREATE"
+                              resource="PERMISSION"
+                            />
+                          }
+                        >
+                          <Route
+                            path="create"
+                            Component={FormCreatePermission}
+                          />
+                        </Route>
+                        <Route
+                          element={
+                            <ProtectedRouteWithPermission
+                              level="UPDATE"
+                              resource="PERMISSION"
+                            />
+                          }
+                        >
+                          <Route
+                            path="edit"
+                            Component={() => {
+                              const { state } = useLocation();
 
-                            return <FormCreatePermission permission={state} />;
-                          }}
-                        />
+                              return (
+                                <FormCreatePermission permission={state} />
+                              );
+                            }}
+                          />
+                        </Route>
                       </Route>
                     </Route>
                   </Route>

@@ -9,7 +9,7 @@ import {
   TFucused,
   TUseInputSubscriptionParams,
 } from "../models/types";
-import { useCan } from "../../../hooks/useCan";
+import { useLazyCan } from "../../../hooks/useLazyCan";
 
 const FOCUSED_INPUT_MUTATION = gql`
   mutation FocusInput($contextId: String, $name: String, $isFocused: Boolean) {
@@ -116,7 +116,11 @@ export const useInputSubscription = ({
   const [updateField] = useMutation<
     { property: Property },
     { id: string; fieldName: string; value: string | number }
-  >(options?.valueAsNumber ? UPDATE_FIELD_NUMBER_MUTATION : UPDATE_FIELD_MUTATION);
+  >(
+    options?.valueAsNumber
+      ? UPDATE_FIELD_NUMBER_MUTATION
+      : UPDATE_FIELD_MUTATION,
+  );
 
   const [onChangeMutation] = useMutation<
     string,
@@ -135,7 +139,8 @@ export const useInputSubscription = ({
       }
     },
   });
-  const { can: canEdit, refetch } = useCan();
+  const { data, fetchCan } = useLazyCan();
+  const canEdit = data[`${getValues("id") ? "UPDATE" : "CREATE"}@PROPERTY`];
   return {
     username,
     isFocus: isCurrentInput && isFocused && !itsMe && canEdit,
@@ -147,15 +152,14 @@ export const useInputSubscription = ({
         if (getValues("id")) {
           handleFocused(true);
         }
+        events?.onFocus?.(e);
+        console.log({ name, event: "focus" });
         const level = getValues("id") ? "UPDATE" : "CREATE";
-
-        refetch({
+        fetchCan({
           variables: {
-            resource: "PROPERTY",
-            level,
+            can: [{ resource: "PROPERTY", level }],
           },
         });
-        events?.onFocus?.(e);
       },
       onBlur: async (e) => {
         if (getValues("id")) {
@@ -171,14 +175,14 @@ export const useInputSubscription = ({
               value: getValues(name),
             },
             onCompleted() {
-              setIsDirty(false)
-            }
+              setIsDirty(false);
+            },
           });
           toast.promise(promise, {
-            loading: 'Actualizando campo',
-            success: 'Se ha actualizado este campo',
-            error: 'Ocurrio un error al intentar actualizar este campo'
-          })
+            loading: "Actualizando campo",
+            success: "Se ha actualizado este campo",
+            error: "Ocurrio un error al intentar actualizar este campo",
+          });
         }
       },
       onChange: async (e) => {

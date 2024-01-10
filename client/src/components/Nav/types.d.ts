@@ -3,5 +3,4 @@ export type Route = {
   name: string;
   icon?: React.ReacNode;
   children?: Route[];
-  role: string
-}
+};
