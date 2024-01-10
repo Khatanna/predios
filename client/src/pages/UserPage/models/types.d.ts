@@ -37,4 +37,4 @@ export type UserItem = User & { fullName: string };
 
 export type UserTypeInput = Omit<UserType, "id">;
 
-export type UserInput = Omit<User, "id" | "type"> & UserTypeInput;
+export type UserInput = Omit<User, "id"> & UserTypeInput;
