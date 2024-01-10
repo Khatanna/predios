@@ -16,10 +16,9 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as yup from "yup";
 import { Tooltip } from "../../../../components/Tooltip";
-import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { customSwalError } from "../../../../utilities/alerts";
 import { status } from "../../../../utilities/constants";
-import { SelectNameable } from "../../../HomePage/HomePage";
+// import { SelectNameable } from "../../../HomePage/HomePage";
 import { Error } from "../../../LoginPage/styled-components/Error";
 import { GET_ALL_USERS_QUERY } from "../../graphQL/types";
 import { useFetchCreateUser } from "../../hooks";
@@ -55,7 +54,7 @@ const schema = yup.object({
   status: yup.string().required("El usuario debe tener un estado"),
 });
 
-const GET_ALL_USER_TYPES_QUERY = `{
+const GET_ALL_USER_TYPES_QUERY = gql`{
   userTypes: getAllUserTypes {
     id
     name
@@ -74,10 +73,7 @@ const UDPATE_USER_MUTATION = gql`
 `;
 
 const SelectUserType: React.FC<FormSelectProps> = (props) => {
-  const { data, error, isLoading } = useCustomQuery<{ userTypes: UserType[] }>(
-    GET_ALL_USER_TYPES_QUERY,
-    ["getAllUserTypes"],
-  );
+  const { data, error, isLoading } = useQuery<{ userTypes: UserType[] }>(GET_ALL_USER_TYPES_QUERY);
 
   if (isLoading) {
     return (
@@ -272,7 +268,9 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
       );
     } else {
       createUser({
-        input: data,
+        variables: {
+          input: data,
+        }
       });
     }
     reset();

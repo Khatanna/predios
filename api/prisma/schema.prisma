@@ -101,7 +101,7 @@ model Role {
 model TechnicalOnProperty {
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   propertyId String   @unique @map("predio_id")
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId     String   @map("tecnico_id")
 
   @@unique([propertyId, userId])
@@ -111,7 +111,7 @@ model TechnicalOnProperty {
 model LegalOnProperty {
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   propertyId String   @unique @map("predio_id")
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId     String   @map("juridico_id")
 
   @@unique([propertyId, userId])
@@ -402,7 +402,7 @@ model Record {
   id          String          @id @default(uuid())
   userId      String          @map("usuario_id")
   description String          @map("descripcion") @db.MediumText
-  user        User            @relation(fields: [userId], references: [id])
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   operation   String          @map("operacion")
   action      LevelPermission @map("tipo_de_action")
   resource    Resource        @map("recurso")
