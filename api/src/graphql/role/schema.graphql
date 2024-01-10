@@ -21,10 +21,17 @@ input PermissionsInput {
   levels: [String]
 }
 
-type Mutation { 
-  createPermissionForRole(role: String, permissions: [PermissionsInput]): Role
+input PermissionForRoleInput {
+  level: String
+  resource: String
 }
 
 input RoleInput {
   name: String
 }
+
+type Mutation { 
+  createPermissionForRole(role: String, permissions: [PermissionsInput]): Role
+  deletePermissionForRole(role: String, permission: PermissionForRoleInput): Role
+}
+

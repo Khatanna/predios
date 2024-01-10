@@ -78,6 +78,14 @@
   "nota": "DDLP-USLP-CI No 425\/2023"
  },
  {
+  "codigo": 232,
+  "estado": 27,
+  "fecha_de_inicio": "01\/03\/2024",
+  "responsable": 7,
+  "observacion": "DDLP HRI N 165\/2024",
+  "nota": "DDLP-C-EXT N 11\/2024"
+ },
+ {
   "codigo": 235,
   "estado": 61,
   "fecha_de_inicio": "06\/15\/2023",
@@ -430,6 +438,11 @@
   "nota": "DDLP-C-EXT N 1194\/2023"
  },
  {
+  "codigo": 100030,
+  "estado": 60,
+  "responsable": 0
+ },
+ {
   "codigo": 100042,
   "estado": 28,
   "fecha_de_inicio": "05\/31\/2022",
@@ -614,6 +627,14 @@
   "responsable": 7,
   "observacion": "DDLP HRI N 13575\/2023",
   "nota": "DDLP-C-EXT N 854\/2023"
+ },
+ {
+  "codigo": 400142,
+  "estado": 27,
+  "fecha_de_inicio": "12\/05\/2023",
+  "responsable": 4,
+  "observacion": "DDLP HRI N 17641\/2023",
+  "nota": "DDLP-C-EXT N 1194\/2023"
  },
  {
   "codigo": 400150,
@@ -1083,6 +1104,14 @@
   "nota": "DDLP-USLP-CI No 461\/2023"
  },
  {
+  "codigo": 3032765,
+  "estado": 28,
+  "fecha_de_inicio": "01\/03\/2024",
+  "responsable": 7,
+  "observacion": "DDLP HRI N 165\/2024",
+  "nota": "DDLP-C-EXT N 11\/2024"
+ },
+ {
   "codigo": 3046540,
   "estado": 28,
   "fecha_de_inicio": "06\/05\/2023",
@@ -1358,6 +1387,14 @@
   "nota": "DDLP-C-EXT No. 588\/2022"
  },
  {
+  "codigo": 127137848,
+  "estado": 27,
+  "fecha_de_inicio": "12\/05\/2023",
+  "responsable": 9,
+  "observacion": "DDLP HRI N 17641\/2023",
+  "nota": "DDLP-C-EXT N 1194\/2023"
+ },
+ {
   "codigo": 128786947,
   "estado": 27,
   "fecha_de_inicio": "10\/16\/2023",
@@ -1435,6 +1472,14 @@
   "responsable": 7,
   "observacion": "DDLP HRI N 4186\/2023",
   "nota": "DDLP-C-EXT N 264\/2023"
+ },
+ {
+  "codigo": 137382093,
+  "estado": 27,
+  "fecha_de_inicio": "11\/30\/2023",
+  "responsable": 0,
+  "observacion": "DDLP HRI N 17154\/2023",
+  "nota": "DDLP-C-EXT N 1155\/2023"
  },
  {
   "codigo": 138300490,
@@ -1959,6 +2004,14 @@
   "responsable": 7,
   "observacion": "DDLP HRI N 4186\/2023",
   "nota": "DDLP-C-EXT N 264\/2023"
+ },
+ {
+  "codigo": 141068938,
+  "estado": 27,
+  "fecha_de_inicio": "12\/05\/2023",
+  "responsable": 4,
+  "observacion": "DDLP HRI N 17641\/2023",
+  "nota": "DDLP-C-EXT N 1194\/2023"
  },
  {
   "codigo": 141068943,
@@ -3579,6 +3632,14 @@
   "nota": "DDLP HRI N° 147372023"
  },
  {
+  "codigo": 143044614,
+  "estado": 27,
+  "fecha_de_inicio": "12\/26\/2023",
+  "responsable": 9,
+  "observacion": "DDLP HRI N 18627\/2023",
+  "nota": "DDLP-C-EXT N 1299\/2023"
+ },
+ {
   "codigo": 143050021,
   "estado": 27,
   "fecha_de_inicio": "09\/06\/2023",
@@ -3663,6 +3724,14 @@
   "responsable": 7,
   "observacion": "DDLP HRI N 14863\/2023",
   "nota": "DDLP-C-EXT N 943\/2023"
+ },
+ {
+  "codigo": 143102252,
+  "estado": 27,
+  "fecha_de_inicio": "12\/05\/2023",
+  "responsable": 15,
+  "observacion": "DDLP HRI N 17641\/2023",
+  "nota": "DDLP-C-EXT N 1194\/2023"
  },
  {
   "codigo": 143102367,
@@ -3759,6 +3828,14 @@
   "nota": "DDLP HRI N° 147372023"
  },
  {
+  "codigo": 143172517,
+  "estado": 27,
+  "fecha_de_inicio": "11\/30\/2023",
+  "responsable": 2,
+  "observacion": "DDLP HRI N 17154\/2023",
+  "nota": "DDLP-C-EXT N 1155\/2023"
+ },
+ {
   "codigo": 143173701,
   "estado": 47,
   "fecha_de_inicio": "06\/29\/2023",
@@ -3790,6 +3867,62 @@
   "nota": "DDLP-C EXT N 1239\/2023"
  },
  {
+  "codigo": 143273190,
+  "estado": 27,
+  "fecha_de_inicio": "01\/03\/2024",
+  "responsable": 2,
+  "observacion": "DDLP HRI N 165\/2024",
+  "nota": "DDLP-C-EXT N 11\/2024"
+ },
+ {
+  "codigo": 143286103,
+  "estado": 27,
+  "fecha_de_inicio": "12\/05\/2023",
+  "responsable": 15,
+  "observacion": "DDLP HRI N 17641\/2023",
+  "nota": "DDLP-C-EXT N 1194\/2023"
+ },
+ {
+  "codigo": 143293712,
+  "estado": 27,
+  "fecha_de_inicio": "12\/26\/2023",
+  "responsable": 15,
+  "observacion": "DDLP HRI N 18627\/2023",
+  "nota": "DDLP-C-EXT N 1299\/2023"
+ },
+ {
+  "codigo": 143294712,
+  "estado": 27,
+  "fecha_de_inicio": "12\/14\/2023",
+  "responsable": 7,
+  "observacion": "DDLP HRI N 18231\/2023",
+  "nota": "DDLP-C-EXT N 1248\/2023"
+ },
+ {
+  "codigo": 143336571,
+  "estado": 27,
+  "fecha_de_inicio": "12\/26\/2023",
+  "responsable": 9,
+  "observacion": "DDLP HRI N 18627\/2023",
+  "nota": "DDLP-C-EXT N 1299\/2023"
+ },
+ {
+  "codigo": 143383812,
+  "estado": 27,
+  "fecha_de_inicio": "12\/14\/2023",
+  "responsable": 0,
+  "observacion": "DDLP HRI N 18231\/2023",
+  "nota": "DDLP-C-EXT N 1248\/2023"
+ },
+ {
+  "codigo": 143396476,
+  "estado": 27,
+  "fecha_de_inicio": "12\/26\/2023",
+  "responsable": 15,
+  "observacion": "DDLP HRI N 1299\/2023",
+  "nota": "DN-C-EXT N 1299\/2023"
+ },
+ {
   "codigo": 143396921,
   "estado": 27,
   "fecha_de_inicio": "12\/13\/2023",
@@ -3806,6 +3939,30 @@
   "nota": "DDLP-C-EXT N 1155\/2023"
  },
  {
+  "codigo": 143397112,
+  "estado": 27,
+  "fecha_de_inicio": "11\/30\/2023",
+  "responsable": 7,
+  "observacion": "DDLP HRI N 1155\/2023",
+  "nota": "DDLP-C-EXT N 1155\/2023"
+ },
+ {
+  "codigo": 143398414,
+  "estado": 27,
+  "fecha_de_inicio": "01\/03\/2024",
+  "responsable": 14,
+  "observacion": "DDLP HRI N 165\/2024",
+  "nota": "DDLP-C-EXT N 11\/2024"
+ },
+ {
+  "codigo": 143404913,
+  "estado": 27,
+  "fecha_de_inicio": "12\/14\/2023",
+  "responsable": 7,
+  "observacion": "DDLP HRI N 18231\/2023",
+  "nota": "DDLP-C-EXT N 1248\/2023"
+ },
+ {
   "codigo": 143424378,
   "estado": 27,
   "fecha_de_inicio": "11\/30\/2023",
@@ -3820,6 +3977,30 @@
   "responsable": 14,
   "observacion": "DDLP HRI N 17154\/2023",
   "nota": "DDLP-C-EXT N 1155\/2023"
+ },
+ {
+  "codigo": 143426612,
+  "estado": 27,
+  "fecha_de_inicio": "12\/26\/2023",
+  "responsable": 9,
+  "observacion": "DDLP HRI N 18627\/2023",
+  "nota": "DDLP-C-EXT N 1299\/2023"
+ },
+ {
+  "codigo": 143576128,
+  "estado": 27,
+  "fecha_de_inicio": "12\/26\/2023",
+  "responsable": 2,
+  "observacion": "DDLP HRI N 18627\/2023",
+  "nota": "DDLP-C-EXT N 1299\/2023"
+ },
+ {
+  "codigo": 143587528,
+  "estado": 27,
+  "fecha_de_inicio": "01\/03\/2024",
+  "responsable": 2,
+  "observacion": "DDLP HRI N 165\/2024",
+  "nota": "DDLP-C-EXT N 11\/2024"
  },
  {
   "codigo": 143609750,
@@ -3844,6 +4025,14 @@
   "responsable": 14,
   "observacion": "DN HRE N 24597\/2023",
   "nota": "DDLP-C-EXT N 1074\/2023"
+ },
+ {
+  "codigo": 143655844,
+  "estado": 27,
+  "fecha_de_inicio": "01\/03\/2024",
+  "responsable": 2,
+  "observacion": "DDLP HRI N 165\/2024",
+  "nota": "DDLP-C-EXT N 11\/2024"
  },
  {
   "codigo": 143741615,

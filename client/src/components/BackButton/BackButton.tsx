@@ -1,15 +1,27 @@
 import React from 'react';
-import { ArrowLeftShort } from 'react-bootstrap-icons';
+import { BoxArrowLeft } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router';
+import { toast } from 'sonner';
 
 const BackButton: React.FC = () => {
 	const navigate = useNavigate();
-	return <div className="d-flex align-items-center text-primary" onClick={() => navigate(-1)} role="button">
-		<ArrowLeftShort
-			size={"28"}
-			title="Volver"
+	const handleGoBack = () => {
+
+		if (navigate.length > 1) {
+			navigate(-1);
+		} else {
+			toast.info("No hay más elementos en el historial para retroceder");
+		}
+	};
+
+	return <div className="fw-bold d-flex align-items-center text-danger my-1 p-1 justify-content-center gap-2 border rounded-pill border-danger shadow" onClick={handleGoBack} role="button">
+		<BoxArrowLeft
+			size={"20"}
+			title="Regresar"
 		/>
-		Volver
+		<div>
+			Regresar
+		</div>
 	</div>
 };
 

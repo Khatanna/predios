@@ -180,13 +180,13 @@ export const getProperty = async (
       take: prevCursor ? -1 : 1,
       cursor: nextCursor
         ? {
-            id: nextCursor,
-          }
+          id: nextCursor,
+        }
         : prevCursor
-        ? {
+          ? {
             id: prevCursor,
           }
-        : undefined,
+          : undefined,
       orderBy: {
         registryNumber: nextCursor ? "asc" : prevCursor ? "desc" : "asc",
       },
@@ -556,7 +556,7 @@ export const getProperties = async (
           include: {
             responsible: true,
             state: true,
-          },
+          }
         },
       },
       skip: all ? 0 : (page - 1) * limit,

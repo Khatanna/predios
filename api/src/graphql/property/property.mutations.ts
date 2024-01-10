@@ -342,6 +342,18 @@ export const updateField = async (
         fileNumber: resolveFileNumber(value, id)
       }
     });
+  } else if (fieldName === 'legal.user') {
+    console.log(value)
+    propertyUpdated = await prisma.property.update({
+      where: {
+        id,
+      },
+      data: {
+        legal: {
+          connectOrCreate: resolveUser(value, id)
+        }
+      }
+    });
   }
   else if (fieldName.includes(".")) {
     propertyUpdated = await prisma.property.update({
@@ -402,4 +414,21 @@ const resolveFileNumber = (value: string, propertyId: string) => {
         },
       },
     };
+};
+const resolveUser = (value: string, propertyId: string) => {
+  return {
+    create: {
+      user: {
+        connect: {
+          username: value,
+        },
+      },
+    },
+    where: {
+      user: {
+        username: value,
+      },
+      propertyId,
+    },
+  };
 };

@@ -3,10 +3,14 @@ import Select, { Props, StylesConfig } from "react-select";
 import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { User } from "../../../UserPage/models/types";
 import { useAuth } from "../../../../hooks";
-
+import { useInputSubscription } from "../../hooks/useInputSubscription";
+import { Property } from "../../models/types";
+import { FieldPath } from 'react-hook-form'
+import { toast } from "sonner";
 export type SelectUserProps = {
   type?: string;
   // defaultValue?: { label: string, value: string }
+  name: FieldPath<Property>
 };
 const GET_ALL_USERS_BY_TYPE = `
 	query GetAllLegal($type: String, $filterText: String) {
@@ -49,11 +53,18 @@ const SelectUser: React.FC<SelectUserProps & Props<User>> = ({
     "getFieldForCreate",
     { type, filterText },
   ]);
-
+  const { subscribe } = useInputSubscription({
+    name: props.name
+  });
   return (
     <Select
       isDisabled={!isAdmin}
       {...props}
+      {...subscribe}
+      onChange={(newValue, e) => {
+        props.onChange?.(newValue, e)
+        subscribe.onChange(e)
+      }}
       options={data?.users}
       getOptionLabel={(e) =>
         e.names.concat(" ", e.firstLastName, " ", e.secondLastName)

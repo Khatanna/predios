@@ -1,4 +1,4 @@
-"use client";
+import { useEffect } from 'react'
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import { Accordion, Button, Col, Dropdown, Form, Modal } from "react-bootstrap";
@@ -10,14 +10,18 @@ import { levels, resources } from "../../utilities/constants";
 import { PermissionTable } from "../PermissionPage/PermissionPage";
 import { Role } from "../UserPage/models/types";
 import { useForm } from "react-hook-form";
-import { Resource } from "../UserPage/components/Permission/Permission";
+import { Level, Resource } from "../UserPage/components/Permission/Permission";
 import { toast } from "sonner";
 import { Permission } from "../PermissionPage/models/types";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { Link } from "react-router-dom";
+import { useRoleStore } from './state/useRoleStore';
 export type RolePageProps = {
   // types...
 };
+interface FormValues {
+  permissions: Record<Resource, { resource: Resource; levels: Level[] }>;
+}
 
 const GET_ROLE_QUERY = gql`
   query GetRole($name: String) {
@@ -38,7 +42,7 @@ const GET_ROLE_QUERY = gql`
 `;
 
 const CREATE_PERMISSION_FOR_ROLE_MUTATION = gql`
-  mutation createPermissionForRole(
+  mutation CreatePermissionForRole(
     $role: String
     $permissions: [PermissionsInput]
   ) {
@@ -47,15 +51,37 @@ const CREATE_PERMISSION_FOR_ROLE_MUTATION = gql`
     }
   }
 `;
+
+const DELETE_PERMISSION_FOR_ROLE_MUTATION = gql`
+  mutation DeletePermissionForRole($role: String, $permission: PermissionForRoleInput) {
+    role: deletePermissionForRole(role: $role, permission: $permission) {
+      permissions {
+        permission {
+          level
+        }
+      }
+    }
+  }
+`
+
 const LocalResources = Object.entries(resources);
 const LocalLevels = Object.entries(levels);
-type Level = keyof typeof levels;
-interface FormValues {
-  permissions: Record<Resource, { resource: Resource; levels: Level[] }>;
-}
 
 const OptionMenu: React.FC<{ permission: Permission }> = ({ permission }) => {
-  // const { } = permission;
+  const [deletePermission] = useMutation<{ role: Role }, { role: string, permission: { level: Level, resource: Resource } }>(DELETE_PERMISSION_FOR_ROLE_MUTATION, { refetchQueries: [GET_ROLE_QUERY] });
+  const { role } = useRoleStore();
+  const handleClickDelete = () => {
+    toast.promise(deletePermission({
+      variables: {
+        role: role!,
+        permission: {
+          level: permission.level,
+          resource: permission.resource
+        }
+      }
+    }))
+  }
+
   return (
     <DropdownMenu align={"end"}>
       <Dropdown.Item
@@ -65,7 +91,7 @@ const OptionMenu: React.FC<{ permission: Permission }> = ({ permission }) => {
       >
         ✏ Editar
       </Dropdown.Item>
-      <Dropdown.Item>🗑 Eliminar</Dropdown.Item>
+      <Dropdown.Item onClick={handleClickDelete}>🗑 Eliminar</Dropdown.Item>
       {/* <Dropdown.Item onClick={handleStatus}>
 		{permission.status === "ENABLE" ? "⛔ Deshabilitar" : "✔ Habilitar"}
 	</Dropdown.Item> */}
@@ -73,9 +99,10 @@ const OptionMenu: React.FC<{ permission: Permission }> = ({ permission }) => {
   );
 };
 
-const RolePage: React.FC<RolePageProps> = ({}) => {
+const RolePage: React.FC<RolePageProps> = () => {
   const [show, setShow] = useState(false);
   const { role } = useParams();
+  const { setRole } = useRoleStore();
   const { register, handleSubmit, reset } = useForm<FormValues>({
     defaultValues: {
       permissions: Object.keys(resources).reduce(
@@ -118,7 +145,6 @@ const RolePage: React.FC<RolePageProps> = ({}) => {
   });
 
   const submit = (data: FormValues) => {
-    console.log(Object.values(data.permissions));
     createPermissionForRole({
       variables: {
         role: role!,
@@ -126,6 +152,15 @@ const RolePage: React.FC<RolePageProps> = ({}) => {
       },
     });
   };
+
+  useEffect(() => {
+    setRole({ role });
+
+    return () => {
+      setRole({ role: undefined })
+    }
+  }, [setRole, role])
+
   return (
     <div>
       <PermissionTable

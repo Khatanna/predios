@@ -50,11 +50,10 @@ import { StateSelect } from "../StateSelect";
 import { SubdirectorySelect } from "../SubdirectorySelect";
 import { TrackingList } from "../TrackingList";
 import { TypeSelect } from "../TypeSelect";
-import { toast } from "sonner";
+import { useInputSubscription } from "../../hooks/useInputSubscription";
 
 const PropertyForm: React.FC = () => {
   const { role } = useAuth();
-  // const { propertyForm } = useFormStore();
   const { property, reset } = usePaginationStore();
   const colRef = useRef<HTMLDivElement | null>(null);
   const { handleSubmit, register, ...methods } = useForm<Property>({
@@ -108,7 +107,6 @@ const PropertyForm: React.FC = () => {
   };
   const { setModal, ...modal } = useModalStore();
   useEffect(() => {
-    // methods.getValues()
     return () => {
       if (methods.getValues("id")) {
         reset();
@@ -335,19 +333,6 @@ const PropertyForm: React.FC = () => {
                                   placeholder="Nro de expediente"
                                   size="sm"
                                 />
-                                {/* <EditableInput
-                                  size="sm"
-                                  isEdit={!property}
-                                  render={({ edit }) => (
-                                    <Form.Control
-                                      size="sm"
-                                      readOnly={!edit}
-                                      {...register("fileNumber.number")}
-                                      placeholder="Nro de expediente"
-                                      autoFocus={edit}
-                                    />
-                                  )}
-                                /> */}
                               </Col>
                             </Row>
                           </Col>

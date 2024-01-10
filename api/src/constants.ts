@@ -14,9 +14,9 @@ type Operation = keyof typeof LevelPermission;
 
 export const PermissionErrorMessage: {
   [K in
-    | `${Operation}_${Resource}`
-    | "DISABLE_GLOBAL"
-    | "DISABLE_FOR_ROLE"]: string;
+  | `${Operation}_${Resource}`
+  | "DISABLE_GLOBAL"
+  | "DISABLE_FOR_ROLE"]: string;
 } = {
   READ_USER: "No tiene permiso para ver a los usuarios del sistema",
   CREATE_USER: "No tiene permiso para crear nuevos usuarios del sistema",
@@ -156,6 +156,11 @@ export const PermissionErrorMessage: {
   CREATE_PROVINCE: "No tiene permiso para crear nuevas provincias del sistema",
   UPDATE_PROVINCE: "No tiene permiso para modificar las provincias del sistema",
   DELETE_PROVINCE: "No tiene permiso para eliminar las provincias del sistema",
+
+  READ_ROLEHASPERMISSION: "No tiene permiso para ver los permisos por rol del sistema",
+  CREATE_ROLEHASPERMISSION: "No tiene permiso para crear nuevos permisos por rol del sistema",
+  UPDATE_ROLEHASPERMISSION: "No tiene permiso para modificar los permisos por rol del sistema",
+  DELETE_ROLEHASPERMISSION: "No tiene permiso para eliminar los permisos por rol del sistema",
 
   READ_TRACKING: "No tiene permiso para ver los seguimientos del sistema",
   CREATE_TRACKING:
