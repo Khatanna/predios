@@ -13,6 +13,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { AxiosProvider } from "./context/AxiosContext";
 import { SeekerProvider } from "./context/SeekerContext";
 import { useAuth } from "./hooks";
+import { useCan } from "./hooks/useCan";
 import { LoginPage } from "./pages/LoginPage";
 import { FormCreatePermission } from "./pages/PermissionPage/components/FormCreatePermission";
 import { Property } from "./pages/PropertyPage/components/Property";
@@ -20,7 +21,6 @@ import { PropertyForm } from "./pages/PropertyPage/components/PropertyForm";
 import { PropertyList } from "./pages/PropertyPage/components/PropertyList";
 import UserPage from "./pages/UserPage/UserPage";
 import { FormCreateUser } from "./pages/UserPage/components/FormCreateUser";
-import { useCan } from "./hooks/useCan";
 import {
   Level,
   Resource,
@@ -36,6 +36,7 @@ const PermissionPage = lazy(
 );
 const PropertyPage = lazy(() => import("./pages/PropertyPage/PropertyPage"));
 const RecordPage = lazy(() => import("./pages/RecordPage/RecordPage"));
+const RolePage = lazy(() => import("./pages/RolePage/RolePage"));
 const NavBar = lazy(() => import("./components/Navbar/Navbar"));
 
 const LazyComponent = ({
@@ -233,6 +234,37 @@ function App() {
                               );
                             }}
                           />
+                        </Route>
+                        <Route
+                          element={
+                            <ProtectedRouteWithPermission
+                              level="READ"
+                              resource="ROLE"
+                            />
+                          }
+                        >
+                          <Route
+                            element={
+                              <ProtectedRouteWithPermission
+                                level="CREATE"
+                                resource="ROLE"
+                              />
+                            }
+                          >
+                            <Route
+                              element={
+                                <ProtectedRouteWithPermission
+                                  level="UPDATE"
+                                  resource="ROLE"
+                                />
+                              }
+                            >
+                              <Route
+                                path=":role"
+                                element={<LazyComponent Component={RolePage} />}
+                              />
+                            </Route>
+                          </Route>
                         </Route>
                       </Route>
                     </Route>

@@ -538,20 +538,8 @@ export const getProperties = async (
             stage: true,
           },
         },
-        city: {
-          include: {
-            provinces: {
-              include: {
-                municipalities: true,
-              },
-            },
-          },
-        },
-        province: {
-          include: {
-            municipalities: true,
-          },
-        },
+        city: true,
+        province: true,
         municipality: true,
         fileNumber: true,
         legal: {
@@ -562,6 +550,12 @@ export const getProperties = async (
         technical: {
           include: {
             user: true,
+          },
+        },
+        trackings: {
+          include: {
+            responsible: true,
+            state: true,
           },
         },
       },

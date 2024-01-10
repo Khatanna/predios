@@ -92,6 +92,21 @@ const GET_ALL_PROPERTIES_QUERY_GQL = gql`
         state {
           name
         }
+        trackings {
+          id
+          observation
+          numberOfNote
+          dateOfInit
+          state {
+            name
+          }
+          responsible {
+            names
+            firstLastName
+            secondLastName
+            username
+          }
+        }
       }
     }
   }

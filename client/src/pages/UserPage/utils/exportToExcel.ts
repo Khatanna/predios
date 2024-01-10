@@ -4,7 +4,9 @@ import { Property } from "../../PropertyPage/models/types";
 import { User } from "../models/types";
 import { capitalizeString } from "./capitalizeString";
 
-const buildFullName = (user?: User) => {
+const buildFullName = (
+  user?: Pick<User, "names" | "firstLastName" | "secondLastName">,
+) => {
   if (!user) return;
 
   return `${capitalizeString(user.names)} ${capitalizeString(
@@ -16,6 +18,7 @@ export const exportToExcel = ({ data }: { data: Array<Property> }) => {
   const fileType =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
   const fileExtension = ".xlsx";
+  console.log(data);
   const exportData = data.map(
     ({
       name,
@@ -44,10 +47,11 @@ export const exportToExcel = ({ data }: { data: Array<Property> }) => {
       responsibleUnit,
       secondState,
       technical,
+      trackings,
     }) => ({
       Numero: registryNumber,
       Nombre: name,
-      Codigo: code ? (+code) : '',
+      Codigo: code ? +code : "",
       "Codigo de busqueda": codeOfSearch,
       Estado: state?.name,
       Tipo: type?.name,
@@ -71,9 +75,22 @@ export const exportToExcel = ({ data }: { data: Array<Property> }) => {
       ["Id de agrupación social"]: agrupationIdentifier,
       Tecnico: buildFullName(technical?.user),
       Juridico: buildFullName(legal?.user),
+      ["Ultimo Seguimiento"]:
+        trackings?.length > 0
+          ? [
+              `Fecha de inicio: ${trackings.at(-1)?.dateOfInit}`,
+              `Estado: ${trackings.at(-1)?.state.name}`,
+              `Responsable: ${buildFullName(trackings.at(-1)?.responsible)}`,
+              `Estado: ${trackings.at(-1)?.state.name}`,
+              `Nro Nota: ${trackings.at(-1)?.numberOfNote}`,
+              `Observación: ${trackings.at(-1)?.observation}`,
+            ].join("\n")
+          : [],
     }),
   );
   const ws = XLSX.utils.json_to_sheet(exportData);
+  XLSX.utils.sheet_add_aoa(ws, [], { origin: -1 });
+  // ws['!cols'][Object.keys(exportData).length - 1] = { width: }
   const sheetName = `${data.length}-Predios`;
   const wb = { Sheets: { [sheetName]: ws }, SheetNames: [sheetName] };
   const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
