@@ -35,9 +35,20 @@ type UsersPaginate {
   users: [User]!
 }
 
+input CanInput {
+  resource: String
+  level: String
+}
+
+type Can {
+  level: String
+  resource: String
+  can: Boolean
+}
+
 # Queries
 type Query {
-  can(resource: String, level: String): Boolean
+  can(can: [CanInput]): [Can]
   getAllUsersPaginateWithCursor(
     nextCursor: String
     prevCursor: String

@@ -444,12 +444,37 @@ export const getConnectUsers = (
 
 export const can = (
   _parent: any,
-  { resource, level }: { resource: Resource; level: LevelPermission },
+  { can }: { can: Array<{ resource: Resource; level: LevelPermission }> },
   { prisma, userContext }: Context,
 ) => {
   try {
-    console.log({ resource, level });
-    return hasPermission(userContext, level, resource);
+    if (!userContext) return;
+    console.log(
+      can.map(({ level, resource }) => {
+        return {
+          level,
+          resource,
+          can: userContext.role.permissions.some(
+            ({ permission }) =>
+              level === permission.level &&
+              resource === permission.resource &&
+              permission.status === "ENABLE",
+          ),
+        };
+      }),
+    );
+    return can.map(({ level, resource }) => {
+      return {
+        level,
+        resource,
+        can: userContext.role.permissions.some(
+          ({ permission }) =>
+            level === permission.level &&
+            resource === permission.resource &&
+            permission.status === "ENABLE",
+        ),
+      };
+    });
   } catch (e) {
     throw e;
   }
