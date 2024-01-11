@@ -376,16 +376,11 @@ const PropertyForm: React.FC = () => {
                         label="Juridico"
                         icon={<PersonWorkspace color="green" />}
                       />
-                      <Controller
-                        name="legal.user"
-                        control={methods.control}
-                        render={({ field }) => (
-                          <SelectUser
-                            {...field}
-                            placeholder="Juridico"
-                            type="juridico"
-                          />
-                        )}
+                      <SelectUser
+                        placeholder="Juridico"
+                        type="juridico"
+                        name="legal.user.username"
+                        user="legal.user"
                       />
                     </Col>
                     <Col xs={12}>
@@ -393,7 +388,13 @@ const PropertyForm: React.FC = () => {
                         label="Tecnico"
                         icon={<PersonGear color="brown" />}
                       />
-                      <Controller
+                      <SelectUser
+                        placeholder="Tecnico"
+                        type="tecnico"
+                        name="technical.user.username"
+                        user="technical.user"
+                      />
+                      {/* <Controller
                         name="technical.user"
                         control={methods.control}
                         render={({ field }) => (
@@ -403,7 +404,7 @@ const PropertyForm: React.FC = () => {
                             placeholder="Tecnico"
                           />
                         )}
-                      />
+                      /> */}
                     </Col>
                     <Col xs={12}>
                       <ReferenceSelect />
@@ -452,9 +453,9 @@ const PropertyForm: React.FC = () => {
                         </Button> */}
                       </>
                     )}
-                    <Button type="submit" variant="warning">
+                    {/* <Button type="submit" variant="warning">
                       {property ? "Actualizar" : "Crear"} predio
-                    </Button>
+                    </Button> */}
                   </Col>
                 </Row>
               )}

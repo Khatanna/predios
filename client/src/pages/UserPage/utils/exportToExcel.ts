@@ -1,18 +1,6 @@
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { Property } from "../../PropertyPage/models/types";
-import { User } from "../models/types";
-import { capitalizeString } from "./capitalizeString";
-
-const buildFullName = (
-  user?: Pick<User, "names" | "firstLastName" | "secondLastName">,
-) => {
-  if (!user) return;
-
-  return `${capitalizeString(user.names)} ${capitalizeString(
-    user.firstLastName,
-  )} ${capitalizeString(user.secondLastName)}`;
-};
 
 export const exportToExcel = ({ data }: { data: Array<Property> }) => {
   const fileType =
@@ -49,7 +37,12 @@ export const exportToExcel = ({ data }: { data: Array<Property> }) => {
       technical,
       trackings,
     }) => {
-      const buildTracking = trackings.sort((a, b) => (new Date(a.dateOfInit)).getTime() - (new Date(b.dateOfInit)).getTime()).at(-1)
+      const buildTracking = trackings
+        .sort(
+          (a, b) =>
+            new Date(a.dateOfInit).getTime() - new Date(b.dateOfInit).getTime(),
+        )
+        .at(-1);
       return {
         Numero: registryNumber,
         Nombre: name,
@@ -77,12 +70,15 @@ export const exportToExcel = ({ data }: { data: Array<Property> }) => {
         ["Id de agrupación social"]: agrupationIdentifier,
         Tecnico: buildFullName(technical?.user),
         Juridico: buildFullName(legal?.user),
-        ["Seguimiento: Fecha de inicio"]: buildTracking?.dateOfInit ?? 'Sin fecha',
-        ["Seguimiento: Responsable"]: buildFullName(buildTracking?.responsible) ?? 'Sin responsable',
-        ["Seguimiento: Nro de nota"]: buildTracking?.numberOfNote ?? 'Sin nota',
-        ["Seguimiento: Observación"]: buildTracking?.observation ?? 'Sin observacion',
-      }
-    }
+        ["Seguimiento: Fecha de inicio"]:
+          buildTracking?.dateOfInit ?? "Sin fecha",
+        ["Seguimiento: Responsable"]:
+          buildFullName(buildTracking?.responsible) ?? "Sin responsable",
+        ["Seguimiento: Nro de nota"]: buildTracking?.numberOfNote ?? "Sin nota",
+        ["Seguimiento: Observación"]:
+          buildTracking?.observation ?? "Sin observacion",
+      };
+    },
   );
   const ws = XLSX.utils.json_to_sheet(exportData);
   // XLSX.utils.sheet_add_aoa(ws, [], { origin: -1 });

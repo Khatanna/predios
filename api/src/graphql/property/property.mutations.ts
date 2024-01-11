@@ -146,22 +146,22 @@ export const createProperty = async (
         technical:
           technical && technical.user
             ? {
-              create: {
-                user: {
-                  connect: technical.user,
+                create: {
+                  user: {
+                    connect: technical.user,
+                  },
                 },
-              },
-            }
+              }
             : undefined,
         legal:
           legal && legal.user
             ? {
-              create: {
-                user: {
-                  connect: legal.user,
+                create: {
+                  user: {
+                    connect: legal.user,
+                  },
                 },
-              },
-            }
+              }
             : undefined,
       },
     });
@@ -196,10 +196,10 @@ export const createProperty = async (
           },
           responsible: tracking.responsible?.username
             ? {
-              connect: {
-                username: tracking.responsible.username,
-              },
-            }
+                connect: {
+                  username: tracking.responsible.username,
+                },
+              }
             : undefined,
           property: {
             connect: {
@@ -295,26 +295,26 @@ export const updateProperty = async (
       // reference: {
       //   connect: reference,
       // },
-      technical:
-        technical && technical.user
-          ? {
-            update: {
-              user: {
-                connect: technical.user,
-              },
-            },
-          }
-          : undefined,
-      legal:
-        legal && legal.user
-          ? {
-            update: {
-              user: {
-                connect: legal.user,
-              },
-            },
-          }
-          : undefined,
+      // technical:
+      //   technical && technical.user
+      //     ? {
+      //         update: {
+      //           user: {
+      //             connect: technical.user,
+      //           },
+      //         },
+      //       }
+      //     : undefined,
+      // legal:
+      //   legal && legal.user
+      //     ? {
+      //         update: {
+      //           user: {
+      //             connect: legal.user,
+      //           },
+      //         },
+      //       }
+      //     : undefined,
     },
     include: {
       beneficiaries: {
@@ -339,23 +339,25 @@ export const updateField = async (
         id,
       },
       data: {
-        fileNumber: resolveFileNumber(value, id)
-      }
+        fileNumber: resolveFileNumber(value, id),
+      },
     });
-  } else if (fieldName === 'legal.user') {
-    console.log(value)
+  } else if (
+    fieldName === "legal.user.username" ||
+    fieldName === "technical.user.username"
+  ) {
+    console.log(value);
     propertyUpdated = await prisma.property.update({
       where: {
         id,
       },
       data: {
-        legal: {
-          connectOrCreate: resolveUser(value, id)
-        }
-      }
+        [fieldName === "legal.user.username" ? "legal" : "technical"]: {
+          upsert: resolveUser(value, id),
+        },
+      },
     });
-  }
-  else if (fieldName.includes(".")) {
+  } else if (fieldName.includes(".")) {
     propertyUpdated = await prisma.property.update({
       where: {
         id,
@@ -381,7 +383,7 @@ export const updateFieldNumber = async (
   { prisma, userContext }: Context,
 ) => {
   hasPermission(userContext, "UPDATE", "PROPERTY");
-  console.log({ fieldName, value })
+  console.log({ fieldName, value });
   const propertyUpdated = await prisma.property.update({
     where: {
       id,
@@ -397,26 +399,29 @@ export const updateFieldNumber = async (
 const resolveFileNumber = (value: string, propertyId: string) => {
   return value.length === 0
     ? {
-      delete: {
-        propertyId,
-      },
-    }
-    : {
-      upsert: {
-        where: {
+        delete: {
           propertyId,
         },
-        create: {
-          number: value,
+      }
+    : {
+        upsert: {
+          where: {
+            propertyId,
+          },
+          create: {
+            number: value,
+          },
+          update: {
+            number: value,
+          },
         },
-        update: {
-          number: value,
-        },
-      },
-    };
+      };
 };
 const resolveUser = (value: string, propertyId: string) => {
   return {
+    where: {
+      propertyId,
+    },
     create: {
       user: {
         connect: {
@@ -424,11 +429,12 @@ const resolveUser = (value: string, propertyId: string) => {
         },
       },
     },
-    where: {
+    update: {
       user: {
-        username: value,
+        connect: {
+          username: value,
+        },
       },
-      propertyId,
     },
   };
 };

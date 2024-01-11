@@ -1,26 +1,31 @@
+import { gql, useQuery } from "@apollo/client";
 import { useState } from "react";
-import Select, { Props, StylesConfig } from "react-select";
-import { useCustomQuery } from "../../../../hooks/useCustomQuery";
+import { FieldPath, useFormContext } from "react-hook-form";
+import Select, {
+  MultiValue,
+  Props,
+  SingleValue,
+  StylesConfig,
+} from "react-select";
 import { User } from "../../../UserPage/models/types";
-import { useAuth } from "../../../../hooks";
+import { buildFullName } from "../../../UserPage/utils/buildFullName";
 import { useInputSubscription } from "../../hooks/useInputSubscription";
 import { Property } from "../../models/types";
-import { FieldPath } from 'react-hook-form'
 import { toast } from "sonner";
 export type SelectUserProps = {
   type?: string;
-  // defaultValue?: { label: string, value: string }
-  name: FieldPath<Property>
+  name: FieldPath<Property>;
+  user: FieldPath<Property>;
 };
-const GET_ALL_USERS_BY_TYPE = `
-	query GetAllLegal($type: String, $filterText: String) {
-		users: getUsers(type: $type, filterText: $filterText) {
-			names
-			username
-			firstLastName
-			secondLastName
-		}
-	}
+const GET_ALL_USERS_BY_TYPE = gql`
+  query GetAllLegal($type: String, $filterText: String) {
+    users: getUsers(type: $type, filterText: $filterText) {
+      names
+      username
+      firstLastName
+      secondLastName
+    }
+  }
 `;
 
 const customStyles: StylesConfig<User> = {
@@ -41,35 +46,61 @@ const customStyles: StylesConfig<User> = {
     color: state.isFocused ? "white" : "black",
   }),
 };
+const usersAdapter = (users?: User[]) => {
+  if (!users) return [];
+
+  return users;
+};
+const useFetchUsers = ({ type }: { type?: string }) => {
+  const [filterText, setFilterText] = useState("");
+
+  const { data, ...query } = useQuery<{ users: User[] }>(
+    GET_ALL_USERS_BY_TYPE,
+    {
+      variables: {
+        type,
+        filterText,
+      },
+    },
+  );
+
+  return { ...query, data: usersAdapter(data?.users), setFilterText };
+};
 
 const SelectUser: React.FC<SelectUserProps & Props<User>> = ({
   type,
-  ...props
+  name,
+  user,
+  placeholder,
 }) => {
-  const [filterText, setFilterText] = useState("");
-  const { role } = useAuth();
-  const isAdmin = role === "administrador";
-  const { data } = useCustomQuery<{ users: User[] }>(GET_ALL_USERS_BY_TYPE, [
-    "getFieldForCreate",
-    { type, filterText },
-  ]);
-  const { subscribe } = useInputSubscription({
-    name: props.name
+  const { data, setFilterText, loading } = useFetchUsers({ type });
+  const { watch, setValue } = useFormContext<Property>();
+  const {
+    subscribe: { onBlur, onFocus, onChange, disabled, ref },
+  } = useInputSubscription({
+    name,
   });
+  const value = watch(user);
+  const options = data;
   return (
     <Select
-      isDisabled={!isAdmin}
-      {...props}
-      {...subscribe}
-      onChange={(newValue, e) => {
-        props.onChange?.(newValue, e)
-        subscribe.onChange(e)
+      name={name}
+      ref={ref}
+      value={value}
+      options={options}
+      onChange={(newValue: SingleValue<User> | MultiValue<User>) => {
+        onChange({ target: { value: newValue.username } });
+        setValue(user, newValue);
       }}
-      options={data?.users}
-      getOptionLabel={(e) =>
-        e.names.concat(" ", e.firstLastName, " ", e.secondLastName)
-      }
-      getOptionValue={(e) => e.username}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      placeholder={placeholder}
+      isLoading={loading}
+      getOptionValue={(u) => u.username}
+      getOptionLabel={(u) => {
+        return u.username ? buildFullName(u) : "";
+      }}
+      isDisabled={disabled}
       isClearable
       isSearchable
       styles={customStyles}

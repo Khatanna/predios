@@ -13,7 +13,11 @@ import { SubDirectory } from "../../SubDirectoryPage/models/types";
 import { Tracking } from "../../TrackingPage/models/types";
 import { Type } from "../../TypePage/models/types";
 import { User } from "../../UserPage/models/types";
-import { UseFormRegisterReturn, FieldPath, RegisterOptions } from 'react-hook-form';
+import {
+  UseFormRegisterReturn,
+  FieldPath,
+  RegisterOptions,
+} from "react-hook-form";
 type UserOnProperty = {
   property: Property;
   user: User;
@@ -95,6 +99,6 @@ export type ReturnTUseInputSubscription = {
 export type TFucused = { contextId: string; isFocused: boolean; name: string };
 export type TUseInputSubscriptionParams = {
   name: FieldPath<Property>;
-  events?: Partial<Pick<UseFieldRegister, 'onBlur' | 'onChange' | 'onFocus'>>;
+  events?: Partial<Pick<UseFieldRegister, "onBlur" | "onChange" | "onFocus">>;
   options?: RegisterOptions<Property>;
 };
