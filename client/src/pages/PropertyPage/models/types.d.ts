@@ -89,6 +89,7 @@ type UseFieldRegister = {
   onFocus: (e: React.ChangeEvent<FormControlElement>) => Promise<void>;
   onChange: (e: React.ChangeEvent<FormControlElement>) => Promise<void>;
   onBlur: (e: React.ChangeEvent<FormControlElement>) => Promise<void>;
+  onKeyDown: (e: React.KeyboardEvent<FormControlElement>) => Promise<void>;
 };
 export type ReturnTUseInputSubscription = {
   isFocus: boolean;

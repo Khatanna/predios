@@ -51,6 +51,8 @@ import { SubdirectorySelect } from "../SubdirectorySelect";
 import { TrackingList } from "../TrackingList";
 import { TypeSelect } from "../TypeSelect";
 import { useInputSubscription } from "../../hooks/useInputSubscription";
+import { toast } from "sonner";
+import { SeekerModalInput } from "../../../../components/SeekerModalInput";
 
 const PropertyForm: React.FC = () => {
   const { role } = useAuth();
@@ -121,6 +123,7 @@ const PropertyForm: React.FC = () => {
         handleSubmit={handleSubmit}
         register={register}
       >
+        <SeekerModalInput />
         {modal.show && (
           <ModalForm
             centered
@@ -345,13 +348,17 @@ const PropertyForm: React.FC = () => {
                             />
                           </Col>
                         </Row>
+                        <Row className="border border-1 py-2 border-dark-subtle rounded-1 d-flex justify-content-center mt-1">
+                          <ObservationList />
+                        </Row>
+
                       </Tab>
                       <Tab eventKey={"seguimiento"} title="Seguimiento">
                         <TrackingList />
                       </Tab>
-                      <Tab eventKey={"observaciones"} title="Observaciones">
+                      {/* <Tab eventKey={"observaciones"} title="Observaciones">
                         <ObservationList />
-                      </Tab>
+                      </Tab> */}
                     </Tabs>
                   </Row>
                 </Col>

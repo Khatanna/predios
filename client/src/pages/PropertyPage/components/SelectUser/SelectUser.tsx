@@ -101,7 +101,7 @@ const SelectUser: React.FC<SelectUserProps & Props<User>> = ({
         return u.username ? buildFullName(u) : "";
       }}
       isDisabled={disabled}
-      isClearable
+      // isClearable
       isSearchable
       styles={customStyles}
       onInputChange={(newValue) => {

@@ -573,3 +573,123 @@ export const getProperties = async (
     throw e;
   }
 };
+export const getPropertyByAttribute = async (
+  _parent: any,
+  {
+    fieldName, value, currentRegistryNumber
+  }: { fieldName: string, value: string, currentRegistryNumber?: number },
+  { prisma, userContext }: Context,
+) => {
+  try {
+    hasPermission(userContext, "READ", "PROPERTY");
+    const property = await prisma.property.findFirst({
+      where: {
+        [fieldName]: {
+          contains: value
+        },
+        registryNumber: {
+          gt: currentRegistryNumber
+        }
+      },
+      include: {
+        beneficiaries: {
+          include: {
+            properties: true,
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+        activity: true,
+        clasification: true,
+        observations: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+        type: true,
+        folderLocation: true,
+        groupedState: true,
+        reference: true,
+        responsibleUnit: true,
+        state: {
+          include: {
+            stage: true,
+          },
+        },
+        city: {
+          include: {
+            provinces: {
+              include: {
+                municipalities: true,
+              },
+            },
+          },
+        },
+        province: {
+          include: {
+            municipalities: true,
+          },
+        },
+        municipality: true,
+        technical: {
+          include: {
+            user: true,
+          },
+        },
+        legal: {
+          include: {
+            user: true,
+          },
+        },
+        trackings: {
+          include: {
+            responsible: true,
+            state: true,
+          },
+        },
+        fileNumber: true,
+      },
+    })
+
+    if (property) {
+      const next = await prisma.property.findFirst({
+        where: {
+          registryNumber: {
+            gt: property.registryNumber,
+          },
+        },
+        select: {
+          id: true,
+        },
+        orderBy: {
+          registryNumber: "asc",
+        },
+      });
+
+      const prev = await prisma.property.findFirst({
+        where: {
+          registryNumber: {
+            lt: property.registryNumber,
+          },
+        },
+        select: {
+          id: true,
+        },
+        orderBy: {
+          registryNumber: "desc",
+        },
+      });
+
+      return {
+        property,
+        next: next?.id,
+        prev: prev?.id,
+      };
+    }
+
+    return null;
+  } catch (e) {
+    throw e;
+  }
+};

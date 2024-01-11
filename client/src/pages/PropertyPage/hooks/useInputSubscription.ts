@@ -3,13 +3,15 @@ import { useState } from "react";
 import { FieldPath, useFormContext } from "react-hook-form";
 import { toast } from "sonner";
 import { useAuth } from "../../../hooks";
+import { useLazyCan } from "../../../hooks/useLazyCan";
+import { useSeeker } from "../../../hooks/useSeeker";
 import {
   Property,
   ReturnTUseInputSubscription,
   TFucused,
   TUseInputSubscriptionParams,
 } from "../models/types";
-import { useLazyCan } from "../../../hooks/useLazyCan";
+import { useModalInputStore } from "../../../state/useModalInputStore";
 
 const FOCUSED_INPUT_MUTATION = gql`
   mutation FocusInput($contextId: String, $name: String, $isFocused: Boolean) {
@@ -141,6 +143,8 @@ export const useInputSubscription = ({
   });
   const { data, fetchCan } = useLazyCan();
   const canEdit = data[`${getValues("id") ? "UPDATE" : "CREATE"}@PROPERTY`];
+  const { setIsAvailableModal } = useSeeker();
+  const { openModal, isOpen, setFieldName } = useModalInputStore()
   return {
     username,
     isFocus: isCurrentInput && isFocused && !itsMe && canEdit,
@@ -149,6 +153,10 @@ export const useInputSubscription = ({
       disabled: isCurrentInput && isFocused && !itsMe,
       readOnly: !canEdit,
       onFocus: async (e) => {
+        if (name === 'technicalObservation') {
+          setIsAvailableModal(false);
+          setFieldName({ fieldName: name })
+        }
         if (getValues("id")) {
           handleFocused(true);
         }
@@ -162,6 +170,9 @@ export const useInputSubscription = ({
         });
       },
       onBlur: async (e) => {
+        if (!isOpen && name === "technicalObservation") {
+          setIsAvailableModal(true)
+        }
         if (getValues("id")) {
           handleFocused(false);
         }
@@ -196,6 +207,15 @@ export const useInputSubscription = ({
           });
           events?.onChange?.(e);
           onChange(e);
+        }
+      },
+      onKeyDown: async (e) => {
+        if (name !== 'technicalObservation') return
+        if (e.ctrlKey) {
+          if ((e.key === 'b' || e.key === 'B') || (e.key === 'f' || e.key === 'F')) {
+            e.preventDefault();
+            openModal()
+          }
         }
       },
     },
