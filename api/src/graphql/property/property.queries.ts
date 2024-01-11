@@ -576,20 +576,17 @@ export const getProperties = async (
 export const getPropertyByAttribute = async (
   _parent: any,
   {
-    fieldName, value, currentRegistryNumber
-  }: { fieldName: string, value: string, currentRegistryNumber?: number },
+    fieldName, value, page, limit, orderBy = 'asc'
+  }: { page: number, limit: number, orderBy: 'asc' | 'desc', fieldName: string, value: string },
   { prisma, userContext }: Context,
 ) => {
   try {
     hasPermission(userContext, "READ", "PROPERTY");
-    const property = await prisma.property.findFirst({
+    const properties = prisma.property.findMany({
       where: {
         [fieldName]: {
           contains: value
         },
-        registryNumber: {
-          gt: currentRegistryNumber
-        }
       },
       include: {
         beneficiaries: {
@@ -650,45 +647,29 @@ export const getPropertyByAttribute = async (
         },
         fileNumber: true,
       },
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: {
+        registryNumber: orderBy,
+      },
     })
+    const total = await prisma.property.count({
+      where: {
+        [fieldName]: {
+          contains: value
+        },
+      },
+      orderBy: {
+        registryNumber: orderBy,
+      },
+    });
 
-    if (property) {
-      const next = await prisma.property.findFirst({
-        where: {
-          registryNumber: {
-            gt: property.registryNumber,
-          },
-        },
-        select: {
-          id: true,
-        },
-        orderBy: {
-          registryNumber: "asc",
-        },
-      });
-
-      const prev = await prisma.property.findFirst({
-        where: {
-          registryNumber: {
-            lt: property.registryNumber,
-          },
-        },
-        select: {
-          id: true,
-        },
-        orderBy: {
-          registryNumber: "desc",
-        },
-      });
-
-      return {
-        property,
-        next: next?.id,
-        prev: prev?.id,
-      };
-    }
-
-    return null;
+    return {
+      page,
+      limit,
+      total,
+      properties,
+    };
   } catch (e) {
     throw e;
   }

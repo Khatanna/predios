@@ -70,7 +70,9 @@ type Query {
     all: Boolean
   ): PropertiesPaginate
   getProperty(nextCursor: String, prevCursor: String): getPropertyWithCursor
-  getPropertyByAttribute(fieldName: String, value: String, currentRegistryNumber: Int): getPropertyWithRegistryNumber
+  getPropertyByAttribute(page: Int
+    limit: Int
+    orderBy: String, fieldName: String, value: String): PropertiesPaginate
   getPropertyByRegistryNumber(id: String): getPropertyWithRegistryNumber
   getPropertyById(id: String): Property
   searchPropertyByAttribute(
