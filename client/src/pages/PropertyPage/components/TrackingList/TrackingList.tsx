@@ -168,16 +168,11 @@ const TrackingItem: React.FC<
       <Col>
         <Form.Group>
           <Form.Label className="fw-bold">Responsable:</Form.Label>
-          <Controller
-            name={`trackings.${index}.responsible`}
-            control={control}
-            render={({ field }) => (
-              <SelectUser
-                {...field}
-                isDisabled={!edit && !isNew}
-                placeholder="Responsable"
-              />
-            )}
+          <SelectUser
+            isDisabled={!isNew && !edit}
+            name={`trackings.${index}.responsible.username`}
+            user={`trackings.${index}.responsible`}
+            placeholder="Responsable"
           />
         </Form.Group>
       </Col>

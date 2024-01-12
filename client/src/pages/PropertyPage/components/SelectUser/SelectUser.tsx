@@ -72,6 +72,7 @@ const SelectUser: React.FC<SelectUserProps & Props<User>> = ({
   name,
   user,
   placeholder,
+  isDisabled,
 }) => {
   const { data, setFilterText, loading } = useFetchUsers({ type });
   const { watch, setValue } = useFormContext<Property>();
@@ -100,7 +101,7 @@ const SelectUser: React.FC<SelectUserProps & Props<User>> = ({
       getOptionLabel={(u) => {
         return u.username ? buildFullName(u) : "";
       }}
-      isDisabled={disabled}
+      isDisabled={disabled || isDisabled}
       // isClearable
       isSearchable
       styles={customStyles}
