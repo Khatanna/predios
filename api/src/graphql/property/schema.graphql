@@ -68,6 +68,7 @@ type Query {
     limit: Int
     orderBy: String
     all: Boolean
+    unit: String
   ): PropertiesPaginate
   getProperty(nextCursor: String, prevCursor: String): getPropertyWithCursor
   getPropertyByAttribute(page: Int

@@ -1,6 +1,7 @@
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { Property } from "../../PropertyPage/models/types";
+import { buildFullName } from "./buildFullName";
 
 export const exportToExcel = ({ data }: { data: Array<Property> }) => {
   const fileType =
@@ -64,8 +65,8 @@ export const exportToExcel = ({ data }: { data: Array<Property> }) => {
         ["Superficie de pericia"]: expertiseOfArea,
         Poligono: polygone,
         ["Estado agrupado"]: groupedState?.name,
-        ["Ubicación de carpeta"]: folderLocation,
-        ["Unidad responsable"]: responsibleUnit,
+        ["Ubicación de carpeta"]: folderLocation?.name,
+        ["Unidad responsable"]: responsibleUnit?.name,
         ["Segundo estado"]: secondState,
         ["Id de agrupación social"]: agrupationIdentifier,
         Tecnico: buildFullName(technical?.user),

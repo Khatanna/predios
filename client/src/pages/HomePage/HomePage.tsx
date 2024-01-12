@@ -4,6 +4,7 @@ import { Navigate } from "react-router";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { useAuth } from "../../hooks";
 import { Property } from "../PropertyPage/models/types";
+import { useCan } from "../../hooks/useCan";
 
 export const SelectNameable: React.FC<
   FormSelectProps & {
@@ -26,61 +27,60 @@ export const SelectNameable: React.FC<
   highlight,
   ...props
 }) => {
-  const { getFieldState } = useFormContext<Property>();
-  const { role } = useAuth();
-
-  return (
-    <InputGroup size={props.size}>
-      <Form.Select
-        {...props}
-        isInvalid={!!getFieldState(name).error}
-        className={`${
-          props.value === "undefined" || !props.value
-            ? "text-body-tertiary"
-            : highlight
-            ? "text-danger fw-bold"
-            : "text-black"
-        }`}
-        style={{
-          pointerEvents: role === "administrador" ? "auto" : "none",
-        }}
-      >
-        <option value="undefined" className="text-body-tertiary" disabled>
-          {placeholder}
-        </option>
-        {options.map((option) => (
-          <option value={option.value} style={{ color: "black" }}>
-            {option.label}
+    const { getFieldState } = useFormContext<Property>();
+    const { role } = useAuth();
+    const { data: can } = useCan({ can: [{ level: 'CREATE', resource: 'PROPERTY' }] })
+    return (
+      <InputGroup size={props.size}>
+        <Form.Select
+          {...props}
+          isInvalid={!!getFieldState(name).error}
+          className={`${props.value === "undefined" || !props.value
+              ? "text-body-tertiary"
+              : highlight
+                ? "text-danger fw-bold"
+                : "text-black"
+            }`}
+          style={{
+            pointerEvents: can['CREATE@PROPERTY'] ? "auto" : "none",
+          }}
+        >
+          <option value="undefined" className="text-body-tertiary" disabled>
+            {placeholder}
           </option>
-        ))}
-      </Form.Select>
-      {role === "administrador" && (
-        <InputGroup.Text hidden={!onCreate && !onEdit && !onDelete}>
-          <DropdownMenu>
-            <Dropdown.Item onClick={onCreate} hidden={!onCreate}>
-              ➕ Crear
-            </Dropdown.Item>
-            <Dropdown.Item
-              onClick={onCreate}
-              hidden={!onEdit || props.value === "undefined"}
-            >
-              ✏ Editar
-            </Dropdown.Item>
-            <Dropdown.Item
-              onClick={onCreate}
-              hidden={!onDelete || props.value === "undefined"}
-            >
-              🗑 Eliminar
-            </Dropdown.Item>
-          </DropdownMenu>
-        </InputGroup.Text>
-      )}
-      <Form.Control.Feedback type="invalid">
-        {getFieldState(name).error?.message}
-      </Form.Control.Feedback>
-    </InputGroup>
-  );
-};
+          {options.map((option) => (
+            <option value={option.value} style={{ color: "black" }}>
+              {option.label}
+            </option>
+          ))}
+        </Form.Select>
+        {can['CREATE@PROPERTY'] && (
+          <InputGroup.Text hidden={!onCreate && !onEdit && !onDelete}>
+            <DropdownMenu>
+              <Dropdown.Item onClick={onCreate} hidden={!onCreate}>
+                ➕ Crear
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={onCreate}
+                hidden={!onEdit || props.value === "undefined"}
+              >
+                ✏ Editar
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={onCreate}
+                hidden={!onDelete || props.value === "undefined"}
+              >
+                🗑 Eliminar
+              </Dropdown.Item>
+            </DropdownMenu>
+          </InputGroup.Text>
+        )}
+        <Form.Control.Feedback type="invalid">
+          {getFieldState(name).error?.message}
+        </Form.Control.Feedback>
+      </InputGroup>
+    );
+  };
 
 const HomePage: React.FC = () => {
   return <Navigate to={"/properties"} />;

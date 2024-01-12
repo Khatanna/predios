@@ -10,6 +10,7 @@ import { useAuth } from "../../../../hooks";
 import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { Property } from "../../models/types";
 import { ModalReportButton } from "../ModalReportButton";
+import { useCan } from "../../../../hooks/useCan";
 
 const columns: TableColumn<Property>[] = [
   {
@@ -91,7 +92,7 @@ const GET_ALL_PROPERTIES_QUERY = `
 
 const PropertyList: React.FC = () => {
   const navigate = useNavigate();
-  const { role } = useAuth();
+  const { data: can } = useCan({ can: [{ level: 'CREATE', resource: 'PROPERTY' }] })
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
   const [orderBy, setOrderBy] = useState("asc");
@@ -141,13 +142,12 @@ const PropertyList: React.FC = () => {
       onChangeRowsPerPage={setLimit}
       actions={
         <div className="d-flex gap-3">
-          {role === "administrador" && (
-            <Tooltip label="Crear predio">
-              <Link to={"create"}>
-                <HouseAdd size={30} />
-              </Link>
-            </Tooltip>
-          )}
+          {can['CREATE@PROPERTY'] && <Tooltip label="Crear predio">
+            <Link to={"create"}>
+              <HouseAdd size={30} />
+            </Link>
+          </Tooltip>}
+
           <ModalReportButton max={data?.results.total ?? 0} />
         </div>
       }

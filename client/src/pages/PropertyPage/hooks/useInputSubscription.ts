@@ -141,7 +141,7 @@ export const useInputSubscription = ({
       }
     },
   });
-  const { data, fetchCan } = useLazyCan();
+  const { data, fetchCan, loading } = useLazyCan();
   const canEdit = data[`${getValues("id") ? "UPDATE" : "CREATE"}@PROPERTY`];
   const { setIsAvailableModal } = useSeeker();
   const { openModal, isOpen, setFieldName } = useModalInputStore()
@@ -172,6 +172,9 @@ export const useInputSubscription = ({
       onBlur: async (e) => {
         if (!isOpen && name === "technicalObservation") {
           setIsAvailableModal(true)
+        }
+        if (!data[`${getValues("id") ? "UPDATE" : "CREATE"}@PROPERTY`]) {
+          toast.info("No puede editar este campo")
         }
         if (getValues("id")) {
           handleFocused(false);

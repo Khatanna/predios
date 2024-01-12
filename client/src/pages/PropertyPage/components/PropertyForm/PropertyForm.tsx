@@ -53,6 +53,7 @@ import { TypeSelect } from "../TypeSelect";
 import { useInputSubscription } from "../../hooks/useInputSubscription";
 import { toast } from "sonner";
 import { SeekerModalInput } from "../../../../components/SeekerModalInput";
+import { useCan } from "../../../../hooks/useCan";
 
 const PropertyForm: React.FC = () => {
   const { role } = useAuth();
@@ -108,6 +109,7 @@ const PropertyForm: React.FC = () => {
     }
   };
   const { setModal, ...modal } = useModalStore();
+  const { data: can } = useCan({ can: [{ level: 'CREATE', resource: 'PROPERTY' }] })
   useEffect(() => {
     return () => {
       if (methods.getValues("id")) {
@@ -431,38 +433,12 @@ const PropertyForm: React.FC = () => {
                   </Row>
                 </Col>
               </Row>
-              {role === "administrador" && (
+              {can['CREATE@PROPERTY'] && (
                 <Row className="my-2">
                   <Col className="d-flex justify-content-end gap-2">
-                    {!property && (
-                      <>
-                        {/* <Button
-                          variant="primary"
-                          onClick={() => {
-                            methods.reset(undefined);
-                            if (property) {
-                              location.reload();
-                              setPropertyForm({ propertyForm: undefined });
-                            }
-                          }}
-                        >
-                          Limpiar
-                        </Button> */}
-                        {/* <Button
-                          variant="success"
-                          onClick={() => {
-                            setPropertyForm({
-                              propertyForm: methods.getValues(),
-                            });
-                          }}
-                        >
-                          Guardar
-                        </Button> */}
-                      </>
-                    )}
-                    {/* <Button type="submit" variant="warning">
-                      {property ? "Actualizar" : "Crear"} predio
-                    </Button> */}
+                    {!methods.getValues('id') && <Button type="submit" variant="warning">
+                      Crear predio
+                    </Button>}
                   </Col>
                 </Row>
               )}

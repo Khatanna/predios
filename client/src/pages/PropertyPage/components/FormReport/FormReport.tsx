@@ -1,14 +1,16 @@
-import { gql, useLazyQuery } from "@apollo/client";
+import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import { Button, Col, FloatingLabel, Form, Spinner } from "react-bootstrap";
 import { FileEarmarkSpreadsheet, FiletypeXlsx } from "react-bootstrap-icons";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { exportToExcel } from "../../../UserPage/utils/exportToExcel";
 import { Property } from "../../models/types";
+import { ResponsibleUnit } from "../../../ResponsibleUnitPage/models/types";
 
 type TReport = {
   numberOfRecords: number;
   all: boolean;
+  unit: string
 };
 
 const GET_ALL_PROPERTIES_QUERY_GQL = gql`
@@ -17,12 +19,14 @@ const GET_ALL_PROPERTIES_QUERY_GQL = gql`
     $limit: Int
     $orderBy: String
     $all: Boolean
+    $unit: String
   ) {
     results: getProperties(
       page: $page
       limit: $limit
       orderBy: $orderBy
       all: $all
+      unit: $unit
     ) {
       total
       properties {
@@ -112,6 +116,14 @@ const GET_ALL_PROPERTIES_QUERY_GQL = gql`
   }
 `;
 
+const GET_ALL_UNITS = gql`
+  query GetAllUnits {  
+    units: getAllUnits {
+      name
+    }
+  }
+`
+
 const FormReport: React.FC<{ max: number }> = ({ max }) => {
   const {
     register,
@@ -130,13 +142,14 @@ const FormReport: React.FC<{ max: number }> = ({ max }) => {
   const [getProperties, { loading }] = useLazyQuery<{
     results: { total: number; properties: Property[] };
   }>(GET_ALL_PROPERTIES_QUERY_GQL);
-
-  const submit = ({ all, numberOfRecords }: TReport) => {
+  const { data } = useQuery<{ units: ResponsibleUnit[] }>(GET_ALL_UNITS);
+  const submit = ({ all, numberOfRecords, unit }: TReport) => {
     const variables = {
       page: 1,
       limit: numberOfRecords,
       orderBy: "asc",
       all,
+      unit
     };
 
     toast.promise(getProperties({ variables, fetchPolicy: "no-cache" }), {
@@ -201,6 +214,15 @@ const FormReport: React.FC<{ max: number }> = ({ max }) => {
           </FloatingLabel>
         </Col>
       )}
+      <Col xs={12}>
+        <Form.Label>Por unidad</Form.Label>
+        <Form.Select size="sm" {...register('unit')}>
+          <option value="all">Todas las unidades</option>
+          {data?.units.map((u) => (
+            <option value={u.name}>{u.name}</option>
+          ))}
+        </Form.Select>
+      </Col>
       {!numberOfRecods && (
         <Col xs={12}>
           <Form.Check

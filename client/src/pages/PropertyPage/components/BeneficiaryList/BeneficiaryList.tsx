@@ -20,7 +20,7 @@ import {
 } from "react-bootstrap-icons";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Tooltip } from "../../../../components/Tooltip";
-import { useAuth, useCustomMutation } from "../../../../hooks";
+import { useCustomMutation } from "../../../../hooks";
 import {
   customSwalError,
   customSwalSuccess,
@@ -30,6 +30,7 @@ import { Beneficiary } from "../../../BeneficiaryPage/models/types";
 import { Property } from "../../models/types";
 import { CustomLabel } from "../CustomLabel";
 import { DropdownMenu } from "../../../../components/DropdownMenu";
+import { useCan } from "../../../../hooks/useCan";
 
 export type BeneficiaryListProps = {
   maxHeight: number;
@@ -72,7 +73,6 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
   remove,
   update,
 }) => {
-  const { role } = useAuth();
   const oldName = beneficiary.name;
   const [edit, setEdit] = useState(false);
   const { register, getValues } = useFormContext<Property>();
@@ -132,11 +132,18 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
       );
     },
   });
+  const { data: can } = useCan({
+    can: [
+      { level: 'DELETE', resource: 'BENEFICIARY' },
+      { level: 'UPDATE', resource: 'BENEFICIARY' },
+    ]
+  })
+  const thisCan = can['DELETE@BENEFICIARY'] && can['UPDATE@BENEFICIARY']
   if (!edit && beneficiary.name.length > 0) {
     return (
       <ListGroup.Item className="d-flex justify-content-between align-items-center">
         <div className="ms-1 me-auto">{beneficiary.name}</div>
-        {role === "administrador" && (
+        {thisCan && (
           <div className="d-flex gap-1">
             <Tooltip label="Editar beneficiario">
               <Badge bg="info" role="button" onClick={() => setEdit(true)}>
@@ -261,7 +268,6 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
 
 const BeneficiaryList: React.FC<BeneficiaryListProps> = ({ maxHeight }) => {
   const { control } = useFormContext<Property>();
-  const { role } = useAuth();
   const {
     fields: beneficiaries,
     append,
@@ -271,7 +277,11 @@ const BeneficiaryList: React.FC<BeneficiaryListProps> = ({ maxHeight }) => {
     control,
     name: "beneficiaries",
   });
-
+  const { data: can } = useCan({
+    can: [
+      { level: 'CREATE', resource: 'BENEFICIARY' },
+    ]
+  })
   return (
     <>
       <Row>
@@ -289,11 +299,10 @@ const BeneficiaryList: React.FC<BeneficiaryListProps> = ({ maxHeight }) => {
               style={{
                 maxHeight: maxHeight - 35,
               }}
-              className={`${
-                beneficiaries.length <= 2
-                  ? "overflow-y-visible "
-                  : "overflow-y-scroll"
-              }  pe-1`}
+              className={`${beneficiaries.length <= 2
+                ? "overflow-y-visible "
+                : "overflow-y-scroll"
+                }  pe-1`}
             >
               {beneficiaries.map((beneficiary, index) => (
                 <BeneficiaryItem
@@ -313,7 +322,7 @@ const BeneficiaryList: React.FC<BeneficiaryListProps> = ({ maxHeight }) => {
           )}
         </Col>
       </Row>
-      {role === "administrador" && (
+      {can['CREATE@BENEFICIARY'] && (
         <Row className="align-self-end">
           <Col>
             <Button

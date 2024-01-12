@@ -515,14 +515,20 @@ export const getProperties = async (
     limit = 20,
     orderBy = "asc",
     all = false,
-  }: { page: number; limit?: number; orderBy: "asc" | "desc"; all: boolean },
+    unit
+  }: { page: number; limit?: number; orderBy: "asc" | "desc"; all: boolean, unit: string },
   { prisma, userContext }: Context,
 ) => {
   try {
     hasPermission(userContext, "READ", "PROPERTY");
     const total = await prisma.property.count();
-    console.log({ page, limit, orderBy, all });
+    console.log({ page, limit, orderBy, all, unit });
     const properties = await prisma.property.findMany({
+      where: unit && unit !== 'all' ? {
+        responsibleUnit: {
+          name: unit
+        }
+      } : undefined,
       include: {
         beneficiaries: true,
         activity: true,
@@ -565,6 +571,8 @@ export const getProperties = async (
         registryNumber: orderBy,
       },
     });
+    console.log(properties.length)
+
     return {
       total,
       properties,
