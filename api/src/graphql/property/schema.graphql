@@ -66,14 +66,19 @@ type Query {
   getProperties(
     page: Int
     limit: Int
+    fieldOrder: String
     orderBy: String
     all: Boolean
     unit: String
   ): PropertiesPaginate
   getProperty(nextCursor: String, prevCursor: String): getPropertyWithCursor
-  getPropertyByAttribute(page: Int
+  getPropertyByAttribute(
+    page: Int
     limit: Int
-    orderBy: String, fieldName: String, value: String): PropertiesPaginate
+    orderBy: String
+    fieldName: String
+    value: String
+  ): PropertiesPaginate
   getPropertyByRegistryNumber(id: String): getPropertyWithRegistryNumber
   getPropertyById(id: String): Property
   searchPropertyByAttribute(

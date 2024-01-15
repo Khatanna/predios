@@ -6,6 +6,11 @@ import { FormLoginValues } from "../models/types";
 const schema = yup.object({
   username: yup
     .string()
+    .trim()
+    .matches(
+      /^[a-zA-Z]+\.[a-zA-Z]+$/,
+      "El formato de nombre de usuario no es válido",
+    )
     .required("El nombre de usuario es un campo obligatorio"),
   password: yup
     .string()

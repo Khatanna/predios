@@ -2,17 +2,36 @@ import { verify } from "jsonwebtoken";
 import { AuthErrorMessage, LifeTimeToken } from "../../constants";
 import { PrismaContext, PubSubContext } from "../../types";
 import {
-  mapUserForToken,
+  selectKeys,
+  deleteKeys,
   verifyPassword,
   verifyUsername,
 } from "../../utilities";
 import { generateToken } from "../../utilities/generateToken";
-import { throwLoginError } from "../../utilities/throwLoginError";
+import { User } from "@prisma/client";
+
+// const userMapped = (user: User, fields: (keyof User)[]) => {
+//   return fields.reduce((acc, item) => {
+//     if (!user[item]) return acc;
+
+//     if (user[item] instanceof Date) {
+//       acc[item] = (user[item] as Date).toISOString();
+//       // return acc;
+//     }
+//     // if (user[item] instanceof Object) {
+//     //   acc[item] = user[item];
+//     //   return acc;
+//     // }
+
+//     acc[item] = user[item] as string;
+//     return acc;
+//   }, {} as { [index in keyof User]: string | null });
+// };
 
 export const login = async (
   _parent: any,
   input: { username: string; password: string },
-  { prisma, pubSub }: PrismaContext & PubSubContext,
+  { prisma }: PrismaContext & PubSubContext,
 ) => {
   try {
     const { username, password } = input;
@@ -20,13 +39,14 @@ export const login = async (
       where: {
         username,
       },
-      select: {
-        username: true,
-        password: true,
-        status: true,
+      include: {
         role: {
-          select: {
-            name: true,
+          include: {
+            permissions: {
+              include: {
+                permission: true,
+              },
+            },
           },
         },
       },
@@ -44,27 +64,23 @@ export const login = async (
     }
 
     const accessToken = generateToken(
-      user,
+      selectKeys<typeof user>(user, ["username"]),
       process.env.ACCESS_TOKEN_SECRET!,
       LifeTimeToken.day,
     );
     const refreshToken = generateToken(
-      user,
+      selectKeys<typeof user>(user, ["id"]),
       process.env.REFRESH_TOKEN_SECRET!,
       LifeTimeToken.week,
     );
 
     await prisma.user.update({
-      where: {
-        username,
-      },
+      where: { username },
       data: {
         token: refreshToken,
       },
     });
-
-    return { accessToken, refreshToken };
-    // throw throwLoginError(AuthErrorMessage.UNREGISTERED_USER);
+    return { accessToken, refreshToken, user };
   } catch (e) {
     throw e;
   }
@@ -73,7 +89,7 @@ export const login = async (
 export const logout = async (
   _parent: any,
   { username, token }: { username: string; token: string },
-  { prisma, pubSub }: PrismaContext & PubSubContext,
+  { prisma }: PrismaContext & PubSubContext,
 ) => {
   try {
     const user = await prisma.user.update({
@@ -88,43 +104,6 @@ export const logout = async (
     });
 
     return Boolean(user);
-  } catch (e) {
-    throw e;
-  }
-};
-export const getNewAccessToken = async (
-  _parent: any,
-  { refreshToken }: { refreshToken: string },
-  { prisma }: PrismaContext,
-) => {
-  try {
-    const user = await prisma.user.findFirst({
-      where: {
-        token: refreshToken,
-      },
-      select: {
-        username: true,
-        connection: true,
-        role: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    });
-
-    if (!user) {
-      throw new Error(
-        "El Token de sesión no ha sido encontrado vuelva a iniciar sesión",
-      );
-    }
-    verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
-    const accessToken = generateToken(
-      user,
-      process.env.ACCESS_TOKEN_SECRET!,
-      LifeTimeToken.day,
-    );
-    return accessToken;
   } catch (e) {
     throw e;
   }

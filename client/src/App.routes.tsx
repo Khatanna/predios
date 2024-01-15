@@ -1,4 +1,4 @@
-import { ApolloProvider } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import { Suspense, lazy } from "react";
 import {
   BrowserRouter,
@@ -8,12 +8,10 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import { client } from "./config/wsClient";
-import { AuthProvider } from "./context/AuthContext";
+import { toast } from "sonner";
+import { JsonViewer } from "./components/JsonViewer";
 import { AxiosProvider } from "./context/AxiosContext";
 import { SeekerProvider } from "./context/SeekerContext";
-import { useAuth } from "./hooks";
-import { useCan } from "./hooks/useCan";
 import { LoginPage } from "./pages/LoginPage";
 import { FormCreatePermission } from "./pages/PermissionPage/components/FormCreatePermission";
 import { Property } from "./pages/PropertyPage/components/Property";
@@ -25,6 +23,8 @@ import {
   Level,
   Resource,
 } from "./pages/UserPage/components/Permission/Permission";
+import { useAuthStore } from "./state/useAuthStore";
+import { User } from "./pages/UserPage/models/types";
 
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"));
 const Permission = lazy(
@@ -55,230 +55,273 @@ const ProtectedRouteWithPermission: React.ComponentType<{
   level: Level;
   resource: Resource;
 }> = ({ level, resource }) => {
-  const { data, loading } = useCan({
-    can: [{ resource, level }],
-  });
+  const { can } = useAuthStore();
 
-  if (loading) {
-    return <div>Verificando sus permisos</div>;
-  }
-
-  if (data[`${level}@${resource}`]) {
+  if (can(`${level}@${resource}`)) {
     return <Outlet />;
   }
 
   return <Navigate to={"../"} />;
 };
 
-const ProtectedRoute: React.ComponentType<{
-  isAllowed: boolean;
+const GET_NEW_ACCESSTOKEN_QUERY = gql`
+  query GetNewAccessToken($refreshToken: String) {
+    result: getNewAccessToken(refreshToken: $refreshToken) {
+      accessToken
+      user {
+        username
+        role {
+          name
+          permissions {
+            permission {
+              level
+              resource
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+const VerifyAuthRoute: React.ComponentType<{
   redirectTo: string;
-}> = ({ isAllowed, redirectTo }) => {
-  if (isAllowed) {
+}> = ({ redirectTo }) => {
+  const { isAuth } = useAuthStore();
+
+  if (isAuth) {
     return <Outlet />;
   }
 
   return <Navigate to={redirectTo} />;
 };
 
-function App() {
-  const { role, isAuth } = useAuth();
-  const isAdmin = role === "administrador";
+const VerifyUnauthRoute: React.ComponentType<{
+  redirectTo: string;
+}> = ({ redirectTo }) => {
+  const { isAuth, refreshToken, setAccessToken, logout, setUser } =
+    useAuthStore();
+  const { loading } = useQuery<
+    { result: { accessToken: string; user: User } },
+    { refreshToken?: string }
+  >(GET_NEW_ACCESSTOKEN_QUERY, {
+    variables: {
+      refreshToken,
+    },
+    onCompleted({ result: { accessToken, user } }) {
+      setAccessToken(accessToken);
+      setUser(user);
+    },
+    onError(error) {
+      toast.error(error.message);
+      logout();
+    },
+    context: {
+      headers: {
+        operation: "Login",
+      },
+    },
+    skip: !refreshToken,
+  });
 
+  if (loading) {
+    return <div>Verificando credenciales</div>;
+  }
+
+  if (!isAuth) {
+    return <Outlet />;
+  }
+
+  return <Navigate to={redirectTo} />;
+};
+
+const ProtectedRoute: React.ComponentType<{
+  isAllowed: boolean;
+  redirectTo: string;
+}> = ({ isAllowed, redirectTo }) => {
+  const state = useAuthStore();
+  if (isAllowed) {
+    return (
+      <>
+        <JsonViewer value={state} />
+        <Outlet />
+      </>
+    );
+  }
+
+  return <Navigate to={redirectTo} />;
+};
+
+function App() {
   return (
     <BrowserRouter>
       <AxiosProvider>
-        <ApolloProvider client={client}>
-          <AuthProvider>
-            <SeekerProvider>
-              <Routes>
-                <Route path="/" element={<LazyComponent Component={NavBar} />}>
+        <SeekerProvider>
+          <Routes>
+            <Route element={<VerifyAuthRoute redirectTo="/auth" />}>
+              <Route path="/" element={<LazyComponent Component={NavBar} />}>
+                <Route index element={<LazyComponent Component={HomePage} />} />
+                <Route
+                  path="properties"
+                  element={<LazyComponent Component={PropertyPage} />}
+                >
                   <Route
                     element={
-                      <ProtectedRoute isAllowed={isAuth} redirectTo="/auth" />
+                      <ProtectedRouteWithPermission
+                        resource="PROPERTY"
+                        level="READ"
+                      />
                     }
                   >
-                    <Route
-                      index
-                      element={<LazyComponent Component={HomePage} />}
+                    <Route index Component={PropertyList} />
+                    <Route path=":id" Component={Property} />
+                  </Route>
+                  <Route
+                    element={
+                      <ProtectedRouteWithPermission
+                        resource="PROPERTY"
+                        level="CREATE"
+                      />
+                    }
+                  >
+                    <Route path="create" Component={PropertyForm} />
+                  </Route>
+                </Route>
+                <Route
+                  path="/users"
+                  element={
+                    <ProtectedRouteWithPermission
+                      level="READ"
+                      resource="USER"
                     />
+                  }
+                >
+                  <Route
+                    index
+                    element={<LazyComponent Component={UserPage} />}
+                  />
+                  <Route
+                    path="permissions"
+                    element={<LazyComponent Component={Permission} />}
+                  />
+                  <Route
+                    element={
+                      <ProtectedRouteWithPermission
+                        level="CREATE"
+                        resource="USER"
+                      />
+                    }
+                  >
+                    <Route path="create" Component={FormCreateUser} />
                     <Route
-                      path="properties"
-                      element={<LazyComponent Component={PropertyPage} />}
-                    >
-                      <Route
-                        element={
-                          <ProtectedRouteWithPermission
-                            resource="PROPERTY"
-                            level="READ"
-                          />
-                        }
-                      >
-                        <Route index Component={PropertyList} />
-                        <Route path=":id" Component={Property} />
-                      </Route>
-                      <Route
-                        element={
-                          <ProtectedRouteWithPermission
-                            resource="PROPERTY"
-                            level="CREATE"
-                          />
-                        }
-                      >
-                        <Route path="create" Component={PropertyForm} />
-                      </Route>
-                    </Route>
-                    <Route
-                      path="/users"
                       element={
                         <ProtectedRouteWithPermission
-                          level="READ"
+                          level="UPDATE"
                           resource="USER"
                         />
                       }
                     >
                       <Route
-                        index
-                        element={<LazyComponent Component={UserPage} />}
+                        path="edit"
+                        Component={() => {
+                          const { state } = useLocation();
+
+                          return <FormCreateUser user={state} />;
+                        }}
                       />
+                    </Route>
+                  </Route>
+                </Route>
+                <Route path="/admin">
+                  <Route
+                    path="records"
+                    element={<LazyComponent Component={RecordPage} />}
+                  />
+                  <Route path="permissions">
+                    <Route
+                      element={
+                        <ProtectedRouteWithPermission
+                          level="READ"
+                          resource="PERMISSION"
+                        />
+                      }
+                    >
                       <Route
-                        path="permissions"
-                        element={<LazyComponent Component={Permission} />}
+                        index
+                        element={<LazyComponent Component={PermissionPage} />}
                       />
+                    </Route>
+                    <Route
+                      element={
+                        <ProtectedRouteWithPermission
+                          level="CREATE"
+                          resource="PERMISSION"
+                        />
+                      }
+                    >
+                      <Route path="create" Component={FormCreatePermission} />
+                    </Route>
+                    <Route
+                      element={
+                        <ProtectedRouteWithPermission
+                          level="UPDATE"
+                          resource="PERMISSION"
+                        />
+                      }
+                    >
+                      <Route
+                        path="edit"
+                        Component={() => {
+                          const { state } = useLocation();
+
+                          return <FormCreatePermission permission={state} />;
+                        }}
+                      />
+                    </Route>
+                    <Route
+                      element={
+                        <ProtectedRouteWithPermission
+                          level="READ"
+                          resource="ROLE"
+                        />
+                      }
+                    >
                       <Route
                         element={
                           <ProtectedRouteWithPermission
                             level="CREATE"
-                            resource="USER"
-                          />
-                        }
-                      >
-                        <Route path="create" Component={FormCreateUser} />
-                        <Route
-                          element={
-                            <ProtectedRouteWithPermission
-                              level="UPDATE"
-                              resource="USER"
-                            />
-                          }
-                        >
-                          <Route
-                            path="edit"
-                            Component={() => {
-                              const { state } = useLocation();
-
-                              return <FormCreateUser user={state} />;
-                            }}
-                          />
-                        </Route>
-                      </Route>
-                    </Route>
-                    <Route path="/admin">
-                      <Route
-                        element={
-                          <ProtectedRoute
-                            isAllowed={isAdmin}
-                            redirectTo="../"
+                            resource="ROLE"
                           />
                         }
                       >
                         <Route
-                          path="records"
-                          element={<LazyComponent Component={RecordPage} />}
-                        />
-                      </Route>
-                      <Route path="permissions">
-                        <Route
-                          element={
-                            <ProtectedRouteWithPermission
-                              level="READ"
-                              resource="PERMISSION"
-                            />
-                          }
-                        >
-                          <Route
-                            index
-                            element={
-                              <LazyComponent Component={PermissionPage} />
-                            }
-                          />
-                        </Route>
-                        <Route
-                          element={
-                            <ProtectedRouteWithPermission
-                              level="CREATE"
-                              resource="PERMISSION"
-                            />
-                          }
-                        >
-                          <Route
-                            path="create"
-                            Component={FormCreatePermission}
-                          />
-                        </Route>
-                        <Route
                           element={
                             <ProtectedRouteWithPermission
                               level="UPDATE"
-                              resource="PERMISSION"
-                            />
-                          }
-                        >
-                          <Route
-                            path="edit"
-                            Component={() => {
-                              const { state } = useLocation();
-
-                              return (
-                                <FormCreatePermission permission={state} />
-                              );
-                            }}
-                          />
-                        </Route>
-                        <Route
-                          element={
-                            <ProtectedRouteWithPermission
-                              level="READ"
                               resource="ROLE"
                             />
                           }
                         >
                           <Route
-                            element={
-                              <ProtectedRouteWithPermission
-                                level="CREATE"
-                                resource="ROLE"
-                              />
-                            }
-                          >
-                            <Route
-                              element={
-                                <ProtectedRouteWithPermission
-                                  level="UPDATE"
-                                  resource="ROLE"
-                                />
-                              }
-                            >
-                              <Route
-                                path=":role"
-                                element={<LazyComponent Component={RolePage} />}
-                              />
-                            </Route>
-                          </Route>
+                            path=":role"
+                            element={<LazyComponent Component={RolePage} />}
+                          />
                         </Route>
                       </Route>
                     </Route>
                   </Route>
                 </Route>
-                <Route
-                  path="*"
-                  element={<LazyComponent Component={NotFoundPage} />}
-                />
-                <Route path="/auth" Component={LoginPage} />
-              </Routes>
-            </SeekerProvider>
-          </AuthProvider>
-        </ApolloProvider>
+              </Route>
+            </Route>
+            <Route
+              path="*"
+              element={<LazyComponent Component={NotFoundPage} />}
+            />
+            <Route element={<VerifyUnauthRoute redirectTo="../" />}>
+              <Route path="/auth" Component={LoginPage} />
+            </Route>
+          </Routes>
+        </SeekerProvider>
       </AxiosProvider>
     </BrowserRouter>
   );

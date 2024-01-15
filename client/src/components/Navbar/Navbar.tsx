@@ -1,7 +1,6 @@
 import { Col, Container, Navbar, Row } from "react-bootstrap";
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { useAuth } from "../../hooks";
 import { useSeeker } from "../../hooks/useSeeker";
 import { Avatar } from "../Avatar";
 import { BackButton } from "../BackButton";
@@ -10,25 +9,11 @@ import { SeekerModal } from "../SeekerModal";
 import { useApolloClient } from "@apollo/client";
 import { useConnectionSubscription } from "../../pages/UserPage/hooks/useConnectionSubscription";
 
-// const ON_CONNECTED_SUBCRIPTION = gql`
-//   subscription OnUserConnected {
-//     userConnected {
-//       username
-//       connected
-//     }
-//   }
-// `;
-
 const NavbarComponent: React.FC = () => {
-  const { isAuth } = useAuth();
   const { isModalOpen } = useSeeker();
   const client = useApolloClient();
 
   useConnectionSubscription(client);
-
-  if (!isAuth) {
-    return <Navigate to={"/auth"} />;
-  }
   return (
     <div className="d-flex flex-column vh-100">
       <Navbar expand="sm" sticky="top" bg="body-tertiary" className="shadow-sm">

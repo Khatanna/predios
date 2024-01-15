@@ -1,6 +1,7 @@
 import { GraphQLArgs, specifiedDirectives } from "graphql";
 import { Context } from "../../types";
 import { hasPermission, prisma } from "../../utilities";
+import { Property } from "@prisma/client";
 
 export const getAllProperties = async (
   _parent: any,
@@ -180,13 +181,13 @@ export const getProperty = async (
       take: prevCursor ? -1 : 1,
       cursor: nextCursor
         ? {
-          id: nextCursor,
-        }
+            id: nextCursor,
+          }
         : prevCursor
-          ? {
+        ? {
             id: prevCursor,
           }
-          : undefined,
+        : undefined,
       orderBy: {
         registryNumber: nextCursor ? "asc" : prevCursor ? "desc" : "asc",
       },
@@ -514,21 +515,40 @@ export const getProperties = async (
     page = 1,
     limit = 20,
     orderBy = "asc",
+    fieldOrder = "registryNumber",
     all = false,
-    unit
-  }: { page: number; limit?: number; orderBy: "asc" | "desc"; all: boolean, unit: string },
+    unit,
+  }: {
+    page: number;
+    limit?: number;
+    fieldOrder: keyof Property;
+    orderBy: "asc" | "desc";
+    all: boolean;
+    unit: string;
+  },
   { prisma, userContext }: Context,
 ) => {
   try {
     hasPermission(userContext, "READ", "PROPERTY");
-    const total = await prisma.property.count();
-    console.log({ page, limit, orderBy, all, unit });
+    const total = await prisma.property.count({
+      where:
+        unit && unit !== "all"
+          ? {
+              responsibleUnit: {
+                name: unit,
+              },
+            }
+          : undefined,
+    });
     const properties = await prisma.property.findMany({
-      where: unit && unit !== 'all' ? {
-        responsibleUnit: {
-          name: unit
-        }
-      } : undefined,
+      where:
+        unit && unit !== "all"
+          ? {
+              responsibleUnit: {
+                name: unit,
+              },
+            }
+          : undefined,
       include: {
         beneficiaries: true,
         activity: true,
@@ -562,16 +582,15 @@ export const getProperties = async (
           include: {
             responsible: true,
             state: true,
-          }
+          },
         },
       },
       skip: all ? 0 : (page - 1) * limit,
       take: all ? total : limit,
       orderBy: {
-        registryNumber: orderBy,
+        [fieldOrder]: orderBy,
       },
     });
-    console.log(properties.length)
 
     return {
       total,
@@ -584,8 +603,18 @@ export const getProperties = async (
 export const getPropertyByAttribute = async (
   _parent: any,
   {
-    fieldName, value, page, limit, orderBy = 'asc'
-  }: { page: number, limit: number, orderBy: 'asc' | 'desc', fieldName: string, value: string },
+    fieldName,
+    value,
+    page,
+    limit,
+    orderBy = "asc",
+  }: {
+    page: number;
+    limit: number;
+    orderBy: "asc" | "desc";
+    fieldName: string;
+    value: string;
+  },
   { prisma, userContext }: Context,
 ) => {
   try {
@@ -593,7 +622,7 @@ export const getPropertyByAttribute = async (
     const properties = prisma.property.findMany({
       where: {
         [fieldName]: {
-          contains: value
+          contains: value,
         },
       },
       include: {
@@ -660,11 +689,11 @@ export const getPropertyByAttribute = async (
       orderBy: {
         registryNumber: orderBy,
       },
-    })
+    });
     const total = await prisma.property.count({
       where: {
         [fieldName]: {
-          contains: value
+          contains: value,
         },
       },
       orderBy: {

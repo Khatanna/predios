@@ -10,13 +10,12 @@ import {
   XSquare,
 } from "react-bootstrap-icons";
 import {
-  Controller,
   UseFieldArrayReturn,
   useFieldArray,
   useFormContext,
 } from "react-hook-form";
 import { Tooltip } from "../../../../components/Tooltip";
-import { useAuth, useCustomMutation } from "../../../../hooks";
+import { useCustomMutation } from "../../../../hooks";
 import {
   customSwalError,
   customSwalSuccess,
@@ -62,12 +61,10 @@ const TrackingItem: React.FC<
     "remove" | "update"
   >
 > = ({ index, remove, update }) => {
-  const { role } = useAuth();
   const queryClient = useQueryClient();
   const {
     register,
     getValues,
-    control,
     formState: { defaultValues },
   } = useFormContext<Property>();
   const isNew = index >= (defaultValues?.trackings?.length ?? 0);
@@ -201,7 +198,7 @@ const TrackingItem: React.FC<
           />
         </Form.Group>
       </Col>
-      {role === "administrador" && (
+      {"administrador" === "administrador" && (
         <div
           className={
             "position-absolute top-0 left-0 mt-1 d-flex gap-1 justify-content-end"
@@ -293,7 +290,6 @@ const TrackingItem: React.FC<
 
 const TrackingList: React.FC = () => {
   const { control } = useFormContext<Property>();
-  const { role } = useAuth();
   const {
     fields: trackings,
     append,
@@ -323,7 +319,7 @@ const TrackingList: React.FC = () => {
           </Alert>
         </Row>
       )}
-      {role === "administrador" && (
+      {"administrador" === "administrador" && (
         <Row>
           <Button
             size="sm"

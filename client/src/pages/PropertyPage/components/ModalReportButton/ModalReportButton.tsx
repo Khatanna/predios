@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Tooltip } from "../../../../components/Tooltip";
-import { FiletypeXlsx } from "react-bootstrap-icons";
 import { Modal } from "react-bootstrap";
+import { FiletypeXlsx } from "react-bootstrap-icons";
+import { Tooltip } from "../../../../components/Tooltip";
 import { FormReport } from "../FormReport";
 
 const ModalReportButton: React.FC<{ max: number }> = ({ max }) => {
@@ -9,12 +9,14 @@ const ModalReportButton: React.FC<{ max: number }> = ({ max }) => {
   return (
     <>
       <Tooltip label="Generar reporte">
-        <FiletypeXlsx
-          size={30}
-          color="green"
-          role="button"
-          onClick={() => setShow(true)}
-        />
+        <div>
+          <FiletypeXlsx
+            size={36}
+            color="green"
+            role="button"
+            onClick={() => setShow(true)}
+          />
+        </div>
       </Tooltip>
       <Modal show={show} onHide={() => setShow(false)} centered size="sm">
         <Modal.Header closeButton>

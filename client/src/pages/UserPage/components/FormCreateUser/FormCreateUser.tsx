@@ -54,12 +54,14 @@ const schema = yup.object({
   status: yup.string().required("El usuario debe tener un estado"),
 });
 
-const GET_ALL_USER_TYPES_QUERY = gql`{
-  userTypes: getAllUserTypes {
-    id
-    name
+const GET_ALL_USER_TYPES_QUERY = gql`
+  {
+    userTypes: getAllUserTypes {
+      id
+      name
+    }
   }
-}`;
+`;
 const UDPATE_USER_MUTATION = gql`
   mutation UpdateUser($username: String, $input: UserInput) {
     user: updateUserByUsername(username: $username, input: $input) {
@@ -73,9 +75,11 @@ const UDPATE_USER_MUTATION = gql`
 `;
 
 const SelectUserType: React.FC<FormSelectProps> = (props) => {
-  const { data, error, isLoading } = useQuery<{ userTypes: UserType[] }>(GET_ALL_USER_TYPES_QUERY);
+  const { data, error, loading } = useQuery<{ userTypes: UserType[] }>(
+    GET_ALL_USER_TYPES_QUERY,
+  );
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="d-flex justify-content-center">
         <Spinner variant="danger" />
@@ -270,7 +274,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
       createUser({
         variables: {
           input: data,
-        }
+        },
       });
     }
     reset();
@@ -387,7 +391,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               <Controller
                 name="role.name"
                 control={control}
-                defaultValue={"usuario"}
+                defaultValue={"undefined"}
                 render={({ field }) => <SelectRol {...field} />}
               />
               <Error>{errors.type?.name?.message}</Error>

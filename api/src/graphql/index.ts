@@ -14,6 +14,11 @@ import { prisma, pubSub, throwUnauthorizedError } from "../utilities";
 import { getError } from "../utilities/getError";
 import { throwPrismaError } from "../utilities/throwPrismaError";
 import { schema } from "./schema";
+import {
+  JsonWebTokenError,
+  TokenExpiredError,
+  NotBeforeError,
+} from "jsonwebtoken";
 
 export const app = express();
 export const httpsServer = https.createServer(
@@ -117,29 +122,16 @@ export const server = new ApolloServer({
   // introspection: false,
   // plugins: [ApolloServerPluginLandingPageDisabled()],
   formatError(formattedError, error) {
-    if (
-      unwrapResolverError(error) instanceof Prisma.PrismaClientKnownRequestError
-    ) {
-      const e = throwPrismaError(
-        unwrapResolverError(error) as Prisma.PrismaClientKnownRequestError,
-      );
-      // if (e.message.includes("No User found")) {
-      //   throw new GraphQLError("Este usuario no existe en el sistema XD");
-      // }
-
+    const unwrapError = unwrapResolverError(error);
+    if (unwrapError instanceof Prisma.PrismaClientKnownRequestError) {
+      const e = throwPrismaError(unwrapError);
       throw new GraphQLError(e.message);
     }
 
-    if (
-      unwrapResolverError(error) instanceof
-      Prisma.PrismaClientInitializationError
-    ) {
-      const e = unwrapResolverError(
-        error,
-      ) as Prisma.PrismaClientInitializationError;
-
-      const errorMessage = getError(e.message)[
-        e.errorCode ?? e.message.includes(`Can't reach database server at`)
+    if (unwrapError instanceof Prisma.PrismaClientInitializationError) {
+      const errorMessage = getError(unwrapError.message)[
+        unwrapError.errorCode ??
+        unwrapError.message.includes(`Can't reach database server at`)
           ? "P1001"
           : "default"
       ];
@@ -147,16 +139,47 @@ export const server = new ApolloServer({
       throw new GraphQLError(errorMessage);
     }
 
-    if (error instanceof GraphQLError) {
-      console.log({ error });
-      throw new GraphQLError(error.message);
+    if (unwrapError instanceof TokenExpiredError) {
+      throw new GraphQLError(`El token expiro vuelva a iniciar sesión`);
     }
 
-    if (unwrapResolverError(error) instanceof Error) {
-      const normalError = unwrapResolverError(error) as Error;
-      throw new GraphQLError(normalError.message);
+    if (unwrapError instanceof JsonWebTokenError) {
+      console.log(unwrapError.message);
+      throw new GraphQLError(
+        jsonWebTokenErrorMap[unwrapError.message] ??
+          "Ocurrio al verificar el token",
+      );
+    }
+
+    if (unwrapError instanceof NotBeforeError) {
+      throw new GraphQLError(
+        `Eres un viajero del tiempo, este token no ha sido generado aun`,
+      );
+    }
+
+    if (unwrapError instanceof Error) {
+      console.log({ unwrapError }, { type: "Error" });
+      throw new GraphQLError(unwrapError.message);
+    }
+
+    if (error instanceof GraphQLError) {
+      throw new GraphQLError(error.message);
     }
 
     return formattedError;
   },
 });
+
+const jsonWebTokenErrorMap: Record<string, string | undefined> = {
+  "jwt must be provided": "Debe enviar un token",
+  "invalid token": "Token inválido",
+  "jwt malformed": "Estructura del token inválida",
+  "jwt signature is required": "Firma requerida en el token",
+  "invalid signature": "Firma del token inválida",
+  "jwt audience invalid. expected: [OPTIONS AUDIENCE]":
+    "Audiencia del token inválida",
+  "jwt issuer invalid. expected: [OPTIONS ISSUER]": "Emisor del token inválido",
+  "jwt id invalid. expected: [OPTIONS JWT ID]": "ID del token inválido",
+  "jwt subject invalid. expected: [OPTIONS SUBJECT]":
+    "Sujeto del token inválido",
+};

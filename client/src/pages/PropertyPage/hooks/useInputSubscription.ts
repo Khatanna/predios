@@ -2,8 +2,6 @@ import { gql, useMutation, useSubscription } from "@apollo/client";
 import { useState } from "react";
 import { FieldPath, useFormContext } from "react-hook-form";
 import { toast } from "sonner";
-import { useAuth } from "../../../hooks";
-import { useLazyCan } from "../../../hooks/useLazyCan";
 import { useSeeker } from "../../../hooks/useSeeker";
 import {
   Property,
@@ -12,6 +10,7 @@ import {
   TUseInputSubscriptionParams,
 } from "../models/types";
 import { useModalInputStore } from "../../../state/useModalInputStore";
+import { useAuthStore } from "../../../state/useAuthStore";
 
 const FOCUSED_INPUT_MUTATION = gql`
   mutation FocusInput($contextId: String, $name: String, $isFocused: Boolean) {
@@ -66,7 +65,7 @@ export const useInputSubscription = ({
   events,
   options,
 }: TUseInputSubscriptionParams): ReturnTUseInputSubscription => {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const { register, setValue, getValues } = useFormContext<Property>();
   const [isDirty, setIsDirty] = useState(false);
   const [
@@ -141,10 +140,10 @@ export const useInputSubscription = ({
       }
     },
   });
-  const { data, fetchCan, loading } = useLazyCan();
-  const canEdit = data[`${getValues("id") ? "UPDATE" : "CREATE"}@PROPERTY`];
+  const { can } = useAuthStore();
+  const canEdit = can(`${getValues("id") ? "UPDATE" : "CREATE"}@PROPERTY`);
   const { setIsAvailableModal } = useSeeker();
-  const { openModal, isOpen, setFieldName } = useModalInputStore()
+  const { openModal, isOpen, setFieldName } = useModalInputStore();
   return {
     username,
     isFocus: isCurrentInput && isFocused && !itsMe && canEdit,
@@ -153,29 +152,24 @@ export const useInputSubscription = ({
       disabled: isCurrentInput && isFocused && !itsMe,
       readOnly: !canEdit,
       onFocus: async (e) => {
-        if (name === 'technicalObservation') {
+        if (!canEdit) {
+          toast.info("No puede editar este campo");
+        }
+        if (name === "technicalObservation") {
           setIsAvailableModal(false);
-          setFieldName({ fieldName: name })
+          setFieldName({ fieldName: name });
         }
         if (getValues("id")) {
           handleFocused(true);
         }
         events?.onFocus?.(e);
         console.log({ name, event: "focus" });
-        const level = getValues("id") ? "UPDATE" : "CREATE";
-        fetchCan({
-          variables: {
-            can: [{ resource: "PROPERTY", level }],
-          },
-        });
       },
       onBlur: async (e) => {
         if (!isOpen && name === "technicalObservation") {
-          setIsAvailableModal(true)
+          setIsAvailableModal(true);
         }
-        if (!data[`${getValues("id") ? "UPDATE" : "CREATE"}@PROPERTY`]) {
-          toast.info("No puede editar este campo")
-        }
+
         if (getValues("id")) {
           handleFocused(false);
         }
@@ -213,11 +207,16 @@ export const useInputSubscription = ({
         }
       },
       onKeyDown: async (e) => {
-        if (name !== 'technicalObservation') return
+        if (name !== "technicalObservation") return;
         if (e.ctrlKey) {
-          if ((e.key === 'b' || e.key === 'B') || (e.key === 'f' || e.key === 'F')) {
+          if (
+            e.key === "b" ||
+            e.key === "B" ||
+            e.key === "f" ||
+            e.key === "F"
+          ) {
             e.preventDefault();
-            openModal()
+            openModal();
           }
         }
       },

@@ -4,8 +4,8 @@ import React from "react";
 import { Dropdown } from "react-bootstrap";
 import { PersonCircle } from "react-bootstrap-icons";
 import { toast } from "sonner";
-import { useAuth } from "../../hooks";
 import { Tooltip } from "../Tooltip";
+import { useAuthStore } from "../../state/useAuthStore";
 
 const LOGOUT = gql`
   mutation Logout($username: String, $token: String) {
@@ -15,7 +15,7 @@ const LOGOUT = gql`
 
 const Avatar: React.FC = () => {
   const queryClient = useQueryClient();
-  const { logout: logoutLocal, user, refreshToken, role } = useAuth();
+  const { logout: logoutLocal, user, refreshToken } = useAuthStore();
 
   const [logout] = useMutation<
     { logout: boolean },
@@ -46,7 +46,7 @@ const Avatar: React.FC = () => {
       <div className="mx-4 align-items-center d-flex flex-column">
         <div className="text-success fw-bold">{user?.username}</div>
         <div className="text-warning fw-medium">
-          <small>{role}</small>
+          <small>{user?.role.name ?? "usuario sin rol"}</small>
         </div>
       </div>
       <div className="d-flex justify-content-center flex-column align-items-center">

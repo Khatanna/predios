@@ -20,8 +20,8 @@ import {
   PersonGear,
   PersonWorkspace,
 } from "react-bootstrap-icons";
-import { Controller, FormProvider, useForm } from "react-hook-form";
-import { useAuth, useCustomMutation } from "../../../../hooks";
+import { FormProvider, useForm } from "react-hook-form";
+import { useCustomMutation } from "../../../../hooks";
 import {
   customSwalError,
   customSwalSuccess,
@@ -50,13 +50,10 @@ import { StateSelect } from "../StateSelect";
 import { SubdirectorySelect } from "../SubdirectorySelect";
 import { TrackingList } from "../TrackingList";
 import { TypeSelect } from "../TypeSelect";
-import { useInputSubscription } from "../../hooks/useInputSubscription";
-import { toast } from "sonner";
 import { SeekerModalInput } from "../../../../components/SeekerModalInput";
-import { useCan } from "../../../../hooks/useCan";
+import { useAuthStore } from "../../../../state/useAuthStore";
 
 const PropertyForm: React.FC = () => {
-  const { role } = useAuth();
   const { property, reset } = usePaginationStore();
   const colRef = useRef<HTMLDivElement | null>(null);
   const { handleSubmit, register, ...methods } = useForm<Property>({
@@ -109,7 +106,7 @@ const PropertyForm: React.FC = () => {
     }
   };
   const { setModal, ...modal } = useModalStore();
-  const { data: can } = useCan({ can: [{ level: 'CREATE', resource: 'PROPERTY' }] })
+  const { can } = useAuthStore();
   useEffect(() => {
     return () => {
       if (methods.getValues("id")) {
@@ -353,7 +350,6 @@ const PropertyForm: React.FC = () => {
                         <Row className="border border-1 py-2 border-dark-subtle rounded-1 d-flex justify-content-center mt-1">
                           <ObservationList />
                         </Row>
-
                       </Tab>
                       <Tab eventKey={"seguimiento"} title="Seguimiento">
                         <TrackingList />
@@ -433,12 +429,14 @@ const PropertyForm: React.FC = () => {
                   </Row>
                 </Col>
               </Row>
-              {can['CREATE@PROPERTY'] && (
+              {can("CREATE@PROPERTY") && (
                 <Row className="my-2">
                   <Col className="d-flex justify-content-end gap-2">
-                    {!methods.getValues('id') && <Button type="submit" variant="warning">
-                      Crear predio
-                    </Button>}
+                    {!methods.getValues("id") && (
+                      <Button type="submit" variant="warning">
+                        Crear predio
+                      </Button>
+                    )}
                   </Col>
                 </Row>
               )}

@@ -658,7 +658,7 @@ async function main() {
 
     const roles: { roleId: string; assignedBy: string }[] = [];
 
-    if (permission.level === "READ") {
+    if (permission.level === "READ" && permission.resource !== "RECORD") {
       roles.push({
         roleId: "bcbc1695-ec95-4757-8bfd-9cdce7c12cc5",
         assignedBy: "carlos.chambi",
@@ -668,7 +668,10 @@ async function main() {
     if (
       permission.resource !== "USER" &&
       permission.resource !== "PERMISSION" &&
-      permission.resource !== "RECORD"
+      permission.resource !== "RECORD" &&
+      permission.resource !== "USERTYPE" &&
+      permission.resource !== "ROLE" &&
+      permission.resource !== "ROLEHASPERMISSION"
     ) {
       roles.push({
         roleId: "354c1d7d-3935-4ae8-9058-ca1c01c9af0d",

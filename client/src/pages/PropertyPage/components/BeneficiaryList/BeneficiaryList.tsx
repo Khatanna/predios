@@ -30,7 +30,7 @@ import { Beneficiary } from "../../../BeneficiaryPage/models/types";
 import { Property } from "../../models/types";
 import { CustomLabel } from "../CustomLabel";
 import { DropdownMenu } from "../../../../components/DropdownMenu";
-import { useCan } from "../../../../hooks/useCan";
+import { useAuthStore } from "../../../../state/useAuthStore";
 
 export type BeneficiaryListProps = {
   maxHeight: number;
@@ -132,13 +132,8 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
       );
     },
   });
-  const { data: can } = useCan({
-    can: [
-      { level: 'DELETE', resource: 'BENEFICIARY' },
-      { level: 'UPDATE', resource: 'BENEFICIARY' },
-    ]
-  })
-  const thisCan = can['DELETE@BENEFICIARY'] && can['UPDATE@BENEFICIARY']
+  const { can } = useAuthStore();
+  const thisCan = can("DELETE@BENEFICIARY") && can("UPDATE@BENEFICIARY");
   if (!edit && beneficiary.name.length > 0) {
     return (
       <ListGroup.Item className="d-flex justify-content-between align-items-center">
@@ -277,11 +272,7 @@ const BeneficiaryList: React.FC<BeneficiaryListProps> = ({ maxHeight }) => {
     control,
     name: "beneficiaries",
   });
-  const { data: can } = useCan({
-    can: [
-      { level: 'CREATE', resource: 'BENEFICIARY' },
-    ]
-  })
+  const { can } = useAuthStore();
   return (
     <>
       <Row>
@@ -299,10 +290,11 @@ const BeneficiaryList: React.FC<BeneficiaryListProps> = ({ maxHeight }) => {
               style={{
                 maxHeight: maxHeight - 35,
               }}
-              className={`${beneficiaries.length <= 2
-                ? "overflow-y-visible "
-                : "overflow-y-scroll"
-                }  pe-1`}
+              className={`${
+                beneficiaries.length <= 2
+                  ? "overflow-y-visible "
+                  : "overflow-y-scroll"
+              }  pe-1`}
             >
               {beneficiaries.map((beneficiary, index) => (
                 <BeneficiaryItem
@@ -322,7 +314,7 @@ const BeneficiaryList: React.FC<BeneficiaryListProps> = ({ maxHeight }) => {
           )}
         </Col>
       </Row>
-      {can['CREATE@BENEFICIARY'] && (
+      {can("CREATE@BENEFICIARY") && (
         <Row className="align-self-end">
           <Col>
             <Button

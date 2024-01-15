@@ -3,16 +3,15 @@ import { Button, Col, FloatingLabel, Form, Spinner } from "react-bootstrap";
 import {
   CapslockFill,
   InfoCircle,
-  Key,
   Person,
   PersonLock,
 } from "react-bootstrap-icons";
+import { Tooltip } from "../../../../components/Tooltip";
 import { normalizeString } from "../../../UserPage/utils/normalizeString";
 import { useFetchLogin, useFormLogin } from "../../hooks";
 import { FormLoginValues } from "../../models/types";
-import { ShowPassword } from "../ShowPassword";
-import { Tooltip } from "../../../../components/Tooltip";
 import { useRememberStore } from "../../state/useRememberStore";
+import { ShowPassword } from "../ShowPassword";
 
 const normalizeValues = (values: FormLoginValues): FormLoginValues => {
   return {
@@ -33,12 +32,13 @@ const LoginForm: React.FC = () => {
   } = useFormLogin({
     username: username ?? "",
   });
-  const { isLoading, login } = useFetchLogin();
+
+  const [login, { loading }] = useFetchLogin();
   const [showPassword, setShowPassword] = useState(false);
   const [capsLock, setCapsLock] = useState(false);
   const password = watch("password");
 
-  if (isLoading) {
+  if (loading) {
     return <Spinner variant="primary" />;
   }
 

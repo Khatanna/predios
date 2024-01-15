@@ -19,6 +19,7 @@ export const resources = {
   REFERENCE: "Referencia",
   TRACKING: "Seguimiento",
   STAGE: "Etapa de estado",
+  RECORD: "Historial",
 } as const;
 
 type TitleMessage = {
