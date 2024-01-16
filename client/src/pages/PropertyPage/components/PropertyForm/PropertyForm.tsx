@@ -224,7 +224,7 @@ const PropertyForm: React.FC = () => {
                     </Col>
                   </Row>
                   <Row className="border border-1 py-2 border-dark-subtle rounded-1">
-                    <Localization />
+                    {/* <Localization /> */}
                   </Row>
                   <Row>
                     <Tabs
@@ -237,7 +237,7 @@ const PropertyForm: React.FC = () => {
                           <Col xs={8}>
                             <Row className="gy-2" ref={colRef}>
                               <Col xs={12}>
-                                <StateSelect name="state.name" />
+                                {/* <StateSelect name="state.name" /> */}
                               </Col>
                               <Col xs={12}>
                                 <Form.Group>
@@ -310,20 +310,14 @@ const PropertyForm: React.FC = () => {
                                   </InputGroup>
                                 </Form.Group>
                               </Col>
-                              <Col xs={4}>
-                                <TypeSelect />
-                              </Col>
-                              <Col xs={4}>
-                                <ClasificationSelect />
-                              </Col>
+                              <Col xs={4}>{/* <TypeSelect /> */}</Col>
+                              <Col xs={4}>{/* <ClasificationSelect /> */}</Col>
                               <Col xs={4}>
                                 <ActivitySelect />
                               </Col>
+                              <Col xs={4}>{/* <SubdirectorySelect /> */}</Col>
                               <Col xs={4}>
-                                <SubdirectorySelect />
-                              </Col>
-                              <Col xs={4}>
-                                <ResponsibleUnitSelect />
+                                {/* <ResponsibleUnitSelect /> */}
                               </Col>
                               <Col>
                                 <CustomLabel
@@ -373,9 +367,7 @@ const PropertyForm: React.FC = () => {
                         placeholder="Estado 2"
                       />
                     </Col>
-                    <Col xs={12}>
-                      <GroupedStateSelect />
-                    </Col>
+                    <Col xs={12}>{/* <GroupedStateSelect /> */}</Col>
                     <Col xs={12}>
                       <CustomLabel
                         label="Juridico"
@@ -411,9 +403,7 @@ const PropertyForm: React.FC = () => {
                         )}
                       /> */}
                     </Col>
-                    <Col xs={12}>
-                      <ReferenceSelect />
-                    </Col>
+                    <Col xs={12}>{/* <ReferenceSelect /> */}</Col>
                     <Col xs={12}>
                       <CustomLabel
                         label="Observación tecnica"

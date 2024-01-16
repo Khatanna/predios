@@ -50,39 +50,48 @@ export const createPermissionForRole = async (
   }
 };
 
-export const deletePermissionForRole = async (_parent: any,
-  { role, permission }: { role: string; permission: { resource: Resource, level: LevelPermission } },
-  { prisma, userContext }: Context) => {
+export const deletePermissionForRole = async (
+  _parent: any,
+  {
+    role,
+    permission,
+  }: {
+    role: string;
+    permission: { resource: Resource; level: LevelPermission };
+  },
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, 'DELETE', 'PERMISSION')
+    hasPermission(userContext, "DELETE", "PERMISSION");
 
     const permissionFinded = await prisma.permission.findUniqueOrThrow({
       where: {
         resource_level: {
           level: permission.level,
-          resource: permission.resource
-        }
+          resource: permission.resource,
+        },
       },
       select: {
-        id: true
-      }
-    })
+        id: true,
+      },
+    });
 
     const roleFinded = await prisma.role.findFirstOrThrow({
       where: {
-        name: role
-      }, select: { id: true }
-    })
+        name: role,
+      },
+      select: { id: true },
+    });
 
     // prisma.$executeRawUnsafe()
     await prisma.roleHasPermission.delete({
       where: {
         roleId_permissionId: {
           roleId: roleFinded.id,
-          permissionId: permissionFinded.id
-        }
-      }
-    })
+          permissionId: permissionFinded.id,
+        },
+      },
+    });
 
     return prisma.role.findUnique({
       where: {
@@ -91,12 +100,66 @@ export const deletePermissionForRole = async (_parent: any,
       include: {
         permissions: {
           include: {
-            permission: true
-          }
-        }
-      }
-    })
+            permission: true,
+          },
+        },
+      },
+    });
   } catch (e) {
     throw e;
   }
-}
+};
+export const createRole = async (
+  _parent: any,
+  { name }: { name: string },
+  { prisma, userContext }: Context,
+) => {
+  try {
+    hasPermission(userContext, "CREATE", "ROLE");
+
+    return prisma.role.create({
+      data: {
+        name,
+      },
+    });
+  } catch (e) {
+    throw e;
+  }
+};
+export const deleteRole = async (
+  _parent: any,
+  { name }: { name: string },
+  { prisma, userContext }: Context,
+) => {
+  try {
+    hasPermission(userContext, "DELETE", "ROLE");
+
+    return prisma.role.delete({
+      where: {
+        name,
+      },
+    });
+  } catch (e) {
+    throw e;
+  }
+};
+export const updateRole = async (
+  _parent: any,
+  { currentName, name }: { currentName: string; name: string },
+  { prisma, userContext }: Context,
+) => {
+  try {
+    hasPermission(userContext, "DELETE", "ROLE");
+
+    return prisma.role.update({
+      where: {
+        name: currentName,
+      },
+      data: {
+        name,
+      },
+    });
+  } catch (e) {
+    throw e;
+  }
+};

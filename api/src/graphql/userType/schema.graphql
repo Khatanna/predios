@@ -9,7 +9,9 @@ type Query {
 }
 
 type Mutation {
-  createUserType(input: UserTypeInput): UserType
+  createUserType(name: String): UserType
+  deleteUserType(name: String): UserType
+  updateUserType(currentName: String, name: String): UserType
 }
 
 input UserTypeInput {

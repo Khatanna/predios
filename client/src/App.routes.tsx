@@ -204,33 +204,15 @@ function App() {
                     path="permissions"
                     element={<LazyComponent Component={Permission} />}
                   />
+                  <Route path="create" Component={FormCreateUser} />
                   <Route
-                    element={
-                      <ProtectedRouteWithPermission
-                        level="CREATE"
-                        resource="USER"
-                      />
-                    }
-                  >
-                    <Route path="create" Component={FormCreateUser} />
-                    <Route
-                      element={
-                        <ProtectedRouteWithPermission
-                          level="UPDATE"
-                          resource="USER"
-                        />
-                      }
-                    >
-                      <Route
-                        path="edit"
-                        Component={() => {
-                          const { state } = useLocation();
+                    path="edit"
+                    Component={() => {
+                      const { state } = useLocation();
 
-                          return <FormCreateUser user={state} />;
-                        }}
-                      />
-                    </Route>
-                  </Route>
+                      return <FormCreateUser user={state} />;
+                    }}
+                  />
                 </Route>
                 <Route path="/admin">
                   <Route

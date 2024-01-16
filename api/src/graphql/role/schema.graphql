@@ -5,10 +5,10 @@ type RoleHasPermission {
   permission: Permission
 }
 
-type Role { 
+type Role {
   id: ID!
-  name: String 
-  permissions: [RoleHasPermission] 
+  name: String
+  permissions: [RoleHasPermission]
 }
 
 type Query {
@@ -30,8 +30,13 @@ input RoleInput {
   name: String
 }
 
-type Mutation { 
+type Mutation {
   createPermissionForRole(role: String, permissions: [PermissionsInput]): Role
-  deletePermissionForRole(role: String, permission: PermissionForRoleInput): Role
+  deletePermissionForRole(
+    role: String
+    permission: PermissionForRoleInput
+  ): Role
+  createRole(name: String): Role
+  deleteRole(name: String): Role
+  updateRole(currentName: String, name: String): Role
 }
-

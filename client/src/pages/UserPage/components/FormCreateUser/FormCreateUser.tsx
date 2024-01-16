@@ -1,30 +1,28 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useCallback, useState } from "react";
-import {
-  Alert,
-  Button,
-  Col,
-  Form,
-  FormSelectProps,
-  InputGroup,
-  Row,
-  Spinner,
-} from "react-bootstrap";
-import { CheckCircle, ExclamationTriangle } from "react-bootstrap-icons";
+import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
+import { CheckCircle } from "react-bootstrap-icons";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as yup from "yup";
 import { Tooltip } from "../../../../components/Tooltip";
 import { customSwalError } from "../../../../utilities/alerts";
 import { status } from "../../../../utilities/constants";
-// import { SelectNameable } from "../../../HomePage/HomePage";
 import { Error } from "../../../LoginPage/styled-components/Error";
 import { GET_ALL_USERS_QUERY } from "../../graphQL/types";
 import { useFetchCreateUser } from "../../hooks";
-import { Role, User, UserInput, UserType } from "../../models/types";
+import { User, UserInput } from "../../models/types";
 import { useUsersStore } from "../../state/useUsersStore";
-import { capitalizeString } from "../../utils/capitalizeString";
+import { SelectNameable } from "../../../../components/SelectNameable";
+import {
+  roleMutations,
+  userTypeMutations,
+} from "../../../../graphql/mutations";
+import {
+  GET_ALL_ROLES,
+  GET_ALL_USER_TYPES_QUERY,
+} from "../../../../graphql/queries";
 
 export interface FormCreateUserProps {
   user?: User;
@@ -48,20 +46,23 @@ const schema = yup.object({
     .max(32, "La contraseña no debe tener mas de 32 caracteres"),
   type: yup
     .object({
-      name: yup.string().required("el nombre del tipo es un campo requerido"),
+      name: yup
+        .string()
+        .trim()
+        .matches(/^(?!undefined$).*$/gi, "El tipo de usuario es indefinido")
+        .required("el nombre del tipo es un campo requerido"),
     })
     .required("El tipo es un campo requerdio"),
   status: yup.string().required("El usuario debe tener un estado"),
+  role: yup.object({
+    name: yup
+      .string()
+      .trim()
+      .matches(/^(?!undefined$).*$/gi, "El rol es indefinido")
+      .required("El rol de usuario se un campo requerido"),
+  }),
 });
 
-const GET_ALL_USER_TYPES_QUERY = gql`
-  {
-    userTypes: getAllUserTypes {
-      id
-      name
-    }
-  }
-`;
 const UDPATE_USER_MUTATION = gql`
   mutation UpdateUser($username: String, $input: UserInput) {
     user: updateUserByUsername(username: $username, input: $input) {
@@ -74,89 +75,7 @@ const UDPATE_USER_MUTATION = gql`
   }
 `;
 
-const SelectUserType: React.FC<FormSelectProps> = (props) => {
-  const { data, error, loading } = useQuery<{ userTypes: UserType[] }>(
-    GET_ALL_USER_TYPES_QUERY,
-  );
-
-  if (loading) {
-    return (
-      <div className="d-flex justify-content-center">
-        <Spinner variant="danger" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <Alert variant="warning" className="p-1 py-2 m-0">
-        <small>
-          <div className="d-flex align-items-center gap-2">
-            <ExclamationTriangle size={16} color="red" />
-            <div>No tienes permisos para ver los tipos de usuario</div>
-          </div>
-        </small>
-      </Alert>
-    );
-  }
-
-  return (
-    <Form.Select {...props}>
-      <option value="undefined" disabled>
-        Tipo de usuario
-      </option>
-      {data?.userTypes.map(({ name }) => (
-        <option value={name}>{name}</option>
-      ))}
-    </Form.Select>
-  );
-};
-
-const GET_ALL_ROLES = gql`
-  query GetAllRoles {
-    roles: getAllRoles {
-      name
-    }
-  }
-`;
-
-const SelectRol: React.FC<FormSelectProps> = (props) => {
-  const { data, loading, error } = useQuery<{ roles: Role[] }>(GET_ALL_ROLES);
-  if (loading) {
-    return (
-      <div className="d-flex justify-content-center">
-        <Spinner variant="danger" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <Alert variant="warning" className="p-1 py-2 m-0">
-        <small>
-          <div className="d-flex align-items-center gap-2">
-            <ExclamationTriangle size={16} color="red" />
-            <div>{error.message}</div>
-          </div>
-        </small>
-      </Alert>
-    );
-  }
-
-  return (
-    <Form.Select {...props}>
-      <option value="undefined" disabled>
-        Rol
-      </option>
-      {data?.roles.map(({ name }) => (
-        <option value={name}>{capitalizeString(name)}</option>
-      ))}
-    </Form.Select>
-  );
-};
-
 const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
-  // const { createUserType } = useFetchCreateUserType();
   const [userUpdated, setUserUpdated] = useState(user);
   const { filterText } = useUsersStore();
   const { createUser } = useFetchCreateUser();
@@ -183,11 +102,12 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
   >(UDPATE_USER_MUTATION, {
     refetchQueries: [{ query: GET_ALL_USERS_QUERY }],
     optimisticResponse: ({ input }) => {
-      setUserUpdated(input);
+      setUserUpdated({ id: crypto.randomUUID(), ...input });
       return {
         __typename: "Mutation",
         user: {
           __typename: "User",
+          id: crypto.randomUUID(),
           ...input,
         },
       };
@@ -362,7 +282,15 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                 name="type.name"
                 control={control}
                 defaultValue={"undefined"}
-                render={({ field }) => <SelectUserType {...field} />}
+                render={({ field }) => (
+                  <SelectNameable
+                    {...field}
+                    mutations={userTypeMutations}
+                    resource="USERTYPE"
+                    query={GET_ALL_USER_TYPES_QUERY}
+                    placeholder="Tipo"
+                  />
+                )}
               />
               <Error>{errors.type?.name?.message}</Error>
             </Form.Group>
@@ -392,7 +320,15 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                 name="role.name"
                 control={control}
                 defaultValue={"undefined"}
-                render={({ field }) => <SelectRol {...field} />}
+                render={({ field }) => (
+                  <SelectNameable
+                    {...field}
+                    mutations={roleMutations}
+                    resource="ROLE"
+                    query={GET_ALL_ROLES}
+                    placeholder="Rol"
+                  />
+                )}
               />
               <Error>{errors.type?.name?.message}</Error>
             </Form.Group>

@@ -20,7 +20,6 @@ import {
   customSwalSuccess,
 } from "../../../../utilities/alerts";
 import { useModalStore } from "../../state/useModalStore";
-import { SelectNameable } from "../../../HomePage/HomePage";
 import { useInputSubscription } from "../../hooks/useInputSubscription";
 
 const GET_ALL_CITIES_QUERY = `

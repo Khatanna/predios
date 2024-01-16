@@ -181,26 +181,26 @@ export const mutationMessages: {
     getErrorMessage: (name) =>
       `Ocurrio un error al intentar eliminar el permiso ${name}`,
   },
-  CREATE_USERPERMISSION: {
-    title: "Permiso de usuario creado",
+  CREATE_ROLE: {
+    title: "Rol creado",
     getSuccessMessage: (name) =>
-      `El permiso de usuario ${name} se ha creado correctamente`,
+      `El rol de usuario (${name}) se ha creado correctamente`,
     getErrorMessage: (name) =>
-      `Ocurrio un error al intentar crear el permiso de usuario ${name}`,
+      `Ocurrio un error al intentar crear el rol (${name})`,
   },
-  UPDATE_USERPERMISSION: {
-    title: "Permiso de usuario actualizado",
+  UPDATE_ROLE: {
+    title: "Rol actualizado",
     getSuccessMessage: (name) =>
-      `El permiso de usuario ${name} se ha actualizado correctamente`,
+      `El rol (${name}) se ha actualizado correctamente`,
     getErrorMessage: (name) =>
-      `Ocurrio un error al intentar actualizar el permiso de usuario ${name}`,
+      `Ocurrio un error al intentar actualizar el rol (${name})`,
   },
-  DELETE_USERPERMISSION: {
-    title: "Permiso de usuario eliminado",
+  DELETE_ROLE: {
+    title: "Rol eliminado",
     getSuccessMessage: (name) =>
-      `El permiso de usuario ${name} se ha eliminado correctamente`,
+      `El rol (${name}) se ha eliminado correctamente`,
     getErrorMessage: (name) =>
-      `Ocurrio un error al intentar eliminar el permiso de usuario ${name}`,
+      `Ocurrio un error al intentar eliminar el rol (${name})`,
   },
   CREATE_BENEFICIARY: {
     title: "Beneficiario creado",
@@ -445,6 +445,27 @@ export const mutationMessages: {
       `Ocurrio un error al intentar actualizar el tipo de usuario ${name}`,
   },
   DELETE_USERTYPE: {
+    title: "Tipo de usuario eliminado",
+    getSuccessMessage: (name) =>
+      `El tipo de usuario ${name} se ha eliminado correctamente`,
+    getErrorMessage: (name) =>
+      `Ocurrio un error al intentar eliminar el tipo de usuario ${name}`,
+  },
+  CREATE_RECORD: {
+    title: "Tipo de usuario creado",
+    getSuccessMessage: (name) =>
+      `El tipo de usuario ${name} se ha creado correctamente`,
+    getErrorMessage: (name) =>
+      `Ocurrio un error al intentar crear el tipo de usuario ${name}`,
+  },
+  UPDATE_RECORD: {
+    title: "Tipo de usuario actualizado",
+    getSuccessMessage: (name) =>
+      `El tipo de usuario ${name} se ha actualizado correctamente`,
+    getErrorMessage: (name) =>
+      `Ocurrio un error al intentar actualizar el tipo de usuario ${name}`,
+  },
+  DELETE_RECORD: {
     title: "Tipo de usuario eliminado",
     getSuccessMessage: (name) =>
       `El tipo de usuario ${name} se ha eliminado correctamente`,
