@@ -144,24 +144,24 @@ export const createProperty = async (
           connect: reference,
         },
         technical:
-          technical && technical.user
+          technical && technical.user.username
             ? {
-                create: {
-                  user: {
-                    connect: technical.user,
-                  },
+              create: {
+                user: {
+                  connect: technical.user,
                 },
-              }
+              },
+            }
             : undefined,
         legal:
-          legal && legal.user
+          legal && legal.user.username
             ? {
-                create: {
-                  user: {
-                    connect: legal.user,
-                  },
+              create: {
+                user: {
+                  connect: legal.user,
                 },
-              }
+              },
+            }
             : undefined,
       },
     });
@@ -196,10 +196,10 @@ export const createProperty = async (
           },
           responsible: tracking.responsible?.username
             ? {
-                connect: {
-                  username: tracking.responsible.username,
-                },
-              }
+              connect: {
+                username: tracking.responsible.username,
+              },
+            }
             : undefined,
           property: {
             connect: {
@@ -399,23 +399,23 @@ export const updateFieldNumber = async (
 const resolveFileNumber = (value: string, propertyId: string) => {
   return value.length === 0
     ? {
-        delete: {
+      delete: {
+        propertyId,
+      },
+    }
+    : {
+      upsert: {
+        where: {
           propertyId,
         },
-      }
-    : {
-        upsert: {
-          where: {
-            propertyId,
-          },
-          create: {
-            number: value,
-          },
-          update: {
-            number: value,
-          },
+        create: {
+          number: value,
         },
-      };
+        update: {
+          number: value,
+        },
+      },
+    };
 };
 const resolveUser = (value: string, propertyId: string) => {
   return {
@@ -437,4 +437,18 @@ const resolveUser = (value: string, propertyId: string) => {
       },
     },
   };
+};
+
+export const deleteProperty = async (
+  _parent: any,
+  { id }: { id: string; },
+  { prisma, userContext }: Context,
+) => {
+  hasPermission(userContext, "UPDATE", "PROPERTY");
+
+  return await prisma.property.delete({
+    where: {
+      id,
+    },
+  });
 };

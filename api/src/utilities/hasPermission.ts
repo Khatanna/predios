@@ -10,7 +10,7 @@ export const hasPermission = (
 ): Error | boolean => {
   if (!user)
     throw throwUnAuthenticateError(AuthResponses.UNAUTHENTICATED);
-
+  console.log({ user })
   const permission = user.role.permissions.find(
     ({ permission }) =>
       permission.level === level &&

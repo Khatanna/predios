@@ -99,6 +99,7 @@ type Mutation {
   updateProperty(id: String, input: PropertyInput): Property
   updateField(id: String, fieldName: String, value: String): Property
   updateFieldNumber(id: String, fieldName: String, value: Int): Property
+  deleteProperty(id: String): Property
 }
 
 # input TrackingInput {

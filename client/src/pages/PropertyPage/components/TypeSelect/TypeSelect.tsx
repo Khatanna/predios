@@ -1,5 +1,4 @@
 import { Controller, useFormContext } from "react-hook-form";
-import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import { Type } from "../../../TypePage/models/types";
 import { useTypeMutations, useTypeStore } from "../../hooks/useRepository";
 import { Property } from "../../models/types";
@@ -12,47 +11,75 @@ import { SelectNameable } from "../../../HomePage/HomePage";
 import { Form } from "react-bootstrap";
 import { CustomLabel } from "../CustomLabel";
 import { ListColumns } from "react-bootstrap-icons";
-import { CustomSelect } from "../CustomSelect";
-import { gql } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { useInputSubscription } from "../../hooks/useInputSubscription";
+import { toast } from "sonner";
 
-const GET_ALL_TYPES_QUERY = `
-	query GetAllTypes {
-		types: getAllTypes {
-			name
-		}
-	}
-`;
-const GET_ALL_TYPES = gql`
+const GET_ALL_TYPES_QUERY = gql`
   query GetAllTypes {
-    options: getAllTypes {
+    types: getAllTypes {
       name
     }
   }
 `;
 
-const TypeSelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
+const CREATE_TYPE_MUTATION = gql`
+	mutation CreateType($input: TypeInput) {
+		type: createType(input: $input) {
+			name
+		}
+	}
+`;
+
+const UPDATE_TYPE_MUTATION = gql`
+	mutation UpdateType($name: String, $item: TypeInput) {
+		type: updateType(name: $name, item: $item) {
+			name
+		}
+	}
+`;
+
+const DELETE_TYPE_MUTATION = gql`
+  mutation DeleteType($name: String) {
+    type: deleteType(name: $name) {
+      name
+    }
+  }
+`
+
+const TypeSelect: React.FC = () => {
   const {
     control,
     resetField,
     getValues,
     watch,
-    formState: { errors },
   } = useFormContext<Property>();
-  const { setItems: setTypes, items: types } = useTypeStore();
-  const { mutationDelete: mutationTypeDelete } = useTypeMutations<{
-    type: Type;
-  }>();
+  const [deleteType] = useMutation<{ type: Pick<Type, 'name'> }, { name: string }>(DELETE_TYPE_MUTATION, {
+    optimisticResponse: ({ name }) => ({
+      type: { name }
+    }),
+    update: (cache, { data }) => {
+      if (!data) return;
+
+      const query = cache.readQuery(
+        { query: GET_ALL_TYPES_QUERY, }
+      ) as { types: Type[] };
+
+      if (!query) return;
+
+      cache.writeQuery({
+        query: GET_ALL_TYPES_QUERY,
+        data: {
+          types: query.types.filter(type => type.name !== data.type.name)
+        }
+      })
+    },
+    // refetchQueries: [GET_ALL_TYPES_QUERY]
+  })
   const setModal = useModalStore((s) => s.setModal);
   const type = watch("type.name");
-  const { error } = useCustomQuery<{ types: Type[] }>(
-    GET_ALL_TYPES_QUERY,
-    ["getAllTypes"],
-    {
-      onSuccess({ types }) {
-        setTypes(types);
-      },
-    },
+  const { data } = useQuery<{ types: Type[] }>(
+    GET_ALL_TYPES_QUERY
   );
   const { subscribe } = useInputSubscription({
     name: "type.name",
@@ -80,7 +107,7 @@ const TypeSelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
             }}
             size="sm"
             placeholder={"Tipo de predio"}
-            options={types.map(({ name }) => ({ label: name, value: name }))}
+            options={data?.types.map(({ name }) => ({ label: name, value: name })) ?? []}
             onCreate={() => {
               setModal({
                 form: "createType",
@@ -97,30 +124,23 @@ const TypeSelect: React.FC<{ readOnly?: boolean }> = ({ readOnly }) => {
               });
             }}
             onDelete={() => {
-              const type = getValues("type");
+              const name = getValues("type.name");
 
               if (type) {
-                mutationTypeDelete(type, {
-                  onSuccess({
-                    data: {
-                      type: { name },
-                    },
-                  }) {
-                    customSwalSuccess(
-                      "Tipo de predio eliminado",
-                      `El tipo de predio ${name} se ha eliminado correctamente`,
-                    );
-                  },
-                  onError(error, { name }) {
-                    customSwalError(
-                      error.response!.data.errors[0].message,
-                      `Ocurrio un error al intentar eliminar el tipo de predio ${name}`,
-                    );
-                  },
-                  onSettled() {
+                toast.promise(
+                  deleteType({
+                    variables: {
+                      name
+                    }
+                  }), {
+                  loading: 'Eliminando',
+                  success: 'Tipo de predio eliminado',
+                  error: 'No se pudo eliminar, intente mas tarde',
+                  finally() {
                     resetField("type.name", { defaultValue: "undefined" });
                   },
-                });
+                }
+                )
               }
             }}
           />

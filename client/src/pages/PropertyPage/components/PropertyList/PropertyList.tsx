@@ -11,6 +11,7 @@ import { ResponsibleUnit } from "../../../ResponsibleUnitPage/models/types";
 import { Property } from "../../models/types";
 import { ModalReportButton } from "../ModalReportButton";
 import { usePropertyListStore } from "../../state/usePropertyListStore";
+import { DropdownMenu } from "../DropdownMenu";
 
 const columns: TableColumn<Property>[] = [
   {
@@ -58,7 +59,7 @@ const columns: TableColumn<Property>[] = [
   },
 ];
 
-const GET_ALL_PROPERTIES_QUERY = gql`
+export const GET_ALL_PROPERTIES_QUERY = gql`
   query GetProperties(
     $page: Int
     $limit: Int
@@ -161,11 +162,17 @@ const PropertyList: React.FC = () => {
     <>
       <Table
         name="predios"
-        columns={columns}
+        columns={columns.concat(can('DELETE@PROPERTY') ? {
+          cell: (row) => <DropdownMenu property={row} />,
+          button: true,
+          allowOverflow: true,
+          width: "30px",
+          center: true,
+        } : [])}
         data={data?.results.properties ?? []}
         progressPending={loading}
         dense
-        defaultSortAsc={false}
+        defaultSortAsc={orderBy === 'desc'}
         sortServer
         onSort={(column, orderBy) => {
           if (!column.sortField) return;
@@ -176,8 +183,8 @@ const PropertyList: React.FC = () => {
         }}
         paginationServer
         paginationTotalRows={data?.results.total ?? 0}
-        paginationPerPage={20}
-        paginationRowsPerPageOptions={[10, 20, 30, 50, 100, 200]}
+        paginationPerPage={limit}
+        paginationRowsPerPageOptions={[10, 20, 30, 50]}
         onChangePage={(page) => {
           setPage(page);
         }}

@@ -399,17 +399,6 @@ const PropertyForm: React.FC = () => {
                         name="technical.user.username"
                         user="technical.user"
                       />
-                      {/* <Controller
-                        name="technical.user"
-                        control={methods.control}
-                        render={({ field }) => (
-                          <SelectUser
-                            {...field}
-                            type="tecnico"
-                            placeholder="Tecnico"
-                          />
-                        )}
-                      /> */}
                     </Col>
                     <Col xs={12}>
                       <ReferenceSelect />
@@ -432,11 +421,9 @@ const PropertyForm: React.FC = () => {
               {can("CREATE@PROPERTY") && (
                 <Row className="my-2">
                   <Col className="d-flex justify-content-end gap-2">
-                    {!methods.getValues("id") && (
-                      <Button type="submit" variant="warning">
-                        Crear predio
-                      </Button>
-                    )}
+                    <Button type="submit" variant="warning">
+                      Crear predio
+                    </Button>
                   </Col>
                 </Row>
               )}

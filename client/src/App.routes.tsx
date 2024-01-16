@@ -1,4 +1,3 @@
-import { gql, useQuery } from "@apollo/client";
 import { Suspense, lazy } from "react";
 import {
   BrowserRouter,
@@ -8,8 +7,6 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import { toast } from "sonner";
-import { JsonViewer } from "./components/JsonViewer";
 import { AxiosProvider } from "./context/AxiosContext";
 import { SeekerProvider } from "./context/SeekerContext";
 import { LoginPage } from "./pages/LoginPage";
@@ -24,7 +21,6 @@ import {
   Resource,
 } from "./pages/UserPage/components/Permission/Permission";
 import { useAuthStore } from "./state/useAuthStore";
-import { User } from "./pages/UserPage/models/types";
 
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"));
 const Permission = lazy(
@@ -64,31 +60,10 @@ const ProtectedRouteWithPermission: React.ComponentType<{
   return <Navigate to={"../"} />;
 };
 
-const GET_NEW_ACCESSTOKEN_QUERY = gql`
-  query GetNewAccessToken($refreshToken: String) {
-    result: getNewAccessToken(refreshToken: $refreshToken) {
-      accessToken
-      user {
-        username
-        role {
-          name
-          permissions {
-            permission {
-              level
-              resource
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
 const VerifyAuthRoute: React.ComponentType<{
   redirectTo: string;
 }> = ({ redirectTo }) => {
   const { isAuth } = useAuthStore();
-
   if (isAuth) {
     return <Outlet />;
   }
@@ -96,61 +71,61 @@ const VerifyAuthRoute: React.ComponentType<{
   return <Navigate to={redirectTo} />;
 };
 
-const VerifyUnauthRoute: React.ComponentType<{
-  redirectTo: string;
-}> = ({ redirectTo }) => {
-  const { isAuth, refreshToken, setAccessToken, logout, setUser } =
-    useAuthStore();
-  const { loading } = useQuery<
-    { result: { accessToken: string; user: User } },
-    { refreshToken?: string }
-  >(GET_NEW_ACCESSTOKEN_QUERY, {
-    variables: {
-      refreshToken,
-    },
-    onCompleted({ result: { accessToken, user } }) {
-      setAccessToken(accessToken);
-      setUser(user);
-    },
-    onError(error) {
-      toast.error(error.message);
-      logout();
-    },
-    context: {
-      headers: {
-        operation: "Login",
-      },
-    },
-    skip: !refreshToken,
-  });
+// const VerifyUnauthRoute: React.ComponentType<{
+//   redirectTo: string;
+// }> = ({ redirectTo }) => {
+//   const { isAuth, refreshToken, setAccessToken, logout, setUser } =
+//     useAuthStore();
+//   const { loading } = useQuery<
+//     { result: { accessToken: string; user: User } },
+//     { refreshToken?: string }
+//   >(GET_NEW_ACCESSTOKEN_QUERY, {
+//     variables: {
+//       refreshToken,
+//     },
+//     onCompleted({ result: { accessToken, user } }) {
+//       setAccessToken(accessToken);
+//       setUser(user);
+//     },
+//     onError(error) {
+//       toast.error(error.message);
+//       logout();
+//     },
+//     context: {
+//       headers: {
+//         operation: "Login",
+//       },
+//     },
+//     skip: !refreshToken,
+//   });
 
-  if (loading) {
-    return <div>Verificando credenciales</div>;
-  }
+//   if (loading) {
+//     return <div>Verificando credenciales</div>;
+//   }
 
-  if (!isAuth) {
-    return <Outlet />;
-  }
+//   if (!isAuth) {
+//     return <Outlet />;
+//   }
 
-  return <Navigate to={redirectTo} />;
-};
+//   return <Navigate to={'../'} relative="route" />;
+// };
 
-const ProtectedRoute: React.ComponentType<{
-  isAllowed: boolean;
-  redirectTo: string;
-}> = ({ isAllowed, redirectTo }) => {
-  const state = useAuthStore();
-  if (isAllowed) {
-    return (
-      <>
-        <JsonViewer value={state} />
-        <Outlet />
-      </>
-    );
-  }
+// const ProtectedRoute: React.ComponentType<{
+//   isAllowed: boolean;
+//   redirectTo: string;
+// }> = ({ isAllowed, redirectTo }) => {
+//   const state = useAuthStore();
+//   if (isAllowed) {
+//     return (
+//       <>
+//         <JsonViewer value={state} />
+//         <Outlet />
+//       </>
+//     );
+//   }
 
-  return <Navigate to={redirectTo} />;
-};
+//   return <Navigate to={redirectTo} />;
+// };
 
 function App() {
   return (
@@ -317,9 +292,9 @@ function App() {
               path="*"
               element={<LazyComponent Component={NotFoundPage} />}
             />
-            <Route element={<VerifyUnauthRoute redirectTo="../" />}>
-              <Route path="/auth" Component={LoginPage} />
-            </Route>
+            <Route path="/auth" Component={LoginPage} />
+            {/* <Route element={<VerifyUnauthRoute redirectTo="../" />}>
+            </Route> */}
           </Routes>
         </SeekerProvider>
       </AxiosProvider>

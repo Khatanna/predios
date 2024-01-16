@@ -8,7 +8,7 @@ import { getConditionalRowStyle } from "../../utils/getConditionalRowStyle";
 import { SubHeaderComponent } from "../SubHeaderComponent";
 import { UserActions } from "../UserActions";
 import { InfoCircle } from "react-bootstrap-icons";
-// import { } from 'react-bootstrap-icons'
+
 const UserList: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
