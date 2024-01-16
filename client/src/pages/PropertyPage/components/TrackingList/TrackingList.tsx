@@ -147,7 +147,7 @@ const TrackingItem: React.FC<
     <Row className="border border-1 border-dark-subtle d-flex py-2 rounded-1 position-relative mb-2">
       <Col>
         <Form.Group>
-          <StateSelect name={`trackings.${index}.state.name`} />
+          {/* <StateSelect name={`trackings.${index}.state.name`} /> */}
         </Form.Group>
       </Col>
       <Col xs={2}>
