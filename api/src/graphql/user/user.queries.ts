@@ -333,13 +333,13 @@ export const getUsers = async (
   { prisma, userContext }: Context,
 ) => {
   try {
-    hasPermission(userContext, "READ", "USER");
+    hasPermission(userContext, "READ", "PROPERTY");
     const filterTextParts =
       filterText && filterText.includes(" ")
         ? filterText.trim().split(" ")
         : [];
     const result = await prisma.user.findMany({
-      take: 10,
+      // take: 10,
       where: {
         type: type
           ? {

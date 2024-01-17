@@ -382,7 +382,6 @@ const PropertyForm: React.FC = () => {
                         placeholder="Juridico"
                         type="juridico"
                         name="legal.user.username"
-                        user="legal.user"
                       />
                     </Col>
                     <Col xs={12}>
@@ -394,7 +393,6 @@ const PropertyForm: React.FC = () => {
                         placeholder="Tecnico"
                         type="tecnico"
                         name="technical.user.username"
-                        user="technical.user"
                       />
                     </Col>
                     <Col xs={12}><ReferenceSelect /></Col>

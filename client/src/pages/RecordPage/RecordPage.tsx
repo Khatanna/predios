@@ -47,7 +47,8 @@ const columns: TableColumn<Record>[] = [
 	},
 	{
 		name: 'Usuario',
-		selector: (row) => row.user.username
+		selector: (row) => row.user.username,
+		sortable: true
 	},
 ]
 

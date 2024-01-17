@@ -152,7 +152,7 @@ const PropertyList: React.FC = () => {
         paginationServer
         paginationTotalRows={data?.results.total ?? 0}
         paginationPerPage={limit}
-        paginationRowsPerPageOptions={[10, 20, 30, 50]}
+        paginationRowsPerPageOptions={[10, 20, 30, 50, data?.results.total ?? 60]}
         onChangePage={(page) => {
           setPage(page);
         }}

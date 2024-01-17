@@ -147,7 +147,7 @@ const TrackingItem: React.FC<
     <Row className="border border-1 border-dark-subtle d-flex py-2 rounded-1 position-relative mb-2">
       <Col>
         <Form.Group>
-          <StateSelect name={`trackings.${index}.state.name`} />
+          <StateSelect name={`trackings.${index}.state.name`} disabled={!edit && !isNew} toSubscribe={false} />
         </Form.Group>
       </Col>
       <Col xs={2}>
@@ -168,7 +168,7 @@ const TrackingItem: React.FC<
           <SelectUser
             isDisabled={!isNew && !edit}
             name={`trackings.${index}.responsible.username`}
-            user={`trackings.${index}.responsible`}
+            toSubscribe={false}
             placeholder="Responsable"
           />
         </Form.Group>

@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { Form } from "react-bootstrap";
+import { Form, FormSelectProps } from "react-bootstrap";
 import { DeviceSsd } from "react-bootstrap-icons";
 import { Controller, useFormContext } from "react-hook-form";
 import { SelectNameable } from "../../../../components/SelectNameable";
@@ -21,9 +21,9 @@ const GET_ALL_STATES_QUERY = gql`
 
 const StateSelect: React.FC<{
   name: "state.name" | `trackings.${number}.state.name`;
-}> = ({ name }) => {
+} & { disabled?: boolean, toSubscribe?: boolean }> = ({ name, disabled = false, toSubscribe = true }) => {
   const { control, getFieldState, getValues } = useFormContext<Property>();
-  const { subscribe } = useSelectSubscription(getValues('id'))
+  const { subscribe } = useSelectSubscription(toSubscribe ? getValues('id') : undefined)
   return (
     <Form.Group>
       <CustomLabel label="Estado" icon={<DeviceSsd color="#ff5e00" />} />
@@ -52,6 +52,7 @@ const StateSelect: React.FC<{
             isValid={getFieldState(field.name).isTouched && !getFieldState(field.name).error?.message}
             isInvalid={!!getFieldState(field.name).error?.message}
             error={<Form.Control.Feedback type="invalid">{getFieldState(field.name).error?.message}</Form.Control.Feedback>}
+            readOnly={disabled}
           />
         )}
       />

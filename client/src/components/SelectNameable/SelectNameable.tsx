@@ -10,6 +10,13 @@ import { mutationMessages } from "../../utilities/constants";
 import { toast } from "sonner";
 import { ModalNameable } from "../ModalNameable";
 
+
+interface Event extends Partial<Omit<React.ChangeEvent<HTMLSelectElement>, 'target'>> {
+  target: {
+    value: string
+  };
+}
+
 export type SelectNameableProps = {
   resource: `${Resource}`;
   query: DocumentNode;
@@ -19,13 +26,7 @@ export type SelectNameableProps = {
   readOnly?: boolean;
   highlight?: boolean
   error?: React.ReactNode
-  onChange: (
-    e: {
-      target: {
-        value: string;
-      };
-    } & Partial<Omit<React.ChangeEvent<HTMLSelectElement>, "target">>,
-  ) => void;
+  onChange: (...e: any[]) => void;
 } & Omit<FormSelectProps, "onChange">;
 
 const SelectNameable: React.FC<SelectNameableProps> = ({

@@ -2,6 +2,7 @@ import { TableColumn } from "react-data-table-component";
 import { create } from "zustand";
 import { Property } from "../models/types";
 import { produce } from "immer";
+import LaPaz from '../../../assets/la-paz.svg'
 interface State {
   columns: TableColumn<Property>[]
   showColumns: string[]
@@ -57,8 +58,11 @@ const initialState: State = {
     },
     {
       name: "Ubicación",
-      selector: ({ city, province, municipality }) =>
-        `${city?.name} - ${province?.name} / ${municipality?.name}`,
+      cell: ({ city, province, municipality }) =>
+        <div className="d-flex align-items-center">
+          <img src={LaPaz} alt={"departamento"} width={18} />
+          {`${city?.name} - ${province?.name} / ${municipality?.name}`
+          } </div>,
       grow: 2,
     },
     {
@@ -72,7 +76,11 @@ const initialState: State = {
     },
     {
       name: "Fecha de creación",
-      selector: (row) => new Date(+row.createdAt).toLocaleDateString(),
+      selector: (row) => {
+        const isToday = new Date(Date.now()).toDateString() === new Date(+row.createdAt).toDateString()
+
+        return `${isToday ? 'Hoy' : new Date(+row.createdAt).toLocaleDateString()} | ${new Date(+row.createdAt).toLocaleTimeString()} hrs`
+      },
       omit: true
     },
   ],

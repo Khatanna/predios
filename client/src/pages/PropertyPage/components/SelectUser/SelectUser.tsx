@@ -2,21 +2,28 @@ import { gql, useQuery } from "@apollo/client";
 import { useState } from "react";
 import { FieldPath, useFormContext, Controller } from "react-hook-form";
 import Select, {
-  MultiValue,
   Props,
-  SingleValue,
   StylesConfig,
 } from "react-select";
 import { User } from "../../../UserPage/models/types";
 import { buildFullName } from "../../../UserPage/utils/buildFullName";
 import { Property } from "../../models/types";
+import { useSelectSubscription } from "../../hooks/useSelectSubscription";
+
+type Option = {
+  label: string
+  value: string
+}
+
 export type SelectUserProps = {
   type?: string;
   name: FieldPath<Property>;
-  user: FieldPath<Property>;
-};
+  isDisabled?: boolean
+  toSubscribe?: boolean
+} & Props;
+
 const GET_ALL_USERS_BY_TYPE = gql`
-  query GetAllLegal($type: String, $filterText: String) {
+  query GetAllUsersByType($type: String, $filterText: String) {
     users: getUsers(type: $type, filterText: $filterText) {
       names
       username
@@ -44,15 +51,17 @@ const customStyles: StylesConfig<User> = {
     color: state.isFocused ? "white" : "black",
   }),
 };
-const usersAdapter = (users?: User[]) => {
+
+
+const optionsAdapter = (users?: User[]): Option[] => {
   if (!users) return [];
 
-  return users;
+  return users.map(user => ({ label: buildFullName(user)!, value: user.username }));
 };
 const useFetchUsers = ({ type }: { type?: string }) => {
   const [filterText, setFilterText] = useState("");
 
-  const { data, ...query } = useQuery<{ users: User[] }>(
+  const query = useQuery<{ users: User[] }>(
     GET_ALL_USERS_BY_TYPE,
     {
       variables: {
@@ -62,47 +71,45 @@ const useFetchUsers = ({ type }: { type?: string }) => {
     },
   );
 
-  return { ...query, data: usersAdapter(data?.users), setFilterText };
+  return { ...query, options: optionsAdapter(query.data?.users), setFilterText };
 };
 
-const SelectUser: React.FC<SelectUserProps & Props<User>> = ({
+const SelectUser: React.FC<SelectUserProps> = ({
   type,
   name,
-  user,
   placeholder,
   isDisabled,
+  toSubscribe = true,
 }) => {
-  const { data, setFilterText, loading } = useFetchUsers({ type });
-  const { watch, setValue, control } = useFormContext<Property>();
-  // const {
-  //   subscribe: { onBlur, onFocus, onChange, disabled, ref },
-  // } = useInputSubscription({
-  //   name,
-  // });
-  const options = data;
+  const { options, setFilterText, loading } = useFetchUsers({ type });
+  const { control, getValues } = useFormContext<Property>();
+  const { subscribe } = useSelectSubscription(toSubscribe ? getValues('id') : undefined)
   return (
     <Controller
       control={control}
       name={name}
-      render={({ ...field }) => (
-        <Select
-          {...field}
-          options={options}
-          placeholder={placeholder}
-          isLoading={loading}
-          getOptionValue={(u) => u.username}
-          getOptionLabel={(u) => {
-            return buildFullName(u)!;
-          }}
-          isDisabled={isDisabled}
-          isClearable
-          isSearchable
-          styles={customStyles}
-          onInputChange={(newValue) => {
-            setFilterText(newValue);
-          }}
-        />
-      )}
+      render={({ field }) => {
+        const { onChange, ref, value, ...rest } = subscribe(field);
+
+        return (
+          <Select
+            {...rest}
+            inputRef={ref}
+            options={options}
+            placeholder={placeholder}
+            isLoading={loading}
+            value={options?.find(u => u.value === value)}
+            onChange={(newValue) => onChange(newValue?.value)}
+            isDisabled={isDisabled}
+            isClearable
+            isSearchable
+            styles={customStyles}
+            onInputChange={(newValue) => {
+              setFilterText(newValue);
+            }}
+          />
+        )
+      }}
     />
   );
 };

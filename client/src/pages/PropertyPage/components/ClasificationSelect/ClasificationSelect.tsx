@@ -4,7 +4,6 @@ import { Diagram3 } from "react-bootstrap-icons";
 import { Controller, useFormContext } from "react-hook-form";
 import { SelectNameable } from "../../../../components/SelectNameable";
 import { roleMutations } from "../../../../graphql/mutations";
-import { useInputSubscription } from "../../hooks/useInputSubscription";
 import { Property } from "../../models/types";
 import { CustomLabel } from "../CustomLabel";
 import { useSelectSubscription } from "../../hooks/useSelectSubscription";
