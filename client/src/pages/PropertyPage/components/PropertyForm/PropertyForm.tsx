@@ -93,8 +93,10 @@ const PropertyForm: React.FC = () => {
       );
     },
   });
-  const submit = (data: Property) => {
-    console.log(data);
+  const submit = (data: Property, e: React.BaseSyntheticEvent) => {
+    if (e.target?.id !== "propertyForm") {
+      return;
+    }
     if (!methods.getValues("id")) {
       createProperty({
         input: data,

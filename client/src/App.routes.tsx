@@ -7,6 +7,7 @@ import {
   Route,
   Routes,
   useLocation,
+  useNavigate,
 } from "react-router-dom";
 import { toast } from "sonner";
 import { JsonViewer } from "./components/JsonViewer";
@@ -25,6 +26,7 @@ import {
 } from "./pages/UserPage/components/Permission/Permission";
 import { useAuthStore } from "./state/useAuthStore";
 import { User } from "./pages/UserPage/models/types";
+import { Spinner } from "react-bootstrap";
 
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"));
 const Permission = lazy(
@@ -84,24 +86,11 @@ const GET_NEW_ACCESSTOKEN_QUERY = gql`
   }
 `;
 
-const VerifyAuthRoute: React.ComponentType<{
-  redirectTo: string;
-}> = ({ redirectTo }) => {
-  const { isAuth } = useAuthStore();
-
-  if (isAuth) {
-    return <Outlet />;
-  }
-
-  return <Navigate to={redirectTo} />;
-};
-
-const VerifyUnauthRoute: React.ComponentType<{
-  redirectTo: string;
-}> = ({ redirectTo }) => {
+const VerifyAuthRoute: React.ComponentType = () => {
   const { isAuth, refreshToken, setAccessToken, logout, setUser } =
     useAuthStore();
-  const { loading } = useQuery<
+  const navigate = useNavigate();
+  useQuery<
     { result: { accessToken: string; user: User } },
     { refreshToken?: string }
   >(GET_NEW_ACCESSTOKEN_QUERY, {
@@ -115,6 +104,7 @@ const VerifyUnauthRoute: React.ComponentType<{
     onError(error) {
       toast.error(error.message);
       logout();
+      navigate("/auth");
     },
     context: {
       headers: {
@@ -124,32 +114,52 @@ const VerifyUnauthRoute: React.ComponentType<{
     skip: !refreshToken,
   });
 
-  if (loading) {
-    return <div>Verificando credenciales</div>;
-  }
-
-  if (!isAuth) {
+  if (isAuth) {
     return <Outlet />;
   }
 
-  return <Navigate to={redirectTo} />;
+  if (!refreshToken) {
+    return <Navigate to={"/auth"} />;
+  }
 };
 
-const ProtectedRoute: React.ComponentType<{
-  isAllowed: boolean;
-  redirectTo: string;
-}> = ({ isAllowed, redirectTo }) => {
-  const state = useAuthStore();
-  if (isAllowed) {
-    return (
-      <>
-        <JsonViewer value={state} />
-        <Outlet />
-      </>
-    );
+const VerifyUnauthRoute: React.ComponentType = () => {
+  const { refreshToken, logout } = useAuthStore();
+  const navigate = useNavigate();
+  useQuery<
+    { result: { accessToken: string; user: User } },
+    { refreshToken?: string }
+  >(GET_NEW_ACCESSTOKEN_QUERY, {
+    variables: {
+      refreshToken,
+    },
+    onCompleted() {
+      navigate(-1);
+    },
+    onError(error) {
+      toast.error(error.message);
+      logout();
+    },
+    context: {
+      headers: {
+        operation: "Login",
+      },
+    },
+    skip: !refreshToken,
+  });
+
+  if (!refreshToken) {
+    return <Outlet />;
   }
 
-  return <Navigate to={redirectTo} />;
+  return (
+    <div className="position-absolute translate-middle top-50 start-50 d-flex flex-column align-items-center gap-2">
+      <Spinner variant="info" />
+      <div>
+        <b>Verificando credenciales</b>
+      </div>
+    </div>
+  );
 };
 
 function App() {
@@ -158,7 +168,7 @@ function App() {
       <AxiosProvider>
         <SeekerProvider>
           <Routes>
-            <Route element={<VerifyAuthRoute redirectTo="/auth" />}>
+            <Route element={<VerifyAuthRoute />}>
               <Route path="/" element={<LazyComponent Component={NavBar} />}>
                 <Route index element={<LazyComponent Component={HomePage} />} />
                 <Route
@@ -299,7 +309,7 @@ function App() {
               path="*"
               element={<LazyComponent Component={NotFoundPage} />}
             />
-            <Route element={<VerifyUnauthRoute redirectTo="../" />}>
+            <Route element={<VerifyUnauthRoute />}>
               <Route path="/auth" Component={LoginPage} />
             </Route>
           </Routes>
