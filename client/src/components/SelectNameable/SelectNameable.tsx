@@ -5,7 +5,7 @@ import { CustomSelect } from "../CustomSelect";
 import { DropdownMenu } from "../DropdownMenu";
 import { Resource } from "../../pages/UserPage/components/Permission/Permission";
 import { DocumentNode } from "graphql";
-import { useMutation } from "@apollo/client";
+import { OperationVariables, useMutation } from "@apollo/client";
 import { mutationMessages } from "../../utilities/constants";
 import { toast } from "sonner";
 import { ModalNameable } from "../ModalNameable";
@@ -13,9 +13,12 @@ import { ModalNameable } from "../ModalNameable";
 export type SelectNameableProps = {
   resource: `${Resource}`;
   query: DocumentNode;
+  variables?: OperationVariables
   placeholder: string | React.ReactNode;
   mutations: Record<"create" | "update" | "delete", DocumentNode>;
   readOnly?: boolean;
+  highlight?: boolean
+  error?: React.ReactNode
 };
 
 const SelectNameable: React.FC<SelectNameableProps & FormSelectProps> = ({
@@ -23,7 +26,10 @@ const SelectNameable: React.FC<SelectNameableProps & FormSelectProps> = ({
   placeholder,
   resource,
   mutations,
+  variables,
   readOnly = false,
+  highlight = false,
+  error,
   ...props
 }) => {
   const { can } = useAuthStore();
@@ -47,13 +53,17 @@ const SelectNameable: React.FC<SelectNameableProps & FormSelectProps> = ({
 
   if (!showMenu) {
     return (
-      <CustomSelect
-        query={query}
-        placeholder={placeholder}
-        resource={resource}
-        readOnly={readOnly}
-        {...props}
-      />
+      <>
+        <CustomSelect
+          query={query}
+          placeholder={placeholder}
+          resource={resource}
+          readOnly={readOnly}
+          variables={variables}
+          {...props}
+        />
+        {error}
+      </>
     );
   }
 
@@ -86,6 +96,8 @@ const SelectNameable: React.FC<SelectNameableProps & FormSelectProps> = ({
         placeholder={placeholder}
         resource={resource}
         readOnly={readOnly}
+        highlight={highlight}
+        variables={variables}
         {...props}
       />
       <InputGroup.Text>
@@ -119,6 +131,7 @@ const SelectNameable: React.FC<SelectNameableProps & FormSelectProps> = ({
           mutations={mutations}
         />
       </InputGroup.Text>
+      {error}
     </InputGroup>
   );
 };

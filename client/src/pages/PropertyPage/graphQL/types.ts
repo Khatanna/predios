@@ -1,3 +1,5 @@
+import { gql } from "@apollo/client";
+
 export const GET_PROPERTY_QUERY = `
 query GetPropertyPaginate($nextCursor: String, $prevCursor: String) {
     result: getProperty(nextCursor: $nextCursor, prevCursor: $prevCursor){
@@ -96,7 +98,7 @@ query GetPropertyPaginate($nextCursor: String, $prevCursor: String) {
     }
   } 
 `;
-export const CREATE_PROPERTY_MUTATION = `
+export const CREATE_PROPERTY_MUTATION = gql`
   mutation CreateProperty($input: PropertyInput) {
     property: createProperty(input: $input) {
       name

@@ -1,23 +1,17 @@
-import { Controller, useFormContext } from "react-hook-form";
-import { Type } from "../../../TypePage/models/types";
-import { useTypeMutations, useTypeStore } from "../../hooks/useRepository";
-import { Property } from "../../models/types";
-import {
-  customSwalError,
-  customSwalSuccess,
-} from "../../../../utilities/alerts";
-import { useModalStore } from "../../state/useModalStore";
-import { SelectNameable } from "../../../HomePage/HomePage";
+import { gql } from "@apollo/client";
 import { Form } from "react-bootstrap";
-import { CustomLabel } from "../CustomLabel";
 import { ListColumns } from "react-bootstrap-icons";
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { useInputSubscription } from "../../hooks/useInputSubscription";
-import { toast } from "sonner";
+import { Controller, useFormContext } from "react-hook-form";
+import { SelectNameable } from "../../../../components/SelectNameable";
+import { roleMutations } from "../../../../graphql/mutations";
+import { Property } from "../../models/types";
+import { CustomLabel } from "../CustomLabel";
+import { useSelectSubscription } from "../../hooks/useSelectSubscription";
+import { useAuthStore } from "../../../../state/useAuthStore";
 
 const GET_ALL_TYPES_QUERY = gql`
   query GetAllTypes {
-    types: getAllTypes {
+    options: getAllTypes {
       name
     }
   }
@@ -50,99 +44,37 @@ const DELETE_TYPE_MUTATION = gql`
 const TypeSelect: React.FC = () => {
   const {
     control,
-    resetField,
     getValues,
-    watch,
+    getFieldState,
   } = useFormContext<Property>();
-  const [deleteType] = useMutation<{ type: Pick<Type, 'name'> }, { name: string }>(DELETE_TYPE_MUTATION, {
-    optimisticResponse: ({ name }) => ({
-      type: { name }
-    }),
-    update: (cache, { data }) => {
-      if (!data) return;
-
-      const query = cache.readQuery(
-        { query: GET_ALL_TYPES_QUERY, }
-      ) as { types: Type[] };
-
-      if (!query) return;
-
-      cache.writeQuery({
-        query: GET_ALL_TYPES_QUERY,
-        data: {
-          types: query.types.filter(type => type.name !== data.type.name)
-        }
-      })
-    },
-    // refetchQueries: [GET_ALL_TYPES_QUERY]
-  })
-  const setModal = useModalStore((s) => s.setModal);
-  const type = watch("type.name");
-  const { data } = useQuery<{ types: Type[] }>(
-    GET_ALL_TYPES_QUERY
-  );
-  const { subscribe } = useInputSubscription({
-    name: "type.name",
-    options: {
-      pattern: {
-        value: /^(?!undefined$).*$/gi,
-        message: "Este campo es obligatorio",
-      },
-    },
-  });
+  const { subscribe } = useSelectSubscription(getValues('id'))!;
   return (
     <Form.Group>
       <CustomLabel label="Tipo de predio" icon={<ListColumns />} />
       <Controller
         name="type.name"
         control={control}
+        rules={{
+          required: {
+            message: 'Este campo es obligatorio',
+            value: true
+          }, pattern: {
+            message: "Este campo es obligatorio",
+            value: /^(?!undefined$).*$/gi
+          }
+        }}
         defaultValue="undefined"
         render={({ field }) => (
           <SelectNameable
-            {...field}
-            {...subscribe}
-            onChange={(e) => {
-              field.onChange(e);
-              subscribe.onChange(e);
-            }}
+            {...subscribe(field)}
             size="sm"
+            resource={"TYPE"}
+            query={GET_ALL_TYPES_QUERY}
+            mutations={roleMutations}
             placeholder={"Tipo de predio"}
-            options={data?.types.map(({ name }) => ({ label: name, value: name })) ?? []}
-            onCreate={() => {
-              setModal({
-                form: "createType",
-                title: "Crear tipo de predio",
-                show: true,
-              });
-            }}
-            onEdit={() => {
-              setModal({
-                form: "updateType",
-                title: "Actualizar tipo de predio",
-                show: true,
-                params: { name: type },
-              });
-            }}
-            onDelete={() => {
-              const name = getValues("type.name");
-
-              if (type) {
-                toast.promise(
-                  deleteType({
-                    variables: {
-                      name
-                    }
-                  }), {
-                  loading: 'Eliminando',
-                  success: 'Tipo de predio eliminado',
-                  error: 'No se pudo eliminar, intente mas tarde',
-                  finally() {
-                    resetField("type.name", { defaultValue: "undefined" });
-                  },
-                }
-                )
-              }
-            }}
+            isValid={getFieldState(field.name).isTouched && !getFieldState(field.name).error?.message}
+            isInvalid={!!getFieldState(field.name).error?.message}
+            error={<Form.Control.Feedback type="invalid">{getFieldState(field.name).error?.message}</Form.Control.Feedback>}
           />
         )}
       />

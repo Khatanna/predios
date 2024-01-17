@@ -3,8 +3,6 @@ import bcrypt from "bcryptjs";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-type GraphQLInput<T> = { input: T };
-
 export const createUser = async (
   _: any,
   {
@@ -50,6 +48,7 @@ export const updateUserByUsername = async (
       names,
       firstLastName,
       secondLastName,
+      username: newUsername,
       password,
       status,
       type,
@@ -68,10 +67,10 @@ export const updateUserByUsername = async (
         username,
       },
       data: {
-        names,
-        firstLastName,
-        secondLastName,
-        username,
+        names: names?.trim(),
+        firstLastName: firstLastName?.trim(),
+        secondLastName: secondLastName?.trim(),
+        username: newUsername,
         password: bcrypt.hashSync(password, 10),
         status,
         type: {

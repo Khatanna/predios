@@ -2,28 +2,33 @@ import { DocumentNode } from "graphql";
 import { Resource } from "../../pages/UserPage/components/Permission/Permission";
 import { Alert, Form, FormSelectProps, Spinner } from "react-bootstrap";
 import { useAuthStore } from "../../state/useAuthStore";
-import { useQuery } from "@apollo/client";
+import { OperationVariables, useQuery } from "@apollo/client";
 import { ExclamationTriangle, PersonSlash } from "react-bootstrap-icons";
 import { capitalizeString } from "../../pages/UserPage/utils/capitalizeString";
+import { toast } from "sonner";
 
 export type CustomSelectProps = {
   query: DocumentNode;
+  variables?: OperationVariables
   placeholder: string | React.ReactNode;
   resource: `${Resource}`;
   readOnly?: boolean;
+  highlight?: boolean
 };
 
 const CustomSelect: React.FC<CustomSelectProps & FormSelectProps> = ({
   query,
+  variables,
   placeholder,
   resource,
   readOnly = false,
+  highlight = false,
   ...props
 }) => {
   const { can } = useAuthStore();
   const { data, error, loading } = useQuery<{
     options: Array<{ name: string }>;
-  }>(query, { skip: !can(`READ@${resource}`) });
+  }>(query, { skip: !can(`READ@${resource}`) || props.disabled, variables });
 
   if (!can(`READ@${resource}`)) {
     return (
@@ -69,9 +74,11 @@ const CustomSelect: React.FC<CustomSelectProps & FormSelectProps> = ({
   return (
     <Form.Select
       {...props}
-      className={props.value === "undefined" ? "text-body-tertiary" : ""}
+      value={!props.value ? "undefined" : props.value}
+      className={!props.value || props.value === "undefined" ? "text-body-tertiary" : highlight ? "text-danger fw-bold" : ""}
       onChange={(e) => {
         if (readOnly) {
+          toast.info("Este campo es de solo lectura")
           e.preventDefault();
         } else {
           props.onChange?.(e);

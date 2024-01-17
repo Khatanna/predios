@@ -100,7 +100,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
       input: UserInput;
     }
   >(UDPATE_USER_MUTATION, {
-    refetchQueries: [{ query: GET_ALL_USERS_QUERY }],
+    refetchQueries: [{ query: GET_ALL_USERS_QUERY, variables: { filterText } }],
     optimisticResponse: ({ input }) => {
       setUserUpdated({ id: crypto.randomUUID(), ...input });
       return {

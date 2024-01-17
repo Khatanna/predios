@@ -1,6 +1,6 @@
-import { GraphQLArgs, specifiedDirectives } from "graphql";
+import { GraphQLArgs } from "graphql";
 import { Context } from "../../types";
-import { hasPermission, prisma } from "../../utilities";
+import { hasPermission } from "../../utilities";
 import { Property } from "@prisma/client";
 
 export const getAllProperties = async (
@@ -64,9 +64,10 @@ export const getAllProperties = async (
 export const getPropertyByRegistryNumber = async (
   _parent: any,
   { id }: { id: string },
-  context: Context,
+  { prisma, userContext }: Context,
 ) => {
   try {
+    hasPermission(userContext, 'READ', 'PROPERTY')
     const property = await prisma.property.findFirstOrThrow({
       where: {
         id,
@@ -161,7 +162,7 @@ export const getPropertyByRegistryNumber = async (
     });
 
     return {
-      property,
+      property: { ...property, trackings: property.trackings.sort((a, b) => new Date(b.dateOfInit).getTime() - new Date(a.dateOfInit).getTime()) },
       next: next?.id,
       prev: prev?.id,
     };
@@ -181,13 +182,13 @@ export const getProperty = async (
       take: prevCursor ? -1 : 1,
       cursor: nextCursor
         ? {
-            id: nextCursor,
-          }
+          id: nextCursor,
+        }
         : prevCursor
-        ? {
+          ? {
             id: prevCursor,
           }
-        : undefined,
+          : undefined,
       orderBy: {
         registryNumber: nextCursor ? "asc" : prevCursor ? "desc" : "asc",
       },
@@ -276,7 +277,7 @@ export const getProperty = async (
   }
 };
 
-export const getPropertyById = (
+export const getPropertyById = async (
   _parent: any,
   { id }: { id: string },
   { prisma, userContext }: Context,
@@ -284,7 +285,7 @@ export const getPropertyById = (
   try {
     hasPermission(userContext, "READ", "PROPERTY");
 
-    return prisma.property.findUniqueOrThrow({
+    const property = await prisma.property.findUniqueOrThrow({
       where: {
         id,
       },
@@ -343,11 +344,13 @@ export const getPropertyById = (
           include: {
             responsible: true,
             state: true,
-          },
+          }
         },
         fileNumber: true,
       },
     });
+
+    return { ...property, trackings: property.trackings.sort((a, b) => new Date(b.dateOfInit).getTime() - new Date(a.dateOfInit).getTime()) }
   } catch (e) {
     throw e;
   }
@@ -534,20 +537,20 @@ export const getProperties = async (
       where:
         unit && unit !== "all"
           ? {
-              responsibleUnit: {
-                name: unit,
-              },
-            }
+            responsibleUnit: {
+              name: unit,
+            },
+          }
           : undefined,
     });
     const properties = await prisma.property.findMany({
       where:
         unit && unit !== "all"
           ? {
-              responsibleUnit: {
-                name: unit,
-              },
-            }
+            responsibleUnit: {
+              name: unit,
+            },
+          }
           : undefined,
       include: {
         beneficiaries: true,

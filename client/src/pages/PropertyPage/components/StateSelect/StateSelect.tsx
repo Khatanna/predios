@@ -1,26 +1,20 @@
-import { Controller, useFormContext } from "react-hook-form";
-import { Property } from "../../models/types";
-import { useModalStore } from "../../state/useModalStore";
-import { useStateMutations, useStateStore } from "../../hooks/useRepository";
-import { State } from "../../../StatePage/models/types";
-import { useCustomQuery } from "../../../../hooks/useCustomQuery";
-import {
-  customSwalError,
-  customSwalSuccess,
-} from "../../../../utilities/alerts";
-import { SelectNameable } from "../../../HomePage/HomePage";
+import { gql } from "@apollo/client";
 import { Form } from "react-bootstrap";
-import { CustomLabel } from "../CustomLabel";
 import { DeviceSsd } from "react-bootstrap-icons";
-import { useInputSubscription } from "../../hooks/useInputSubscription";
+import { Controller, useFormContext } from "react-hook-form";
+import { SelectNameable } from "../../../../components/SelectNameable";
+import { roleMutations } from "../../../../graphql/mutations";
+import { Property } from "../../models/types";
+import { CustomLabel } from "../CustomLabel";
+import { useSelectSubscription } from "../../hooks/useSelectSubscription";
 
-const GET_ALL_STATES_QUERY = `
+const GET_ALL_STATES_QUERY = gql`
 	query GetAllStates {
-		states: getAllStates {
+		options: getAllStates {
 			name
-      stage {
-        name
-      }
+      # stage {
+      #   name
+      # }
 		}
 	} 
 `;
@@ -28,91 +22,36 @@ const GET_ALL_STATES_QUERY = `
 const StateSelect: React.FC<{
   name: "state.name" | `trackings.${number}.state.name`;
 }> = ({ name }) => {
-  const { control, getValues, watch, resetField } = useFormContext<Property>();
-  const setModal = useModalStore((s) => s.setModal);
-  const { setItems: setStates, items: states } = useStateStore();
-  const { mutationDelete: mutationStateDelete } = useStateMutations<{
-    state: State;
-  }>();
-  const state = watch(name);
-  const { subscribe } = useInputSubscription({
-    name,
-    options: {
-      pattern: {
-        value: /^(?!undefined$).*$/gi,
-        message: "Este campo es obligatorio",
-      },
-    },
-  });
-  const { error } = useCustomQuery<{ states: State[] }>(
-    GET_ALL_STATES_QUERY,
-    ["getAllStates"],
-    {
-      onSuccess({ states }) {
-        setStates(states);
-      },
-    },
-  );
+  const { control, getFieldState, getValues } = useFormContext<Property>();
+  const { subscribe } = useSelectSubscription(getValues('id'))
   return (
     <Form.Group>
       <CustomLabel label="Estado" icon={<DeviceSsd color="#ff5e00" />} />
       <Controller
         name={name}
         control={control}
+        rules={{
+          required: {
+            message: 'Este campo es obligatorio',
+            value: true
+          }, pattern: {
+            message: "Este campo es obligatorio",
+            value: /^(?!undefined$).*$/gi
+          }
+        }}
         defaultValue="undefined"
         render={({ field }) => (
           <SelectNameable
-            {...field}
-            {...subscribe}
-            onChange={(e) => {
-              field.onChange(e);
-              subscribe.onChange(e);
-            }}
+            {...subscribe(field)}
+            resource="STATE"
             size="sm"
             highlight
             placeholder={"Estado"}
-            options={states.map(({ name }) => ({ label: name, value: name }))}
-            onCreate={() => {
-              setModal({
-                form: "createState",
-                title: "Crear Estado",
-                show: true,
-              });
-            }}
-            onEdit={() => {
-              setModal({
-                form: "updateState",
-                title: "Actualizar Estado",
-                show: true,
-                params: { name: state },
-              });
-            }}
-            onDelete={() => {
-              const state = getValues("state");
-              if (state) {
-                mutationStateDelete(state, {
-                  onSuccess({
-                    data: {
-                      state: { name },
-                    },
-                  }) {
-                    customSwalSuccess(
-                      "Estado eliminado",
-                      `El estado ${name} se ha eliminado correctamente`,
-                    );
-                  },
-                  onError(error, { name }) {
-                    customSwalError(
-                      error.response!.data.errors[0].message,
-                      `Ocurrio un error al intentar eliminar el estado ${name}`,
-                    );
-                  },
-                  onSettled() {
-                    resetField(name, { defaultValue: "undefined" });
-                  },
-                });
-              }
-            }}
+            query={GET_ALL_STATES_QUERY}
+            mutations={roleMutations}
+            isValid={getFieldState(field.name).isTouched && !getFieldState(field.name).error?.message}
+            isInvalid={!!getFieldState(field.name).error?.message}
+            error={<Form.Control.Feedback type="invalid">{getFieldState(field.name).error?.message}</Form.Control.Feedback>}
           />
         )}
       />

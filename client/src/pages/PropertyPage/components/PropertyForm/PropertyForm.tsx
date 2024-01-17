@@ -52,6 +52,9 @@ import { TrackingList } from "../TrackingList";
 import { TypeSelect } from "../TypeSelect";
 import { SeekerModalInput } from "../../../../components/SeekerModalInput";
 import { useAuthStore } from "../../../../state/useAuthStore";
+import { useMutation } from "@apollo/client";
+import { GET_ALL_PROPERTIES_QUERY } from "../PropertyList/PropertyList";
+import { usePropertyListStore } from "../../state/usePropertyListStore";
 
 const PropertyForm: React.FC = () => {
   const { property, reset } = usePaginationStore();
@@ -59,12 +62,12 @@ const PropertyForm: React.FC = () => {
   const { handleSubmit, register, ...methods } = useForm<Property>({
     values: property,
   });
-
-  const [createProperty] = useCustomMutation<
+  const { page, limit, orderBy, unit, fieldOrder } = usePropertyListStore()
+  const [createProperty] = useMutation<
     { property: Property },
     { input: Property }
   >(CREATE_PROPERTY_MUTATION, {
-    onSuccess() {
+    onCompleted() {
       customSwalSuccess(
         "Predio creado",
         "Se ha creado un nuevo predio correctamente",
@@ -72,8 +75,18 @@ const PropertyForm: React.FC = () => {
       methods.reset();
     },
     onError(error) {
-      customSwalError(error, "Ocurrio un error al intentar crear el predio");
+      customSwalError(error.message, "Ocurrio un error al intentar crear el predio");
     },
+    refetchQueries: [{
+      query: GET_ALL_PROPERTIES_QUERY,
+      variables: {
+        page,
+        limit,
+        orderBy,
+        unit,
+        fieldOrder,
+      }
+    }]
   });
 
   const [updateProperty] = useCustomMutation<
@@ -97,7 +110,9 @@ const PropertyForm: React.FC = () => {
     console.log(data);
     if (!methods.getValues("id")) {
       createProperty({
-        input: data,
+        variables: {
+          input: data,
+        }
       });
     } else {
       updateProperty({
@@ -105,11 +120,11 @@ const PropertyForm: React.FC = () => {
       });
     }
   };
-  const { setModal, ...modal } = useModalStore();
   const { can } = useAuthStore();
   useEffect(() => {
     return () => {
       if (methods.getValues("id")) {
+        methods.reset()
         reset();
       }
     };
@@ -123,20 +138,6 @@ const PropertyForm: React.FC = () => {
         register={register}
       >
         <SeekerModalInput />
-        {modal.show && (
-          <ModalForm
-            centered
-            onHide={() =>
-              setModal({
-                form: undefined,
-                show: false,
-                params: undefined,
-                title: undefined,
-              })
-            }
-            {...modal}
-          />
-        )}
         <Form
           onSubmit={handleSubmit(submit)}
           id="propertyForm"
@@ -224,7 +225,7 @@ const PropertyForm: React.FC = () => {
                     </Col>
                   </Row>
                   <Row className="border border-1 py-2 border-dark-subtle rounded-1">
-                    {/* <Localization /> */}
+                    <Localization />
                   </Row>
                   <Row>
                     <Tabs
@@ -237,7 +238,7 @@ const PropertyForm: React.FC = () => {
                           <Col xs={8}>
                             <Row className="gy-2" ref={colRef}>
                               <Col xs={12}>
-                                {/* <StateSelect name="state.name" /> */}
+                                <StateSelect name="state.name" />
                               </Col>
                               <Col xs={12}>
                                 <Form.Group>
@@ -310,14 +311,16 @@ const PropertyForm: React.FC = () => {
                                   </InputGroup>
                                 </Form.Group>
                               </Col>
-                              <Col xs={4}>{/* <TypeSelect /> */}</Col>
-                              <Col xs={4}>{/* <ClasificationSelect /> */}</Col>
+                              <Col xs={4}><TypeSelect /></Col>
+                              <Col xs={4}><ClasificationSelect /></Col>
                               <Col xs={4}>
                                 <ActivitySelect />
                               </Col>
-                              <Col xs={4}>{/* <SubdirectorySelect /> */}</Col>
                               <Col xs={4}>
-                                {/* <ResponsibleUnitSelect /> */}
+                                <SubdirectorySelect />
+                              </Col>
+                              <Col xs={4}>
+                                <ResponsibleUnitSelect />
                               </Col>
                               <Col>
                                 <CustomLabel
@@ -367,7 +370,7 @@ const PropertyForm: React.FC = () => {
                         placeholder="Estado 2"
                       />
                     </Col>
-                    <Col xs={12}>{/* <GroupedStateSelect /> */}</Col>
+                    <Col xs={12}><GroupedStateSelect /></Col>
                     <Col xs={12}>
                       <CustomLabel
                         label="Juridico"
@@ -392,7 +395,7 @@ const PropertyForm: React.FC = () => {
                         user="technical.user"
                       />
                     </Col>
-                    <Col xs={12}>{/* <ReferenceSelect /> */}</Col>
+                    <Col xs={12}><ReferenceSelect /></Col>
                     <Col xs={12}>
                       <CustomLabel
                         label="Observación tecnica"
@@ -408,7 +411,7 @@ const PropertyForm: React.FC = () => {
                   </Row>
                 </Col>
               </Row>
-              {can("CREATE@PROPERTY") && (
+              {can("CREATE@PROPERTY") && !methods.getValues('id') && (
                 <Row className="my-2">
                   <Col className="d-flex justify-content-end gap-2">
                     <Button type="submit" variant="warning">

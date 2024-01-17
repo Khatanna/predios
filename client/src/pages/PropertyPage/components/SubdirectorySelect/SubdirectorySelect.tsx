@@ -1,58 +1,27 @@
 import { Controller, useFormContext } from "react-hook-form";
 import { Property } from "../../models/types";
-import { useModalStore } from "../../state/useModalStore";
-import {
-  useSubdirectoryMutations,
-  useSubdirectoryStore,
-} from "../../hooks/useRepository";
-import { useCustomQuery } from "../../../../hooks/useCustomQuery";
-import {
-  customSwalError,
-  customSwalSuccess,
-} from "../../../../utilities/alerts";
 
-import { SubDirectory } from "../../../SubDirectoryPage/models/types";
-import { SelectNameable } from "../../../HomePage/HomePage";
+import { gql } from "@apollo/client";
 import { Form } from "react-bootstrap";
 import { Folder } from "react-bootstrap-icons";
-import { CustomLabel } from "../CustomLabel";
+import { SelectNameable } from "../../../../components/SelectNameable";
+import { roleMutations } from "../../../../graphql/mutations";
 import { useInputSubscription } from "../../hooks/useInputSubscription";
+import { CustomLabel } from "../CustomLabel";
+import { useSelectSubscription } from "../../hooks/useSelectSubscription";
 
-const GET_ALL_SUBDIRECTORIES_QUERY = `
+const GET_ALL_SUBDIRECTORIES_QUERY = gql`
 	query GetAllSubdirectories {
-		subdirectories: getAllFolderLocations {
+		options: getAllFolderLocations {
 			name
 		}
 	} 
 `;
 
 const SubdirectorySelect: React.FC = () => {
-  const { control, getValues, watch, resetField } = useFormContext<Property>();
-  const setModal = useModalStore((s) => s.setModal);
-  const { setItems: setSubdirectories, items: subdirectories } =
-    useSubdirectoryStore();
-  const { mutationDelete: mutationSubdirectoryDelete } =
-    useSubdirectoryMutations<{ folderLocation: SubDirectory }>();
+  const { control, getValues, getFieldState } = useFormContext<Property>();
 
-  const subdirectory = watch("folderLocation.name");
-  const { error } = useCustomQuery<{ subdirectories: SubDirectory[] }>(
-    GET_ALL_SUBDIRECTORIES_QUERY,
-    ["getAllSubDirectories"],
-    {
-      onSuccess({ subdirectories }) {
-        setSubdirectories(subdirectories);
-      },
-    },
-  );
-  const { subscribe } = useInputSubscription({
-    name: "folderLocation.name",
-    options: {
-      pattern: {
-        value: /^(?!undefined$).*$/gi,
-        message: "Este campo es obligatorio",
-      },
-    },
-  });
+  const { subscribe } = useSelectSubscription(getValues('id'));
   return (
     <Form.Group>
       <CustomLabel
@@ -62,64 +31,27 @@ const SubdirectorySelect: React.FC = () => {
       <Controller
         name="folderLocation.name"
         control={control}
+        rules={{
+          required: {
+            message: 'Este campo es obligatorio',
+            value: true
+          }, pattern: {
+            message: "Este campo es obligatorio",
+            value: /^(?!undefined$).*$/gi
+          }
+        }}
         defaultValue="undefined"
         render={({ field }) => (
           <SelectNameable
-            {...field}
-            {...subscribe}
-            onChange={(e) => {
-              field.onChange(e);
-              subscribe.onChange(e);
-            }}
+            {...subscribe(field)}
+            resource={"FOLDERLOCATION"}
             size="sm"
             placeholder={"Ubicación de carpeta"}
-            options={subdirectories.map(({ name }) => ({
-              label: name,
-              value: name,
-            }))}
-            onCreate={() => {
-              setModal({
-                form: "createSubdirectory",
-                title: "Crear ubicación de carpeta",
-                show: true,
-              });
-            }}
-            onEdit={() => {
-              setModal({
-                form: "updateSubdirectory",
-                title: "Actualizar ubicación de carpeta",
-                show: true,
-                params: { name: subdirectory },
-              });
-            }}
-            onDelete={() => {
-              const subdirectory = getValues("folderLocation");
-              if (subdirectory) {
-                mutationSubdirectoryDelete(subdirectory, {
-                  onSuccess({
-                    data: {
-                      folderLocation: { name },
-                    },
-                  }) {
-                    customSwalSuccess(
-                      "Ubicación de carpeta eliminada correctamente",
-                      `La ubicación de carpeta con el nombre ${name} ha sido eliminada correctamente`,
-                    );
-                  },
-                  onError(error, { name }) {
-                    customSwalError(
-                      error.response!.data.errors[0].message,
-                      `Ocurrio un error al intentar eliminar la ubicación de carpeta ${name}`,
-                    );
-                  },
-                  onSettled() {
-                    resetField("folderLocation.name", {
-                      defaultValue: "undefined",
-                    });
-                  },
-                });
-              }
-            }}
+            query={GET_ALL_SUBDIRECTORIES_QUERY}
+            mutations={roleMutations}
+            isValid={getFieldState(field.name).isTouched && !getFieldState(field.name).error?.message}
+            isInvalid={!!getFieldState(field.name).error?.message}
+            error={<Form.Control.Feedback type="invalid">{getFieldState(field.name).error?.message}</Form.Control.Feedback>}
           />
         )}
       />

@@ -1,7 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import { Alert, Form } from "react-bootstrap";
 import { FileEarmarkPlus } from "react-bootstrap-icons";
-import { TableColumn } from "react-data-table-component";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { Table } from "../../../../components/Table";
@@ -12,52 +11,7 @@ import { Property } from "../../models/types";
 import { ModalReportButton } from "../ModalReportButton";
 import { usePropertyListStore } from "../../state/usePropertyListStore";
 import { DropdownMenu } from "../DropdownMenu";
-
-const columns: TableColumn<Property>[] = [
-  {
-    name: "Nro",
-    selector: ({ registryNumber }) => `${registryNumber}`,
-    right: true,
-    compact: true,
-    width: "40px",
-    sortable: true,
-    sortField: "registryNumber",
-  },
-  {
-    name: "Nombre del predio",
-    selector: (row) => row.name,
-    wrap: true,
-    grow: 2,
-    sortable: true,
-    sortField: "name",
-  },
-  {
-    name: "Codigo de busqueda",
-    selector: (row) => row.codeOfSearch ?? "Sin codigo",
-    sortable: true,
-    sortField: "codeOfSearch",
-  },
-  {
-    name: "Estado",
-    selector: (row) => row.state?.name ?? "Sin estado definido",
-    grow: 2,
-  },
-  // {
-  //   name: "Tipo de predio",
-  //   selector: (row) => row.type?.name ?? "Sin definir",
-  //   sortable: true,
-  // },
-  {
-    name: "Ubicación",
-    selector: ({ city, province, municipality }) =>
-      `${city?.name} - ${province?.name} / ${municipality?.name}`,
-    grow: 2,
-  },
-  {
-    name: "Unidad responsable",
-    selector: (row) => row.responsibleUnit?.name ?? "Sin unidad",
-  },
-];
+import { useColumnPropertyStore } from '../../state/useColumnPropertyStore';
 
 export const GET_ALL_PROPERTIES_QUERY = gql`
   query GetProperties(
@@ -131,7 +85,7 @@ const PropertyList: React.FC = () => {
     setFieldOrder,
     setUnit,
   } = usePropertyListStore();
-
+  const { columns, showColumns, toogleShowColumn, isChecked } = useColumnPropertyStore();
   const { data, loading, error } = useQuery<{
     results: { total: number; properties: Property[] };
   }>(GET_ALL_PROPERTIES_QUERY, {
@@ -162,6 +116,20 @@ const PropertyList: React.FC = () => {
     <>
       <Table
         name="predios"
+        subHeader
+        subHeaderComponent={<div className="d-flex gap-3">
+          {showColumns.map((name) => (
+            <Form.Check
+              value={name}
+              label={name}
+              id={name}
+              checked={isChecked(name)}
+              onChange={() => {
+                toogleShowColumn(name)
+              }}
+            />
+          ))}
+        </div>}
         columns={columns.concat(can('DELETE@PROPERTY') ? {
           cell: (row) => <DropdownMenu property={row} />,
           button: true,
