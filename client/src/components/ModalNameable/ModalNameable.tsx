@@ -28,7 +28,9 @@ const ModalNameable: React.FC<ModalNameableProps> = ({
   value,
   mutations,
 }) => {
-  const { register, handleSubmit, reset } = useForm<{ name: string }>();
+  const { register, handleSubmit, reset } = useForm<{ name: string }>({
+    defaultValues: { name: value },
+  });
   const [createMutation] = useMutation<
     { result: { name: string } },
     { name: string }
@@ -94,6 +96,7 @@ const ModalNameable: React.FC<ModalNameableProps> = ({
         </Modal.Title>
       </Modal.Header>
       <Form
+        id="modal"
         className="d-flex gap-2 flex-column"
         onSubmit={handleSubmit(submit)}
       >
@@ -102,9 +105,7 @@ const ModalNameable: React.FC<ModalNameableProps> = ({
             <Form.Label>{resources[resource]}:</Form.Label>
             <Form.Control
               placeholder={resources[resource]}
-              {...register("name", {
-                value: isSelected && !createMode ? value : "",
-              })}
+              {...register("name")}
             />
           </FormGroup>
         </Modal.Body>

@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import { useState } from "react";
-import { FieldPath, useFormContext } from "react-hook-form";
+import { FieldPath, useFormContext, Controller } from "react-hook-form";
 import Select, {
   MultiValue,
   Props,
@@ -9,9 +9,7 @@ import Select, {
 } from "react-select";
 import { User } from "../../../UserPage/models/types";
 import { buildFullName } from "../../../UserPage/utils/buildFullName";
-import { useInputSubscription } from "../../hooks/useInputSubscription";
 import { Property } from "../../models/types";
-import { toast } from "sonner";
 export type SelectUserProps = {
   type?: string;
   name: FieldPath<Property>;
@@ -75,39 +73,36 @@ const SelectUser: React.FC<SelectUserProps & Props<User>> = ({
   isDisabled,
 }) => {
   const { data, setFilterText, loading } = useFetchUsers({ type });
-  const { watch, setValue } = useFormContext<Property>();
-  const {
-    subscribe: { onBlur, onFocus, onChange, disabled, ref },
-  } = useInputSubscription({
-    name,
-  });
-  const value = watch(user);
+  const { watch, setValue, control } = useFormContext<Property>();
+  // const {
+  //   subscribe: { onBlur, onFocus, onChange, disabled, ref },
+  // } = useInputSubscription({
+  //   name,
+  // });
   const options = data;
   return (
-    <Select
+    <Controller
+      control={control}
       name={name}
-      ref={ref}
-      value={value}
-      options={options}
-      onChange={(newValue: SingleValue<User> | MultiValue<User>) => {
-        onChange({ target: { value: newValue.username } });
-        setValue(user, newValue);
-      }}
-      onFocus={onFocus}
-      onBlur={onBlur}
-      placeholder={placeholder}
-      isLoading={loading}
-      getOptionValue={(u) => u.username}
-      getOptionLabel={(u) => {
-        return u.username ? buildFullName(u) : "";
-      }}
-      isDisabled={disabled || isDisabled}
-      // isClearable
-      isSearchable
-      styles={customStyles}
-      onInputChange={(newValue) => {
-        setFilterText(newValue);
-      }}
+      render={({ ...field }) => (
+        <Select
+          {...field}
+          options={options}
+          placeholder={placeholder}
+          isLoading={loading}
+          getOptionValue={(u) => u.username}
+          getOptionLabel={(u) => {
+            return buildFullName(u)!;
+          }}
+          isDisabled={isDisabled}
+          isClearable
+          isSearchable
+          styles={customStyles}
+          onInputChange={(newValue) => {
+            setFilterText(newValue);
+          }}
+        />
+      )}
     />
   );
 };

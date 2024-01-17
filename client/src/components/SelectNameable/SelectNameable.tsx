@@ -19,9 +19,16 @@ export type SelectNameableProps = {
   readOnly?: boolean;
   highlight?: boolean
   error?: React.ReactNode
-};
+  onChange: (
+    e: {
+      target: {
+        value: string;
+      };
+    } & Partial<Omit<React.ChangeEvent<HTMLSelectElement>, "target">>,
+  ) => void;
+} & Omit<FormSelectProps, "onChange">;
 
-const SelectNameable: React.FC<SelectNameableProps & FormSelectProps> = ({
+const SelectNameable: React.FC<SelectNameableProps> = ({
   query,
   placeholder,
   resource,
@@ -43,7 +50,9 @@ const SelectNameable: React.FC<SelectNameableProps & FormSelectProps> = ({
   });
 
   const showMenu = canCreate || canUpdate || canDelete;
-
+  const resetValue = () => {
+    props.onChange?.({ target: { value: "undefined" } });
+  };
   const [deleteMutation] = useMutation<
     { result: { name: string } },
     { name: string }
@@ -82,9 +91,7 @@ const SelectNameable: React.FC<SelectNameableProps & FormSelectProps> = ({
         error: mutationMessages.DELETE_ROLE.getErrorMessage(
           props.value as string,
         ),
-        finally() {
-          props.onChange?.({ target: { value: "undefined" } });
-        },
+        finally: resetValue,
       },
     );
   };
@@ -119,6 +126,9 @@ const SelectNameable: React.FC<SelectNameableProps & FormSelectProps> = ({
           {canDelete && (
             <Dropdown.Item onClick={handleDelete}>🗑 Eliminar</Dropdown.Item>
           )}
+          {isSelected && (
+            <Dropdown.Item onClick={resetValue}>🧹 Limpiar</Dropdown.Item>
+          )}
         </DropdownMenu>
         <ModalNameable
           query={query}
@@ -127,7 +137,7 @@ const SelectNameable: React.FC<SelectNameableProps & FormSelectProps> = ({
           show={show}
           isSelected={isSelected}
           resource={resource}
-          value={props.value as string}
+          value={isSelected ? (props.value as string) : ""}
           mutations={mutations}
         />
       </InputGroup.Text>
