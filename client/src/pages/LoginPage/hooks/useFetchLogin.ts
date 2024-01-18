@@ -25,7 +25,7 @@ const LOGIN_MUTATION = gql`
 `;
 
 export const useFetchLogin = () => {
-  const { setRefreshToken, setAccessToken, setUser } = useAuthStore();
+  const { setRefreshToken, setAccessToken, setUser, logout } = useAuthStore();
   return useMutation<LoginResponse, FormLoginValues>(LOGIN_MUTATION, {
     onCompleted({ auth: { accessToken, refreshToken, user } }) {
       setRefreshToken(refreshToken);
@@ -33,6 +33,7 @@ export const useFetchLogin = () => {
       setUser(user);
     },
     onError(error) {
+      logout()
       customSwalError(error.message, "Intento de inicio de sesión fallido");
     },
     context: {

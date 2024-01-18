@@ -108,18 +108,21 @@ const PropertyForm: React.FC = () => {
   });
   const submit = (data: Property, e: React.BaseSyntheticEvent) => {
     if (e.target?.id !== "propertyForm") {
-      return;
-    }
-    if (!methods.getValues("id")) {
-      createProperty({
-        variables: {
+
+      if (!methods.getValues("id")) {
+        createProperty({
+          variables: {
+            input: data,
+          }
+        });
+      } else {
+        updateProperty({
           input: data,
-        }
-      });
+        });
+      }
     } else {
-      updateProperty({
-        input: data,
-      });
+      e.preventDefault()
+      e.stopPropagation()
     }
   };
   const { can } = useAuthStore();
@@ -414,7 +417,7 @@ const PropertyForm: React.FC = () => {
               {can("CREATE@PROPERTY") && !methods.getValues('id') && (
                 <Row className="my-2">
                   <Col className="d-flex justify-content-end gap-2">
-                    <Button type="submit" variant="warning">
+                    <Button type="submit" variant="warning" form="propertyForm">
                       Crear predio
                     </Button>
                   </Col>

@@ -1,12 +1,10 @@
 import { Controller, useFormContext } from "react-hook-form";
 import { Property } from "../../models/types";
-
 import { gql } from "@apollo/client";
 import { Form } from "react-bootstrap";
 import { Folder } from "react-bootstrap-icons";
 import { SelectNameable } from "../../../../components/SelectNameable";
 import { roleMutations } from "../../../../graphql/mutations";
-import { useInputSubscription } from "../../hooks/useInputSubscription";
 import { CustomLabel } from "../CustomLabel";
 import { useSelectSubscription } from "../../hooks/useSelectSubscription";
 
@@ -17,6 +15,30 @@ const GET_ALL_SUBDIRECTORIES_QUERY = gql`
 		}
 	} 
 `;
+
+const folderLocationMutations = {
+  create: gql`
+  mutation CreateFolderLocation($input: FolderLocationInput) {
+    folderLocation: createFolderLocation(input: $input) {
+      name
+    }
+  }
+`,
+  update: gql`
+  mutation UpdateFolderLocationMutation($name: String, $item: FolderLocationInput) {
+    folderLocation: updateFolderLocation(name: $name, item: $item) {
+      name
+    }
+  }
+`,
+  delete: gql`
+  mutation DeleteFolderLocationMutation($name: String) {
+    folderLocation: deleteFolderLocation(name: $name) {
+      name
+    }
+  }
+`
+}
 
 const SubdirectorySelect: React.FC = () => {
   const { control, getValues, getFieldState } = useFormContext<Property>();
@@ -48,7 +70,7 @@ const SubdirectorySelect: React.FC = () => {
             size="sm"
             placeholder={"Ubicación de carpeta"}
             query={GET_ALL_SUBDIRECTORIES_QUERY}
-            mutations={roleMutations}
+            mutations={folderLocationMutations}
             isValid={getFieldState(field.name).isTouched && !getFieldState(field.name).error?.message}
             isInvalid={!!getFieldState(field.name).error?.message}
             error={<Form.Control.Feedback type="invalid">{getFieldState(field.name).error?.message}</Form.Control.Feedback>}

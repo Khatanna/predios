@@ -12,8 +12,8 @@ type Query {
 }
 
 type Mutation {
-  createReference(input: ReferenceInput): Reference
-  updateReference(name: String, item: ReferenceInput): Reference
+  createReference(name: String): Reference
+  updateReference(currentName: String, name: String): Reference
   deleteReference(name: String): Reference
 }
 

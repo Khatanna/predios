@@ -10,7 +10,6 @@ import { mutationMessages } from "../../utilities/constants";
 import { toast } from "sonner";
 import { ModalNameable } from "../ModalNameable";
 
-
 interface Event extends Partial<Omit<React.ChangeEvent<HTMLSelectElement>, 'target'>> {
   target: {
     value: string
@@ -86,10 +85,10 @@ const SelectNameable: React.FC<SelectNameableProps> = ({
       }),
       {
         loading: `Eliminando rol: ${props.value}`,
-        success: mutationMessages.DELETE_ROLE.getSuccessMessage(
+        success: mutationMessages[`DELETE_${resource}`].getSuccessMessage(
           props.value as string,
         ),
-        error: mutationMessages.DELETE_ROLE.getErrorMessage(
+        error: mutationMessages[`DELETE_${resource}`].getErrorMessage(
           props.value as string,
         ),
         finally: resetValue,

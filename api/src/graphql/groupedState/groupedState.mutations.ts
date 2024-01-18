@@ -2,24 +2,28 @@ import { GroupedState } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createGroupedState = (_parent: any, { input }: { input: GroupedState }, { prisma, userContext }: Context) => {
+export const createGroupedState = (_parent: any, { name }: { name: string }, { prisma, userContext }: Context) => {
   try {
     hasPermission(userContext, 'CREATE', 'GROUPEDSTATE');
     return prisma.groupedState.create({
-      data: input
+      data: {
+        name
+      }
     })
   } catch (e) {
     throw e;
   }
 };
-export const updateGroupedState = (_parent: any, { name, item }: Pick<GroupedState, 'name'> & { item: GroupedState }, { prisma, userContext }: Context) => {
+export const updateGroupedState = (_parent: any, { currentName, name }: { currentName: string, name: string }, { prisma, userContext }: Context) => {
   try {
     hasPermission(userContext, 'UPDATE', 'GROUPEDSTATE');
     return prisma.groupedState.update({
       where: {
-        name
+        name: currentName
       },
-      data: item
+      data: {
+        name
+      }
     })
   } catch (e) {
     throw e;

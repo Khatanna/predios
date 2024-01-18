@@ -96,7 +96,7 @@ const ModalNameable: React.FC<ModalNameableProps> = ({
         </Modal.Title>
       </Modal.Header>
       <Form
-        id="modal"
+        id="formModal"
         className="d-flex gap-2 flex-column"
         onSubmit={handleSubmit(submit)}
       >
@@ -113,7 +113,7 @@ const ModalNameable: React.FC<ModalNameableProps> = ({
           <Button variant="danger" onClick={onClose}>
             Cancelar
           </Button>
-          <Button type="submit" variant="success" className="text-white">
+          <Button type="submit" variant="success" className="text-white" >
             {isSelected && !createMode ? "Actualizar" : "Crear"}
           </Button>
         </Modal.Footer>

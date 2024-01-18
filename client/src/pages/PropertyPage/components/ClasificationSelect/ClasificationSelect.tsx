@@ -16,6 +16,30 @@ const GET_ALL_CLASIFICATIONS_QUERY = gql`
 	}
 `;
 
+const clasificationMutations = {
+  create: gql`
+	mutation CreateClasification($name: String) {
+		clasification: createClasification(name: $name) {
+			name
+		}
+	}
+`,
+  update: gql`
+	mutation UpdateClasification($currentName: String, $name: String) {
+		clasification: updateClasification(currentName: $currentName, name: $name) {
+			name
+		}
+	}
+`,
+  delete: gql`
+  mutation DeleteClasification($name: String) {
+    clasification: deleteClasification(name: $name) {
+      name
+    }
+  }
+`
+}
+
 const ClasificationSelect: React.FC = () => {
   const { control, getValues, getFieldState, formState: { errors } } = useFormContext<Property>();
   const { subscribe } = useSelectSubscription(getValues('id'));
@@ -41,7 +65,7 @@ const ClasificationSelect: React.FC = () => {
             resource="CLASIFICATION"
             placeholder={"Clasificación"}
             query={GET_ALL_CLASIFICATIONS_QUERY}
-            mutations={roleMutations}
+            mutations={clasificationMutations}
             size="sm"
             isValid={getFieldState(field.name).isTouched && !errors.clasification?.name?.message}
             isInvalid={!!errors.clasification?.name?.message}

@@ -3,11 +3,9 @@ import { Form } from "react-bootstrap";
 import { People } from "react-bootstrap-icons";
 import { Controller, useFormContext } from "react-hook-form";
 import { SelectNameable } from "../../../../components/SelectNameable";
-import { roleMutations } from "../../../../graphql/mutations";
-import { useInputSubscription } from "../../hooks/useInputSubscription";
+import { useSelectSubscription } from "../../hooks/useSelectSubscription";
 import { Property } from "../../models/types";
 import { CustomLabel } from "../CustomLabel";
-import { useSelectSubscription } from "../../hooks/useSelectSubscription";
 
 const GET_ALL_RESPONSIBLE_UNITS_QUERY = gql`
 	query GetAllResponsibleUnits {
@@ -16,6 +14,30 @@ const GET_ALL_RESPONSIBLE_UNITS_QUERY = gql`
 		}
 	} 
 `;
+
+const responsibleUnitMutations = {
+  create: gql`
+	mutation CreateUnit($input: UnitInput) {
+		unit: createUnit(input: $input) {
+			name
+		}
+	}
+`,
+  update: gql`
+	mutation UpdateUnit($currentName: String, $name: String) {
+		unit: updateUnit(currentName: $currentName, name: $name) {
+			name
+		}
+	}
+`,
+  delete: gql`
+  mutation DeleteUnit($name: String) {
+    unit: deleteUnit(name: $name) {
+      name
+    }
+  }
+`
+}
 
 const ResponsibleUnitSelect: React.FC = () => {
   const { control, getValues, getFieldState } = useFormContext<Property>();
@@ -46,7 +68,7 @@ const ResponsibleUnitSelect: React.FC = () => {
             size="sm"
             placeholder={"Unidad responsable"}
             query={GET_ALL_RESPONSIBLE_UNITS_QUERY}
-            mutations={roleMutations}
+            mutations={responsibleUnitMutations}
             isValid={getFieldState(field.name).isTouched && !getFieldState(field.name).error?.message}
             isInvalid={!!getFieldState(field.name).error?.message}
             error={<Form.Control.Feedback type="invalid">{getFieldState(field.name).error?.message}</Form.Control.Feedback>}

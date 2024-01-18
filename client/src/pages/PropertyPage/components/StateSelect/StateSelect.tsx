@@ -1,9 +1,8 @@
 import { gql } from "@apollo/client";
-import { Form, FormSelectProps } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { DeviceSsd } from "react-bootstrap-icons";
 import { Controller, useFormContext } from "react-hook-form";
 import { SelectNameable } from "../../../../components/SelectNameable";
-import { roleMutations } from "../../../../graphql/mutations";
 import { Property } from "../../models/types";
 import { CustomLabel } from "../CustomLabel";
 import { useSelectSubscription } from "../../hooks/useSelectSubscription";
@@ -18,6 +17,30 @@ const GET_ALL_STATES_QUERY = gql`
 		}
 	} 
 `;
+
+const stateMutations = {
+  create: gql`
+  mutation CreateState($input: StateInput) {
+    state: createState(input: $input) {
+      name
+    }
+  }
+`,
+  update: gql`
+  mutation UpdateState($name: String, $item: StateInput) {
+    state: updateState(name: $name, item: $item) {
+      name
+    }
+  }
+`,
+  delete: gql`
+  mutation DeleteState($name: String) {
+    state: deleteState(name: $name) {
+      name
+    }
+  }
+`
+}
 
 const StateSelect: React.FC<{
   name: "state.name" | `trackings.${number}.state.name`;
@@ -48,7 +71,7 @@ const StateSelect: React.FC<{
             highlight
             placeholder={"Estado"}
             query={GET_ALL_STATES_QUERY}
-            mutations={roleMutations}
+            mutations={stateMutations}
             isValid={getFieldState(field.name).isTouched && !getFieldState(field.name).error?.message}
             isInvalid={!!getFieldState(field.name).error?.message}
             error={<Form.Control.Feedback type="invalid">{getFieldState(field.name).error?.message}</Form.Control.Feedback>}

@@ -1,5 +1,4 @@
 import { Controller, useFormContext } from "react-hook-form";
-
 import { gql } from "@apollo/client";
 import { Form } from "react-bootstrap";
 import { Activity as ActivityIcon } from "react-bootstrap-icons";
@@ -8,7 +7,6 @@ import { roleMutations } from "../../../../graphql/mutations";
 import { Property } from "../../models/types";
 import { CustomLabel } from "../CustomLabel";
 import { useSelectSubscription } from "../../hooks/useSelectSubscription";
-import { useAuthStore } from "../../../../state/useAuthStore";
 
 const GET_ALL_ACTIVITIES_QUERY = gql`
   query GetAllActivities {
@@ -17,6 +15,30 @@ const GET_ALL_ACTIVITIES_QUERY = gql`
     }
   }
 `;
+
+const activityMutations = {
+  create: gql`
+	mutation CreateActivity($input: ActivityInput) {
+		activity: createActivity(input: $input) {
+			name
+		}
+	}
+`,
+  update: gql`
+	mutation UpdateActivity($name: String, $item: ActivityInput) {
+		activity: updateActivity(name: $name, item: $item) {
+			name
+		}
+	}
+`,
+  delete: gql`
+  mutation DeleteActivity($name: String) {
+    activity: deleteActivity(name: $name) {
+      name
+    }
+  }
+`
+}
 
 const ActivitySelect: React.FC = () => {
   const { control, getValues, getFieldState } = useFormContext<Property>();
@@ -42,7 +64,7 @@ const ActivitySelect: React.FC = () => {
             {...subscribe(field)}
             resource="ACTIVITY"
             query={GET_ALL_ACTIVITIES_QUERY}
-            mutations={roleMutations}
+            mutations={activityMutations}
             size="sm"
             placeholder={"Actividad"}
             isValid={getFieldState(field.name).isTouched && !getFieldState(field.name).error?.message}

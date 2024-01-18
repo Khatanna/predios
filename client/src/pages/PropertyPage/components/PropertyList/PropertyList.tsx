@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import { Alert, Dropdown, DropdownButton, Form } from "react-bootstrap";
-import { FileEarmarkPlus } from "react-bootstrap-icons";
+import { ArrowClockwise, FileEarmarkPlus } from "react-bootstrap-icons";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { Table } from "../../../../components/Table";
@@ -118,43 +118,52 @@ const PropertyList: React.FC = () => {
       name="predios"
       subHeader
       subHeaderComponent={
-        <DropdownButton
-          key={"columns"}
-          id={`columns`}
-          variant={"outline-dark"}
-          title={"Columnas"}
-          align={"end"}
-          size="sm"
-        >
-          {showColumns.map((name) => (
-            <Dropdown.Item
-              onClick={() => {
-                toogleShowColumn(name);
-              }}
-            >
-              <Form.Check
-                type="switch"
-                value={name}
-                label={name}
-                id={name}
-                checked={isChecked(name)}
+        <div className="d-flex gap-2 align-items-center">
+          <Tooltip label="Restaurar configuración">
+            <ArrowClockwise size={24} role="button" onClick={() => {
+              setLimit(20)
+              setPage(1)
+              setUnit("all")
+            }} color="red" title="Restaurar configuración" />
+          </Tooltip>
+          <DropdownButton
+            key={"columns"}
+            id={`columns`}
+            variant={"outline-dark"}
+            title={"Columnas"}
+            align={"end"}
+            size="sm"
+          >
+            {showColumns.map((name) => (
+              <Dropdown.Item
                 onClick={() => {
                   toogleShowColumn(name);
                 }}
-              />
-            </Dropdown.Item>
-          ))}
-        </DropdownButton>
+              >
+                <Form.Check
+                  type="switch"
+                  value={name}
+                  label={name}
+                  id={name}
+                  checked={isChecked(name)}
+                  onClick={() => {
+                    toogleShowColumn(name);
+                  }}
+                />
+              </Dropdown.Item>
+            ))}
+          </DropdownButton>
+        </div>
       }
       columns={columns.concat(
         can("DELETE@PROPERTY")
           ? {
-              cell: (row) => <DropdownMenu property={row} />,
-              button: true,
-              allowOverflow: true,
-              width: "30px",
-              center: true,
-            }
+            cell: (row) => <DropdownMenu property={row} />,
+            button: true,
+            allowOverflow: true,
+            width: "30px",
+            center: true,
+          }
           : [],
       )}
       data={data?.results.properties ?? []}

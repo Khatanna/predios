@@ -3,14 +3,10 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import { Link45deg } from "react-bootstrap-icons";
 import { Controller, useFormContext } from "react-hook-form";
-import { useInputSubscription } from "../../hooks/useInputSubscription";
 import { Property } from "../../models/types";
 import { CustomLabel } from "../CustomLabel";
 import { SelectNameable } from "../../../../components/SelectNameable";
-import { roleMutations } from "../../../../graphql/mutations";
 import { useSelectSubscription } from "../../hooks/useSelectSubscription";
-
-export type ReferenceSelectProps = {};
 
 const GET_ALL_REFERENCES_QUERY = gql`
 	query GetAllReferencesQuery {
@@ -20,7 +16,31 @@ const GET_ALL_REFERENCES_QUERY = gql`
 	}
 `;
 
-const ReferenceSelect: React.FC<ReferenceSelectProps> = ({ }) => {
+const referenceMutations = {
+  create: gql`
+	mutation CreateReference($name: String) {
+		result: createReference(name: $name) {
+			name
+		}
+	}
+`,
+  delete: gql`
+  mutation DeleteReference($name: String) {
+    result: deleteReference(name: $name) {
+      name
+    }
+  }
+`,
+  update: gql`
+	mutation UpdateReference($currentName: String, $name: String) {
+		result: updateReference(currentName: $currentName, name: $name) {
+			name
+		}
+	}
+`
+}
+
+const ReferenceSelect: React.FC = () => {
   const { control, getValues, getFieldState } = useFormContext<Property>();
   const { subscribe } = useSelectSubscription(getValues('id'))
   return (
@@ -44,7 +64,7 @@ const ReferenceSelect: React.FC<ReferenceSelectProps> = ({ }) => {
             {...subscribe(field)}
             resource="REFERENCE"
             query={GET_ALL_REFERENCES_QUERY}
-            mutations={roleMutations}
+            mutations={referenceMutations}
             size="sm"
             placeholder={"Referencia"}
             highlight
