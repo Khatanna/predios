@@ -4,11 +4,11 @@ services:
   backend:
     build: .
     ports:
-      - "5001:5001"
+      - "3001:3001"
     environment:
-      PORT: 5001
+      PORT: 3001
       ENVIRONMENT: "dev"
-      DATABASE_URL: "mysql://root:@db:3307/predios"
+      DATABASE_URL: "mysql://root:@db:3306/predios?charset=utfmb4"
       ACCESS_TOKEN_SECRET: "8ab580b795ed798bbc1caf1e614ebc181932ece176bc0d5aa3a45bab371ad49c"
       REFRESH_TOKEN_SECRET: "25de153e48bacc2cba9214d591f7ada9536277f91b67b28197abddcd9d56dae0"
     depends_on:
@@ -16,9 +16,12 @@ services:
     links:
       - db
   db:
-    image: mysql:8.2
+    image: mariadb:10.4
     restart: always
     ports:
-      - "3307:3307"
+      - "3306:3306"
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+      #MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    # volumes:
+    # - ./mysql-data:/var/lib/mysql

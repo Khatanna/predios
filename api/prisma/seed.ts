@@ -235,7 +235,7 @@ async function main() {
           code: codigo ? codigo + "" : "",
           area: superficie ? superficie + "" : "",
           expertiseOfArea: superficie_pericia ? superficie_pericia + "" : "",
-          name: nombre ? nombre : "",
+          name: nombre ? nombre.substring(0, 255) : "",
           polygone: poligono ? poligono + "" : "",
           bodies: cuerpos ? +cuerpos : 0,
           plots: parcelas ? +parcelas : 0,

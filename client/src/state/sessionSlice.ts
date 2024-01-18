@@ -28,5 +28,6 @@ export const sessionSlice: StateCreator<
   {
     name: "session",
     storage: createJSONStorage(() => sessionStorage),
+    version: 2,
   },
 );

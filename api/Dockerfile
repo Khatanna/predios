@@ -4,10 +4,11 @@ WORKDIR /app
 
 COPY package*.json .
 RUN npm install
-RUN npx prisma init --datasource-provider mysql
 
 COPY . .
 
-EXPOSE 5001
+RUN npx prisma generate
+
+EXPOSE 3001
 
 CMD npm run dev
