@@ -1,5 +1,5 @@
-type Clasification { 
-  id: ID! 
+type Clasification {
+  id: ID!
   name: String
   properties: [Property]!
   createdAt: String
@@ -12,8 +12,8 @@ type Query {
 }
 
 type Mutation {
-  createClasification(input: ClasificationInput): Clasification
-  updateClasification(name: String, item: ClasificationInput): Clasification
+  createClasification(name: String): Clasification
+  updateClasification(currentName: String, name: String): Clasification
   deleteClasification(name: String): Clasification
 }
 

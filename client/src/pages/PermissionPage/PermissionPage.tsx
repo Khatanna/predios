@@ -1,20 +1,20 @@
+import { gql, useQuery } from "@apollo/client";
 import { useState } from "react";
-import { Alert, Button, Dropdown, ListGroup, Modal } from "react-bootstrap";
+import { Alert, ListGroup, Modal } from "react-bootstrap";
+import { FileEarmarkLock, PersonBadge } from "react-bootstrap-icons";
 import { TableColumn } from "react-data-table-component";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import { Chip } from "../../components/Chip";
 import { StateCell } from "../../components/StateCell";
 import { Table } from "../../components/Table";
+import { Tooltip } from "../../components/Tooltip";
 import { useCustomQuery } from "../../hooks/useCustomQuery";
 import { StateOfStatus, levels, resources } from "../../utilities/constants";
-import { OptionMenu } from "./components/DropdownMenu";
-import { Permission } from "./models/types";
-import { Tooltip } from "../../components/Tooltip";
-import { FileEarmarkLock, PersonBadge } from "react-bootstrap-icons";
-import { Link } from "react-router-dom";
-import { gql, useQuery } from "@apollo/client";
 import { Role } from "../UserPage/models/types";
 import { capitalizeString } from "../UserPage/utils/capitalizeString";
+import { OptionMenu } from "./components/DropdownMenu";
+import { Permission } from "./models/types";
 
 const GET_ALL_PERMISSIONS_QUERY = `{
 	permissions: getAllPermissions {

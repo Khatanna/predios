@@ -123,7 +123,7 @@ const VerifyAuthRoute: React.ComponentType = () => {
 };
 
 const VerifyUnauthRoute: React.ComponentType = () => {
-  const { refreshToken, logout } = useAuthStore();
+  const { refreshToken, logout, isAuth } = useAuthStore();
   const navigate = useNavigate();
   useQuery<
     { result: { accessToken: string; user: User } },
@@ -146,6 +146,10 @@ const VerifyUnauthRoute: React.ComponentType = () => {
     },
     skip: !refreshToken,
   });
+
+  if (isAuth) {
+    return <Navigate to={"/"} />;
+  }
 
   if (!refreshToken) {
     return <Outlet />;

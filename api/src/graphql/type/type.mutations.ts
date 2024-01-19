@@ -2,41 +2,55 @@ import { Type } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createType = (_parent: any, { input }: { input: Type }, { userContext, prisma }: Context) => {
+export const createType = (
+  _parent: any,
+  { name }: { name: string },
+  { userContext, prisma }: Context,
+) => {
   try {
-    hasPermission(userContext, 'CREATE', 'TYPE');
+    hasPermission(userContext, "CREATE", "TYPE");
 
     return prisma.type.create({
-      data: input
-    })
+      data: { name },
+    });
   } catch (e) {
     throw e;
   }
 };
 
-export const updateType = (_parent: any, { name, item }: { name: string, item: Type }, { userContext, prisma }: Context) => {
+export const updateType = (
+  _parent: any,
+  { currentName, name }: { currentName: string; name: string },
+  { userContext, prisma }: Context,
+) => {
   try {
-    hasPermission(userContext, 'UPDATE', 'TYPE');
+    hasPermission(userContext, "UPDATE", "TYPE");
 
     return prisma.type.update({
       where: {
-        name
+        name: currentName,
       },
-      data: item
-    })
+      data: {
+        name,
+      },
+    });
   } catch (e) {
     throw e;
   }
 };
-export const deleteType = (_parent: any, { name }: Pick<Type, 'name'>, { userContext, prisma }: Context) => {
+export const deleteType = (
+  _parent: any,
+  { name }: Pick<Type, "name">,
+  { userContext, prisma }: Context,
+) => {
   try {
-    hasPermission(userContext, 'DELETE', 'TYPE');
+    hasPermission(userContext, "DELETE", "TYPE");
 
     return prisma.type.delete({
       where: {
-        name
-      }
-    })
+        name,
+      },
+    });
   } catch (e) {
     throw e;
   }

@@ -1,5 +1,5 @@
-type Unit { 
-  id: ID! 
+type Unit {
+  id: ID!
   name: String
   properties: [Property]!
   createdAt: String
@@ -8,12 +8,12 @@ type Unit {
 
 type Query {
   getAllUnits: [Unit]!
-  getUnit(name: String): Unit 
+  getUnit(name: String): Unit
 }
 
 type Mutation {
-  createUnit(input: UnitInput): Unit
-  updateUnit(name: String, item: UnitInput): Unit
+  createUnit(name: String): Unit
+  updateUnit(currentName: String, name: String): Unit
   deleteUnit(name: String): Unit
 }
 

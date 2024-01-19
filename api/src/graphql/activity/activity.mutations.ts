@@ -2,39 +2,55 @@ import { Activity } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createActivity = (_parent: any, { input }: { input: Activity }, { prisma, userContext }: Context) => {
+export const createActivity = (
+  _parent: any,
+  { name }: { name: string },
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, 'CREATE', 'ACTIVITY');
+    hasPermission(userContext, "CREATE", "ACTIVITY");
 
     return prisma.activity.create({
-      data: input
-    })
+      data: {
+        name,
+      },
+    });
   } catch (e) {
     throw e;
   }
 };
-export const updateActivity = (_parent: any, { name, item }: { name: string, item: Activity }, { prisma, userContext }: Context) => {
+export const updateActivity = (
+  _parent: any,
+  { currentName, name }: { currentName: string; name: string },
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, 'UPDATE', 'ACTIVITY');
+    hasPermission(userContext, "UPDATE", "ACTIVITY");
 
     return prisma.activity.update({
       where: {
-        name
+        name: currentName,
       },
-      data: item
-    })
+      data: {
+        name,
+      },
+    });
   } catch (e) {
     throw e;
   }
 };
-export const deleteActivity = (_parent: any, { name }: { name: string }, { prisma, userContext }: Context) => {
+export const deleteActivity = (
+  _parent: any,
+  { name }: { name: string },
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, 'DELETE', 'ACTIVITY');
+    hasPermission(userContext, "DELETE", "ACTIVITY");
     return prisma.activity.delete({
       where: {
-        name
-      }
-    })
+        name,
+      },
+    });
   } catch (e) {
     throw e;
   }

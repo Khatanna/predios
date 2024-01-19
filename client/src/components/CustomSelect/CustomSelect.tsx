@@ -9,11 +9,11 @@ import { toast } from "sonner";
 
 export type CustomSelectProps = {
   query: DocumentNode;
-  variables?: OperationVariables
+  variables?: OperationVariables;
   placeholder: string | React.ReactNode;
   resource: `${Resource}`;
   readOnly?: boolean;
-  highlight?: boolean
+  highlight?: boolean;
 };
 
 const CustomSelect: React.FC<CustomSelectProps & FormSelectProps> = ({
@@ -75,10 +75,16 @@ const CustomSelect: React.FC<CustomSelectProps & FormSelectProps> = ({
     <Form.Select
       {...props}
       value={!props.value ? "undefined" : props.value}
-      className={!props.value || props.value === "undefined" ? "text-body-tertiary" : highlight ? "text-danger fw-bold" : ""}
+      className={
+        !props.value || props.value === "undefined"
+          ? "text-body-tertiary"
+          : highlight
+          ? "text-danger fw-bold"
+          : ""
+      }
       onChange={(e) => {
         if (readOnly) {
-          toast.info("Este campo es de solo lectura")
+          toast.info("Este campo es de solo lectura");
           e.preventDefault();
         } else {
           props.onChange?.(e);

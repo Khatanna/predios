@@ -1,5 +1,5 @@
-type Type { 
-  id: ID! 
+type Type {
+  id: ID!
   name: String
   createdAt: String
   updatedAt: String
@@ -11,8 +11,8 @@ type Query {
 }
 
 type Mutation {
-  createType(input: TypeInput): Type 
-  updateType(name: String, item: TypeInput): Type
+  createType(name: String): Type
+  updateType(currentName: String, name: String): Type
   deleteType(name: String): Type
 }
 

@@ -1,4 +1,4 @@
-type Activity { 
+type Activity {
   id: ID!
   name: String
   properties: [Property]!
@@ -12,8 +12,8 @@ type Query {
 }
 
 type Mutation {
-  createActivity(input: ActivityInput): Activity
-  updateActivity(name: String, item: ActivityInput): Activity
+  createActivity(name: String): Activity
+  updateActivity(currentName: String, name: String): Activity
   deleteActivity(name: String): Activity
 }
 

@@ -77,8 +77,8 @@ model User {
   createdAt      DateTime              @default(now())
   updatedAt      DateTime              @updatedAt
   token          String?               @db.MediumText
-  type           UserType              @relation(fields: [typeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  role           Role                  @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  type           UserType              @relation(fields: [typeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  role           Role                  @relation(fields: [roleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   status         Status                @default(ENABLE) @map("estado")
   connection     StatusConnection      @default(OFFLINE) @map("estado_de_conexion")
   records        Record[]

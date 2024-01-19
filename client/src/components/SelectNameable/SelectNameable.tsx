@@ -1,30 +1,30 @@
 import { Dropdown, FormSelectProps, InputGroup } from "react-bootstrap";
 import { useAuthStore } from "../../state/useAuthStore";
-import { useState } from "react";
 import { CustomSelect } from "../CustomSelect";
 import { DropdownMenu } from "../DropdownMenu";
 import { Resource } from "../../pages/UserPage/components/Permission/Permission";
-import { DocumentNode } from "graphql";
+import { DocumentNode, printIntrospectionSchema } from "graphql";
 import { OperationVariables, useMutation } from "@apollo/client";
-import { mutationMessages } from "../../utilities/constants";
+import { mutationMessages, resources } from "../../utilities/constants";
 import { toast } from "sonner";
-import { ModalNameable } from "../ModalNameable";
+import { useModalStore } from "../../state/useModalStore";
 
-interface Event extends Partial<Omit<React.ChangeEvent<HTMLSelectElement>, 'target'>> {
+interface Event
+  extends Partial<Omit<React.ChangeEvent<HTMLSelectElement>, "target">> {
   target: {
-    value: string
+    value: string;
   };
 }
 
 export type SelectNameableProps = {
   resource: `${Resource}`;
   query: DocumentNode;
-  variables?: OperationVariables
+  variables?: OperationVariables;
   placeholder: string | React.ReactNode;
   mutations: Record<"create" | "update" | "delete", DocumentNode>;
   readOnly?: boolean;
-  highlight?: boolean
-  error?: React.ReactNode
+  highlight?: boolean;
+  error?: React.ReactNode;
   onChange: (...e: any[]) => void;
 } & Omit<FormSelectProps, "onChange">;
 
@@ -44,10 +44,7 @@ const SelectNameable: React.FC<SelectNameableProps> = ({
   const canCreate = can(`CREATE@${resource}`);
   const canUpdate = can(`UPDATE@${resource}`) && isSelected;
   const canDelete = can(`DELETE@${resource}`) && isSelected;
-  const [{ createMode, show }, setModalState] = useState({
-    show: false,
-    createMode: false,
-  });
+  const { setModal, closeModal } = useModalStore();
 
   const showMenu = canCreate || canUpdate || canDelete;
   const resetValue = () => {
@@ -57,6 +54,18 @@ const SelectNameable: React.FC<SelectNameableProps> = ({
     { result: { name: string } },
     { name: string }
   >(mutations.delete, {
+    refetchQueries: [query],
+  });
+  const [createMutation] = useMutation<
+    { result: { name: string } },
+    { name: string }
+  >(mutations.create, {
+    refetchQueries: [query],
+  });
+  const [updateMutation] = useMutation<
+    { result: { name: string } },
+    { currentName: string; name: string }
+  >(mutations.update, {
     refetchQueries: [query],
   });
 
@@ -111,14 +120,73 @@ const SelectNameable: React.FC<SelectNameableProps> = ({
         <DropdownMenu>
           {canCreate && (
             <Dropdown.Item
-              onClick={() => setModalState({ show: true, createMode: true })}
+              onClick={() => {
+                setModal({
+                  show: true,
+                  title: `Crear ${resources[resource]}`,
+                  resource,
+                  createMutation: (name: string) => {
+                    toast.promise(
+                      createMutation({
+                        variables: {
+                          name,
+                        },
+                      }),
+                      {
+                        loading: `Creando ${resources[resource]}: ${name}`,
+                        success:
+                          mutationMessages[
+                            `CREATE_${resource}`
+                          ].getSuccessMessage(name),
+                        error:
+                          mutationMessages[
+                            `CREATE_${resource}`
+                          ].getErrorMessage(name),
+                        finally: () => (closeModal(), resetValue()),
+                      },
+                    );
+                  },
+                  updateMutation: () => {},
+                  value: undefined,
+                });
+              }}
             >
               ➕ Crear
             </Dropdown.Item>
           )}
           {canUpdate && (
             <Dropdown.Item
-              onClick={() => setModalState({ show: true, createMode: false })}
+              onClick={() => {
+                setModal({
+                  show: true,
+                  title: `Actualizar ${resources[resource]}`,
+                  resource,
+                  createMutation: () => {},
+                  updateMutation: (currentName, name) => {
+                    toast.promise(
+                      updateMutation({
+                        variables: {
+                          currentName,
+                          name,
+                        },
+                      }),
+                      {
+                        loading: `Actualizando ${resources[resource]}: ${name}`,
+                        success:
+                          mutationMessages[
+                            `UPDATE_${resource}`
+                          ].getSuccessMessage(name),
+                        error:
+                          mutationMessages[
+                            `UPDATE_${resource}`
+                          ].getErrorMessage(name),
+                        finally: () => (closeModal(), resetValue()),
+                      },
+                    );
+                  },
+                  value: props.value as string,
+                });
+              }}
             >
               ✏ Editar
             </Dropdown.Item>
@@ -130,16 +198,6 @@ const SelectNameable: React.FC<SelectNameableProps> = ({
             <Dropdown.Item onClick={resetValue}>🧹 Limpiar</Dropdown.Item>
           )}
         </DropdownMenu>
-        <ModalNameable
-          query={query}
-          closeModal={() => setModalState({ show: false, createMode: false })}
-          createMode={createMode}
-          show={show}
-          isSelected={isSelected}
-          resource={resource}
-          value={isSelected ? (props.value as string) : ""}
-          mutations={mutations}
-        />
       </InputGroup.Text>
       {error}
     </InputGroup>

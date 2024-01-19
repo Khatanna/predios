@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import { Accordion, Button, Col, Dropdown, Form, Modal } from "react-bootstrap";
@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { Permission } from "../PermissionPage/models/types";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { Link } from "react-router-dom";
-import { useRoleStore } from './state/useRoleStore';
+import { useRoleStore } from "./state/useRoleStore";
 export type RolePageProps = {
   // types...
 };
@@ -53,7 +53,10 @@ const CREATE_PERMISSION_FOR_ROLE_MUTATION = gql`
 `;
 
 const DELETE_PERMISSION_FOR_ROLE_MUTATION = gql`
-  mutation DeletePermissionForRole($role: String, $permission: PermissionForRoleInput) {
+  mutation DeletePermissionForRole(
+    $role: String
+    $permission: PermissionForRoleInput
+  ) {
     role: deletePermissionForRole(role: $role, permission: $permission) {
       permissions {
         permission {
@@ -62,25 +65,30 @@ const DELETE_PERMISSION_FOR_ROLE_MUTATION = gql`
       }
     }
   }
-`
+`;
 
 const LocalResources = Object.entries(resources);
 const LocalLevels = Object.entries(levels);
 
 const OptionMenu: React.FC<{ permission: Permission }> = ({ permission }) => {
-  const [deletePermission] = useMutation<{ role: Role }, { role: string, permission: { level: Level, resource: Resource } }>(DELETE_PERMISSION_FOR_ROLE_MUTATION, { refetchQueries: [GET_ROLE_QUERY] });
+  const [deletePermission] = useMutation<
+    { role: Role },
+    { role: string; permission: { level: Level; resource: Resource } }
+  >(DELETE_PERMISSION_FOR_ROLE_MUTATION, { refetchQueries: [GET_ROLE_QUERY] });
   const { role } = useRoleStore();
   const handleClickDelete = () => {
-    toast.promise(deletePermission({
-      variables: {
-        role: role!,
-        permission: {
-          level: permission.level,
-          resource: permission.resource
-        }
-      }
-    }))
-  }
+    toast.promise(
+      deletePermission({
+        variables: {
+          role: role!,
+          permission: {
+            level: permission.level,
+            resource: permission.resource,
+          },
+        },
+      }),
+    );
+  };
 
   return (
     <DropdownMenu align={"end"}>
@@ -157,9 +165,9 @@ const RolePage: React.FC<RolePageProps> = () => {
     setRole({ role });
 
     return () => {
-      setRole({ role: undefined })
-    }
-  }, [setRole, role])
+      setRole({ role: undefined });
+    };
+  }, [setRole, role]);
 
   return (
     <div>
@@ -197,57 +205,59 @@ const RolePage: React.FC<RolePageProps> = () => {
             <Col xs="10">
               <Form.Group>
                 <Accordion>
-                  {LocalResources.filter(([localResource]) => {
-                    const levels =
-                      data?.role.permissions.reduce(
-                        (
-                          acc: string[],
-                          { permission: { resource, level } },
-                        ) => {
-                          if (localResource === resource) {
-                            acc.push(level);
-                          }
+                  {LocalResources.filter(([r]) => r !== "RECORD")
+                    .filter(([localResource]) => {
+                      const levels =
+                        data?.role.permissions.reduce(
+                          (
+                            acc: string[],
+                            { permission: { resource, level } },
+                          ) => {
+                            if (localResource === resource) {
+                              acc.push(level);
+                            }
 
-                          return acc;
-                        },
-                        [],
-                      ) ?? [];
+                            return acc;
+                          },
+                          [],
+                        ) ?? [];
 
-                    return levels.length !== 4;
-                  }).map(([resource, name]) => {
-                    return (
-                      <Accordion.Item
-                        eventKey={resource}
-                        key={crypto.randomUUID()}
-                      >
-                        <Accordion.Header className="d-flex align-items-center">
-                          <div className="d-flex gap-2 align-items-center">
-                            Permisos de:{" "}
-                            <Chip text={name} background={resource} />
-                          </div>
-                        </Accordion.Header>
-                        <Accordion.Body>
-                          {LocalLevels.filter(([level]) => {
-                            return !data?.role.permissions.some(
-                              ({ permission }) =>
-                                permission.level === level &&
-                                permission.resource === resource,
-                            );
-                          }).map(([level, name]) => (
-                            <Form.Check
-                              type={"checkbox"}
-                              label={name}
-                              value={level}
-                              id={crypto.randomUUID()}
-                              {...register(
-                                `permissions.${resource as Resource}.levels`,
-                              )}
-                            />
-                          ))}
-                        </Accordion.Body>
-                      </Accordion.Item>
-                    );
-                  })}
+                      return levels.length !== 4;
+                    })
+                    .map(([resource, name]) => {
+                      return (
+                        <Accordion.Item
+                          eventKey={resource}
+                          key={crypto.randomUUID()}
+                        >
+                          <Accordion.Header className="d-flex align-items-center">
+                            <div className="d-flex gap-2 align-items-center">
+                              Permisos de:{" "}
+                              <Chip text={name} background={resource} />
+                            </div>
+                          </Accordion.Header>
+                          <Accordion.Body>
+                            {LocalLevels.filter(([level]) => {
+                              return !data?.role.permissions.some(
+                                ({ permission }) =>
+                                  permission.level === level &&
+                                  permission.resource === resource,
+                              );
+                            }).map(([level, name]) => (
+                              <Form.Check
+                                type={"checkbox"}
+                                label={name}
+                                value={level}
+                                id={crypto.randomUUID()}
+                                {...register(
+                                  `permissions.${resource as Resource}.levels`,
+                                )}
+                              />
+                            ))}
+                          </Accordion.Body>
+                        </Accordion.Item>
+                      );
+                    })}
                 </Accordion>
               </Form.Group>
             </Col>

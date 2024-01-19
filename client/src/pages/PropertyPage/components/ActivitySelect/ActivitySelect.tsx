@@ -18,31 +18,31 @@ const GET_ALL_ACTIVITIES_QUERY = gql`
 
 const activityMutations = {
   create: gql`
-	mutation CreateActivity($input: ActivityInput) {
-		activity: createActivity(input: $input) {
-			name
-		}
-	}
-`,
-  update: gql`
-	mutation UpdateActivity($name: String, $item: ActivityInput) {
-		activity: updateActivity(name: $name, item: $item) {
-			name
-		}
-	}
-`,
-  delete: gql`
-  mutation DeleteActivity($name: String) {
-    activity: deleteActivity(name: $name) {
-      name
+    mutation CreateActivity($name: String) {
+      activity: createActivity(name: $name) {
+        name
+      }
     }
-  }
-`
-}
+  `,
+  update: gql`
+    mutation UpdateActivity($currentName: String, $name: String) {
+      activity: updateActivity(currentName: $currentName, name: $name) {
+        name
+      }
+    }
+  `,
+  delete: gql`
+    mutation DeleteActivity($name: String) {
+      activity: deleteActivity(name: $name) {
+        name
+      }
+    }
+  `,
+};
 
 const ActivitySelect: React.FC = () => {
   const { control, getValues, getFieldState } = useFormContext<Property>();
-  const { subscribe } = useSelectSubscription(getValues('id'));
+  const { subscribe } = useSelectSubscription(getValues("id"));
   return (
     <Form.Group>
       <CustomLabel label="Actividad" icon={<ActivityIcon color="red" />} />
@@ -51,12 +51,13 @@ const ActivitySelect: React.FC = () => {
         control={control}
         rules={{
           required: {
-            message: 'Este campo es obligatorio',
-            value: true
-          }, pattern: {
             message: "Este campo es obligatorio",
-            value: /^(?!undefined$).*$/gi
-          }
+            value: true,
+          },
+          pattern: {
+            message: "Este campo es obligatorio",
+            value: /^(?!undefined$).*$/gi,
+          },
         }}
         defaultValue="undefined"
         render={({ field }) => (
@@ -67,9 +68,16 @@ const ActivitySelect: React.FC = () => {
             mutations={activityMutations}
             size="sm"
             placeholder={"Actividad"}
-            isValid={getFieldState(field.name).isTouched && !getFieldState(field.name).error?.message}
+            isValid={
+              getFieldState(field.name).isTouched &&
+              !getFieldState(field.name).error?.message
+            }
             isInvalid={!!getFieldState(field.name).error?.message}
-            error={<Form.Control.Feedback type="invalid">{getFieldState(field.name).error?.message}</Form.Control.Feedback>}
+            error={
+              <Form.Control.Feedback type="invalid">
+                {getFieldState(field.name).error?.message}
+              </Form.Control.Feedback>
+            }
           />
         )}
       />

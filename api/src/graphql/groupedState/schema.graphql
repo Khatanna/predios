@@ -1,4 +1,4 @@
-type GroupedState { 
+type GroupedState {
   id: ID!
   name: String
   properties: [Property]!
@@ -12,12 +12,11 @@ type Query {
 }
 
 type Mutation {
-  createGroupedState(input: GroupedStateInput): GroupedState
-  updateGroupedState(name: String, item: GroupedStateInput): GroupedState
+  createGroupedState(name: String): GroupedState
+  updateGroupedState(currentName: String, name: String): GroupedState
   deleteGroupedState(name: String): GroupedState
 }
 
-input GroupedStateInput { 
+input GroupedStateInput {
   name: String
 }
-

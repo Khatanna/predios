@@ -20,7 +20,7 @@ import {
   PersonGear,
   PersonWorkspace,
 } from "react-bootstrap-icons";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useCustomMutation } from "../../../../hooks";
 import {
   customSwalError,
@@ -31,7 +31,6 @@ import {
   UPDATE_PROPERTY_MUTATION,
 } from "../../graphQL/types";
 import { Property } from "../../models/types";
-import { useModalStore } from "../../state/useModalStore";
 import { usePaginationStore } from "../../state/usePaginationStore";
 import { ActivitySelect } from "../ActivitySelect";
 import { BeneficiaryList } from "../BeneficiaryList";
@@ -40,9 +39,13 @@ import { CustomInput } from "../CustomInput";
 import { CustomLabel } from "../CustomLabel";
 import { GroupedStateSelect } from "../GroupedStateSelect";
 import { Localization } from "../Localization";
-import ModalForm from "../ModalForm/ModalForm";
+import { useMutation } from "@apollo/client";
+import { SeekerModalInput } from "../../../../components/SeekerModalInput";
+import { useAuthStore } from "../../../../state/useAuthStore";
+import { usePropertyListStore } from "../../state/usePropertyListStore";
 import { ObservationList } from "../ObservationList";
 import { Paginator } from "../Paginator";
+import { GET_ALL_PROPERTIES_QUERY } from "../PropertyList/PropertyList";
 import { ReferenceSelect } from "../ReferenceSelect";
 import { ResponsibleUnitSelect } from "../ResponsibleUnitSelect";
 import { SelectUser } from "../SelectUser";
@@ -50,11 +53,6 @@ import { StateSelect } from "../StateSelect";
 import { SubdirectorySelect } from "../SubdirectorySelect";
 import { TrackingList } from "../TrackingList";
 import { TypeSelect } from "../TypeSelect";
-import { SeekerModalInput } from "../../../../components/SeekerModalInput";
-import { useAuthStore } from "../../../../state/useAuthStore";
-import { useMutation } from "@apollo/client";
-import { GET_ALL_PROPERTIES_QUERY } from "../PropertyList/PropertyList";
-import { usePropertyListStore } from "../../state/usePropertyListStore";
 
 const PropertyForm: React.FC = () => {
   const { property, reset } = usePaginationStore();
@@ -62,7 +60,7 @@ const PropertyForm: React.FC = () => {
   const { handleSubmit, register, ...methods } = useForm<Property>({
     values: property,
   });
-  const { page, limit, orderBy, unit, fieldOrder } = usePropertyListStore()
+  const { page, limit, orderBy, unit, fieldOrder } = usePropertyListStore();
   const [createProperty] = useMutation<
     { property: Property },
     { input: Property }
@@ -75,18 +73,23 @@ const PropertyForm: React.FC = () => {
       methods.reset();
     },
     onError(error) {
-      customSwalError(error.message, "Ocurrio un error al intentar crear el predio");
+      customSwalError(
+        error.message,
+        "Ocurrio un error al intentar crear el predio",
+      );
     },
-    refetchQueries: [{
-      query: GET_ALL_PROPERTIES_QUERY,
-      variables: {
-        page,
-        limit,
-        orderBy,
-        unit,
-        fieldOrder,
-      }
-    }]
+    refetchQueries: [
+      {
+        query: GET_ALL_PROPERTIES_QUERY,
+        variables: {
+          page,
+          limit,
+          orderBy,
+          unit,
+          fieldOrder,
+        },
+      },
+    ],
   });
 
   const [updateProperty] = useCustomMutation<
@@ -106,30 +109,24 @@ const PropertyForm: React.FC = () => {
       );
     },
   });
-  const submit = (data: Property, e: React.BaseSyntheticEvent) => {
-    if (e.target?.id !== "propertyForm") {
-
-      if (!methods.getValues("id")) {
-        createProperty({
-          variables: {
-            input: data,
-          }
-        });
-      } else {
-        updateProperty({
+  const submit: SubmitHandler<Property> = (data) => {
+    if (!methods.getValues("id")) {
+      createProperty({
+        variables: {
           input: data,
-        });
-      }
+        },
+      });
     } else {
-      e.preventDefault()
-      e.stopPropagation()
+      updateProperty({
+        input: data,
+      });
     }
   };
   const { can } = useAuthStore();
   useEffect(() => {
     return () => {
       if (methods.getValues("id")) {
-        methods.reset()
+        methods.reset();
         reset();
       }
     };
@@ -316,8 +313,12 @@ const PropertyForm: React.FC = () => {
                                   </InputGroup>
                                 </Form.Group>
                               </Col>
-                              <Col xs={4}><TypeSelect /></Col>
-                              <Col xs={4}><ClasificationSelect /></Col>
+                              <Col xs={4}>
+                                <TypeSelect />
+                              </Col>
+                              <Col xs={4}>
+                                <ClasificationSelect />
+                              </Col>
                               <Col xs={4}>
                                 <ActivitySelect />
                               </Col>
@@ -375,7 +376,9 @@ const PropertyForm: React.FC = () => {
                         placeholder="Estado 2"
                       />
                     </Col>
-                    <Col xs={12}><GroupedStateSelect /></Col>
+                    <Col xs={12}>
+                      <GroupedStateSelect />
+                    </Col>
                     <Col xs={12}>
                       <CustomLabel
                         label="Juridico"
@@ -398,7 +401,9 @@ const PropertyForm: React.FC = () => {
                         name="technical.user.username"
                       />
                     </Col>
-                    <Col xs={12}><ReferenceSelect /></Col>
+                    <Col xs={12}>
+                      <ReferenceSelect />
+                    </Col>
                     <Col xs={12}>
                       <CustomLabel
                         label="Observación tecnica"
@@ -414,7 +419,7 @@ const PropertyForm: React.FC = () => {
                   </Row>
                 </Col>
               </Row>
-              {can("CREATE@PROPERTY") && !methods.getValues('id') && (
+              {can("CREATE@PROPERTY") && !methods.getValues("id") && (
                 <Row className="my-2">
                   <Col className="d-flex justify-content-end gap-2">
                     <Button type="submit" variant="warning" form="propertyForm">

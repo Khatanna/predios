@@ -1,4 +1,4 @@
-type FolderLocation { 
+type FolderLocation {
   id: ID!
   name: String
   properties: [Property]!
@@ -12,8 +12,8 @@ type Query {
 }
 
 type Mutation {
-  createFolderLocation(input: FolderLocationInput): FolderLocation
-  updateFolderLocation(name: String, item: FolderLocationInput): FolderLocation
+  createFolderLocation(name: String): FolderLocation
+  updateFolderLocation(currentName: String, name: String): FolderLocation
   deleteFolderLocation(name: String): FolderLocation
 }
 

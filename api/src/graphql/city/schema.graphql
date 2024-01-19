@@ -9,8 +9,8 @@ type Query {
 }
 
 type Mutation {
-  createCity(input: CityInput): City
-  updateCity(name: String, item: CityInput): City
+  createCity(name: String): City
+  updateCity(currentName: String, name: String): City
   deleteCity(name: String): City
 }
 
