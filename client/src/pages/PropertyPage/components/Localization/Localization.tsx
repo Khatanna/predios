@@ -103,8 +103,7 @@ const municipalityMutations = {
 const Localization: React.FC<{ readOnly?: boolean }> = () => {
   const { control, watch, getValues, getFieldState } =
     useFormContext<Property>();
-  // const [city, province] = watch(["city.name", "province.name"]);
-  const [city, province] = watch(["city.name", "province.name"]);
+  const province = watch("province.name");
 
   return (
     <>
@@ -178,7 +177,7 @@ const Localization: React.FC<{ readOnly?: boolean }> = () => {
                 size="sm"
                 placeholder={"Provincia"}
                 query={GET_ALL_PROVINCES_BY_CITY_NAME}
-                variables={{ city }}
+                variables={{ city: getValues('city.name') ?? 'La Paz' }}
                 mutations={provinceMutations}
                 isValid={
                   getFieldState(field.name).isTouched &&
@@ -215,7 +214,7 @@ const Localization: React.FC<{ readOnly?: boolean }> = () => {
             render={({ field }) => (
               <SelectNameable
                 {...field}
-                disabled={province === "undefined"}
+                disabled={province === "undefined" || !province}
                 resource="MUNICIPALITY"
                 query={GET_MUNICIPALITIES_BY_PROVINCE_NAME}
                 variables={{ province }}
