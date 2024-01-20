@@ -10,31 +10,27 @@ export type RoleHasPermission = {
   status: string;
   permission: Permission;
   assignedBy: string;
-}
+};
 
 export type Role = {
   name: string;
-  permissions: RoleHasPermission[]
+  permissions: RoleHasPermission[];
 };
 
 export type Status = keyof typeof StateOfStatus;
 
 export type User = {
-  id: string;
   names: string;
   firstLastName: string;
   secondLastName: string;
   username: string;
   password: string;
-  type: UserType;
+  type: Pick<UserType, "name">;
   status: string;
   createdAt?: string;
   connection: string;
-  role: Role;
+  role: Pick<Role, "name">;
 };
 
-export type UserItem = User & { fullName: string };
-
-export type UserTypeInput = Omit<UserType, "id">;
-
-export type UserInput = Omit<User, "id"> & UserTypeInput;
+export type UserInput = Omit<User, "id" | "createdAt" | "connection">;
+export type UserOutput = Omit<User, "id" | "createdAt">;

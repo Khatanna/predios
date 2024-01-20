@@ -87,7 +87,6 @@ export const createProperty = async (
 ) => {
   try {
     hasPermission(userContext, "CREATE", "PROPERTY");
-
     const property = await prisma.property.create({
       data: {
         name,
@@ -105,11 +104,13 @@ export const createProperty = async (
         fileNumber: {
           create: fileNumber,
         },
-        observations: {
-          createMany: {
-            data: observations,
-          },
-        },
+        observations: observations
+          ? {
+              createMany: {
+                data: observations,
+              },
+            }
+          : undefined,
         activity: {
           connect: activity,
         },
@@ -144,70 +145,74 @@ export const createProperty = async (
           connect: reference,
         },
         technical:
-          technical && technical.user.username
+          technical && technical.user && technical.user.username
             ? {
-              create: {
-                user: {
-                  connect: technical.user,
+                create: {
+                  user: {
+                    connect: technical.user,
+                  },
                 },
-              },
-            }
+              }
             : undefined,
         legal:
-          legal && legal.user.username
+          legal && legal.user && legal.user.username
             ? {
-              create: {
-                user: {
-                  connect: legal.user,
+                create: {
+                  user: {
+                    connect: legal.user,
+                  },
                 },
-              },
-            }
+              }
             : undefined,
       },
     });
 
-    for (let beneficiary of beneficiaries) {
-      await prisma.beneficiary.upsert({
-        where: {
-          name: beneficiary.name,
-        },
-        create: {
-          name: beneficiary.name,
-          properties: {
-            connect: {
-              id: property.id,
+    if (beneficiaries) {
+      for (let beneficiary of beneficiaries) {
+        await prisma.beneficiary.upsert({
+          where: {
+            name: beneficiary.name,
+          },
+          create: {
+            name: beneficiary.name,
+            properties: {
+              connect: {
+                id: property.id,
+              },
             },
           },
-        },
-        update: {},
-      });
+          update: {},
+        });
+      }
     }
 
-    for (let tracking of trackings) {
-      await prisma.tracking.create({
-        data: {
-          observation: tracking.observation,
-          dateOfInit: tracking.dateOfInit,
-          numberOfNote: tracking.numberOfNote,
-          state: {
-            connect: {
-              name: tracking.state.name,
-            },
-          },
-          responsible: tracking.responsible?.username
-            ? {
+    if (trackings) {
+      for (let tracking of trackings) {
+        await prisma.tracking.create({
+          data: {
+            observation: tracking.observation,
+            dateOfInit: tracking.dateOfInit,
+            numberOfNote: tracking.numberOfNote,
+            state: {
               connect: {
-                username: tracking.responsible.username,
+                name: tracking.state.name,
               },
-            }
-            : undefined,
-          property: {
-            connect: {
-              id: property.id,
+            },
+            responsible: tracking.responsible?.username
+              ? {
+                  connect: {
+                    username: tracking.responsible.username,
+                  },
+                }
+              : undefined,
+            property: {
+              connect: {
+                id: property.id,
+              },
             },
           },
-        },
-      });
+        });
+      }
     }
 
     return property;
@@ -218,25 +223,7 @@ export const createProperty = async (
 
 export const updateProperty = async (
   _parent: any,
-  {
-    input: {
-      id,
-      fileNumber,
-      activity,
-      clasification,
-      state,
-      groupedState,
-      city,
-      province,
-      municipality,
-      folderLocation,
-      technical,
-      legal,
-      type,
-      responsibleUnit,
-      reference,
-    },
-  }: { input: PropertyInput },
+  { input: { id } }: { input: PropertyInput },
   { prisma, userContext }: Context,
 ) => {
   hasPermission(userContext, "UPDATE", "PROPERTY");
@@ -244,78 +231,7 @@ export const updateProperty = async (
     where: {
       id,
     },
-    data: {
-      // fileNumber: fileNumber && fileNumber.number ? {
-      //   upsert: {
-      //     where: {
-      //       propertyId: id,
-      //     },
-      //     create: {
-      //       number: fileNumber.number
-      //     },
-      //     update: {
-      //       number: fileNumber.number
-      //     }
-      //   },
-      // } : fileNumber.number?.length === 0 ? {
-      //   delete: {
-      //     propertyId: id
-      //   }
-      // } : undefined,
-      // activity: {
-      //   connect: activity
-      // },
-      // clasification: {
-      //   connect: clasification
-      // },
-      // state: {
-      //   connect: state,
-      // },
-      // groupedState: {
-      //   connect: groupedState,
-      // },
-      // city: {
-      //   connect: city,
-      // },
-      // province: {
-      //   connect: province,
-      // },
-      // municipality: {
-      //   connect: municipality,
-      // },
-      // folderLocation: {
-      //   connect: folderLocation,
-      // },
-      // type: {
-      //   connect: type,
-      // },
-      // responsibleUnit: {
-      //   connect: responsibleUnit,
-      // },
-      // reference: {
-      //   connect: reference,
-      // },
-      // technical:
-      //   technical && technical.user
-      //     ? {
-      //         update: {
-      //           user: {
-      //             connect: technical.user,
-      //           },
-      //         },
-      //       }
-      //     : undefined,
-      // legal:
-      //   legal && legal.user
-      //     ? {
-      //         update: {
-      //           user: {
-      //             connect: legal.user,
-      //           },
-      //         },
-      //       }
-      //     : undefined,
-    },
+    data: {},
     include: {
       beneficiaries: {
         select: { name: true },
@@ -399,23 +315,23 @@ export const updateFieldNumber = async (
 const resolveFileNumber = (value: string, propertyId: string) => {
   return value.length === 0
     ? {
-      delete: {
-        propertyId,
-      },
-    }
-    : {
-      upsert: {
-        where: {
+        delete: {
           propertyId,
         },
-        create: {
-          number: value,
+      }
+    : {
+        upsert: {
+          where: {
+            propertyId,
+          },
+          create: {
+            number: value,
+          },
+          update: {
+            number: value,
+          },
         },
-        update: {
-          number: value,
-        },
-      },
-    };
+      };
 };
 const resolveUser = (value: string, propertyId: string) => {
   return {
@@ -441,7 +357,7 @@ const resolveUser = (value: string, propertyId: string) => {
 
 export const deleteProperty = async (
   _parent: any,
-  { id }: { id: string; },
+  { id }: { id: string },
   { prisma, userContext }: Context,
 ) => {
   hasPermission(userContext, "UPDATE", "PROPERTY");

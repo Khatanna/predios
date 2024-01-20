@@ -1,18 +1,17 @@
 import { gql, useMutation } from "@apollo/client";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
-import { CheckCircle } from "react-bootstrap-icons";
+import { CheckCircle, InfoCircle } from "react-bootstrap-icons";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as yup from "yup";
 import { Tooltip } from "../../../../components/Tooltip";
 import { customSwalError } from "../../../../utilities/alerts";
 import { status } from "../../../../utilities/constants";
-import { Error } from "../../../LoginPage/styled-components/Error";
 import { GET_ALL_USERS_QUERY } from "../../graphQL/types";
 import { useFetchCreateUser } from "../../hooks";
-import { User, UserInput } from "../../models/types";
+import { User, UserInput, UserOutput } from "../../models/types";
 import { useUsersStore } from "../../state/useUsersStore";
 import { SelectNameable } from "../../../../components/SelectNameable";
 import {
@@ -25,7 +24,7 @@ import {
 } from "../../../../graphql/queries";
 
 export interface FormCreateUserProps {
-  user?: User;
+  user?: UserInput;
 }
 
 const schema = yup.object({
@@ -49,7 +48,7 @@ const schema = yup.object({
       name: yup
         .string()
         .trim()
-        .matches(/^(?!undefined$).*$/gi, "El tipo de usuario es indefinido")
+        .matches(/^(?!undefined$).*$/gi, "El tipo de usuario es requerido")
         .required("el nombre del tipo es un campo requerido"),
     })
     .required("El tipo es un campo requerdio"),
@@ -58,7 +57,7 @@ const schema = yup.object({
     name: yup
       .string()
       .trim()
-      .matches(/^(?!undefined$).*$/gi, "El rol es indefinido")
+      .matches(/^(?!undefined$).*$/gi, "El rol es requerido")
       .required("El rol de usuario se un campo requerido"),
   }),
 });
@@ -76,7 +75,6 @@ const UDPATE_USER_MUTATION = gql`
 `;
 
 const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
-  const [userUpdated, setUserUpdated] = useState(user);
   const { filterText } = useUsersStore();
   const { createUser } = useFetchCreateUser();
   const {
@@ -86,15 +84,14 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
     handleSubmit,
     reset,
     control,
-    watch,
+    getFieldState,
     formState: { errors },
   } = useForm<UserInput>({
-    values: { ...userUpdated, password: user ? "Inra12345" : "" },
-    resolver: yupResolver<UserInput>(schema),
+    defaultValues: user,
+    resolver: !user ? yupResolver<UserInput>(schema) : undefined,
   });
-  const names = watch("names");
   const [updateUser] = useMutation<
-    { user: User },
+    { user: UserOutput },
     {
       username: string;
       input: UserInput;
@@ -102,13 +99,16 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
   >(UDPATE_USER_MUTATION, {
     refetchQueries: [{ query: GET_ALL_USERS_QUERY, variables: { filterText } }],
     optimisticResponse: ({ input }) => {
-      setUserUpdated({ id: crypto.randomUUID(), ...input });
+      toast.info(JSON.stringify(input));
+      for (const key in input) {
+        setValue(key as keyof UserInput, input[key as keyof UserInput]);
+      }
       return {
         __typename: "Mutation",
         user: {
           __typename: "User",
-          id: crypto.randomUUID(),
           ...input,
+          connection: "OFFLINE",
         },
       };
     },
@@ -145,9 +145,13 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
   });
 
   const handleSetCredentials = useCallback(() => {
-    if (getValues("names").length === 0) {
+    if (
+      getValues("names").length === 0 ||
+      !getValues("names").trim().includes(" ") ||
+      !(getValues("names").trim().split(" ").length >= 3)
+    ) {
       customSwalError(
-        "Debe llenar correctamente los campos",
+        "Para autocompletar el nombre debe estar compuesto por minimo 3 palabras",
         "Error de validacion",
       );
     } else {
@@ -157,22 +161,18 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
       }
       const [secondLastName, firstLastName, ...names] = words.reverse();
 
-      setValue("names", names.reverse().join(" "));
+      setValue("names", names.reverse().join(" "), { shouldValidate: true });
       setValue("firstLastName", firstLastName, { shouldValidate: true });
       setValue("secondLastName", secondLastName, { shouldValidate: true });
-      setValue(
-        "username",
-        names[0].concat(".", firstLastName).toLocaleLowerCase(),
-        { shouldValidate: true },
-      );
+      setValue("username", `${names[0]}.${firstLastName}`.toLocaleLowerCase(), {
+        shouldValidate: true,
+      });
       setValue("password", "Inra12345", { shouldValidate: true });
     }
   }, [getValues, setValue]);
 
   const submit = (data: UserInput) => {
     if (user) {
-      delete data.connection;
-      delete data.createdAt;
       toast.promise(
         updateUser({
           variables: {
@@ -191,13 +191,24 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
         },
       );
     } else {
-      createUser({
-        variables: {
-          input: data,
+      toast.promise(
+        createUser({
+          variables: {
+            input: data,
+          },
+        }),
+        {
+          loading: "Creando usuario",
+          success: ({ data }) => {
+            return `Se ha creado el usuario: ${data?.user.username}`;
+          },
+          error(error) {
+            return `Error ${error}`;
+          },
+          finally: reset,
         },
-      });
+      );
     }
-    reset();
   };
 
   return (
@@ -212,70 +223,145 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               <Form.Label>Nombres</Form.Label>
               <InputGroup>
                 <Form.Control
+                  isValid={
+                    getFieldState("names").isTouched &&
+                    !getFieldState("names").error?.message
+                  }
+                  isInvalid={!!getFieldState("names").error?.message}
                   placeholder="Nombres"
                   {...register("names")}
-                  onKeyDown={(e) => e.key === "Enter" && handleSetCredentials()}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSetCredentials();
+                    }
+                  }}
                   autoComplete="off"
                 />
-                {!user && names?.length > 0 && (
+                {!user && (
                   <Tooltip label="Autocompletar">
                     <InputGroup.Text
                       role="button"
                       onClick={handleSetCredentials}
                     >
-                      <CheckCircle color="green" />
+                      <CheckCircle color="green" fontSize={20} />
                     </InputGroup.Text>
                   </Tooltip>
                 )}
               </InputGroup>
-              <Error>{errors.names?.message}</Error>
+              <Form.Control.Feedback type="invalid">
+                {errors.names?.message}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col xs={12} md={6}>
             <Form.Group>
               <Form.Label>Apellido paterno</Form.Label>
               <Form.Control
+                isValid={
+                  getFieldState("firstLastName").isTouched &&
+                  !getFieldState("firstLastName").error?.message
+                }
+                isInvalid={!!getFieldState("firstLastName").error?.message}
                 placeholder="Apellido paterno"
                 {...register("firstLastName")}
                 autoComplete="off"
               />
-              <Error>{errors.firstLastName?.message}</Error>
+              <Form.Control.Feedback type="invalid">
+                {errors.firstLastName?.message}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col sm={6}>
             <Form.Group>
               <Form.Label>Apellido materno</Form.Label>
               <Form.Control
+                isValid={
+                  getFieldState("secondLastName").isTouched &&
+                  !getFieldState("secondLastName").error?.message
+                }
+                isInvalid={!!getFieldState("secondLastName").error?.message}
                 placeholder="Apellido materno"
                 {...register("secondLastName")}
                 autoComplete="off"
               />
-              <Error>{errors.secondLastName?.message}</Error>
+              <Form.Control.Feedback type="invalid">
+                {errors.secondLastName?.message}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col sm={6}>
             <Form.Group>
               <Form.Label>Nombre de usuario</Form.Label>
               <Form.Control
+                isValid={
+                  getFieldState("username").isTouched &&
+                  !getFieldState("username").error?.message
+                }
+                isInvalid={!!getFieldState("username").error?.message}
                 placeholder="Nombre de usuario"
                 {...register("username")}
                 autoComplete="off"
               />
-              <Error>{errors.username?.message}</Error>
+              <Form.Control.Feedback type="invalid">
+                {errors.username?.message}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col sm={6}>
             <Form.Group>
-              <Form.Label>Contraseña</Form.Label>
+              <Form.Label className="d-flex align-items-center gap-2">
+                <div>Contraseña</div>
+                <div>
+                  {user && (
+                    <Tooltip label="Para actualizar el usuario la contraseña debe ser restablecida">
+                      <InfoCircle color="purple" />
+                    </Tooltip>
+                  )}
+                </div>
+              </Form.Label>
               <Form.Control
+                className={
+                  user &&
+                  !(
+                    getFieldState("password").isTouched &&
+                    !getFieldState("password").error?.message
+                  )
+                    ? "border-2 border-warning"
+                    : ""
+                }
+                isValid={
+                  getFieldState("password").isTouched &&
+                  !getFieldState("password").error?.message
+                }
+                isInvalid={!!getFieldState("password").error?.message}
                 placeholder="Contraseña"
-                {...register("password")}
+                {...register(
+                  "password",
+                  user && {
+                    required: {
+                      value: true,
+                      message: "La contraseña debe ser restablecida",
+                    },
+                    minLength: {
+                      value: 8,
+                      message: "La contraseña debe tener almenos 8 caracteres",
+                    },
+                    maxLength: {
+                      value: 32,
+                      message:
+                        "La contraseña no debe tener mas de 32 caracteres",
+                    },
+                  },
+                )}
                 autoComplete="off"
               />
-              <Error>{errors.password?.message}</Error>
+              <Form.Control.Feedback type="invalid">
+                {errors.password?.message}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
-          <Col xs={4}>
+          <Col xs={3}>
             <Form.Group>
               <Form.Label>Tipo</Form.Label>
               <Controller
@@ -285,20 +371,29 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                 render={({ field }) => (
                   <SelectNameable
                     {...field}
+                    isValid={
+                      getFieldState("type.name").isTouched &&
+                      !getFieldState("type.name").error?.message
+                    }
+                    isInvalid={!!getFieldState("type.name").error?.message}
                     mutations={userTypeMutations}
                     resource="USERTYPE"
                     query={GET_ALL_USER_TYPES_QUERY}
                     placeholder="Tipo"
+                    error={
+                      <Form.Control.Feedback type="invalid">
+                        {errors.type?.name?.message}
+                      </Form.Control.Feedback>
+                    }
                   />
                 )}
               />
-              <Error>{errors.type?.name?.message}</Error>
             </Form.Group>
           </Col>
           <Col sm={5}>
             <Form.Group>
               <Form.Label>Estado del usuario</Form.Label>
-              <div className="d-flex flex-row justify-content-around border border-1 p-1 rounded-2">
+              <div className="d-flex flex-row justify-content-around border border-1 p-1 rounded-2 align-items-center">
                 {Object.entries(status).map(([key, value]) => (
                   <Form.Check
                     {...register("status")}
@@ -306,6 +401,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                     value={key}
                     type="radio"
                     label={value}
+                    style={{ margin: "2px" }}
                     key={crypto.randomUUID()}
                     id={key}
                   />
@@ -313,7 +409,7 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
               </div>
             </Form.Group>
           </Col>
-          <Col xs={3}>
+          <Col xs={4}>
             <Form.Group>
               <Form.Label>Rol</Form.Label>
               <Controller
@@ -322,20 +418,29 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
                 defaultValue={"undefined"}
                 render={({ field }) => (
                   <SelectNameable
+                    isValid={
+                      getFieldState("role.name").isTouched &&
+                      !getFieldState("role.name").error?.message
+                    }
+                    isInvalid={!!getFieldState("role.name").error?.message}
                     {...field}
                     mutations={roleMutations}
                     resource="ROLE"
                     query={GET_ALL_ROLES}
                     placeholder="Rol"
+                    error={
+                      <Form.Control.Feedback type="invalid">
+                        {errors.role?.name?.message}
+                      </Form.Control.Feedback>
+                    }
                   />
                 )}
               />
-              <Error>{errors.type?.name?.message}</Error>
             </Form.Group>
           </Col>
           <Col xs={12}>
             <Button
-              className="float-end w-100 text-white"
+              className="w-100 text-white"
               type="submit"
               variant="success"
             >

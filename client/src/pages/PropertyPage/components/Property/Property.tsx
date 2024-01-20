@@ -111,7 +111,7 @@ const Property: React.FC = () => {
     { result: { property: Property; next: string; prev: string } },
     { id: string }
   >(GET_PROPERTY_BY_ID_QUERY, {
-    fetchPolicy: 'no-cache',
+    fetchPolicy: "no-cache",
     variables: {
       id: id!,
     },

@@ -22,8 +22,8 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
       ),
     );
   if (networkError) {
-    if (networkError.message === "") {
-      networkError.message = "Error de conexión con el servidor";
+    if (networkError.message === "failed to fetch") {
+      networkError.message = "Error en el servidor, intente mas tarde";
     }
   }
 });

@@ -1,3 +1,4 @@
+import { useMutation } from "@apollo/client";
 import { useEffect, useRef } from "react";
 import {
   Button,
@@ -21,28 +22,23 @@ import {
   PersonWorkspace,
 } from "react-bootstrap-icons";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { useCustomMutation } from "../../../../hooks";
+import { SeekerModalInput } from "../../../../components/SeekerModalInput";
 import {
   customSwalError,
   customSwalSuccess,
 } from "../../../../utilities/alerts";
-import {
-  CREATE_PROPERTY_MUTATION,
-  UPDATE_PROPERTY_MUTATION,
-} from "../../graphQL/types";
+import { CREATE_PROPERTY_MUTATION } from "../../graphQL/types";
 import { Property } from "../../models/types";
 import { usePaginationStore } from "../../state/usePaginationStore";
+import { usePropertyListStore } from "../../state/usePropertyListStore";
 import { ActivitySelect } from "../ActivitySelect";
 import { BeneficiaryList } from "../BeneficiaryList";
+import { ButtonPropertyCreateForm } from "../ButtonPropertyCreateForm";
 import { ClasificationSelect } from "../ClasificationSelect";
 import { CustomInput } from "../CustomInput";
 import { CustomLabel } from "../CustomLabel";
 import { GroupedStateSelect } from "../GroupedStateSelect";
 import { Localization } from "../Localization";
-import { useMutation } from "@apollo/client";
-import { SeekerModalInput } from "../../../../components/SeekerModalInput";
-import { useAuthStore } from "../../../../state/useAuthStore";
-import { usePropertyListStore } from "../../state/usePropertyListStore";
 import { ObservationList } from "../ObservationList";
 import { Paginator } from "../Paginator";
 import { GET_ALL_PROPERTIES_QUERY } from "../PropertyList/PropertyList";
@@ -53,11 +49,13 @@ import { StateSelect } from "../StateSelect";
 import { SubdirectorySelect } from "../SubdirectorySelect";
 import { TrackingList } from "../TrackingList";
 import { TypeSelect } from "../TypeSelect";
+import { toast } from "sonner";
+import { JsonViewer } from "../../../../components/JsonViewer";
 
 const PropertyForm: React.FC = () => {
   const { property, reset } = usePaginationStore();
   const colRef = useRef<HTMLDivElement | null>(null);
-  const { handleSubmit, register, ...methods } = useForm<Property>({
+  const methods = useForm<Property>({
     values: property,
   });
   const { page, limit, orderBy, unit, fieldOrder } = usePropertyListStore();
@@ -66,13 +64,16 @@ const PropertyForm: React.FC = () => {
     { input: Property }
   >(CREATE_PROPERTY_MUTATION, {
     onCompleted() {
+      methods.reset({ trackings: [] });
+      reset();
       customSwalSuccess(
         "Predio creado",
         "Se ha creado un nuevo predio correctamente",
       );
-      methods.reset();
     },
     onError(error) {
+      methods.reset();
+      reset();
       customSwalError(
         error.message,
         "Ocurrio un error al intentar crear el predio",
@@ -90,39 +91,28 @@ const PropertyForm: React.FC = () => {
         },
       },
     ],
+    fetchPolicy: "no-cache",
   });
 
-  const [updateProperty] = useCustomMutation<
-    { property: Property },
-    { input: Property }
-  >(UPDATE_PROPERTY_MUTATION, {
-    onSuccess() {
-      customSwalSuccess(
-        "Predio actualizado",
-        "Se ha actualizado el predio correctamente",
-      );
-    },
-    onError(error) {
-      customSwalError(
-        error,
-        "Ocurrio un error al intentar actualizar los datos de este predio",
-      );
-    },
-  });
   const submit: SubmitHandler<Property> = (data) => {
+    console.log(data);
     if (!methods.getValues("id")) {
-      createProperty({
-        variables: {
-          input: data,
+      toast.promise(
+        createProperty({
+          variables: {
+            input: data,
+          },
+        }),
+        {
+          loading: "Registrando datos",
+          success: "Nuevo predio creado",
+          error: "Ocurrio un error al intentar registrar el predio",
+          finally: methods.reset,
         },
-      });
-    } else {
-      updateProperty({
-        input: data,
-      });
+      );
     }
   };
-  const { can } = useAuthStore();
+
   useEffect(() => {
     return () => {
       if (methods.getValues("id")) {
@@ -134,14 +124,10 @@ const PropertyForm: React.FC = () => {
 
   return (
     <Container fluid>
-      <FormProvider
-        {...methods}
-        handleSubmit={handleSubmit}
-        register={register}
-      >
+      <FormProvider {...methods}>
         <SeekerModalInput />
         <Form
-          onSubmit={handleSubmit(submit)}
+          onSubmit={methods.handleSubmit(submit)}
           id="propertyForm"
           className="mb-2"
         >
@@ -357,9 +343,6 @@ const PropertyForm: React.FC = () => {
                       <Tab eventKey={"seguimiento"} title="Seguimiento">
                         <TrackingList />
                       </Tab>
-                      {/* <Tab eventKey={"observaciones"} title="Observaciones">
-                        <ObservationList />
-                      </Tab> */}
                     </Tabs>
                   </Row>
                 </Col>
@@ -419,15 +402,8 @@ const PropertyForm: React.FC = () => {
                   </Row>
                 </Col>
               </Row>
-              {can("CREATE@PROPERTY") && !methods.getValues("id") && (
-                <Row className="my-2">
-                  <Col className="d-flex justify-content-end gap-2">
-                    <Button type="submit" variant="warning" form="propertyForm">
-                      Crear predio
-                    </Button>
-                  </Col>
-                </Row>
-              )}
+              <JsonViewer value={methods.getValues()} />
+              <ButtonPropertyCreateForm />
             </Col>
           </Row>
         </Form>

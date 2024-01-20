@@ -111,7 +111,6 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
         error,
         "Ocurrio un error al intentar eliminar el beneficiario",
       );
-      // append
     },
   });
   const [updateBeneficiary] = useCustomMutation<
@@ -137,7 +136,7 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
   if (!edit && beneficiary.name.length > 0) {
     return (
       <ListGroup.Item className="d-flex justify-content-between align-items-center">
-        <div className="ms-1 me-auto">{beneficiary.name}</div>
+        <div className="ms-1 me-auto text-wrap">{beneficiary.name}</div>
         {thisCan && (
           <div className="d-flex gap-1">
             <Tooltip label="Editar beneficiario">
@@ -262,7 +261,7 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
 };
 
 const BeneficiaryList: React.FC<BeneficiaryListProps> = ({ maxHeight }) => {
-  const { control } = useFormContext<Property>();
+  const { control, getValues } = useFormContext<Property>();
   const {
     fields: beneficiaries,
     append,
@@ -283,7 +282,7 @@ const BeneficiaryList: React.FC<BeneficiaryListProps> = ({ maxHeight }) => {
           />
         </Col>
         <Col>
-          {beneficiaries.length ? (
+          {getValues("beneficiaries")?.length ? (
             <ListGroup
               as={"ol"}
               numbered
@@ -291,14 +290,11 @@ const BeneficiaryList: React.FC<BeneficiaryListProps> = ({ maxHeight }) => {
                 maxHeight: maxHeight - 35,
               }}
               className={`${
-                beneficiaries.length <= 2
-                  ? "overflow-y-visible "
-                  : "overflow-y-scroll"
+                beneficiaries.length > 2 ? "overflow-y-scroll" : ""
               }  pe-1`}
             >
               {beneficiaries.map((beneficiary, index) => (
                 <BeneficiaryItem
-                  key={crypto.randomUUID()}
                   beneficiary={beneficiary}
                   index={index}
                   remove={remove}
@@ -318,9 +314,13 @@ const BeneficiaryList: React.FC<BeneficiaryListProps> = ({ maxHeight }) => {
         <Row className="align-self-end">
           <Col>
             <Button
-              className="text-white"
               size="sm"
-              variant="success"
+              className="text-white"
+              variant={
+                beneficiaries.some((b) => b.name.length === 0)
+                  ? "danger"
+                  : "success"
+              }
               onClick={() => {
                 append({
                   name: "",

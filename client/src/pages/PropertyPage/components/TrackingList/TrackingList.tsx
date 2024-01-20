@@ -24,6 +24,7 @@ import { Tracking } from "../../../TrackingPage/models/types";
 import { Property } from "../../models/types";
 import { SelectUser } from "../SelectUser";
 import { StateSelect } from "../StateSelect";
+import { useAuthStore } from "../../../../state/useAuthStore";
 
 const CREATE_TRACKING_MUTATION = `
 	mutation CreateTraking($propertyId: String, $input: TrackingInput) {
@@ -147,7 +148,11 @@ const TrackingItem: React.FC<
     <Row className="border border-1 border-dark-subtle d-flex py-2 rounded-1 position-relative mb-2">
       <Col>
         <Form.Group>
-          <StateSelect name={`trackings.${index}.state.name`} disabled={!edit && !isNew} toSubscribe={false} />
+          <StateSelect
+            name={`trackings.${index}.state.name`}
+            disabled={!edit && !isNew}
+            toSubscribe={false}
+          />
         </Form.Group>
       </Col>
       <Col xs={2}>
@@ -290,6 +295,7 @@ const TrackingItem: React.FC<
 
 const TrackingList: React.FC = () => {
   const { control } = useFormContext<Property>();
+  const { can } = useAuthStore();
   const {
     fields: trackings,
     append,
@@ -319,7 +325,7 @@ const TrackingList: React.FC = () => {
           </Alert>
         </Row>
       )}
-      {"administrador" === "administrador" && (
+      {can("CREATE@OBSERVATION") && (
         <Row>
           <Button
             size="sm"

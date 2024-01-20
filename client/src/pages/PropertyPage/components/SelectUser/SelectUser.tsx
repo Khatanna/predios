@@ -1,25 +1,22 @@
 import { gql, useQuery } from "@apollo/client";
 import { useState } from "react";
 import { FieldPath, useFormContext, Controller } from "react-hook-form";
-import Select, {
-  Props,
-  StylesConfig,
-} from "react-select";
+import Select, { Props, StylesConfig } from "react-select";
 import { User } from "../../../UserPage/models/types";
 import { buildFullName } from "../../../UserPage/utils/buildFullName";
 import { Property } from "../../models/types";
 import { useSelectSubscription } from "../../hooks/useSelectSubscription";
 
 type Option = {
-  label: string
-  value: string
-}
+  label: string;
+  value: string;
+};
 
 export type SelectUserProps = {
   type?: string;
   name: FieldPath<Property>;
-  isDisabled?: boolean
-  toSubscribe?: boolean
+  isDisabled?: boolean;
+  toSubscribe?: boolean;
 } & Props;
 
 const GET_ALL_USERS_BY_TYPE = gql`
@@ -52,26 +49,29 @@ const customStyles: StylesConfig<User> = {
   }),
 };
 
-
 const optionsAdapter = (users?: User[]): Option[] => {
   if (!users) return [];
 
-  return users.map(user => ({ label: buildFullName(user)!, value: user.username }));
+  return users.map((user) => ({
+    label: buildFullName(user)!,
+    value: user.username,
+  }));
 };
 const useFetchUsers = ({ type }: { type?: string }) => {
   const [filterText, setFilterText] = useState("");
 
-  const query = useQuery<{ users: User[] }>(
-    GET_ALL_USERS_BY_TYPE,
-    {
-      variables: {
-        type,
-        filterText,
-      },
+  const query = useQuery<{ users: User[] }>(GET_ALL_USERS_BY_TYPE, {
+    variables: {
+      type,
+      filterText,
     },
-  );
+  });
 
-  return { ...query, options: optionsAdapter(query.data?.users), setFilterText };
+  return {
+    ...query,
+    options: optionsAdapter(query.data?.users),
+    setFilterText,
+  };
 };
 
 const SelectUser: React.FC<SelectUserProps> = ({
@@ -83,7 +83,9 @@ const SelectUser: React.FC<SelectUserProps> = ({
 }) => {
   const { options, setFilterText, loading } = useFetchUsers({ type });
   const { control, getValues } = useFormContext<Property>();
-  const { subscribe } = useSelectSubscription(toSubscribe ? getValues('id') : undefined)
+  const { subscribe } = useSelectSubscription(
+    toSubscribe ? getValues("id") : undefined,
+  );
   return (
     <Controller
       control={control}
@@ -98,7 +100,9 @@ const SelectUser: React.FC<SelectUserProps> = ({
             options={options}
             placeholder={placeholder}
             isLoading={loading}
-            value={options?.find(u => u.value === value)}
+            value={
+              getValues(name) ? options?.find((u) => u.value === value) : null
+            }
             onChange={(newValue) => onChange(newValue?.value)}
             isDisabled={isDisabled}
             isClearable
@@ -108,7 +112,7 @@ const SelectUser: React.FC<SelectUserProps> = ({
               setFilterText(newValue);
             }}
           />
-        )
+        );
       }}
     />
   );
