@@ -31,6 +31,7 @@ import { Property } from "../../models/types";
 import { CustomLabel } from "../CustomLabel";
 import { DropdownMenu } from "../../../../components/DropdownMenu";
 import { useAuthStore } from "../../../../state/useAuthStore";
+import Swal from "sweetalert2";
 
 export type BeneficiaryListProps = {
   maxHeight: number;
@@ -52,10 +53,8 @@ const CREATE_BENEFICIARY_MUTATION = `
 `;
 
 const DELETE_BENEFICIARY_MUTATION = `
-	mutation UpdateBeneficiary($input: BeneficiaryInput) {
-		beneficiary: deleteBeneficiary(input: $input) {
-			name
-		}
+	mutation UpdateBeneficiary($propertyId: String, $input: BeneficiaryInput, $all: Boolean) {
+		deleted: deleteBeneficiary(propertyId: $propertyId, input: $input, all: $all) 
 	}
 `;
 
@@ -78,9 +77,9 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
   const { register, getValues } = useFormContext<Property>();
   const [createBeneficiary] = useCustomMutation<
     { beneficiary: Beneficiary },
-    { propertyId: string; input: Pick<Beneficiary, "name">; index: number }
+    { propertyId: string; input: Pick<Beneficiary, "name"> }
   >(CREATE_BENEFICIARY_MUTATION, {
-    onSuccess(_data, { index, input: { name } }) {
+    onSuccess(_data, { input: { name } }) {
       customSwalSuccess(
         "Beneficiario agregado correctamente",
         "Se ha creado un beneficiario para este predio",
@@ -96,13 +95,15 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
     },
   });
   const [deleteBeneficiary] = useCustomMutation<
-    { beneficiary: Beneficiary },
-    { input: Pick<Beneficiary, "name">; index: number }
+    { deleted: boolean },
+    { propertyId: string; input: Pick<Beneficiary, "name">; all: boolean }
   >(DELETE_BENEFICIARY_MUTATION, {
-    onSuccess({ beneficiary: { name } }) {
+    onSuccess() {
       customSwalSuccess(
         "Beneficiario eliminado correctamente",
-        `Se ha eliminado al beneficiario: (${name}) de este predio`,
+        `Se ha eliminado al beneficiario: (${getValues(
+          `beneficiaries.${index}.name`,
+        )}) de este predio`,
       );
       remove(index);
     },
@@ -115,7 +116,7 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
   });
   const [updateBeneficiary] = useCustomMutation<
     { beneficiary: Beneficiary },
-    { name: string; input: Pick<Beneficiary, "name">; index: number }
+    { name: string; input: Pick<Beneficiary, "name"> }
   >(UPDATE_BENEFICIARY_MUTATION, {
     onSuccess({ beneficiary: { name } }) {
       customSwalSuccess(
@@ -150,9 +151,26 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
                 role="button"
                 onClick={() => {
                   if (getValues("id")) {
-                    deleteBeneficiary({
-                      index,
-                      input: getValues(`beneficiaries.${index}`),
+                    Swal.fire({
+                      icon: "question",
+                      title: "¿Eliminar beneficiario?",
+                      text: `¿Desea eliminar el beneficiario: ${getValues(
+                        `beneficiaries.${index}.name`,
+                      )}?`,
+                      showDenyButton: true,
+                      showCancelButton: true,
+                      confirmButtonText: "Solo de este predio",
+                      denyButtonText: `De todos los predios`,
+                      cancelButtonText: "Cancelar",
+                      confirmButtonColor: "green",
+                      cancelButtonColor: "red",
+                      denyButtonColor: "orange",
+                    }).then((result) => {
+                      deleteBeneficiary({
+                        propertyId: getValues("id"),
+                        input: getValues(`beneficiaries.${index}`),
+                        all: result.isDenied,
+                      });
                     });
                   } else {
                     remove(index);
@@ -180,7 +198,6 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
               if (getValues("id")) {
                 if (edit) {
                   updateBeneficiary({
-                    index,
                     input: { name },
                     name: oldName,
                   });
@@ -188,7 +205,6 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
                   createBeneficiary({
                     propertyId: getValues("id"),
                     input: { name },
-                    index,
                   });
                 }
               } else {
@@ -228,7 +244,6 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
               if (name.length > 0) {
                 if (edit) {
                   updateBeneficiary({
-                    index,
                     input: { name },
                     name: oldName,
                   });
@@ -236,7 +251,6 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
                   createBeneficiary({
                     propertyId: getValues("id"),
                     input: { name },
-                    index,
                   });
                 } else {
                   update(index, {

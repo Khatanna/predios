@@ -294,7 +294,7 @@ const TrackingItem: React.FC<
 };
 
 const TrackingList: React.FC = () => {
-  const { control } = useFormContext<Property>();
+  const { control, getValues } = useFormContext<Property>();
   const { can } = useAuthStore();
   const {
     fields: trackings,
@@ -307,7 +307,7 @@ const TrackingList: React.FC = () => {
   });
   return (
     <Col>
-      {trackings.length ? (
+      {getValues("trackings")?.length ? (
         trackings.map((tracking, index) => (
           <TrackingItem
             tracking={tracking}

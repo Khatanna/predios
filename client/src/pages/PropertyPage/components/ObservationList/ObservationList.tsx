@@ -1,6 +1,12 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Alert, Button, Form, Row } from "react-bootstrap";
+import {
+  Alert,
+  Button,
+  Dropdown,
+  Form,
+  InputGroup,
+  Row,
+} from "react-bootstrap";
 import {
   CheckCircle,
   DashCircle,
@@ -15,7 +21,6 @@ import {
   useFieldArray,
   useFormContext,
 } from "react-hook-form";
-import { Tooltip } from "../../../../components/Tooltip";
 import { useCustomMutation } from "../../../../hooks";
 import {
   customSwalError,
@@ -24,13 +29,18 @@ import {
 import { Observation } from "../../../ObservationPage/models/types";
 import { Property } from "../../models/types";
 import { useAuthStore } from "../../../../state/useAuthStore";
+import { DropdownMenu } from "../../../../components/DropdownMenu";
+import { toast } from "sonner";
+import { gql, useMutation } from "@apollo/client";
+import { GET_PROPERTY_BY_ID_QUERY } from "../../graphQL/types";
 
-const CREATE_OBSERVATION_MUTATION = `
-	mutation CreateObservation($propertyId: String, $input: ObservationInput) {
-		observation: createObservation(propertyId: $propertyId, input: $input) {
-			observation
-		}
-	}
+const CREATE_OBSERVATION_MUTATION = gql`
+  mutation CreateObservation($propertyId: String, $input: ObservationInput) {
+    observation: createObservation(propertyId: $propertyId, input: $input) {
+      id
+      observation
+    }
+  }
 `;
 const UPDATE_OBSERVATION_MUTATION = `
 	mutation UpdateObservation($observationId: String, $input: ObservationInput) {
@@ -52,41 +62,38 @@ const ObservationItem: React.FC<
     UseFieldArrayReturn<Property, "observations">,
     "update" | "remove"
   >
-> = ({ observation, index, update, remove }) => {
-  const queryClient = useQueryClient();
-  const {
-    register,
-    getValues,
-    formState: { defaultValues },
-  } = useFormContext<Property>();
-  const [createObservation] = useCustomMutation<
+> = ({ index, remove, update }) => {
+  const { register, getValues } = useFormContext<Property>();
+  const [createObservation] = useMutation<
     Observation,
     { propertyId: string; input: ObservationInput }
   >(CREATE_OBSERVATION_MUTATION, {
-    onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["getPropertyById"] });
+    onCompleted({ observation, id }) {
       customSwalSuccess(
         "Observación creada",
         "Se ha creado una nueva observación para este predio",
       );
+      update(index, { observation, id });
     },
     onError(error) {
       remove(index);
       customSwalError(
-        error,
+        error.message,
         "Ocurrio un error al intentar crear una observación para este predio",
       );
     },
+    refetchQueries: [
+      { query: GET_PROPERTY_BY_ID_QUERY, variables: { id: getValues("id") } },
+    ],
   });
   const [updateObservation] = useCustomMutation<
     Observation,
     { observationId: string; input: ObservationInput }
   >(UPDATE_OBSERVATION_MUTATION, {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["getPropertyById"] });
       customSwalSuccess(
         "Observación actualizada",
-        "Se ha acutalizado la obsevación de este predio",
+        "Se actualizo la observación de este predio",
       );
     },
     onError(error) {
@@ -101,7 +108,7 @@ const ObservationItem: React.FC<
     { observationId: string }
   >(DELETE_OBSERVATION_MUTATION, {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["getPropertyById"] });
+      remove(index);
       customSwalSuccess(
         "Observación eliminada",
         "Se ha eliminado correctamente la observación de este predio",
@@ -114,68 +121,66 @@ const ObservationItem: React.FC<
       );
     },
   });
-  const length = defaultValues?.observations?.length ?? 0;
-  const isNew = index >= length;
+
+  const isNew = getValues(`observations.${index}.observation`).length === 0;
   const [edit, setEdit] = useState(false);
   const { can } = useAuthStore();
 
-  const thisCan = can("DELETE@OBSERVATION") && can("UPDATE@OBSERVATION");
   return (
-    <Row className="position-relative mb-2">
+    <InputGroup className="position-relative mb-2">
       <Form.Control
         as="textarea"
         rows={2}
         {...register(`observations.${index}.observation`)}
         placeholder="Observación..."
-        disabled={!edit && !isNew}
-        autoFocus={!edit || isNew}
+        disabled={!isNew && !edit}
         autoComplete="off"
       />
-      {thisCan && (
-        <div
-          className={
-            "position-absolute top-0 end-0 mt-2 d-flex gap-1 justify-content-end"
-          }
-        >
-          {isNew ? (
+      <InputGroup.Text>
+        <DropdownMenu>
+          {isNew && can("CREATE@OBSERVATION") ? (
             <>
-              {!!getValues("id") && (
-                <Tooltip label="Crear observación">
-                  <PlusCircle
-                    color="green"
-                    className="float-end"
-                    role="button"
-                    onClick={() => {
-                      createObservation({
+              <Dropdown.Item
+                onClick={() => {
+                  if (
+                    getValues(`observations.${index}.observation`).length === 0
+                  ) {
+                    toast.warning("La observación no debe estar vacia");
+                  } else {
+                    createObservation({
+                      variables: {
                         propertyId: getValues("id"),
-                        input: {
-                          observation: getValues(`observations.${index}`)
-                            .observation,
-                        },
-                      });
-                    }}
-                  />
-                </Tooltip>
-              )}
-              <Tooltip label="Quitar observación">
-                <DashCircle
-                  color="red"
-                  className="float-end"
-                  role="button"
-                  onClick={() => {
-                    remove(index);
-                  }}
-                />
-              </Tooltip>
+                        input: getValues(`observations.${index}`),
+                      },
+                    });
+                  }
+                }}
+              >
+                <div className="d-flex gap-2 align-items-center">
+                  <PlusCircle color="green" />
+                  <div>Crear</div>
+                </div>
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  remove(index);
+                }}
+              >
+                <div className="d-flex gap-2 align-items-center">
+                  <DashCircle color="red" />
+                  <div>Quitar</div>
+                </div>
+              </Dropdown.Item>
             </>
-          ) : edit ? (
+          ) : edit && can("UPDATE@OBSERVATION") ? (
             <>
-              <Tooltip label="Confirmar">
-                <CheckCircle
-                  color="green"
-                  className="float-end"
-                  role="button"
-                  onClick={() => {
+              <Dropdown.Item
+                onClick={() => {
+                  if (
+                    getValues(`observations.${index}.observation`).length === 0
+                  ) {
+                    toast.warning("La observación no debe estar vacia");
+                  } else {
                     updateObservation(
                       {
                         observationId: getValues(`observations.${index}.id`),
@@ -190,54 +195,63 @@ const ObservationItem: React.FC<
                         },
                       },
                     );
-                  }}
-                />
-              </Tooltip>
-              <Tooltip label="Cancelar">
-                <XCircle
-                  color="red"
-                  className="float-end"
-                  role="button"
-                  onClick={() => {
-                    setEdit(false);
-                  }}
-                />
-              </Tooltip>
+                  }
+                }}
+              >
+                <div className="d-flex gap-2 align-items-center">
+                  <CheckCircle color="green" />
+                  <div>Confirmar</div>
+                </div>
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  setEdit(false);
+                }}
+              >
+                <div className="d-flex gap-2 align-items-center">
+                  <XCircle color="red" />
+                  <div>Cancelar</div>
+                </div>
+              </Dropdown.Item>
             </>
           ) : (
             <>
-              <Tooltip label="Editar observación">
-                <PencilSquare
-                  color="blue"
-                  className="float-end"
-                  role="button"
+              {can("UPDATE@OBSERVATION") && (
+                <Dropdown.Item
                   onClick={() => {
                     setEdit(true);
                   }}
-                />
-              </Tooltip>
-              <Tooltip label="Borrar observación">
-                <Trash
-                  color="red"
-                  className="float-end"
-                  role="button"
+                >
+                  <div className="d-flex gap-2 align-items-center">
+                    <PencilSquare color="blue" />
+                    <div>Editar</div>
+                  </div>
+                </Dropdown.Item>
+              )}
+              {can("DELETE@OBSERVATION") && (
+                <Dropdown.Item
                   onClick={() => {
                     deleteObservation({
                       observationId: getValues(`observations.${index}.id`),
                     });
                   }}
-                />
-              </Tooltip>
+                >
+                  <div className="d-flex gap-2 align-items-center">
+                    <Trash color="red" />
+                    <div>Eliminar</div>
+                  </div>
+                </Dropdown.Item>
+              )}
             </>
           )}
-        </div>
-      )}
-    </Row>
+        </DropdownMenu>
+      </InputGroup.Text>
+    </InputGroup>
   );
 };
 
 const ObservationList: React.FC = () => {
-  const { control } = useFormContext<Property>();
+  const { control, getValues } = useFormContext<Property>();
   const { can } = useAuthStore();
 
   const {
@@ -252,7 +266,7 @@ const ObservationList: React.FC = () => {
 
   return (
     <>
-      {observations.length ? (
+      {getValues("observations")?.length ? (
         observations.map((observation, index) => (
           <ObservationItem
             observation={observation}
@@ -274,7 +288,14 @@ const ObservationList: React.FC = () => {
           <Button
             size="sm"
             className="text-white"
-            variant="info"
+            variant={
+              observations.some(({ observation }) => observation.length === 0)
+                ? "danger"
+                : "info"
+            }
+            disabled={observations.some(
+              ({ observation }) => observation.length === 0,
+            )}
             onClick={() => {
               append({
                 id: crypto.randomUUID(),

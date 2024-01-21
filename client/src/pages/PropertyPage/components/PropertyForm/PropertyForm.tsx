@@ -1,7 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { useEffect, useRef } from "react";
 import {
-  Button,
   Col,
   Container,
   Form,
@@ -50,7 +49,6 @@ import { SubdirectorySelect } from "../SubdirectorySelect";
 import { TrackingList } from "../TrackingList";
 import { TypeSelect } from "../TypeSelect";
 import { toast } from "sonner";
-import { JsonViewer } from "../../../../components/JsonViewer";
 
 const PropertyForm: React.FC = () => {
   const { property, reset } = usePaginationStore();
@@ -402,7 +400,6 @@ const PropertyForm: React.FC = () => {
                   </Row>
                 </Col>
               </Row>
-              <JsonViewer value={methods.getValues()} />
               <ButtonPropertyCreateForm />
             </Col>
           </Row>

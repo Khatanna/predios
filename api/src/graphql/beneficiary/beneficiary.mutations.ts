@@ -2,9 +2,16 @@ import { Beneficiary } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createBeneficiary = (_parent: any, { propertyId, input }: { propertyId: string, input: Pick<Beneficiary, 'name'> }, { prisma, userContext }: Context) => {
+export const createBeneficiary = (
+  _parent: any,
+  {
+    propertyId,
+    input,
+  }: { propertyId: string; input: Pick<Beneficiary, "name"> },
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, 'CREATE', 'BENEFICIARY');
+    hasPermission(userContext, "CREATE", "BENEFICIARY");
     return prisma.property.update({
       where: {
         id: propertyId,
@@ -13,51 +20,68 @@ export const createBeneficiary = (_parent: any, { propertyId, input }: { propert
         beneficiaries: {
           connectOrCreate: {
             where: {
-              name: input.name
+              name: input.name,
             },
             create: {
-              name: input.name
-            }
-          }
-        }
-      }
-    })
-    // return prisma.beneficiary.create({
-    //   data: {
-    //     ...input,
-    //     properties: {
-    //       connect: {
-    //         id: propertyId
-    //       }
-    //     }
-    //   }
-    // })
+              name: input.name,
+            },
+          },
+        },
+      },
+    });
   } catch (e) {
     throw e;
   }
 };
 
-export const deleteBeneficiary = (_parent: any, { input }: { input: Pick<Beneficiary, 'name'> }, { prisma, userContext }: Context) => {
+export const deleteBeneficiary = async (
+  _parent: any,
+  {
+    propertyId,
+    input,
+    all,
+  }: { propertyId: string; input: Pick<Beneficiary, "name">; all: boolean },
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, 'DELETE', 'BENEFICIARY')
+    hasPermission(userContext, "DELETE", "BENEFICIARY");
 
-    return prisma.beneficiary.delete({
-      where: input
-    })
+    let result = all
+      ? await prisma.beneficiary.delete({
+          where: input,
+        })
+      : await prisma.property.update({
+          where: {
+            id: propertyId,
+          },
+          data: {
+            beneficiaries: {
+              disconnect: {
+                name: input.name,
+              },
+            },
+          },
+        });
+    console.log({ result });
+    return Boolean(result);
   } catch (e) {
     throw e;
   }
-}
+};
 
-export const updateBeneficiary = (_parent: any, { name, input }: { name: string, input: Pick<Beneficiary, 'name'> }, { prisma, userContext }: Context) => {
+export const updateBeneficiary = (
+  _parent: any,
+  { name, input }: { name: string; input: Pick<Beneficiary, "name"> },
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, 'DELETE', 'BENEFICIARY')
+    hasPermission(userContext, "DELETE", "BENEFICIARY");
 
     return prisma.beneficiary.update({
       where: { name },
-      data: input
-    })
+      data: input,
+    });
   } catch (e) {
     throw e;
   }
-}
+};

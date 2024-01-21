@@ -8,7 +8,6 @@ import {
   GroupedState,
   Municipality,
   Observation,
-  Prisma,
   Property,
   Province,
   Reference,
@@ -87,6 +86,7 @@ export const createProperty = async (
 ) => {
   try {
     hasPermission(userContext, "CREATE", "PROPERTY");
+    console.log({ trackings, beneficiaries, observations });
     const property = await prisma.property.create({
       data: {
         name,
@@ -104,7 +104,7 @@ export const createProperty = async (
         fileNumber: {
           create: fileNumber,
         },
-        observations: observations
+        observations: Array.isArray(observations)
           ? {
               createMany: {
                 data: observations,
@@ -167,7 +167,7 @@ export const createProperty = async (
       },
     });
 
-    if (beneficiaries) {
+    if (Array.isArray(beneficiaries)) {
       for (let beneficiary of beneficiaries) {
         await prisma.beneficiary.upsert({
           where: {
@@ -181,12 +181,18 @@ export const createProperty = async (
               },
             },
           },
-          update: {},
+          update: {
+            properties: {
+              connect: {
+                id: property.id,
+              },
+            },
+          },
         });
       }
     }
 
-    if (trackings) {
+    if (Array.isArray(trackings)) {
       for (let tracking of trackings) {
         await prisma.tracking.create({
           data: {

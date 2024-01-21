@@ -1,4 +1,4 @@
-type Beneficiary { 
+type Beneficiary {
   id: ID!
   name: String
   createdAt: String
@@ -12,7 +12,11 @@ type Query {
 
 type Mutation {
   createBeneficiary(propertyId: String, input: BeneficiaryInput): Beneficiary
-  deleteBeneficiary(input: BeneficiaryInput): Beneficiary
+  deleteBeneficiary(
+    propertyId: String
+    input: BeneficiaryInput
+    all: Boolean
+  ): Boolean
   updateBeneficiary(name: String, input: BeneficiaryInput): Beneficiary
 }
 

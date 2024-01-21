@@ -3,46 +3,53 @@ import { Form } from "react-bootstrap";
 import { Diagram3 } from "react-bootstrap-icons";
 import { Controller, useFormContext } from "react-hook-form";
 import { SelectNameable } from "../../../../components/SelectNameable";
-import { roleMutations } from "../../../../graphql/mutations";
 import { Property } from "../../models/types";
 import { CustomLabel } from "../CustomLabel";
 import { useSelectSubscription } from "../../hooks/useSelectSubscription";
 
 const GET_ALL_CLASIFICATIONS_QUERY = gql`
-	query GetAllClasifications {
-		options: getAllClasifications {
-			name
-		}
-	}
+  query GetAllClasifications {
+    options: getAllClasifications {
+      name
+    }
+  }
 `;
 
 const clasificationMutations = {
   create: gql`
-	mutation CreateClasification($name: String) {
-		clasification: createClasification(name: $name) {
-			name
-		}
-	}
-`,
-  update: gql`
-	mutation UpdateClasification($currentName: String, $name: String) {
-		clasification: updateClasification(currentName: $currentName, name: $name) {
-			name
-		}
-	}
-`,
-  delete: gql`
-  mutation DeleteClasification($name: String) {
-    clasification: deleteClasification(name: $name) {
-      name
+    mutation CreateClasification($name: String) {
+      clasification: createClasification(name: $name) {
+        name
+      }
     }
-  }
-`
-}
+  `,
+  update: gql`
+    mutation UpdateClasification($currentName: String, $name: String) {
+      clasification: updateClasification(
+        currentName: $currentName
+        name: $name
+      ) {
+        name
+      }
+    }
+  `,
+  delete: gql`
+    mutation DeleteClasification($name: String) {
+      clasification: deleteClasification(name: $name) {
+        name
+      }
+    }
+  `,
+};
 
 const ClasificationSelect: React.FC = () => {
-  const { control, getValues, getFieldState, formState: { errors } } = useFormContext<Property>();
-  const { subscribe } = useSelectSubscription(getValues('id'));
+  const {
+    control,
+    getValues,
+    getFieldState,
+    formState: { errors },
+  } = useFormContext<Property>();
+  const { subscribe } = useSelectSubscription(getValues("id"));
   return (
     <Form.Group>
       <CustomLabel label="Clasificación" icon={<Diagram3 color="green" />} />
@@ -51,12 +58,13 @@ const ClasificationSelect: React.FC = () => {
         control={control}
         rules={{
           required: {
-            message: 'Este campo es obligatorio',
-            value: true
-          }, pattern: {
             message: "Este campo es obligatorio",
-            value: /^(?!undefined$).*$/gi
-          }
+            value: true,
+          },
+          pattern: {
+            message: "Este campo es obligatorio",
+            value: /^(?!undefined$).*$/gi,
+          },
         }}
         defaultValue="undefined"
         render={({ field }) => (
@@ -67,9 +75,16 @@ const ClasificationSelect: React.FC = () => {
             query={GET_ALL_CLASIFICATIONS_QUERY}
             mutations={clasificationMutations}
             size="sm"
-            isValid={getFieldState(field.name).isTouched && !errors.clasification?.name?.message}
-            isInvalid={!!errors.clasification?.name?.message}
-            error={<Form.Control.Feedback type="invalid">{errors.clasification?.name?.message}</Form.Control.Feedback>}
+            isValid={
+              getFieldState(field.name).isTouched &&
+              !getFieldState(field.name).error?.message
+            }
+            isInvalid={!!getFieldState(field.name).error?.message}
+            error={
+              <Form.Control.Feedback type="invalid">
+                {getFieldState(field.name).error?.message}
+              </Form.Control.Feedback>
+            }
           />
         )}
       />
