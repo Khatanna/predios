@@ -1,49 +1,76 @@
-import { Municipality } from "@prisma/client";
+import { Municipality, Province } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createMunicipality = (_parent: any, { input: { name, provinceName } }: { input: { name: string, provinceName: string } }, { userContext, prisma }: Context) => {
+export const createMunicipality = (
+  _parent: any,
+  {
+    input: { name, province },
+  }: { input: { name: string; province: Pick<Province, "name"> } },
+  { userContext, prisma }: Context,
+) => {
   try {
-    hasPermission(userContext, 'CREATE', 'MUNICIPALITY');
+    hasPermission(userContext, "CREATE", "MUNICIPALITY");
 
     return prisma.municipality.create({
       data: {
         name,
         province: {
           connect: {
-            name: provinceName
-          }
-        }
-      }
+            name: province.name,
+          },
+        },
+      },
     });
   } catch (e) {
     throw e;
   }
-}
-export const updateMunicipality = (_parent: any, { name, item }: { name: string, item: Municipality }, { userContext, prisma }: Context) => {
+};
+export const updateMunicipality = (
+  _parent: any,
+  {
+    name,
+    input,
+  }: {
+    name: string;
+    input: { name: string; province: Pick<Province, "name"> };
+  },
+  { userContext, prisma }: Context,
+) => {
   try {
-    hasPermission(userContext, 'UPDATE', 'MUNICIPALITY');
+    hasPermission(userContext, "UPDATE", "MUNICIPALITY");
 
     return prisma.municipality.update({
       where: {
-        name
+        name,
       },
-      data: item
+      data: {
+        name: input.name,
+        province: {
+          connect: {
+            name: input.province.name,
+          },
+        },
+      },
     });
   } catch (e) {
     throw e;
   }
-}
-export const deleteMunicipality = (_parent: any, { name }: { name: string }, { userContext, prisma }: Context) => {
+};
+export const deleteMunicipality = (
+  _parent: any,
+  { name }: { name: string },
+  { userContext, prisma }: Context,
+) => {
   try {
-    hasPermission(userContext, 'DELETE', 'MUNICIPALITY');
+    hasPermission(userContext, "DELETE", "MUNICIPALITY");
 
     return prisma.municipality.delete({
       where: {
-        name
-      }
+        name,
+      },
     });
   } catch (e) {
     throw e;
   }
-}
+};

@@ -1,10 +1,12 @@
-import { Province } from "@prisma/client";
+import { City, Province } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
 export const createProvince = (
   _parent: any,
-  { input: { name, code, cityName } }: { input: Province & { cityName: string } },
+  {
+    input: { name, code, city },
+  }: { input: Province & { city: Pick<City, "name"> } },
   { prisma, userContext }: Context,
 ) => {
   try {
@@ -16,9 +18,12 @@ export const createProvince = (
         code,
         city: {
           connect: {
-            name: cityName,
+            name: city.name,
           },
         },
+      },
+      include: {
+        city: true,
       },
     });
   } catch (e) {
@@ -29,8 +34,8 @@ export const updateProvince = (
   _parent: any,
   {
     name,
-    item
-  }: { name: string; item: Province },
+    input: { name: newName, code, city },
+  }: { name: string; input: Province & { city: Pick<City, "name"> } },
   { prisma, userContext }: Context,
 ) => {
   try {
@@ -40,7 +45,18 @@ export const updateProvince = (
       where: {
         name,
       },
-      data: item
+      data: {
+        name: newName,
+        code,
+        city: {
+          connect: {
+            name: city.name,
+          },
+        },
+      },
+      include: {
+        city: true,
+      },
     });
   } catch (e) {
     throw e;
@@ -48,9 +64,7 @@ export const updateProvince = (
 };
 export const deleteProvince = (
   _parent: any,
-  {
-    name
-  }: { name: string },
+  { name }: { name: string },
   { prisma, userContext }: Context,
 ) => {
   try {
@@ -58,8 +72,8 @@ export const deleteProvince = (
 
     return prisma.province.delete({
       where: {
-        name
-      }
+        name,
+      },
     });
   } catch (e) {
     throw e;

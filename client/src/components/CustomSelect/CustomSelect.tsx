@@ -2,7 +2,11 @@ import { DocumentNode } from "graphql";
 import { Resource } from "../../pages/UserPage/components/Permission/Permission";
 import { Alert, Form, FormSelectProps, Spinner } from "react-bootstrap";
 import { useAuthStore } from "../../state/useAuthStore";
-import { OperationVariables, useQuery } from "@apollo/client";
+import {
+  OperationVariables,
+  WatchQueryFetchPolicy,
+  useQuery,
+} from "@apollo/client";
 import { ExclamationTriangle, PersonSlash } from "react-bootstrap-icons";
 import { capitalizeString } from "../../pages/UserPage/utils/capitalizeString";
 import { toast } from "sonner";
@@ -14,6 +18,7 @@ export type CustomSelectProps = {
   resource: `${Resource}`;
   readOnly?: boolean;
   highlight?: boolean;
+  fetchPolicy?: WatchQueryFetchPolicy;
 };
 
 const CustomSelect: React.FC<CustomSelectProps & FormSelectProps> = ({
@@ -23,12 +28,17 @@ const CustomSelect: React.FC<CustomSelectProps & FormSelectProps> = ({
   resource,
   readOnly = false,
   highlight = false,
+  fetchPolicy,
   ...props
 }) => {
   const { can } = useAuthStore();
   const { data, error, loading } = useQuery<{
     options: Array<{ name: string }>;
-  }>(query, { skip: !can(`READ@${resource}`) || props.disabled, variables });
+  }>(query, {
+    skip: !can(`READ@${resource}`) || props.disabled,
+    variables,
+    fetchPolicy,
+  });
 
   if (!can(`READ@${resource}`)) {
     return (

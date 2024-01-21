@@ -1,4 +1,4 @@
-type Stage { 
+type Stage {
   id: ID!
   name: String
   states: [State]!
@@ -12,8 +12,8 @@ type Query {
 }
 
 type Mutation {
-  createStage(input: StageInput): Stage
-  updateStage(name: String, item: StageInput): Stage
+  createStage(name: String): Stage
+  updateStage(currentName: String, name: String): Stage
   deleteStage(name: String): Stage
 }
 

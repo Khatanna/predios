@@ -5,8 +5,9 @@ import { Controller, useFormContext } from "react-hook-form";
 import { SelectNameable } from "../../../../components/SelectNameable";
 import { Property } from "../../models/types";
 import { CustomLabel } from "../CustomLabel";
+import { useSelectSubscription } from "../../hooks/useSelectSubscription";
 
-const GET_ALL_CITIES_QUERY = gql`
+export const GET_ALL_CITIES_QUERY = gql`
   query GetAllCities {
     options: getAllCities {
       name
@@ -14,7 +15,7 @@ const GET_ALL_CITIES_QUERY = gql`
   }
 `;
 
-const GET_ALL_PROVINCES_BY_CITY_NAME = gql`
+export const GET_ALL_PROVINCES_BY_CITY_NAME = gql`
   query GetProvincesByCityName($city: String) {
     options: getProvinces(city: $city) {
       name
@@ -22,7 +23,7 @@ const GET_ALL_PROVINCES_BY_CITY_NAME = gql`
   }
 `;
 
-const GET_MUNICIPALITIES_BY_PROVINCE_NAME = gql`
+export const GET_MUNICIPALITIES_BY_PROVINCE_NAME = gql`
   query GetMunicipalitiesByProvinceName($province: String) {
     options: getMunicipalities(province: $province) {
       name
@@ -30,7 +31,7 @@ const GET_MUNICIPALITIES_BY_PROVINCE_NAME = gql`
   }
 `;
 
-const cityMutations = {
+export const cityMutations = {
   create: gql`
     mutation CreateCity($name: String) {
       result: createCity(name: $name) {
@@ -53,7 +54,7 @@ const cityMutations = {
     }
   `,
 };
-const provinceMutations = {
+export const provinceMutations = {
   create: gql`
     mutation CreateProvince($input: ProvinceInput) {
       province: createProvince(input: $input) {
@@ -101,10 +102,19 @@ const municipalityMutations = {
 };
 
 const Localization: React.FC<{ readOnly?: boolean }> = () => {
-  const { control, watch, getValues, getFieldState } =
-    useFormContext<Property>();
+  const {
+    control,
+    watch,
+    getValues,
+    getFieldState,
+    resetField,
+    setError,
+    clearErrors,
+  } = useFormContext<Property>();
   const province = watch("province.name");
+  const city = watch("city.name");
 
+  const { subscribe } = useSelectSubscription(getValues("id"));
   return (
     <>
       <Col>
@@ -130,6 +140,22 @@ const Localization: React.FC<{ readOnly?: boolean }> = () => {
             render={({ field }) => (
               <SelectNameable
                 {...field}
+                onChange={(e) => {
+                  field.onChange(e);
+                  resetField("province.name", {
+                    defaultValue: "undefined",
+                  });
+                  if (getValues("id")) {
+                    setError(
+                      "province.name",
+                      {
+                        message: "Debe reasignar una provincia",
+                        type: "required",
+                      },
+                      { shouldFocus: true },
+                    );
+                  }
+                }}
                 resource="CITY"
                 size="sm"
                 highlight
@@ -171,13 +197,30 @@ const Localization: React.FC<{ readOnly?: boolean }> = () => {
             render={({ field }) => (
               <SelectNameable
                 {...field}
+                onChange={(e) => {
+                  field.onChange(e);
+                  resetField("municipality.name", {
+                    defaultValue: "undefined",
+                  });
+                  if (getValues("id")) {
+                    setError(
+                      "municipality.name",
+                      {
+                        message: "Debe reasignar un municipio",
+                        type: "required",
+                      },
+                      { shouldFocus: true },
+                    );
+                    clearErrors(field.name);
+                  }
+                }}
                 resource="PROVINCE"
                 highlight
                 disabled={getValues("city.name") === "undefined"}
                 size="sm"
                 placeholder={"Provincia"}
                 query={GET_ALL_PROVINCES_BY_CITY_NAME}
-                variables={{ city: getValues('city.name') ?? 'La Paz' }}
+                variables={{ city: city ?? "La paz" }}
                 mutations={provinceMutations}
                 isValid={
                   getFieldState(field.name).isTouched &&
@@ -214,6 +257,43 @@ const Localization: React.FC<{ readOnly?: boolean }> = () => {
             render={({ field }) => (
               <SelectNameable
                 {...field}
+                onChange={(e) => {
+                  field.onChange(e);
+                  if (getValues("id")) {
+                    subscribe(field).onChange(e);
+                    if (getFieldState("city.name").isDirty) {
+                      subscribe({
+                        onChange() {},
+                        name: "city.name",
+                        onBlur() {},
+                        ref: () => {},
+                        value: getValues("city.name"),
+                      }).onChange({
+                        target: {
+                          value: getValues("city.name"),
+                          name: "city.name",
+                        },
+                      });
+                    }
+
+                    if (getFieldState("province.name").isDirty) {
+                      subscribe({
+                        onChange() {},
+                        name: "province.name",
+                        onBlur() {},
+                        ref: () => {},
+                        value: getValues("province.name"),
+                      }).onChange({
+                        target: {
+                          value: getValues("province.name"),
+                          name: "province.name",
+                        },
+                      });
+                    }
+
+                    clearErrors(field.name);
+                  }
+                }}
                 disabled={province === "undefined" || !province}
                 resource="MUNICIPALITY"
                 query={GET_MUNICIPALITIES_BY_PROVINCE_NAME}

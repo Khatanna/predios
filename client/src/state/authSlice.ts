@@ -23,6 +23,8 @@ export type AuthSlice = State & Actions;
 
 const initialState: State = {
   isAuth: false,
+  accessToken: undefined,
+  user: undefined,
 };
 
 export const authSlice: StateCreator<

@@ -3,18 +3,22 @@ import { useAuthStore } from "../../state/useAuthStore";
 import { CustomSelect } from "../CustomSelect";
 import { DropdownMenu } from "../DropdownMenu";
 import { Resource } from "../../pages/UserPage/components/Permission/Permission";
-import { DocumentNode, printIntrospectionSchema } from "graphql";
-import { OperationVariables, useMutation } from "@apollo/client";
+import { DocumentNode } from "graphql";
+import {
+  OperationVariables,
+  WatchQueryFetchPolicy,
+  useMutation,
+} from "@apollo/client";
 import { mutationMessages, resources } from "../../utilities/constants";
 import { toast } from "sonner";
 import { useModalStore } from "../../state/useModalStore";
 
-interface Event
-  extends Partial<Omit<React.ChangeEvent<HTMLSelectElement>, "target">> {
-  target: {
-    value: string;
-  };
-}
+// interface Event
+//   extends Partial<Omit<React.ChangeEvent<HTMLSelectElement>, "target">> {
+//   target: {
+//     value: string;
+//   };
+// }
 
 export type SelectNameableProps = {
   resource: `${Resource}`;
@@ -25,6 +29,7 @@ export type SelectNameableProps = {
   readOnly?: boolean;
   highlight?: boolean;
   error?: React.ReactNode;
+  fetchPolicy?: WatchQueryFetchPolicy;
   onChange: (...e: any[]) => void;
 } & Omit<FormSelectProps, "onChange">;
 
@@ -37,6 +42,7 @@ const SelectNameable: React.FC<SelectNameableProps> = ({
   readOnly = false,
   highlight = false,
   error,
+  fetchPolicy,
   ...props
 }) => {
   const { can } = useAuthStore();
@@ -78,6 +84,7 @@ const SelectNameable: React.FC<SelectNameableProps> = ({
           resource={resource}
           readOnly={readOnly}
           variables={variables}
+          fetchPolicy={fetchPolicy}
           {...props}
         />
         {error}
@@ -113,92 +120,111 @@ const SelectNameable: React.FC<SelectNameableProps> = ({
         resource={resource}
         readOnly={readOnly}
         highlight={highlight}
+        fetchPolicy={fetchPolicy}
         variables={variables}
         {...props}
       />
-      <InputGroup.Text>
-        <DropdownMenu>
-          {canCreate && (
-            <Dropdown.Item
-              onClick={() => {
-                setModal({
-                  show: true,
-                  title: `Crear ${resources[resource]}`,
-                  resource,
-                  createMutation: (name: string) => {
-                    toast.promise(
-                      createMutation({
-                        variables: {
-                          name,
+      {!props.disabled && (
+        <InputGroup.Text>
+          <DropdownMenu>
+            {canCreate && (
+              <Dropdown.Item
+                onClick={() => {
+                  setModal({
+                    show: true,
+                    title: `Crear ${resources[resource]}`,
+                    resource,
+                    createMutation: (name: string) => {
+                      toast.promise(
+                        createMutation({
+                          variables: {
+                            name,
+                          },
+                        }),
+                        {
+                          loading: `Creando ${resources[resource]}: ${name}`,
+                          success:
+                            mutationMessages[
+                              `CREATE_${resource}`
+                            ].getSuccessMessage(name),
+                          error:
+                            mutationMessages[
+                              `CREATE_${resource}`
+                            ].getErrorMessage(name),
+                          finally: () => (closeModal(), resetValue()),
                         },
-                      }),
-                      {
-                        loading: `Creando ${resources[resource]}: ${name}`,
-                        success:
-                          mutationMessages[
-                            `CREATE_${resource}`
-                          ].getSuccessMessage(name),
-                        error:
-                          mutationMessages[
-                            `CREATE_${resource}`
-                          ].getErrorMessage(name),
-                        finally: () => (closeModal(), resetValue()),
-                      },
-                    );
-                  },
-                  updateMutation: () => {},
-                  value: undefined,
-                });
-              }}
-            >
-              ➕ Crear
-            </Dropdown.Item>
-          )}
-          {canUpdate && (
-            <Dropdown.Item
-              onClick={() => {
-                setModal({
-                  show: true,
-                  title: `Actualizar ${resources[resource]}`,
-                  resource,
-                  createMutation: () => {},
-                  updateMutation: (currentName, name) => {
-                    toast.promise(
-                      updateMutation({
-                        variables: {
-                          currentName,
-                          name,
+                      );
+                    },
+                    updateMutation: () => {},
+                    value: undefined,
+                    form:
+                      resource === "STATE"
+                        ? "state"
+                        : resource === "PROVINCE"
+                        ? "province"
+                        : resource === "MUNICIPALITY"
+                        ? "municipality"
+                        : "nameable",
+                  });
+                }}
+              >
+                ➕ Crear
+              </Dropdown.Item>
+            )}
+            {canUpdate && (
+              <Dropdown.Item
+                onClick={() => {
+                  setModal({
+                    show: true,
+                    title: `Actualizar ${resources[resource]}`,
+                    resource,
+                    createMutation: () => {},
+                    updateMutation: (currentName, name) => {
+                      toast.promise(
+                        updateMutation({
+                          variables: {
+                            currentName,
+                            name,
+                          },
+                        }),
+                        {
+                          loading: `Actualizando ${resources[resource]}: ${name}`,
+                          success:
+                            mutationMessages[
+                              `UPDATE_${resource}`
+                            ].getSuccessMessage(name),
+                          error:
+                            mutationMessages[
+                              `UPDATE_${resource}`
+                            ].getErrorMessage(name),
+                          finally: () => (closeModal(), resetValue()),
                         },
-                      }),
-                      {
-                        loading: `Actualizando ${resources[resource]}: ${name}`,
-                        success:
-                          mutationMessages[
-                            `UPDATE_${resource}`
-                          ].getSuccessMessage(name),
-                        error:
-                          mutationMessages[
-                            `UPDATE_${resource}`
-                          ].getErrorMessage(name),
-                        finally: () => (closeModal(), resetValue()),
-                      },
-                    );
-                  },
-                  value: props.value as string,
-                });
-              }}
-            >
-              ✏ Editar
-            </Dropdown.Item>
-          )}
-          {canDelete && (
-            <Dropdown.Item onClick={handleDelete}>🗑 Eliminar</Dropdown.Item>
-          )}
-          {isSelected && (
-            <Dropdown.Item onClick={resetValue}>🧹 Limpiar</Dropdown.Item>
-          )}
-        </DropdownMenu>
-      </InputGroup.Text>
+                      );
+                    },
+                    value: props.value as string,
+                    form:
+                      resource === "STATE"
+                        ? "state"
+                        : resource === "PROVINCE"
+                        ? "province"
+                        : resource === "MUNICIPALITY"
+                        ? "municipality"
+                        : "nameable",
+                  });
+                }}
+              >
+                ✏ Editar
+              </Dropdown.Item>
+            )}
+            {canDelete && (
+              <Dropdown.Item onClick={handleDelete}>🗑 Eliminar</Dropdown.Item>
+            )}
+            {isSelected && (
+              <Dropdown.Item onClick={resetValue}>🧹 Limpiar</Dropdown.Item>
+            )}
+          </DropdownMenu>
+        </InputGroup.Text>
+      )}
       {error}
     </InputGroup>
   );

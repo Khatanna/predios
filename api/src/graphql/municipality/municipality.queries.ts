@@ -1,54 +1,73 @@
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const getAllMunicipalities = (_parent: any, _args: any, { prisma, userContext }: Context) => {
+export const getAllMunicipalities = (
+  _parent: any,
+  _args: any,
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, 'READ', 'MUNICIPALITY')
+    hasPermission(userContext, "READ", "MUNICIPALITY");
 
     return prisma.municipality.findMany({
       include: {
         province: true,
       },
       orderBy: {
-        name: 'asc'
-      }
-    })
+        name: "asc",
+      },
+    });
   } catch (e) {
     throw e;
   }
 };
 
-export const getMunicipalities = (_parent: any, { province }: { province?: string }, { prisma, userContext }: Context) => {
+export const getMunicipalities = (
+  _parent: any,
+  { province }: { province?: string },
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, 'READ', 'MUNICIPALITY')
+    hasPermission(userContext, "READ", "MUNICIPALITY");
 
     if (province) {
       return prisma.municipality.findMany({
         where: {
           province: {
-            name: province
-          }
+            name: province,
+          },
         },
         orderBy: {
-          name: 'asc'
-        }
-      })
+          name: "asc",
+        },
+      });
     }
-    return []
+    return [];
   } catch (e) {
     throw e;
   }
 };
 
-export const getMunicipality = (_parent: any, { name }: { name: string }, { prisma, userContext }: Context) => {
+export const getMunicipality = (
+  _parent: any,
+  { name }: { name: string },
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, 'READ', 'MUNICIPALITY')
+    hasPermission(userContext, "READ", "MUNICIPALITY");
 
     return prisma.municipality.findUniqueOrThrow({
       where: {
-        name
-      }
-    })
+        name,
+      },
+      include: {
+        province: {
+          include: {
+            city: true,
+          },
+        },
+      },
+    });
   } catch (e) {
     throw e;
   }

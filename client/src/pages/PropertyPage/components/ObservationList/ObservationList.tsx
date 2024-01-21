@@ -125,7 +125,10 @@ const ObservationItem: React.FC<
   const isNew = getValues(`observations.${index}.observation`).length === 0;
   const [edit, setEdit] = useState(false);
   const { can } = useAuthStore();
-
+  const someCan =
+    can("CREATE@OBSERVATION") ||
+    can("DELETE@OBSERVATION") ||
+    can("UPDATE@OBSERVATION");
   return (
     <InputGroup className="position-relative mb-2">
       <Form.Control
@@ -136,116 +139,120 @@ const ObservationItem: React.FC<
         disabled={!isNew && !edit}
         autoComplete="off"
       />
-      <InputGroup.Text>
-        <DropdownMenu>
-          {isNew && can("CREATE@OBSERVATION") ? (
-            <>
-              <Dropdown.Item
-                onClick={() => {
-                  if (
-                    getValues(`observations.${index}.observation`).length === 0
-                  ) {
-                    toast.warning("La observación no debe estar vacia");
-                  } else {
-                    createObservation({
-                      variables: {
-                        propertyId: getValues("id"),
-                        input: getValues(`observations.${index}`),
-                      },
-                    });
-                  }
-                }}
-              >
-                <div className="d-flex gap-2 align-items-center">
-                  <PlusCircle color="green" />
-                  <div>Crear</div>
-                </div>
-              </Dropdown.Item>
-              <Dropdown.Item
-                onClick={() => {
-                  remove(index);
-                }}
-              >
-                <div className="d-flex gap-2 align-items-center">
-                  <DashCircle color="red" />
-                  <div>Quitar</div>
-                </div>
-              </Dropdown.Item>
-            </>
-          ) : edit && can("UPDATE@OBSERVATION") ? (
-            <>
-              <Dropdown.Item
-                onClick={() => {
-                  if (
-                    getValues(`observations.${index}.observation`).length === 0
-                  ) {
-                    toast.warning("La observación no debe estar vacia");
-                  } else {
-                    updateObservation(
-                      {
+      {someCan && (
+        <InputGroup.Text>
+          <DropdownMenu>
+            {isNew && can("CREATE@OBSERVATION") ? (
+              <>
+                <Dropdown.Item
+                  onClick={() => {
+                    if (
+                      getValues(`observations.${index}.observation`).length ===
+                      0
+                    ) {
+                      toast.warning("La observación no debe estar vacia");
+                    } else {
+                      createObservation({
+                        variables: {
+                          propertyId: getValues("id"),
+                          input: getValues(`observations.${index}`),
+                        },
+                      });
+                    }
+                  }}
+                >
+                  <div className="d-flex gap-2 align-items-center">
+                    <PlusCircle color="green" />
+                    <div>Crear</div>
+                  </div>
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    remove(index);
+                  }}
+                >
+                  <div className="d-flex gap-2 align-items-center">
+                    <DashCircle color="red" />
+                    <div>Quitar</div>
+                  </div>
+                </Dropdown.Item>
+              </>
+            ) : edit && can("UPDATE@OBSERVATION") ? (
+              <>
+                <Dropdown.Item
+                  onClick={() => {
+                    if (
+                      getValues(`observations.${index}.observation`).length ===
+                      0
+                    ) {
+                      toast.warning("La observación no debe estar vacia");
+                    } else {
+                      updateObservation(
+                        {
+                          observationId: getValues(`observations.${index}.id`),
+                          input: {
+                            observation: getValues(`observations.${index}`)
+                              .observation,
+                          },
+                        },
+                        {
+                          onSuccess() {
+                            setEdit(false);
+                          },
+                        },
+                      );
+                    }
+                  }}
+                >
+                  <div className="d-flex gap-2 align-items-center">
+                    <CheckCircle color="green" />
+                    <div>Confirmar</div>
+                  </div>
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    setEdit(false);
+                  }}
+                >
+                  <div className="d-flex gap-2 align-items-center">
+                    <XCircle color="red" />
+                    <div>Cancelar</div>
+                  </div>
+                </Dropdown.Item>
+              </>
+            ) : (
+              <>
+                {can("UPDATE@OBSERVATION") && (
+                  <Dropdown.Item
+                    onClick={() => {
+                      setEdit(true);
+                    }}
+                  >
+                    <div className="d-flex gap-2 align-items-center">
+                      <PencilSquare color="blue" />
+                      <div>Editar</div>
+                    </div>
+                  </Dropdown.Item>
+                )}
+                {can("DELETE@OBSERVATION") && (
+                  <Dropdown.Item
+                    onClick={() => {
+                      deleteObservation({
                         observationId: getValues(`observations.${index}.id`),
-                        input: {
-                          observation: getValues(`observations.${index}`)
-                            .observation,
-                        },
-                      },
-                      {
-                        onSuccess() {
-                          setEdit(false);
-                        },
-                      },
-                    );
-                  }
-                }}
-              >
-                <div className="d-flex gap-2 align-items-center">
-                  <CheckCircle color="green" />
-                  <div>Confirmar</div>
-                </div>
-              </Dropdown.Item>
-              <Dropdown.Item
-                onClick={() => {
-                  setEdit(false);
-                }}
-              >
-                <div className="d-flex gap-2 align-items-center">
-                  <XCircle color="red" />
-                  <div>Cancelar</div>
-                </div>
-              </Dropdown.Item>
-            </>
-          ) : (
-            <>
-              {can("UPDATE@OBSERVATION") && (
-                <Dropdown.Item
-                  onClick={() => {
-                    setEdit(true);
-                  }}
-                >
-                  <div className="d-flex gap-2 align-items-center">
-                    <PencilSquare color="blue" />
-                    <div>Editar</div>
-                  </div>
-                </Dropdown.Item>
-              )}
-              {can("DELETE@OBSERVATION") && (
-                <Dropdown.Item
-                  onClick={() => {
-                    deleteObservation({
-                      observationId: getValues(`observations.${index}.id`),
-                    });
-                  }}
-                >
-                  <div className="d-flex gap-2 align-items-center">
-                    <Trash color="red" />
-                    <div>Eliminar</div>
-                  </div>
-                </Dropdown.Item>
-              )}
-            </>
-          )}
-        </DropdownMenu>
-      </InputGroup.Text>
+                      });
+                    }}
+                  >
+                    <div className="d-flex gap-2 align-items-center">
+                      <Trash color="red" />
+                      <div>Eliminar</div>
+                    </div>
+                  </Dropdown.Item>
+                )}
+              </>
+            )}
+          </DropdownMenu>
+        </InputGroup.Text>
+      )}
     </InputGroup>
   );
 };

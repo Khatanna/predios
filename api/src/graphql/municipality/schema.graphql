@@ -1,23 +1,24 @@
 type Municipality {
   id: ID!
   name: String
+  province: Province
   createdAt: String
   updatedAt: String
 }
 
 type Query {
   getAllMunicipalities: [Municipality]!
-  getMunicipalities(province: String) : [Municipality]!
+  getMunicipalities(province: String): [Municipality]!
   getMunicipality(name: String): Municipality
 }
 
 type Mutation {
   createMunicipality(input: MunicipalityInput): Municipality
-  updateMunicipality(name: String, item: MunicipalityInput): Municipality 
+  updateMunicipality(name: String, input: MunicipalityInput): Municipality
   deleteMunicipality(name: String): Municipality
 }
 
 input MunicipalityInput {
   name: String
-  provinceName: String
+  province: ProvinceInput
 }

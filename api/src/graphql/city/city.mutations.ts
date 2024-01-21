@@ -1,4 +1,3 @@
-import { City } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 

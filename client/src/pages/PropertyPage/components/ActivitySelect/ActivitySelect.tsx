@@ -3,7 +3,6 @@ import { gql } from "@apollo/client";
 import { Form } from "react-bootstrap";
 import { Activity as ActivityIcon } from "react-bootstrap-icons";
 import { SelectNameable } from "../../../../components/SelectNameable";
-import { roleMutations } from "../../../../graphql/mutations";
 import { Property } from "../../models/types";
 import { CustomLabel } from "../CustomLabel";
 import { useSelectSubscription } from "../../hooks/useSelectSubscription";

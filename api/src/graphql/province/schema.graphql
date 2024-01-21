@@ -1,6 +1,7 @@
 type Province {
   name: String
   code: String
+  city: City
   municipalities: [Municipality]
   createdAt: String
   updatedAt: String
@@ -14,12 +15,12 @@ type Query {
 
 type Mutation {
   createProvince(input: ProvinceInput): Province
-  updateProvince(name: String, item: ProvinceInput): Province
+  updateProvince(name: String, input: ProvinceInput): Province
   deleteProvince(name: String): Province
 }
 
 input ProvinceInput {
   name: String
   code: String
-  cityName: String
+  city: CityInput
 }

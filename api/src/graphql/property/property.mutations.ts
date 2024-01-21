@@ -249,7 +249,7 @@ export const updateProperty = async (
 };
 export const updateField = async (
   _parent: any,
-  { id, fieldName, value }: { id: string; fieldName: string; value: string },
+  { id, fieldName, value }: { id: string; fieldName?: string; value: string },
   { prisma, userContext }: Context,
 ) => {
   hasPermission(userContext, "UPDATE", "PROPERTY");
@@ -268,7 +268,6 @@ export const updateField = async (
     fieldName === "legal.user.username" ||
     fieldName === "technical.user.username"
   ) {
-    console.log(value);
     propertyUpdated = await prisma.property.update({
       where: {
         id,
@@ -279,7 +278,7 @@ export const updateField = async (
         },
       },
     });
-  } else if (fieldName.includes(".")) {
+  } else if (fieldName?.includes(".")) {
     propertyUpdated = await prisma.property.update({
       where: {
         id,
@@ -287,14 +286,16 @@ export const updateField = async (
       data: { ...resolveNestedField({}, fieldName.split("."), value) },
     });
   } else {
-    propertyUpdated = await prisma.property.update({
-      where: {
-        id,
-      },
-      data: {
-        [fieldName]: value,
-      },
-    });
+    if (fieldName) {
+      propertyUpdated = await prisma.property.update({
+        where: {
+          id,
+        },
+        data: {
+          [fieldName]: value,
+        },
+      });
+    }
   }
 
   return propertyUpdated;

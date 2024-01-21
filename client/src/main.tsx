@@ -18,8 +18,8 @@ const queryClient = new QueryClient({
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
     <Toaster visibleToasts={5} richColors expand closeButton />
-    <ModalNameable />
     <ApolloProvider client={client}>
+      <ModalNameable />
       <App />
     </ApolloProvider>
   </QueryClientProvider>,

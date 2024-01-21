@@ -1,186 +1,210 @@
-import { Row, Col, Form, Button, Alert, Spinner } from "react-bootstrap";
-import { useForm, Controller } from "react-hook-form";
-import { FormCreateProps } from "../../models/types";
-import { useCustomQuery } from "../../../../hooks/useCustomQuery";
-import { Stage } from "../../../StagePage/models/types";
-import {
-  useStageMutations,
-  useStateMutations,
-  useStageStore,
-} from "../../hooks/useRepository";
-import { State } from "../../../StatePage/models/types";
-import { EnhancedSelect } from "../EnhancedSelect";
-import {
-  customSwalError,
-  customSwalSuccess,
-} from "../../../../utilities/alerts";
+import { gql, useLazyQuery, useMutation } from "@apollo/client";
+import { Button, Col, Form, Modal, Row } from "react-bootstrap";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { SelectNameable } from "../../../../components/SelectNameable";
 import { useModalStore } from "../../../../state/useModalStore";
-import { ExclamationTriangle } from "react-bootstrap-icons";
+import { State } from "../../../StatePage/models/types";
+import { GET_ALL_STATES_QUERY } from "../StateSelect/StateSelect";
 
-type InputState = Pick<State, "name" | "order" | "stage">;
+type InputState = Pick<State, "name" | "stage">;
 
-const GET_ALL_STAGES_QUERY = `
-  query getAllStages {
-    stages: getAllStages {
+const GET_ALL_STAGES_QUERY = gql`
+  query GetAllStages {
+    options: getAllStages {
       name
     }
   }
 `;
-const StateFormCreate: React.FC<FormCreateProps> = ({ onHide }) => {
-  const { register, handleSubmit, control, watch, getValues, resetField } =
-    useForm<State>();
-  const { mutationCreate } = useStateMutations<{ state: State }, InputState>();
-  const { mutationDelete } = useStageMutations<{ stage: Stage }>();
-  const { items: stages, setItems: setStages } = useStageStore();
-  const stage = watch("stage.name");
-  const setModal = useModalStore((s) => s.setModal);
-  const { error, isLoading } = useCustomQuery<{ stages: Stage[] }>(
-    GET_ALL_STAGES_QUERY,
-    ["getAllStages"],
+
+const GET_STATE_BY_NAME = gql`
+  query GetState($name: String) {
+    state: getState(name: $name) {
+      name
+      stage {
+        name
+      }
+    }
+  }
+`;
+
+const CREATE_STATE_MUTATION = gql`
+  mutation CreateState($input: StateInput) {
+    state: createState(input: $input) {
+      name
+    }
+  }
+`;
+
+const UPDATE_STATE_MUTATION = gql`
+  mutation UpdateState($name: String, $item: StateInput) {
+    state: updateState(name: $name, item: $item) {
+      name
+    }
+  }
+`;
+
+const stageMutations = {
+  create: gql`
+    mutation CreateStage($name: String) {
+      result: createStage(name: $name) {
+        name
+      }
+    }
+  `,
+  update: gql`
+    mutation UpdateStage($currentName: String, $name: String) {
+      result: updateStage(currentName: $currentName, name: $name) {
+        name
+      }
+    }
+  `,
+  delete: gql`
+    mutation DeleteStage($name: String) {
+      result: deleteStage(name: $name) {
+        name
+      }
+    }
+  `,
+};
+
+const StateFormCreate: React.FC = () => {
+  const { closeModal, value } = useModalStore();
+  const [getState] = useLazyQuery<{ state: State }, { name?: string }>(
+    GET_STATE_BY_NAME,
+  );
+  const { register, handleSubmit, control, reset, getFieldState } =
+    useForm<State>({
+      defaultValues: () =>
+        getState({ variables: { name: value } }).then(
+          ({ data }) => data!.state,
+        ),
+    });
+  const [createMutation] = useMutation<{ state: State }, { input: InputState }>(
+    CREATE_STATE_MUTATION,
     {
-      onSuccess({ stages }) {
-        setStages(stages);
-      },
+      refetchQueries: [{ query: GET_ALL_STATES_QUERY }],
     },
   );
+  const [updateMutation] = useMutation<
+    { state: State },
+    { name: string; item: InputState }
+  >(UPDATE_STATE_MUTATION, {
+    refetchQueries: [
+      { query: GET_STATE_BY_NAME, variables: { name: value } },
+      { query: GET_ALL_STATES_QUERY },
+    ],
+  });
 
-  return (
-    <Form
-      onSubmit={handleSubmit(({ name, order, stage }) => {
-        mutationCreate(
-          { input: { name, order, stage } },
-          {
-            onSuccess({
-              data: {
-                state: { name },
-              },
-            }) {
-              customSwalSuccess(
-                "Nuevo Estado agregado",
-                `El estado ${name} se ha creado correctamente`,
-              );
-            },
-            onError(error, { input: { name } }) {
-              customSwalError(
-                error.response!.data.errors[0].message,
-                `Ocurrio un error al intentar crear el estado ${name}`,
-              );
-            },
-            onSettled() {
-              onHide();
-            },
+  const submit: SubmitHandler<State> = (data) => {
+    if (!value) {
+      toast.promise(
+        createMutation({
+          variables: {
+            input: data,
           },
-        );
-      })}
-    >
-      <Row>
-        <Col className="d-flex gap-3 flex-column">
-          <Row>
-            <Col>
-              <Form.Label>Estado</Form.Label>
-              <Form.Control
-                {...register("name")}
-                placeholder="Nombre"
-              ></Form.Control>
-            </Col>
-            <Col>
-              <Form.Label>Orden</Form.Label>
-              <Form.Control
-                {...register("order")}
-                placeholder="Orden"
-              ></Form.Control>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Form.Label>Etapa</Form.Label>
-              {isLoading ? (
-                <div className="d-flex justify-content-center ">
-                  <Spinner variant="warning" />
-                </div>
-              ) : error ? (
-                <Alert>
-                  <Alert.Heading>
-                    <div className="d-flex align-content-center gap-2">
-                      <ExclamationTriangle size={24} color="red" />
-                      <div>No tienes permisos</div>
-                    </div>
-                  </Alert.Heading>
-                  {error}
-                </Alert>
-              ) : (
-                <Controller
-                  name="stage.name"
-                  control={control}
-                  defaultValue="undefined"
-                  render={({ field }) => (
-                    <EnhancedSelect
-                      {...field}
-                      placeholder="Etapa"
-                      options={stages.map(({ name }) => ({
-                        label: name,
-                        value: name,
-                      }))}
-                      onCreate={() => {
-                        setModal({
-                          show: true,
-                          form: "createStage",
-                          title: "Crear etapa",
-                        });
-                      }}
-                      onEdit={() => {
-                        setModal({
-                          show: true,
-                          form: "updateStage",
-                          title: "Actualizar etapa",
-                          params: { name: stage },
-                        });
-                      }}
-                      onDelete={() => {
-                        const stage = getValues("stage");
-
-                        if (stage) {
-                          mutationDelete(stage, {
-                            onSuccess({
-                              data: {
-                                stage: { name },
-                              },
-                            }) {
-                              customSwalSuccess(
-                                "Etapa eliminada",
-                                `La etapa ${name} se ha eliminado correctamente`,
-                              );
-                            },
-                            onError(error, { name }) {
-                              customSwalError(
-                                error.response!.data.errors[0].message,
-                                `Ocurrio un error al intentar eliminar la etapa ${name}`,
-                              );
-                            },
-                            onSettled() {
-                              resetField("stage.name");
-                            },
-                          });
-                        }
-                      }}
-                    />
-                  )}
+        }),
+        {
+          loading: "Creando estado",
+          success: "Se ha creado un nuevo estado",
+          error: "Ocurrio un error, intente más tarde",
+          finally: reset,
+        },
+      );
+    } else {
+      toast.promise(
+        updateMutation({
+          variables: {
+            name: value,
+            item: data,
+          },
+        }),
+        {
+          loading: "Actualizando estado",
+          success: "Se ha actualizado el estado",
+          error: "Ocurrio un error, intente más tarde",
+        },
+      );
+    }
+  };
+  return (
+    <Form onSubmit={handleSubmit(submit)}>
+      <Modal.Body>
+        <Row>
+          <Col>
+            <Form.Label>Estado</Form.Label>
+            <Form.Control
+              {...register("name", {
+                required: {
+                  value: !value,
+                  message: "Este campo es obligatorio",
+                },
+              })}
+              placeholder="Nombre"
+              isValid={
+                getFieldState("name").isTouched &&
+                !getFieldState("name").error?.message
+              }
+              isInvalid={!!getFieldState("name").error?.message}
+            />
+            <Form.Control.Feedback type="invalid">
+              {getFieldState("name").error?.message}
+            </Form.Control.Feedback>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Form.Label>Etapa</Form.Label>
+            <Controller
+              name="stage.name"
+              control={control}
+              defaultValue="undefined"
+              rules={
+                !value
+                  ? {
+                      pattern: {
+                        value: /^(?!undefined$).*$/gi,
+                        message: "Este campo es obligatorio",
+                      },
+                      required: {
+                        value: true,
+                        message: "Este campo es obligatorio",
+                      },
+                    }
+                  : undefined
+              }
+              render={({ field }) => (
+                <SelectNameable
+                  {...field}
+                  query={GET_ALL_STAGES_QUERY}
+                  placeholder={"Etapa"}
+                  isValid={
+                    getFieldState(field.name).isTouched &&
+                    !getFieldState(field.name).error?.message
+                  }
+                  isInvalid={!!getFieldState(field.name).error?.message}
+                  resource="STAGE"
+                  fetchPolicy="no-cache"
+                  mutations={stageMutations}
+                  error={
+                    <Form.Control.Feedback type="invalid">
+                      {getFieldState(field.name).error?.message}
+                    </Form.Control.Feedback>
+                  }
                 />
               )}
-            </Col>
-          </Row>
-          <Row className="mt-3">
-            <Col className="d-flex justify-content-end gap-2">
-              <Button variant="danger" onClick={onHide}>
-                Cancelar
-              </Button>
-              <Button type="submit" variant="success" className="text-white">
-                Crear Estado
-              </Button>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
+            />
+          </Col>
+        </Row>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="danger" onClick={closeModal}>
+          Cancelar
+        </Button>
+        <Button type="submit" variant="success" className="text-white">
+          {value ? "Actualizar" : "Crear"} Estado
+        </Button>
+      </Modal.Footer>
     </Form>
   );
 };

@@ -1,8 +1,8 @@
-type State { 
+type State {
   id: ID!
   name: String
   properties: [Property]!
-  stage: Stage!
+  stage: Stage
   createdAt: String
   updatedAt: String
 }

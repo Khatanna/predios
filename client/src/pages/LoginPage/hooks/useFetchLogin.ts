@@ -33,8 +33,8 @@ export const useFetchLogin = () => {
       setUser(user);
     },
     onError(error) {
-      logout()
       customSwalError(error.message, "Intento de inicio de sesión fallido");
+      logout();
     },
     context: {
       headers: {
