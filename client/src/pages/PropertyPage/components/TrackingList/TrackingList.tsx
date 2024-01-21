@@ -130,6 +130,7 @@ const TrackingItem: React.FC<
       );
     },
   });
+  const { can } = useAuthStore();
 
   const createTracking = () => {
     create({
@@ -186,6 +187,8 @@ const TrackingItem: React.FC<
             {...register(`trackings.${index}.numberOfNote`)}
             disabled={!edit && !isNew}
             size="sm"
+            as="textarea"
+            rows={1}
             placeholder="# Nota"
           />
         </Form.Group>
@@ -203,39 +206,39 @@ const TrackingItem: React.FC<
           />
         </Form.Group>
       </Col>
-      {"administrador" === "administrador" && (
-        <div
-          className={
-            "position-absolute top-0 left-0 mt-1 d-flex gap-1 justify-content-end"
-          }
-        >
-          {isNew ? (
-            <>
-              {Boolean(getValues("id")) && (
-                <Tooltip label="Crear seguimiento">
-                  <PlusSquare
-                    color="green"
-                    className="float-end"
-                    role="button"
-                    fontSize={16}
-                    onClick={() => createTracking()}
-                  />
-                </Tooltip>
-              )}
-              <Tooltip label="Quitar seguimiento">
-                <DashSquare
-                  color="orange"
+      <div
+        className={
+          "position-absolute top-0 left-0 mt-1 d-flex gap-1 justify-content-end"
+        }
+      >
+        {isNew ? (
+          <>
+            {Boolean(getValues("id")) && can("CREATE@TRACKING") && (
+              <Tooltip label="Crear seguimiento">
+                <PlusSquare
+                  color="green"
                   className="float-end"
                   role="button"
                   fontSize={16}
-                  onClick={() => remove(index)}
+                  onClick={() => createTracking()}
                 />
               </Tooltip>
-            </>
-          ) : (
-            <>
-              {!edit && getValues("id") ? (
-                <>
+            )}
+            <Tooltip label="Quitar seguimiento">
+              <DashSquare
+                color="orange"
+                className="float-end"
+                role="button"
+                fontSize={16}
+                onClick={() => remove(index)}
+              />
+            </Tooltip>
+          </>
+        ) : (
+          <>
+            {!edit && getValues("id") ? (
+              <>
+                {can("UPDATE@TRACKING") && (
                   <Tooltip label="Editar seguimiento">
                     <PencilSquare
                       color="blue"
@@ -245,6 +248,8 @@ const TrackingItem: React.FC<
                       onClick={() => setEdit(true)}
                     />
                   </Tooltip>
+                )}
+                {can("DELETE@TRACKING") && (
                   <Tooltip label="Borrar seguimiento">
                     <XSquare
                       color="red"
@@ -254,20 +259,22 @@ const TrackingItem: React.FC<
                       onClick={() => deleteTracking()}
                     />
                   </Tooltip>
-                </>
-              ) : (
-                <>
-                  <Tooltip label="Cancelar">
-                    <XSquare
-                      color="brown"
-                      className="float-end"
-                      role="button"
-                      fontSize={16}
-                      onClick={() => {
-                        setEdit(false);
-                      }}
-                    />
-                  </Tooltip>
+                )}
+              </>
+            ) : (
+              <>
+                <Tooltip label="Cancelar">
+                  <XSquare
+                    color="brown"
+                    className="float-end"
+                    role="button"
+                    fontSize={16}
+                    onClick={() => {
+                      setEdit(false);
+                    }}
+                  />
+                </Tooltip>
+                {can("UPDATE@TRACKING") && (
                   <Tooltip label="Actualizar seguimiento">
                     <CheckSquare
                       color="green"
@@ -283,12 +290,12 @@ const TrackingItem: React.FC<
                       }}
                     />
                   </Tooltip>
-                </>
-              )}
-            </>
-          )}
-        </div>
-      )}
+                )}
+              </>
+            )}
+          </>
+        )}
+      </div>
     </Row>
   );
 };
@@ -325,7 +332,7 @@ const TrackingList: React.FC = () => {
           </Alert>
         </Row>
       )}
-      {can("CREATE@OBSERVATION") && (
+      {can("CREATE@TRACKING") && (
         <Row>
           <Button
             size="sm"

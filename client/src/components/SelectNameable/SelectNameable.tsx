@@ -51,7 +51,6 @@ const SelectNameable: React.FC<SelectNameableProps> = ({
   const canUpdate = can(`UPDATE@${resource}`) && isSelected;
   const canDelete = can(`DELETE@${resource}`) && isSelected;
   const { setModal, closeModal } = useModalStore();
-
   const showMenu = canCreate || canUpdate || canDelete;
   const resetValue = () => {
     props.onChange?.({ target: { value: "undefined" } });

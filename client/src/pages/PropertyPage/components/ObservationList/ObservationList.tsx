@@ -144,28 +144,30 @@ const ObservationItem: React.FC<
           <DropdownMenu>
             {isNew && can("CREATE@OBSERVATION") ? (
               <>
-                <Dropdown.Item
-                  onClick={() => {
-                    if (
-                      getValues(`observations.${index}.observation`).length ===
-                      0
-                    ) {
-                      toast.warning("La observación no debe estar vacia");
-                    } else {
-                      createObservation({
-                        variables: {
-                          propertyId: getValues("id"),
-                          input: getValues(`observations.${index}`),
-                        },
-                      });
-                    }
-                  }}
-                >
-                  <div className="d-flex gap-2 align-items-center">
-                    <PlusCircle color="green" />
-                    <div>Crear</div>
-                  </div>
-                </Dropdown.Item>
+                {getValues("id") && (
+                  <Dropdown.Item
+                    onClick={() => {
+                      if (
+                        getValues(`observations.${index}.observation`)
+                          .length === 0
+                      ) {
+                        toast.warning("La observación no debe estar vacia");
+                      } else {
+                        createObservation({
+                          variables: {
+                            propertyId: getValues("id"),
+                            input: getValues(`observations.${index}`),
+                          },
+                        });
+                      }
+                    }}
+                  >
+                    <div className="d-flex gap-2 align-items-center">
+                      <PlusCircle color="green" />
+                      <div>Crear</div>
+                    </div>
+                  </Dropdown.Item>
+                )}
                 <Dropdown.Item
                   onClick={() => {
                     remove(index);
@@ -296,13 +298,17 @@ const ObservationList: React.FC = () => {
             size="sm"
             className="text-white"
             variant={
-              observations.some(({ observation }) => observation.length === 0)
+              observations.some(
+                ({ observation }) => observation.length === 0,
+              ) && !!getValues("id")
                 ? "danger"
                 : "info"
             }
-            disabled={observations.some(
-              ({ observation }) => observation.length === 0,
-            )}
+            disabled={
+              observations.some(
+                ({ observation }) => observation.length === 0,
+              ) && !!getValues("id")
+            }
             onClick={() => {
               append({
                 id: crypto.randomUUID(),
