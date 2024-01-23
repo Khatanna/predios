@@ -23,19 +23,19 @@ export const cursorMove = async (
     });
 
     if (currentPosition) {
-      console.log("actualizando")
+      console.log("actualizando");
       await prisma.position.update({
         where: {
-          username: userContext?.username
+          username: userContext?.username,
         },
         data: {
           contextId,
           positionX,
           positionY,
         },
-      })
+      });
     } else {
-      console.log("creando")
+      console.log("creando");
       await prisma.position.create({
         data: {
           username: userContext!.username,
@@ -43,7 +43,7 @@ export const cursorMove = async (
           positionX,
           positionY,
         },
-      })
+      });
     }
 
     const cursors = await prisma.position.findMany();

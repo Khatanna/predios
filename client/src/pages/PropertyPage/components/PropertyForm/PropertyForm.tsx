@@ -21,6 +21,7 @@ import {
   PersonWorkspace,
 } from "react-bootstrap-icons";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { SeekerModalInput } from "../../../../components/SeekerModalInput";
 import {
   customSwalError,
@@ -33,6 +34,7 @@ import { usePropertyListStore } from "../../state/usePropertyListStore";
 import { ActivitySelect } from "../ActivitySelect";
 import { BeneficiaryList } from "../BeneficiaryList";
 import { ButtonPropertyCreateForm } from "../ButtonPropertyCreateForm";
+import { ButtonSubscribe } from "../ButtonSubscribe";
 import { ClasificationSelect } from "../ClasificationSelect";
 import { CustomInput } from "../CustomInput";
 import { CustomLabel } from "../CustomLabel";
@@ -48,7 +50,6 @@ import { StateSelect } from "../StateSelect";
 import { SubdirectorySelect } from "../SubdirectorySelect";
 import { TrackingList } from "../TrackingList";
 import { TypeSelect } from "../TypeSelect";
-import { toast } from "sonner";
 
 const PropertyForm: React.FC = () => {
   const { property, reset } = usePaginationStore();
@@ -134,7 +135,12 @@ const PropertyForm: React.FC = () => {
               <Row className="d-flex flex-row gap-2">
                 <Col className="d-flex gap-2 flex-column">
                   <Row className="border border-1 py-2 border-dark-subtle rounded-1 align-items-end position-relative ">
-                    {property && <Paginator />}
+                    {methods.getValues("id") && (
+                      <>
+                        <Paginator />
+                        <ButtonSubscribe />
+                      </>
+                    )}
                     <Col>
                       <Row className="mb-1">
                         <Form.Group>

@@ -82,6 +82,14 @@ import {
 } from "./fileNumber";
 import { typeDefs as roleTypeDefs, resolvers as roleResolvers } from "./role";
 import {
+  resolvers as subscriptionResolvers,
+  typeDefs as subscriptionTypeDefs,
+} from "./subcription";
+import {
+  resolvers as notificationResolvers,
+  typeDefs as notificationTypeDefs,
+} from "./notification";
+import {
   resolvers as subscriptionsResolvers,
   typeDefs as subscriptionsTypeDefs,
 } from "./subscriptions";
@@ -114,6 +122,8 @@ export const schema = makeExecutableSchema({
     trackingTypeDefs,
     fileNumberTypeDefs,
     roleTypeDefs,
+    subscriptionTypeDefs,
+    notificationTypeDefs,
   ],
   resolvers: [
     permissionResolvers,
@@ -142,5 +152,7 @@ export const schema = makeExecutableSchema({
     trackingResolvers,
     fileNumberResolvers,
     roleResolvers,
+    subscriptionResolvers,
+    notificationResolvers,
   ],
 });

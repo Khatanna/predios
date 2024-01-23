@@ -1,0 +1,18 @@
+type Notification {
+  id: ID!
+  title: String
+  from: User
+  to: User
+  property: Property
+  fieldName: String
+  read: Boolean
+  timeAgo: String
+}
+
+type Query {
+  getAllNotifications: [Notification]
+}
+
+type Mutation {
+  toggleReadNotification(id: String, read: Boolean): Notification
+}

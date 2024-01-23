@@ -82,7 +82,6 @@ export const exportToExcel = ({ data }: { data: Array<Property> }) => {
     },
   );
   const ws = XLSX.utils.json_to_sheet(exportData);
-  // XLSX.utils.sheet_add_aoa(ws, [], { origin: -1 });
   const sheetName = `${data.length}-Predios`;
   const wb = { Sheets: { [sheetName]: ws }, SheetNames: [sheetName] };
   const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });

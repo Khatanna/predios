@@ -99,7 +99,6 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
   >(UDPATE_USER_MUTATION, {
     refetchQueries: [{ query: GET_ALL_USERS_QUERY, variables: { filterText } }],
     optimisticResponse: ({ input }) => {
-      toast.info(JSON.stringify(input));
       for (const key in input) {
         setValue(key as keyof UserInput, input[key as keyof UserInput]);
       }

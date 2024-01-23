@@ -10,7 +10,6 @@ import { NavLink } from "react-router-dom";
 import { NavLink as LinkStyled } from "../../styled-components/Nav";
 import type { Route } from "./types";
 import { useAuthStore } from "../../state/useAuthStore";
-import { JsonViewer } from "../JsonViewer";
 
 const size = 18;
 const routes: Route[] = [

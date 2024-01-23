@@ -66,25 +66,28 @@ model Position {
 }
 
 model User {
-  id             String                @id @default(uuid())
-  names          String?               @map("nombre") @db.VarChar(30)
-  firstLastName  String?               @map("apellido_paterno") @db.VarChar(50)
-  secondLastName String?               @map("apellido_materno") @db.VarChar(50)
-  username       String                @unique @map("nombre_de_usuario") @db.VarChar(20)
-  password       String                @map("contraseña") @db.MediumText
-  roleId         String                @map("rol_id")
-  typeId         String                @map("tipo_id")
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
-  token          String?               @db.MediumText
-  type           UserType              @relation(fields: [typeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  role           Role                  @relation(fields: [roleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  status         Status                @default(ENABLE) @map("estado")
-  connection     StatusConnection      @default(OFFLINE) @map("estado_de_conexion")
-  records        Record[]
-  technicians    TechnicalOnProperty[]
-  legal          LegalOnProperty[]
-  trackings      Tracking[]
+  id                    String                @id @default(uuid())
+  names                 String?               @map("nombre") @db.VarChar(30)
+  firstLastName         String?               @map("apellido_paterno") @db.VarChar(50)
+  secondLastName        String?               @map("apellido_materno") @db.VarChar(50)
+  username              String                @unique @map("nombre_de_usuario") @db.VarChar(20)
+  password              String                @map("contraseña") @db.MediumText
+  roleId                String                @map("rol_id")
+  typeId                String                @map("tipo_id")
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  token                 String?               @db.MediumText
+  type                  UserType              @relation(fields: [typeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  role                  Role                  @relation(fields: [roleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  status                Status                @default(ENABLE) @map("estado")
+  connection            StatusConnection      @default(OFFLINE) @map("estado_de_conexion")
+  records               Record[]
+  technicians           TechnicalOnProperty[]
+  legal                 LegalOnProperty[]
+  trackings             Tracking[]
+  suscriptions          Subscription[]
+  notificationsSent     Notification[]        @relation(name: "sends")
+  notificationsReceived Notification[]        @relation(name: "received")
 
   @@map("usuario")
 }
@@ -217,6 +220,8 @@ model Property {
   folderLocation       FolderLocation?      @relation(fields: [folderLocationId], references: [id])
   folderLocationId     String?              @map("ubicación_de_carpeta_id")
   technicalObservation String?              @map("observacion_tecnica") @db.LongText()
+  suscriptions         Subscription[]
+  notifications        Notification[]
 
   @@map("predio")
 }
@@ -412,4 +417,28 @@ model Record {
   updatedAt   DateTime        @updatedAt
 
   @@map("historial")
+}
+
+model Subscription {
+  propertyId String   @map("predio_id")
+  userId     String   @map("usuario_id")
+  property   Property @relation(fields: [propertyId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@id([propertyId, userId])
+  @@map("Suscripcion")
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  title      String
+  from       User     @relation(fields: [fromUserId], references: [id], name: "received")
+  to         User     @relation(fields: [toUserId], references: [id], name: "sends")
+  property   Property @relation(fields: [propertyId], references: [id])
+  fieldName  String
+  read       Boolean
+  timeAgo    String
+  toUserId   String
+  fromUserId String
+  propertyId String
 }

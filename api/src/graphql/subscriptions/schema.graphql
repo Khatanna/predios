@@ -26,11 +26,19 @@ type OnChangeInput {
   value: String
 }
 
+type OnChangeProperty {
+  fieldName: String
+  to: User
+  from: User
+  property: Property
+}
+
 type Subscription {
   userConnected: OnConnection
   cursorMove: [OnCursorMove]
   focusedInput: OnFocusInput
   changeInput: OnChangeInput
+  propertyChange(username: String): OnChangeProperty
 }
 
 type Mutation {

@@ -250,7 +250,7 @@ export const updateProperty = async (
 export const updateField = async (
   _parent: any,
   { id, fieldName, value }: { id: string; fieldName?: string; value: string },
-  { prisma, userContext }: Context,
+  { prisma, userContext, pubSub }: Context,
 ) => {
   hasPermission(userContext, "UPDATE", "PROPERTY");
   let propertyUpdated;
@@ -273,9 +273,8 @@ export const updateField = async (
         id,
       },
       data: {
-        [fieldName === "legal.user.username" ? "legal" : "technical"]: {
-          upsert: resolveUser(value, id),
-        },
+        [fieldName === "legal.user.username" ? "legal" : "technical"]:
+          resolveUser(value, id),
       },
     });
   } else if (fieldName?.includes(".")) {
@@ -298,15 +297,61 @@ export const updateField = async (
     }
   }
 
+  if (propertyUpdated && fieldName) {
+    const suscribers = await prisma.subscription.findMany({
+      where: {
+        propertyId: propertyUpdated.id,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    for (let suscriber of suscribers) {
+      if (suscriber.user.username !== userContext?.username) {
+        await prisma.notification.create({
+          data: {
+            fieldName,
+            read: false,
+            timeAgo: `${new Date().getTime()}`,
+            title: "Predio actualizado",
+            property: {
+              connect: {
+                id: propertyUpdated.id,
+              },
+            },
+            to: {
+              connect: {
+                id: suscriber.userId,
+              },
+            },
+            from: {
+              connect: {
+                id: userContext?.id,
+              },
+            },
+          },
+        });
+      }
+      await pubSub.publish("CHANGE_PROPERTY", {
+        propertyChange: {
+          fieldName,
+          to: suscriber.user,
+          from: userContext,
+          property: propertyUpdated,
+        },
+      });
+    }
+  }
+
   return propertyUpdated;
 };
 export const updateFieldNumber = async (
   _parent: any,
   { id, fieldName, value }: { id: string; fieldName: string; value: number },
-  { prisma, userContext }: Context,
+  { prisma, userContext, pubSub }: Context,
 ) => {
   hasPermission(userContext, "UPDATE", "PROPERTY");
-  console.log({ fieldName, value });
   const propertyUpdated = await prisma.property.update({
     where: {
       id,
@@ -315,6 +360,51 @@ export const updateFieldNumber = async (
       [fieldName]: value,
     },
   });
+
+  const suscribers = await prisma.subscription.findMany({
+    where: {
+      propertyId: propertyUpdated.id,
+    },
+    include: {
+      user: true,
+    },
+  });
+
+  for (let suscriber of suscribers) {
+    if (suscriber.user.username !== userContext?.username) {
+      await prisma.notification.create({
+        data: {
+          fieldName,
+          read: false,
+          timeAgo: `${new Date().getTime()}`,
+          title: "Predio actualizado",
+          property: {
+            connect: {
+              id: propertyUpdated.id,
+            },
+          },
+          to: {
+            connect: {
+              id: suscriber.userId,
+            },
+          },
+          from: {
+            connect: {
+              id: userContext?.id,
+            },
+          },
+        },
+      });
+    }
+    await pubSub.publish("CHANGE_PROPERTY", {
+      propertyChange: {
+        fieldName,
+        to: suscriber.user,
+        from: userContext,
+        property: propertyUpdated,
+      },
+    });
+  }
 
   return propertyUpdated;
 };
@@ -341,21 +431,32 @@ const resolveFileNumber = (value: string, propertyId: string) => {
       };
 };
 const resolveUser = (value: string, propertyId: string) => {
-  return {
-    where: {
-      propertyId,
-    },
-    create: {
-      user: {
-        connect: {
-          username: value,
+  if (value.length === 0) {
+    return {
+      delete: {
+        property: {
+          id: propertyId,
         },
       },
-    },
-    update: {
-      user: {
-        connect: {
-          username: value,
+    };
+  }
+  return {
+    upsert: {
+      where: {
+        propertyId,
+      },
+      create: {
+        user: {
+          connect: {
+            username: value,
+          },
+        },
+      },
+      update: {
+        user: {
+          connect: {
+            username: value,
+          },
         },
       },
     },

@@ -1,0 +1,15 @@
+type Subscription {
+  id: ID!
+  to: String
+  property: Property
+  user: User
+}
+
+type Query {
+  getSubscriptionsByUserName: [Subscription]
+}
+
+type Mutation {
+  subscribe(propertyId: String): Boolean
+  unsubscribe(propertyId: String): Boolean
+}

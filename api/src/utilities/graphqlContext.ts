@@ -28,7 +28,12 @@ const createRecord = async (
   username: string,
   ip?: string,
 ) => {
-  if (model.toLocaleUpperCase() === "POSITION") return await query(args);
+  if (
+    model.toLocaleUpperCase() === "POSITION" ||
+    model.toLocaleUpperCase() === "SUBSCRIPTION" ||
+    model.toLocaleUpperCase() === "NOTIFICATION"
+  )
+    return await query(args);
   const result = await query(args);
   if (model !== "Record") {
     await prisma.record.create({
@@ -90,9 +95,7 @@ export const graphqlContext = async ({
         where: {
           username: user.username,
         },
-        select: {
-          username: true,
-          status: true,
+        include: {
           role: {
             include: {
               permissions: {

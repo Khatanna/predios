@@ -8,11 +8,13 @@ import { Nav } from "../Nav";
 import { SeekerModal } from "../SeekerModal";
 import { useApolloClient } from "@apollo/client";
 import { useConnectionSubscription } from "../../pages/UserPage/hooks/useConnectionSubscription";
+import { usePropertySubscription } from "../../pages/PropertyPage/hooks/usePropertySubscription";
 
 const NavbarComponent: React.FC = () => {
   const { isModalOpen } = useSeeker();
   const client = useApolloClient();
 
+  usePropertySubscription();
   useConnectionSubscription(client);
   return (
     <div className="d-flex flex-column vh-100">
