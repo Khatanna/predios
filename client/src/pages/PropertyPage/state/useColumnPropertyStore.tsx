@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { Property } from "../models/types";
 import { produce } from "immer";
 import LaPaz from '../../../assets/la-paz.svg'
+import { buildTimeAgo } from "../../../utilities/buildTimeAgo";
 interface State {
   columns: TableColumn<Property>[]
   showColumns: string[]
@@ -76,18 +77,25 @@ const initialState: State = {
     },
     {
       name: "Fecha de creación",
-      selector: (row) => {
-        const isToday = new Date(Date.now()).toDateString() === new Date(+row.createdAt).toDateString()
-
-        return `${isToday ? 'Hoy' : new Date(+row.createdAt).toLocaleDateString()} | ${new Date(+row.createdAt).toLocaleTimeString()} hrs`
+      center: true,
+      cell: (row) => {
+        const createdAt = new Date(+row.createdAt)
+        return <div className="d-flex justify-content-center align-items-center flex-column" style={{
+          fontSize: 11
+        }}>
+          {buildTimeAgo(row.createdAt)}
+            <b style={{ fontSize: 8}}>
+          {`${createdAt.toLocaleDateString()} | ${createdAt.toLocaleTimeString()}`} 
+            </b>
+        </div>
       },
-      omit: true
+      omit: false
     },
   ],
   showColumns: [
     "Nro",
     "Nombre del predio",
-    "Codigo anterior",
+    "Codigo anterior",  
     "Tipo de predio",
     "Codigo de busqueda",
     "Estado",

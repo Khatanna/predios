@@ -8,6 +8,7 @@ import {
   Check2All,
   EyeFill,
   Filter,
+  InfoCircle,
   PersonCircle,
 } from "react-bootstrap-icons";
 import { useNavigate } from "react-router";
@@ -147,6 +148,11 @@ const Avatar: React.FC = () => {
                   ? "Leidos"
                   : "No leidos"}
                 )
+                <div>
+                  <Tooltip label="Esta funcion es suceptible a errores, reporte cualquier inconveniente | v1.1-beta">
+                    <InfoCircle color="red" fontSize={18} className="ms-2"/>
+                  </Tooltip>
+                </div>
               </div>
 
               <Dropdown.Menu>

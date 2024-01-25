@@ -34,6 +34,7 @@ app.use(
     origin: [
       "https://172.18.0.202:4173",
       "https://172.18.0.202:5173",
+      "https://172.18.0.250:5173",
       "https://192.168.100.2:5173",
       "https://localhost:5173",
       // "https://localhost:4173",
