@@ -2,56 +2,90 @@ import { State, Tracking, User } from "@prisma/client";
 import { Context } from "../../types";
 import { hasPermission } from "../../utilities";
 
-export const createTracking = async (_parent: any, { propertyId, input: { observation, dateOfInit, numberOfNote, state, responsible } }: { propertyId: string, input: Tracking & { state: State, responsible: User } }, { prisma, userContext }: Context) => {
+export const createTracking = async (
+  _parent: any,
+  {
+    propertyId,
+    input: { observation, dateOfInit, numberOfNote, state, responsible },
+  }: {
+    propertyId: string;
+    input: Tracking & { state: State; responsible: User };
+  },
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, 'CREATE', 'TRACKING');
+    hasPermission(userContext, "CREATE", "TRACKING");
 
     return prisma.tracking.create({
       data: {
         dateOfInit,
         observation,
         numberOfNote,
-        responsible: {
-          connect: {
-            username: responsible.username
-          }
-        },
-        state: {
-          connect: {
-            name: state.name
-          }
-        },
+        responsible:
+          responsible && responsible.username
+            ? {
+                connect: {
+                  username: responsible.username,
+                },
+              }
+            : undefined,
+        state:
+          state.name !== "undefined"
+            ? {
+                connect: {
+                  name: state.name,
+                },
+              }
+            : undefined,
         property: {
           connect: {
-            id: propertyId
-          }
-        }
-      }
-    })
+            id: propertyId,
+          },
+        },
+      },
+      include: {
+        responsible: true,
+        state: true,
+      },
+    });
   } catch (e) {
     throw e;
   }
 };
-export const deleteTracking = async (_parent: any, { propertyId, id }: { propertyId: string, id: string }, { prisma, userContext }: Context) => {
+export const deleteTracking = async (
+  _parent: any,
+  { id }: { id: string },
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, 'DELETE', 'TRACKING');
+    hasPermission(userContext, "DELETE", "TRACKING");
 
     return prisma.tracking.delete({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
   } catch (e) {
     throw e;
   }
 };
-export const updateTracking = async (_parent: any, { trackingId, input: { dateOfInit, numberOfNote, observation, state, responsible } }: { trackingId: string, input: Tracking & { state: State, responsible: User } }, { prisma, userContext }: Context) => {
+export const updateTracking = async (
+  _parent: any,
+  {
+    trackingId,
+    input: { dateOfInit, numberOfNote, observation, state, responsible },
+  }: {
+    trackingId: string;
+    input: Tracking & { state: State; responsible: User };
+  },
+  { prisma, userContext }: Context,
+) => {
   try {
-    hasPermission(userContext, 'UPDATE', 'TRACKING');
+    hasPermission(userContext, "UPDATE", "TRACKING");
 
     return prisma.tracking.update({
       where: {
-        id: trackingId
+        id: trackingId,
       },
       data: {
         dateOfInit,
@@ -59,16 +93,16 @@ export const updateTracking = async (_parent: any, { trackingId, input: { dateOf
         observation,
         state: {
           connect: {
-            name: state.name
-          }
+            name: state.name,
+          },
         },
         responsible: {
           connect: {
-            username: responsible.username
-          }
-        }
-      }
-    })
+            username: responsible.username,
+          },
+        },
+      },
+    });
   } catch (e) {
     throw e;
   }

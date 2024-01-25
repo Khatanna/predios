@@ -229,7 +229,7 @@ model Property {
 model Tracking {
   id           String   @id @default(uuid())
   propertyId   String   @map("predio_id")
-  property     Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  property     Property @relation(fields: [propertyId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   stateId      String?  @map("estado_id")
   state        State?   @relation(fields: [stateId], references: [id])
   dateOfInit   String   @map("fecha_de_inicio")

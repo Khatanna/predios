@@ -36,7 +36,15 @@ const initialState: State = {
   unreadNotifications: 0,
 };
 
-export const fieldNames: Record<FieldPath<Partial<Property>>, string> = {
+export const fieldNames: Record<
+  | FieldPath<Partial<Property>>
+  | "trackings.observation"
+  | "trackings.responsible"
+  | "trackings.numberOfNote"
+  | "trackings.dateOfInit"
+  | "trackings.state",
+  string
+> = {
   registryNumber: "Numero de registro",
   name: "Nombre de predio",
   polygone: "Poligono",
@@ -64,6 +72,11 @@ export const fieldNames: Record<FieldPath<Partial<Property>>, string> = {
   secondState: "Estado 2",
   "technical.user.username": "Tecnico",
   "legal.user.username": "Juridico",
+  "trackings.observation": "Observación de seguimiento",
+  "trackings.responsible": "Responsable de seguimiento",
+  "trackings.numberOfNote": "Nota de seguimiento",
+  "trackings.dateOfInit": "Fecha de inicio del seguimiento",
+  "trackings.state": "Estado de seguimiento",
 };
 
 export const useNotificationsStore = create<State & Actions>()(

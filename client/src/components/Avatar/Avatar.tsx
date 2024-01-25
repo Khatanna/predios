@@ -197,21 +197,18 @@ const Avatar: React.FC = () => {
                         <b>{buildFullName(to)}</b>
                       </i>
                     </div>
-                    <div className="d-flex align-items-center gap-2">
-                      <div>Campo modificado:</div>
-                      <div className="text-primary fw-bold">
+                    <div>
+                      Campo modificado:{" "}
+                      <span className="text-primary fw-bold">
                         {fieldNames[fieldName]}
-                      </div>
+                      </span>
                     </div>
                     <div className="d-flex align-items-center gap-2">
                       <div>Codigo de predio: {property.code}</div>
                       <CustomClipboard text={property.code!} />
                     </div>
                     <div>
-                      <div className="d-flex align-items-center gap-2">
-                        <div>Nombre del predio:</div>
-                        <CustomClipboard text={property.name} />
-                      </div>
+                      <div>Nombre del predio:</div>
                       <p className="text-success fw-bold">{property.name}</p>
                     </div>
                     <div className="d-flex justify-content-end gap-2 mt-2">

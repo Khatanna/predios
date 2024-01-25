@@ -211,6 +211,9 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
                 update(index, {
                   name: getValues(`beneficiaries.${index}.name`),
                 });
+                if (edit) {
+                  setEdit(false);
+                }
               }
             } else {
               customSwalError(

@@ -255,7 +255,72 @@ export const updateField = async (
   hasPermission(userContext, "UPDATE", "PROPERTY");
   let propertyUpdated;
   console.log({ fieldName, value });
-  if (fieldName === "fileNumber.number") {
+  if (fieldName?.includes("trackings")) {
+    propertyUpdated = await prisma.property.findUniqueOrThrow({
+      where: {
+        id,
+      },
+      include: {
+        trackings: true,
+      },
+    });
+
+    const [, index, field] = fieldName.split(".");
+    let [newValue, trackingId] = value.split(":");
+
+    if (!trackingId) {
+      trackingId = propertyUpdated.trackings.sort(
+        (a, b) =>
+          new Date(b.dateOfInit).getTime() - new Date(a.dateOfInit).getTime(),
+      )[+index].id;
+    }
+    console.log({ trackingId });
+    if (field.includes("responsible")) {
+      await prisma.tracking.update({
+        where: {
+          id: trackingId,
+        },
+        data: {
+          responsible:
+            newValue.length === 0
+              ? {
+                  disconnect: {
+                    username: newValue,
+                  },
+                }
+              : {
+                  connect: {
+                    username: newValue,
+                  },
+                },
+        },
+      });
+    } else if (field.includes("state")) {
+      await prisma.tracking.update({
+        where: {
+          id: trackingId,
+        },
+        data: {
+          state: {
+            connect: {
+              name: newValue,
+            },
+          },
+        },
+      });
+    } else {
+      await prisma.tracking.update({
+        where: {
+          id: trackingId,
+        },
+        data: {
+          [field]: newValue,
+        },
+      });
+    }
+
+    fieldName = `trackings.${field}`;
+  } else if (fieldName === "fileNumber.number") {
     propertyUpdated = await prisma.property.update({
       where: {
         id,

@@ -1,8 +1,8 @@
-type Tracking { 
-  id: ID! 
+type Tracking {
+  id: ID!
   propertyId: String
   property: Property
-  state: State     
+  state: State
   dateOfInit: String
   responsible: User
   observation: String
@@ -21,6 +21,6 @@ input TrackingInput {
 
 type Mutation {
   createTracking(propertyId: String, input: TrackingInput): Tracking
-  deleteTracking(propertyId: String, id: String): Tracking
+  deleteTracking(id: String): Tracking
   updateTracking(trackingId: String, input: TrackingInput): Tracking
 }
