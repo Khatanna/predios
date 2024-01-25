@@ -1,169 +1,105 @@
-import { useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+import { gql, useMutation } from "@apollo/client";
 import { Alert, Button, Col, Form, Row } from "react-bootstrap";
-import {
-  CheckSquare,
-  DashSquare,
-  InfoCircle,
-  PencilSquare,
-  PlusSquare,
-  XSquare,
-} from "react-bootstrap-icons";
+import { InfoCircle, Trash } from "react-bootstrap-icons";
 import {
   UseFieldArrayReturn,
   useFieldArray,
   useFormContext,
 } from "react-hook-form";
+import { toast } from "sonner";
 import { Tooltip } from "../../../../components/Tooltip";
-import { useCustomMutation } from "../../../../hooks";
-import {
-  customSwalError,
-  customSwalSuccess,
-} from "../../../../utilities/alerts";
+import { useAuthStore } from "../../../../state/useAuthStore";
 import { Tracking } from "../../../TrackingPage/models/types";
 import { Property } from "../../models/types";
+import { CustomInput } from "../CustomInput";
 import { SelectUser } from "../SelectUser";
 import { StateSelect } from "../StateSelect";
-import { useAuthStore } from "../../../../state/useAuthStore";
 
-const CREATE_TRACKING_MUTATION = `
-	mutation CreateTraking($propertyId: String, $input: TrackingInput) {
-		tracking: createTracking(propertyId: $propertyId, input: $input) {
-			observation
-		}
-	}
+const CREATE_TRACKING_MUTATION = gql`
+  mutation CreateTraking($propertyId: String, $input: TrackingInput) {
+    tracking: createTracking(propertyId: $propertyId, input: $input) {
+      id
+      observation
+      dateOfInit
+      numberOfNote
+      responsible {
+        names
+        firstLastName
+        secondLastName
+        username
+      }
+      state {
+        name
+      }
+    }
+  }
 `;
 
-const DELETE_TRACKING_MUTATION = `
-	mutation DeleteTraking($propertyId: String, $id: String) {
-		tracking: deleteTracking(propertyId: $propertyId, id: $id) {
-			observation
-		}
-	}
-`;
-
-const UPDATE_TRACKING_MUTATION = `
-	mutation UpdateTraking($trackingId: String, $input: TrackingInput) {
-		tracking: updateTracking(trackingId: $trackingId, input: $input) {
-			observation
-		}
-	}
+const DELETE_TRACKING_MUTATION = gql`
+  mutation DeleteTraking($id: String) {
+    tracking: deleteTracking(id: $id) {
+      observation
+    }
+  }
 `;
 
 export type TrackingListProps = Pick<Property, "trackings"> &
   Pick<UseFieldArrayReturn<Property, "trackings">, "remove" | "update">;
 type TrackingInput = Pick<
   Tracking,
-  "state" | "dateOfInit" | "numberOfNote" | "observation" | "responsible" | "id"
+  "state" | "dateOfInit" | "numberOfNote" | "observation" | "responsible"
 >;
 const TrackingItem: React.FC<
-  { tracking: TrackingInput; index: number } & Pick<
+  { index: number } & Pick<
     UseFieldArrayReturn<Property, "trackings">,
     "remove" | "update"
   >
-> = ({ index, remove, update }) => {
-  const queryClient = useQueryClient();
-  const {
-    register,
-    getValues,
-    formState: { defaultValues },
-  } = useFormContext<Property>();
-  const isNew = index >= (defaultValues?.trackings?.length ?? 0);
-  const [edit, setEdit] = useState(false);
-  const [create] = useCustomMutation<
-    Tracking,
-    { propertyId: string; input: TrackingInput }
-  >(CREATE_TRACKING_MUTATION, {
-    onSuccess(_data, { input }) {
-      update(index, input);
-      queryClient.invalidateQueries({ queryKey: ["getPropertyById"] });
-      customSwalSuccess(
-        "Seguimiento creado",
-        "Se ha creado un nuevo seguimiento para este predio",
-      );
-    },
-    onError(error) {
-      remove(index);
-      customSwalError(
-        error,
-        "Ocurrio un error al intentar crear el seguimientos",
-      );
-    },
-  });
-  const [deleteT] = useCustomMutation<
-    Tracking,
-    { propertyId: string; id: string }
-  >(DELETE_TRACKING_MUTATION, {
-    onSuccess() {
-      customSwalSuccess(
-        "Seguimiento eliminado",
-        "Se ha eliminado un nuevo seguimiento para este predio",
-      );
-      queryClient.invalidateQueries({ queryKey: ["getPropertyById"] });
-      remove(index);
-    },
-    onError(error) {
-      customSwalError(
-        error,
-        "Ocurrio un error al intentar eliminar el seguimiento",
-      );
-    },
-  });
+> = ({ index, remove }) => {
+  const { getValues } = useFormContext<Property>();
 
-  const [updateT] = useCustomMutation<
-    Tracking,
-    { trackingId: string; input: TrackingInput }
-  >(UPDATE_TRACKING_MUTATION, {
-    onSuccess(_data, { input }) {
-      customSwalSuccess(
-        "Seguimiento actualizdado",
-        "Se ha actualizdado el seguimiento de este predio",
-      );
-      queryClient.invalidateQueries({ queryKey: ["getPropertyById"] });
-      update(index, input);
+  const [deleteMutation] = useMutation<{ tracking: Tracking }, { id: string }>(
+    DELETE_TRACKING_MUTATION,
+    {
+      onCompleted() {
+        remove(index);
+      },
     },
-    onError(error, { input }) {
-      update(index, input);
-      customSwalError(
-        error,
-        "Ocurrio un error al intentar actualizar el seguimiento",
-      );
-    },
-  });
+  );
+
   const { can } = useAuthStore();
-
-  const createTracking = () => {
-    create({
-      propertyId: getValues("id"),
-      input: getValues(`trackings.${index}`),
-    });
-  };
-  const deleteTracking = () => {
-    deleteT({
-      propertyId: getValues("id"),
-      id: getValues(`trackings.${index}`).id,
-    });
+  const handleDelete = () => {
+    if (getValues("id")) {
+      toast.promise(
+        deleteMutation({
+          variables: {
+            id: getValues(`trackings.${index}.id`)!,
+          },
+        }),
+        {
+          loading: "Eliminando seguimiento",
+          success: "Seguimiento eliminado",
+          error: (e) => e?.message ?? "Ocurrio un error",
+        },
+      );
+    } else {
+      remove(index);
+    }
   };
 
   return (
     <Row className="border border-1 border-dark-subtle d-flex py-2 rounded-1 position-relative mb-2">
       <Col>
         <Form.Group>
-          <StateSelect
-            name={`trackings.${index}.state.name`}
-            disabled={!edit && !isNew}
-            toSubscribe={false}
-          />
+          <StateSelect name={`trackings.${index}.state.name`} />
         </Form.Group>
       </Col>
       <Col xs={2}>
         <Form.Group>
           <Form.Label className="fw-bold">Fecha de inicio:</Form.Label>
-          <Form.Control
+          <CustomInput
             type="date"
-            {...register(`trackings.${index}.dateOfInit`)}
+            name={`trackings.${index}.dateOfInit`}
             size="sm"
-            disabled={!edit && !isNew}
             placeholder="Fecha de inicio"
           />
         </Form.Group>
@@ -172,9 +108,7 @@ const TrackingItem: React.FC<
         <Form.Group>
           <Form.Label className="fw-bold">Responsable:</Form.Label>
           <SelectUser
-            isDisabled={!isNew && !edit}
             name={`trackings.${index}.responsible.username`}
-            toSubscribe={false}
             placeholder="Responsable"
           />
         </Form.Group>
@@ -182,10 +116,8 @@ const TrackingItem: React.FC<
       <Col xs={2}>
         <Form.Group>
           <Form.Label className="fw-bold"># Nota:</Form.Label>
-
-          <Form.Control
-            {...register(`trackings.${index}.numberOfNote`)}
-            disabled={!edit && !isNew}
+          <CustomInput
+            name={`trackings.${index}.numberOfNote`}
             size="sm"
             as="textarea"
             rows={1}
@@ -196,9 +128,8 @@ const TrackingItem: React.FC<
       <Col xs={3} className="">
         <Form.Group>
           <Form.Label className="fw-bold">Observación:</Form.Label>
-          <Form.Control
-            {...register(`trackings.${index}.observation`)}
-            disabled={!edit && !isNew}
+          <CustomInput
+            name={`trackings.${index}.observation`}
             size="sm"
             as="textarea"
             rows={1}
@@ -206,96 +137,19 @@ const TrackingItem: React.FC<
           />
         </Form.Group>
       </Col>
-      <div
-        className={
-          "position-absolute top-0 left-0 mt-1 d-flex gap-1 justify-content-end"
-        }
-      >
-        {isNew ? (
-          <>
-            {Boolean(getValues("id")) && can("CREATE@TRACKING") && (
-              <Tooltip label="Crear seguimiento">
-                <PlusSquare
-                  color="green"
-                  className="float-end"
-                  role="button"
-                  fontSize={16}
-                  onClick={() => createTracking()}
-                />
-              </Tooltip>
-            )}
-            <Tooltip label="Quitar seguimiento">
-              <DashSquare
-                color="orange"
-                className="float-end"
-                role="button"
-                fontSize={16}
-                onClick={() => remove(index)}
-              />
-            </Tooltip>
-          </>
-        ) : (
-          <>
-            {!edit && getValues("id") ? (
-              <>
-                {can("UPDATE@TRACKING") && (
-                  <Tooltip label="Editar seguimiento">
-                    <PencilSquare
-                      color="blue"
-                      className="float-end"
-                      role="button"
-                      fontSize={16}
-                      onClick={() => setEdit(true)}
-                    />
-                  </Tooltip>
-                )}
-                {can("DELETE@TRACKING") && (
-                  <Tooltip label="Borrar seguimiento">
-                    <XSquare
-                      color="red"
-                      className="float-end"
-                      role="button"
-                      fontSize={16}
-                      onClick={() => deleteTracking()}
-                    />
-                  </Tooltip>
-                )}
-              </>
-            ) : (
-              <>
-                <Tooltip label="Cancelar">
-                  <XSquare
-                    color="brown"
-                    className="float-end"
-                    role="button"
-                    fontSize={16}
-                    onClick={() => {
-                      setEdit(false);
-                    }}
-                  />
-                </Tooltip>
-                {can("UPDATE@TRACKING") && (
-                  <Tooltip label="Actualizar seguimiento">
-                    <CheckSquare
-                      color="green"
-                      className="float-end"
-                      role="button"
-                      fontSize={16}
-                      onClick={() => {
-                        updateT({
-                          trackingId: getValues(`trackings.${index}.id`),
-                          input: { ...getValues(`trackings.${index}`) },
-                        });
-                        setEdit(false);
-                      }}
-                    />
-                  </Tooltip>
-                )}
-              </>
-            )}
-          </>
-        )}
-      </div>
+      {can("DELETE@TRACKING") && (
+        <div className={"position-absolute top-0 left-0 mt-2"}>
+          <Tooltip label="Borrar seguimiento">
+            <Trash
+              color="red"
+              className="float-end"
+              role="button"
+              fontSize={16}
+              onClick={handleDelete}
+            />
+          </Tooltip>
+        </div>
+      )}
     </Row>
   );
 };
@@ -312,12 +166,21 @@ const TrackingList: React.FC = () => {
     control,
     name: "trackings",
   });
+
+  const [create] = useMutation<
+    { tracking: Tracking },
+    { propertyId: string; input: TrackingInput }
+  >(CREATE_TRACKING_MUTATION, {
+    onCompleted({ tracking }) {
+      append(tracking);
+    },
+  });
+
   return (
     <Col>
       {getValues("trackings")?.length ? (
-        trackings.map((tracking, index) => (
+        trackings.map((_tracking, index) => (
           <TrackingItem
-            tracking={tracking}
             index={index}
             remove={remove}
             update={update}
@@ -332,23 +195,39 @@ const TrackingList: React.FC = () => {
           </Alert>
         </Row>
       )}
+
       {can("CREATE@TRACKING") && (
         <Row>
           <Button
             size="sm"
             className="text-white"
             variant="info"
-            onClick={() =>
-              append({
-                id: crypto.randomUUID(),
-                numberOfNote: "",
-                observation: "",
-                state: {
-                  name: "undefined",
-                },
-                dateOfInit: new Date().toISOString().substring(0, 10),
-              })
-            }
+            onClick={() => {
+              if (getValues("id")) {
+                create({
+                  variables: {
+                    propertyId: getValues("id"),
+                    input: {
+                      numberOfNote: "",
+                      observation: "",
+                      state: {
+                        name: "undefined",
+                      },
+                      dateOfInit: new Date().toISOString().substring(0, 10),
+                    },
+                  },
+                });
+              } else {
+                append({
+                  numberOfNote: "",
+                  observation: "",
+                  state: {
+                    name: "undefined",
+                  },
+                  dateOfInit: new Date().toISOString().substring(0, 10),
+                });
+              }
+            }}
           >
             Añadir seguimiento
           </Button>

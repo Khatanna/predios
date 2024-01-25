@@ -6,6 +6,7 @@ import { User } from "../../../UserPage/models/types";
 import { buildFullName } from "../../../UserPage/utils/buildFullName";
 import { Property } from "../../models/types";
 import { useSelectSubscription } from "../../hooks/useSelectSubscription";
+import { toast } from "sonner";
 
 type Option = {
   label: string;
@@ -87,34 +88,43 @@ const SelectUser: React.FC<SelectUserProps> = ({
     toSubscribe ? getValues("id") : undefined,
   );
   return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field }) => {
-        const { onChange, ref, value, ...rest } = subscribe(field);
+    <>
+      <Controller
+        control={control}
+        name={name}
+        render={({ field }) => {
+          const { onChange, ref, value, ...rest } = subscribe(field);
 
-        return (
-          <Select
-            {...rest}
-            inputRef={ref}
-            options={options}
-            placeholder={placeholder}
-            isLoading={loading}
-            value={
-              getValues(name) ? options?.find((u) => u.value === value) : null
-            }
-            onChange={(newValue) => onChange(newValue?.value)}
-            isDisabled={isDisabled}
-            isClearable
-            isSearchable
-            styles={customStyles}
-            onInputChange={(newValue) => {
-              setFilterText(newValue);
-            }}
-          />
-        );
-      }}
-    />
+          return (
+            <Select
+              {...rest}
+              inputRef={ref}
+              options={options}
+              placeholder={placeholder}
+              isLoading={loading}
+              value={
+                // getValues(name) ? options?.find((u) => u.value === value) : null
+                options?.find((u) => u.value === value) ?? null
+              }
+              onChange={(newValue) => {
+                if (!newValue) {
+                  onChange(null);
+                } else {
+                  onChange(newValue?.value);
+                }
+              }}
+              isDisabled={isDisabled}
+              isClearable
+              isSearchable
+              styles={customStyles}
+              onInputChange={(newValue) => {
+                setFilterText(newValue);
+              }}
+            />
+          );
+        }}
+      />
+    </>
   );
 };
 
