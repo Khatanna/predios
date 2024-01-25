@@ -62,8 +62,8 @@ const UPDATE_FIELD_NUMBER_MUTATION = gql`
 
 export const useInputSubscription = ({
   name,
-  events,
   options,
+  params,
 }: TUseInputSubscriptionParams): ReturnTUseInputSubscription => {
   const { user } = useAuthStore();
   const { register, setValue, getValues } = useFormContext<Property>();
@@ -151,7 +151,7 @@ export const useInputSubscription = ({
       ...rest,
       disabled: isCurrentInput && isFocused && !itsMe,
       readOnly: !canEdit,
-      onFocus: async (e) => {
+      onFocus: async () => {
         if (!canEdit) {
           toast.info("No puede editar este campo");
         }
@@ -162,7 +162,6 @@ export const useInputSubscription = ({
         if (getValues("id")) {
           handleFocused(true);
         }
-        events?.onFocus?.(e);
         console.log({ name, event: "focus" });
       },
       onBlur: async (e) => {
@@ -173,14 +172,15 @@ export const useInputSubscription = ({
         if (getValues("id")) {
           handleFocused(false);
         }
-        events?.onBlur?.(e);
-        onBlur(e);
+
         if (getValues("id") && isDirty && isCurrentContext) {
           const promise = updateField({
             variables: {
               fieldName: name,
               id: getValues("id"),
-              value: getValues(name),
+              value: params
+                ? `${getValues(name)}:${params}`
+                : (getValues(name) as string),
             },
             onCompleted() {
               setIsDirty(false);
@@ -190,19 +190,21 @@ export const useInputSubscription = ({
             loading: "Actualizando campo",
             success: "Se ha actualizado este campo",
             error: "Ocurrio un error al intentar actualizar este campo",
+            finally() {
+              onBlur(e);
+            },
           });
         }
       },
       onChange: async (e) => {
         if (isCurrentContext) {
           setIsDirty(true);
-          onChangeMutation({
+          await onChangeMutation({
             variables: {
               name,
               value: e.target.value,
             },
           });
-          events?.onChange?.(e);
           onChange(e);
         }
       },

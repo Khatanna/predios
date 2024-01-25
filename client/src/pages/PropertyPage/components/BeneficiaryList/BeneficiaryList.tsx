@@ -32,7 +32,6 @@ import { CustomLabel } from "../CustomLabel";
 import { DropdownMenu } from "../../../../components/DropdownMenu";
 import { useAuthStore } from "../../../../state/useAuthStore";
 import Swal from "sweetalert2";
-import { toast } from "sonner";
 
 export type BeneficiaryListProps = {
   maxHeight: number;

@@ -15,6 +15,9 @@ import { CustomInput } from "../CustomInput";
 import { SelectUser } from "../SelectUser";
 import { StateSelect } from "../StateSelect";
 
+const sortByDateOfString = (a: string, b: string) =>
+  new Date(a).getTime() - new Date(b).getTime();
+
 const CREATE_TRACKING_MUTATION = gql`
   mutation CreateTraking($propertyId: String, $input: TrackingInput) {
     tracking: createTracking(propertyId: $propertyId, input: $input) {
@@ -55,7 +58,7 @@ const TrackingItem: React.FC<
     "remove" | "update"
   >
 > = ({ index, remove }) => {
-  const { getValues } = useFormContext<Property>();
+  const { getValues, setValue } = useFormContext<Property>();
 
   const [deleteMutation] = useMutation<{ tracking: Tracking }, { id: string }>(
     DELETE_TRACKING_MUTATION,
@@ -95,12 +98,23 @@ const TrackingItem: React.FC<
       </Col>
       <Col xs={2}>
         <Form.Group>
-          <Form.Label className="fw-bold">Fecha de inicio:</Form.Label>
+          <Form.Label className="fw-bold">Fecha:</Form.Label>
           <CustomInput
             type="date"
             name={`trackings.${index}.dateOfInit`}
             size="sm"
-            placeholder="Fecha de inicio"
+            params={getValues(`trackings.${index}.id`)}
+            options={{
+              onBlur() {
+                setValue(
+                  "trackings",
+                  getValues("trackings").sort((a, b) =>
+                    sortByDateOfString(b.dateOfInit, a.dateOfInit),
+                  ),
+                );
+              },
+            }}
+            placeholder="Fecha"
           />
         </Form.Group>
       </Col>
@@ -159,7 +173,7 @@ const TrackingList: React.FC = () => {
   const { can } = useAuthStore();
   const {
     fields: trackings,
-    append,
+    prepend,
     remove,
     update,
   } = useFieldArray({
@@ -172,7 +186,7 @@ const TrackingList: React.FC = () => {
     { propertyId: string; input: TrackingInput }
   >(CREATE_TRACKING_MUTATION, {
     onCompleted({ tracking }) {
-      append(tracking);
+      prepend(tracking);
     },
   });
 
@@ -218,7 +232,7 @@ const TrackingList: React.FC = () => {
                   },
                 });
               } else {
-                append({
+                prepend({
                   numberOfNote: "",
                   observation: "",
                   state: {

@@ -264,31 +264,33 @@ export const updateField = async (
         trackings: true,
       },
     });
-    const trackings = propertyUpdated.trackings.sort(
-      (a, b) =>
-        new Date(b.dateOfInit).getTime() - new Date(a.dateOfInit).getTime(),
-    );
 
     const [, index, field] = fieldName.split(".");
+    let [newValue, trackingId] = value.split(":");
 
-    const tracking = trackings[+index];
-    console.log({ tracking });
+    if (!trackingId) {
+      trackingId = propertyUpdated.trackings.sort(
+        (a, b) =>
+          new Date(b.dateOfInit).getTime() - new Date(a.dateOfInit).getTime(),
+      )[+index].id;
+    }
+    console.log({ trackingId });
     if (field.includes("responsible")) {
       await prisma.tracking.update({
         where: {
-          id: tracking.id,
+          id: trackingId,
         },
         data: {
           responsible:
-            value.length === 0
+            newValue.length === 0
               ? {
                   disconnect: {
-                    username: value,
+                    username: newValue,
                   },
                 }
               : {
                   connect: {
-                    username: value,
+                    username: newValue,
                   },
                 },
         },
@@ -296,12 +298,12 @@ export const updateField = async (
     } else if (field.includes("state")) {
       await prisma.tracking.update({
         where: {
-          id: tracking.id,
+          id: trackingId,
         },
         data: {
           state: {
             connect: {
-              name: value,
+              name: newValue,
             },
           },
         },
@@ -309,10 +311,10 @@ export const updateField = async (
     } else {
       await prisma.tracking.update({
         where: {
-          id: tracking.id,
+          id: trackingId,
         },
         data: {
-          [field]: value,
+          [field]: newValue,
         },
       });
     }

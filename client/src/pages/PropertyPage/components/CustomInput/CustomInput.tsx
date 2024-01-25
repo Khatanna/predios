@@ -14,19 +14,21 @@ export type CustomInputProps = Omit<
   name: FieldPath<Property>;
   noWrap?: boolean;
   options?: RegisterOptions<Property>;
+  params?: string;
 };
 
 const CustomInput: React.FC<CustomInputProps> = ({
   name,
   options,
   noWrap = false,
+  params,
   ...props
 }) => {
-  const { subscribe, username, isFocus } =
-    useInputSubscription({
-      name: name,
-      options,
-    });
+  const { subscribe, username, isFocus } = useInputSubscription({
+    name,
+    options,
+    params,
+  });
   if (noWrap) {
     return (
       <Form.Control
@@ -41,11 +43,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   return (
     <div className="position-relative">
       {isFocus && <PillUser username={username} />}
-      <Form.Control
-        {...subscribe}
-        autoComplete="off"
-        {...props}
-      />
+      <Form.Control {...subscribe} autoComplete="off" {...props} />
       {/* <Error>{getFieldState(name).error?.message}</Error> */}
     </div>
   );

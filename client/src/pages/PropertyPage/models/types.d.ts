@@ -100,6 +100,7 @@ export type ReturnTUseInputSubscription = {
 export type TFucused = { contextId: string; isFocused: boolean; name: string };
 export type TUseInputSubscriptionParams = {
   name: FieldPath<Property>;
-  events?: Partial<Pick<UseFieldRegister, "onBlur" | "onChange" | "onFocus">>;
+  // events?: Partial<Pick<UseFieldRegister, "onBlur" | "onChange" | "onFocus">>;
   options?: RegisterOptions<Property>;
+  params?: string;
 };
