@@ -1,5 +1,4 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { Dropdown, Offcanvas, Toast } from "react-bootstrap";
 import {
@@ -70,8 +69,7 @@ const TOGGLE_READ_NOTIFICATION_MUTATION = gql`
     }
   }
 `;
-const Avatar: React.FC = () => {
-  const queryClient = useQueryClient();
+const AvatarX: React.FC = () => {
   const navigate = useNavigate();
   const { logout: logoutLocal, user, refreshToken } = useAuthStore();
   const [show, setShow] = useState(false);
@@ -105,8 +103,6 @@ const Avatar: React.FC = () => {
       toast.promise(promise, {
         loading: "Cerrando sesión",
       });
-
-      queryClient.clear();
     }
   };
   const unreadNotifications = data?.notifications.filter((n) => !n.read).length;
@@ -274,6 +270,34 @@ const Avatar: React.FC = () => {
         </Tooltip>
       </div>
     </>
+  );
+};
+
+const Avatar: React.FC<{
+  username: string;
+  role?: string;
+}> = ({ username, role = "usuario sin rol" }) => {
+  return (
+    <div className="border border-1 text-center">
+      <div className="">
+        <div className="text-success fw-bold">{username}</div>
+      </div>
+      <Tooltip label="Mi Perfil" placement="bottom-end">
+        <Dropdown align={"end"} role="button">
+          <Dropdown.Toggle as={PersonCircle} fontSize={32} />
+          <Dropdown.Menu>
+            {/* <Dropdown.Item>👁‍🗨 Mi cuenta</Dropdown.Item>
+        <Dropdown.Item>⚙ Configuraciones</Dropdown.Item> */}
+            {/* <Dropdown.Item onClick={handleLogout}>
+                🔐 Cerrar sesión
+              </Dropdown.Item> */}
+          </Dropdown.Menu>
+        </Dropdown>
+      </Tooltip>
+      <div className="text-primary">
+        <small>{role}</small>
+      </div>
+    </div>
   );
 };
 
