@@ -7,9 +7,30 @@ import { useCustomQuery } from '../../hooks/useCustomQuery';
 import { useSeeker } from '../../hooks/useSeeker';
 import { Property } from '../../pages/PropertyPage/models/types';
 import { Table } from '../Table';
+import LaPaz from '../../assets/la-paz.svg'
 const SEARCH_PROPERTY_BY_ATTRIBUTE = `
-	query SearchPropertyByAttribute($page: Int, $limit: Int, $orderBy: String, $code: String, $codeOfSearch: String, $agrupationIdentifier: String, $name: String, $beneficiary: String) {
-		results: searchPropertyByAttribute(page: $page, limit: $limit, orderBy: $orderBy, code: $code, codeOfSearch: $codeOfSearch, agrupationIdentifier: $agrupationIdentifier, name: $name, beneficiary: $beneficiary) {
+	query SearchPropertyByAttribute(
+	$page: Int, 
+	$limit: Int, 
+	$orderBy: String, 
+	$code: String, 
+	$codeOfSearch: String, 
+	$agrupationIdentifier: String, 
+	$name: String, 
+	$beneficiary: String
+	$location: String
+) {
+		results: searchPropertyByAttribute(
+			page: $page, 
+			limit: $limit, 
+			orderBy: $orderBy, 
+			code: $code, 
+			codeOfSearch: $codeOfSearch, 
+			agrupationIdentifier: $agrupationIdentifier, 
+			name: $name, 
+			beneficiary: $beneficiary
+			location: $location
+		) {
 			page
 			limit
 			total	
@@ -21,18 +42,29 @@ const SEARCH_PROPERTY_BY_ATTRIBUTE = `
 				code
 				codeOfSearch
 				area
+				city {
+					name
+				}
+				province {
+					name
+				}
+				municipality {
+					name
+				}
 			}
 		}
 	}
 `
 
-type PropertySearch = Pick<Required<Property>, 'id' | 'name' | 'code' | 'codeOfSearch' | 'registryNumber'>
+type PropertySearch = Pick<Required<Property>, 'id' | 'name' | 'code' | 'codeOfSearch' | 'registryNumber' | 'city' | 'province' | 'municipality'>
 
 const columns: TableColumn<PropertySearch>[] = [
 	{
 		name: 'N°',
-		selector: row => row.registryNumber,
-		width: '80px'
+		selector: ({ registryNumber }) => `${registryNumber}`,
+		right: true,
+		compact: true,
+		width: "40px",
 	},
 	{
 		name: 'Nombre del predio',
@@ -48,6 +80,15 @@ const columns: TableColumn<PropertySearch>[] = [
 		name: 'Codigo de busqueda',
 		selector: row => row.codeOfSearch
 	},
+	{
+		name: "Ubicación",
+		cell: ({ city, province, municipality }) =>
+			<div className="d-flex align-items-center">
+				<img src={LaPaz} alt={"departamento"} width={18} />
+				{`${city?.name} - ${province?.name} / ${municipality?.name}`
+				} </div>,
+		grow: 2
+	},
 ]
 
 const SeekerModal: React.FC = () => {
@@ -61,9 +102,10 @@ const SeekerModal: React.FC = () => {
 		name: '',
 		beneficiary: '',
 		codeOfSearch: '',
-		agrupationIdentifier: ''
+		agrupationIdentifier: '',
+		location: ''
 	})
-	const { code, agrupationIdentifier, beneficiary, codeOfSearch, name } = attributes;
+	const { code, agrupationIdentifier, beneficiary, codeOfSearch, name, location } = attributes;
 	const { data, isLoading } = useCustomQuery<{ results: { page: number; limit: number; total: number; properties: PropertySearch[] } }>(SEARCH_PROPERTY_BY_ATTRIBUTE, ['searchPropertyByAttribute', { page, limit, orderBy: 'asc', ...attributes }], {
 		enabled: true, refetchOnWindowFocus: false, cacheTime: 0, onSuccess() {
 			setPaginationToggle(false);
@@ -87,20 +129,23 @@ const SeekerModal: React.FC = () => {
 				<Form onSubmit={async (e) => {
 					e.preventDefault()
 				}} className='row g-3'>
-					<Col xs={6} className='position-relative'>
-						<Form.Control name='name' placeholder='Nombre del predio' value={name} onChange={handleChange} autoFocus />
+					<Col xs={4} className='position-relative'>
+						<Form.Control size="sm" name='name' placeholder='Nombre del predio' value={name} onChange={handleChange} autoFocus />
 					</Col>
-					<Col xs={6} className='position-relative'>
-						<Form.Control name='beneficiary' placeholder='Nombre de beneficiario' value={beneficiary} onChange={handleChange} />
+					<Col xs={4} className='position-relative'>
+						<Form.Control size="sm" name='beneficiary' placeholder='Nombre de beneficiario' value={beneficiary} onChange={handleChange} />
 					</Col>
-					<Col xs={4}>
-						<Form.Control name='code' placeholder='Codigo de predio' value={code} onChange={handleChange} />
-					</Col>
-					<Col xs={4}>
-						<Form.Control name='codeOfSearch' placeholder='Codigo de busqueda' value={codeOfSearch} onChange={handleChange} />
+					<Col xs={4} className='position-relative'>
+						<Form.Control size="sm" name='location' placeholder='Ubicación' value={location} onChange={handleChange} />
 					</Col>
 					<Col xs={4}>
-						<Form.Control name='agrupationIdentifier' placeholder='Id de agrupación social' value={agrupationIdentifier} onChange={handleChange} />
+						<Form.Control size="sm" name='code' placeholder='Codigo de predio' value={code} onChange={handleChange} />
+					</Col>
+					<Col xs={4}>
+						<Form.Control size="sm" name='codeOfSearch' placeholder='Codigo de busqueda' value={codeOfSearch} onChange={handleChange} />
+					</Col>
+					<Col xs={4}>
+						<Form.Control size="sm" name='agrupationIdentifier' placeholder='Id de agrupación social' value={agrupationIdentifier} onChange={handleChange} />
 					</Col>
 
 					<Col xs={12} className='mb-2'>
