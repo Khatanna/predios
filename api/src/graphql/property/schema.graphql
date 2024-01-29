@@ -90,6 +90,7 @@ type Query {
     agrupationIdentifier: String
     name: String
     beneficiary: String
+    location: String
   ): PropertiesPaginate
 }
 

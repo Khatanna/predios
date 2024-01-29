@@ -366,6 +366,7 @@ export const searchPropertyByAttribute = async (
     agrupationIdentifier,
     name,
     beneficiary,
+    location
   }: {
     page: number;
     limit: number;
@@ -375,6 +376,7 @@ export const searchPropertyByAttribute = async (
     agrupationIdentifier: string;
     name: string;
     beneficiary: string;
+    location: string
   },
   { prisma, userContext }: Context,
 ) => {
@@ -404,6 +406,31 @@ export const searchPropertyByAttribute = async (
               beneficiary !== ""
                 ? { some: { name: { contains: beneficiary } } }
                 : undefined,
+          },
+          {
+            OR: location !== "" ? [
+              {
+                city: {
+                  name: {
+                    contains: location
+                  }
+                }
+              },
+              {
+                province: {
+                  name: {
+                    contains: location
+                  }
+                }
+              },
+              {
+                municipality: {
+                  name: {
+                    contains: location
+                  }
+                }
+              }
+            ] : undefined
           },
         ],
       },
