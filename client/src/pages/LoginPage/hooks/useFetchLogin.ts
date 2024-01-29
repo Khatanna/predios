@@ -10,6 +10,9 @@ const LOGIN_MUTATION = gql`
       refreshToken
       user {
         username
+        names
+        firstLastName
+        secondLastName
         role {
           name
           permissions {

@@ -2,7 +2,6 @@ import { Col, Container, Navbar, Row } from "react-bootstrap";
 import { Outlet } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useSeeker } from "../../hooks/useSeeker";
-import { Avatar } from "../Avatar";
 import { BackButton } from "../BackButton";
 import { Nav } from "../Nav";
 import { SeekerModal } from "../SeekerModal";
@@ -18,7 +17,12 @@ const NavbarComponent: React.FC = () => {
   useConnectionSubscription(client);
   return (
     <div className="d-flex flex-column vh-100">
-      <Navbar expand="sm" sticky="top" bg="body-tertiary" className="shadow-sm">
+      <Navbar
+        expand="sm"
+        sticky="top"
+        bg="body-tertiary"
+        className="shadow-sm p-0"
+      >
         <Container fluid>
           <Navbar.Brand>
             <img
@@ -32,7 +36,6 @@ const NavbarComponent: React.FC = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse>
             <Nav />
-            <Avatar />
           </Navbar.Collapse>
         </Container>
       </Navbar>

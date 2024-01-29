@@ -3,7 +3,7 @@ import { useAuthStore } from "../../../state/useAuthStore";
 import { User } from "../../UserPage/models/types";
 import { Property } from "../models/types";
 import { useFetchSubscriptions } from "./useFetchSubscriptions";
-import { GET_ALL_NOTIFICATIONS } from "../../../components/Avatar/Avatar";
+import { GET_ALL_NOTIFICATIONS } from "../../../components/Profile/Profile";
 
 const ON_CHANGE_SUBSCRIPTION = gql`
   subscription PropertyChange($username: String) {

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Avatar } from "../components/Avatar";
+import { Avatar } from "..";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -25,6 +25,6 @@ export const AvatarCircle: Story = {
   args: {
     // primary: true,
     // label: "Button",
-    username: "carlos.chambi",
+    sizing: 100,
   },
 };

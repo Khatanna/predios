@@ -8,4 +8,7 @@ export type GraphQLErrorResponse = {
   errors: Error[];
 };
 
-export type UserAuthenticate = Pick<User, "username" | "role">;
+export type UserAuthenticate = Pick<
+  User,
+  "username" | "role" | "names" | "firstLastName" | "secondLastName"
+>;

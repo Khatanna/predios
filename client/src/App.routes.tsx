@@ -39,6 +39,9 @@ const PropertyPage = lazy(() => import("./pages/PropertyPage/PropertyPage"));
 const RecordPage = lazy(() => import("./pages/RecordPage/RecordPage"));
 const RolePage = lazy(() => import("./pages/RolePage/RolePage"));
 const NavBar = lazy(() => import("./components/Navbar/Navbar"));
+const ConfigurationPage = lazy(
+  () => import("./pages/ConfigurationPage/ConfigurationPage"),
+);
 
 const LazyComponent = ({
   Component,
@@ -71,6 +74,9 @@ const GET_NEW_ACCESSTOKEN_QUERY = gql`
       accessToken
       user {
         username
+        names
+        firstLastName
+        secondLastName
         role {
           name
           permissions {
@@ -227,6 +233,10 @@ function App() {
                     }}
                   />
                 </Route>
+                <Route
+                  path="/settings"
+                  element={<LazyComponent Component={ConfigurationPage} />}
+                />
                 <Route path="/admin">
                   <Route
                     path="records"

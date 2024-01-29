@@ -1,13 +1,27 @@
-$primary: #f28705;
-$success: #41a664;
-$warning: #f2b705;
-$dark: #01402e;
-
 // * {
 //   outline: 1px solid red;
 // }
-
+$primary: #be4631;
+$secondary: #05787c;
 @import "bootstrap/scss/bootstrap";
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $primary;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(
+    48,
+    48,
+    48,
+    0.075
+  ); /* Color del área alrededor del thumb */
+}
 
 $custom-chip-colors: (
   ACTIVITY: $blue-500,
