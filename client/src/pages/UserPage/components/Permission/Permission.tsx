@@ -3,7 +3,6 @@ import { TableColumn } from "react-data-table-component";
 import { useLocation } from "react-router";
 import { Chip } from "../../../../components/Chip";
 import { Table } from "../../../../components/Table";
-import { useCustomQuery } from "../../../../hooks/useCustomQuery";
 import {
   StateOfStatus,
   levels,
@@ -12,7 +11,8 @@ import {
 import { Permission } from "../../../PermissionPage/models/types";
 import { User } from "../../models/types";
 import { StateCell } from "../../../../components/StateCell";
-const GET_PERMISSION_BY_USERNAME = `query ($username: String) {
+import { gql, useQuery } from "@apollo/client";
+const GET_PERMISSION_BY_USERNAME = gql`query ($username: String) {
 	data: getUserByUsername(username: $username) {
 		role {
       name
@@ -101,7 +101,7 @@ const Permission: React.FC = () => {
   const { state } = useLocation();
   const username: string = state.username;
 
-  const { data, isLoading, error } = useCustomQuery<{
+  const { data, loading, error } = useQuery<{
     data: {
       permissions: {
         status: string;
@@ -118,12 +118,16 @@ const Permission: React.FC = () => {
         }[];
       };
     };
-  }>(GET_PERMISSION_BY_USERNAME, ["getPermissionByUsername", { username }]);
+  }>(GET_PERMISSION_BY_USERNAME, {
+    variables:{
+      username
+    }
+  });
 
   if (error) {
     return (
       <div className="my-2">
-        <Alert variant="danger">{error}</Alert>
+        <Alert variant="danger">{error.message}</Alert>
       </div>
     );
   }
@@ -133,7 +137,7 @@ const Permission: React.FC = () => {
       name={`permisos del usuario (${state.username})`}
       columns={columns}
       data={data?.data.role.permissions ?? []}
-      progressPending={isLoading}
+      progressPending={loading}
       title={`Permisos del usuario: ${state.names.concat(
         " ",
         state.firstLastName,

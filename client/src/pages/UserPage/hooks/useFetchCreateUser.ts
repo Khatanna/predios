@@ -1,11 +1,9 @@
-import { ApolloClient, gql, useMutation } from "@apollo/client";
-import { useCustomMutation } from "../../../hooks";
+import { gql, useMutation } from "@apollo/client";
 import { customSwalError, customSwalSuccess } from "../../../utilities/alerts";
 import { mutationMessages } from "../../../utilities/constants";
+import { GET_ALL_USERS_QUERY } from "../graphQL/types";
 import { User, UserInput } from "../models/types";
 import { useUsersStore } from "../state/useUsersStore";
-import { GET_ALL_USERS_QUERY } from "../graphQL/types";
-import { toast } from "sonner";
 
 const CREATE_USER_MUTATION = gql` 
   mutation CreateUser($input: UserInput) {

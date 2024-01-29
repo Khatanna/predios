@@ -9,14 +9,13 @@ import { Chip } from "../../components/Chip";
 import { StateCell } from "../../components/StateCell";
 import { Table } from "../../components/Table";
 import { Tooltip } from "../../components/Tooltip";
-import { useCustomQuery } from "../../hooks/useCustomQuery";
 import { StateOfStatus, levels, resources } from "../../utilities/constants";
 import { Role } from "../UserPage/models/types";
 import { capitalizeString } from "../UserPage/utils/capitalizeString";
 import { OptionMenu } from "./components/DropdownMenu";
 import { Permission } from "./models/types";
 
-const GET_ALL_PERMISSIONS_QUERY = `{
+const GET_ALL_PERMISSIONS_QUERY = gql`{
 	permissions: getAllPermissions {
 		id
 		name
@@ -119,9 +118,9 @@ export const PermissionTable: React.FC<{
 
 const PermissionsLayout: React.FC = () => {
   const [show, setShow] = useState(false);
-  const { data, error, isLoading } = useCustomQuery<{
+  const { data, error, loading } = useQuery<{
     permissions: Permission[];
-  }>(GET_ALL_PERMISSIONS_QUERY, ["getAllPermissions"]);
+  }>(GET_ALL_PERMISSIONS_QUERY);
   const { data: profiles } = useQuery<{ roles: Pick<Role, "name">[] }>(
     GET_ALL_ROLES,
   );
@@ -129,7 +128,7 @@ const PermissionsLayout: React.FC = () => {
   if (error) {
     return (
       <div className="my-2">
-        <Alert variant="danger">{error}</Alert>
+        <Alert variant="danger">{error.message}</Alert>
       </div>
     );
   }
@@ -140,7 +139,7 @@ const PermissionsLayout: React.FC = () => {
         name="permisos"
         Dropdown={OptionMenu}
         permissions={data?.permissions ?? []}
-        isLoading={isLoading}
+        isLoading={loading}
         actions={
           <div className="d-flex gap-2">
             <Tooltip placement="left" label="Perfiles">

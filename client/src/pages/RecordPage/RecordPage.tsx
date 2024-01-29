@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Table } from '../../components/Table';
 import { TableColumn } from 'react-data-table-component';
-import { useCustomQuery } from '../../hooks/useCustomQuery';
 import { Record } from './models/types';
 import JsonView from '@uiw/react-json-view';
 import { lightTheme } from '@uiw/react-json-view/light';
 import { Chip } from '../../components/Chip';
 import { levels, resources } from '../../utilities/constants';
 import { Form } from 'react-bootstrap';
+import { gql, useQuery } from '@apollo/client';
 
 const columns: TableColumn<Record>[] = [
 	{
@@ -52,7 +52,7 @@ const columns: TableColumn<Record>[] = [
 	},
 ]
 
-const GET_ALL_RECORDS_QUERY = `
+const GET_ALL_RECORDS_QUERY = gql`
 query GetAllRecords($resource: String){
   records: getAllRecords(resource: $resource) {
     id
@@ -85,19 +85,21 @@ const SubHeaderFilter: React.FC<{ resource: keyof typeof resources | undefined, 
 
 const RecordPage: React.FC = () => {
 	const [resource, setResource] = useState<keyof typeof resources | undefined>();
-	const { data, error, isLoading } = useCustomQuery<{ records: Record[] }>(GET_ALL_RECORDS_QUERY, ['getAllRecords', { resource }])
+	const { data, error, loading } = useQuery<{ records: Record[] }>(GET_ALL_RECORDS_QUERY, {
+		variables:{
+			resource
+		}
+	})
 
-	if (isLoading) {
+	if (loading) {
 		return <div>cargando...</div>
 	}
 	if (error) {
 		return <div>
-			{JSON.stringify(error)}
+			{error.message}
 		</div>;
 	}
-	// return <div>
-	// 	{JSON.stringify(data?.records)}
-	// </div>;
+	
 	return <Table
 		name={'historial'}
 		columns={columns}

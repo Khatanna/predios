@@ -45,6 +45,7 @@ const CREATE_OBSERVATION_MUTATION = gql`
 const UPDATE_OBSERVATION_MUTATION = `
 	mutation UpdateObservation($observationId: String, $input: ObservationInput) {
 		observation: updateObservation(observationId: $observationId, input: $input) {
+      id
 			observation
 		}
 	}
@@ -131,6 +132,7 @@ const ObservationItem: React.FC<
     can("UPDATE@OBSERVATION");
   return (
     <InputGroup className="position-relative mb-2">
+    {/* {JSON.stringify(getValues(`observations.${index}.id`))} */}
       <Form.Control
         as="textarea"
         rows={2}

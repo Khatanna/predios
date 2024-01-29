@@ -422,7 +422,7 @@ export const updateFieldNumber = async (
       id,
     },
     data: {
-      [fieldName]: value,
+      [fieldName]: +value,
     },
   });
 

@@ -1,10 +1,7 @@
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { ThreeDotsVertical } from 'react-bootstrap-icons';
-import { useCustomMutation } from '../../../../hooks';
 import { Permission } from '../../../PermissionPage/models/types';
-import { useQueryClient } from '@tanstack/react-query';
-import { customSwalError } from '../../../../utilities/alerts';
 
 export type DropdownMenuOfPermissionProps = {
 	permissionOfUser: { status: string, permission: Permission }
@@ -28,26 +25,26 @@ const UPDATE_STATE_OF_PERMISSION_BY_USERNAME = `
 
 const DropdownMenuOfPermission: React.FC<DropdownMenuOfPermissionProps> = ({ permissionOfUser: { permission: { level, resource }, status } }) => {
 	//const [deletePermissionForUser] = useCustomMutation();
-	const queryClient = useQueryClient();
-	const [updatePermissionOfUser] = useCustomMutation<{ result: { updated: boolean } }, {
-		input: {
-			username: string, data: {
-				status: string
-				resource: string
-				level: string
-			}
-		}
-	}
-	>(UPDATE_STATE_OF_PERMISSION_BY_USERNAME, {
-		onSuccess({ result }) {
-			if (result.updated) {
-				queryClient.invalidateQueries(['getPermissionByUsername'])
-			}
-		},
-		onError(e) {
-			customSwalError(e, "Ocurrio un error al intentar actualizar el estado de este permiso");
-		}
-	});
+	// const queryClient = useQueryClient();
+	// const [updatePermissionOfUser] = useCustomMutation<{ result: { updated: boolean } }, {
+	// 	input: {
+	// 		username: string, data: {
+	// 			status: string
+	// 			resource: string
+	// 			level: string
+	// 		}
+	// 	}
+	// }
+	// >(UPDATE_STATE_OF_PERMISSION_BY_USERNAME, {
+	// 	onSuccess({ result }) {
+	// 		if (result.updated) {
+	// 			queryClient.invalidateQueries(['getPermissionByUsername'])
+	// 		}
+	// 	},
+	// 	onError(e) {
+	// 		customSwalError(e, "Ocurrio un error al intentar actualizar el estado de este permiso");
+	// 	}
+	// });
 	// const [deletePermissionOfUser] = useCustomMutation<{ result: { deleted: boolean } }, {
 	// 	input: {
 	// 		username: string, data: {
