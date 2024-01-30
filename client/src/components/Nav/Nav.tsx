@@ -10,6 +10,7 @@ import { NavLink } from "react-router-dom";
 import { NavLink as LinkStyled } from "../../styled-components/Nav";
 import type { Route } from "./types";
 import { useAuthStore } from "../../state/useAuthStore";
+import { Profile } from "../Profile";
 
 const size = 18;
 const routes: Route[] = [
@@ -54,7 +55,7 @@ const routes: Route[] = [
 const NavComponent: React.FC = () => {
   const { can } = useAuthStore();
   return (
-    <Nav className="me-auto gap-3">
+    <Nav className="gap-3 w-100 align-items-center">
       {routes
         .filter(({ permission: { level, resource } }) =>
           can(`${level}@${resource}`),
@@ -91,6 +92,9 @@ const NavComponent: React.FC = () => {
             )}
           </Nav.Item>
         ))}
+      <div className="ms-auto">
+        <Profile />
+      </div>
     </Nav>
   );
 };

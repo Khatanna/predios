@@ -1,6 +1,6 @@
 import { gql, useMutation, useSubscription } from "@apollo/client";
 import { useState } from "react";
-import { FieldPath, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { toast } from "sonner";
 import { useSeeker } from "../../../hooks/useSeeker";
 import {
@@ -11,6 +11,8 @@ import {
 } from "../models/types";
 import { useModalInputStore } from "../../../state/useModalInputStore";
 import { useAuthStore } from "../../../state/useAuthStore";
+import { GET_ALL_PROPERTIES_QUERY } from "../components/PropertyList/PropertyList";
+import { usePropertyListStore } from "../state/usePropertyListStore";
 
 const FOCUSED_INPUT_MUTATION = gql`
   mutation FocusInput($contextId: String, $name: String, $isFocused: Boolean) {
@@ -29,20 +31,20 @@ const FOCUSED_INPUT_SUBSCRIPTION = gql`
   }
 `;
 
-const CHANGE_INPUT_MUTATION = gql`
-  mutation ChangeInput($name: String, $value: String) {
-    changeInput(name: $name, value: $value)
-  }
-`;
+// const CHANGE_INPUT_MUTATION = gql`
+//   mutation ChangeInput($name: String, $value: String) {
+//     changeInput(name: $name, value: $value)
+//   }
+// `;
 
-const CHANGE_INPUT_SUBSCRIPTION = gql`
-  subscription ChangeInput {
-    changeInput {
-      name
-      value
-    }
-  }
-`;
+// const CHANGE_INPUT_SUBSCRIPTION = gql`
+//   subscription ChangeInput {
+//     changeInput {
+//       name
+//       value
+//     }
+//   }
+// `;
 
 const UPDATE_FIELD_MUTATION = gql`
   mutation UpdateField($id: String, $fieldName: String, $value: String) {
@@ -66,12 +68,10 @@ export const useInputSubscription = ({
   params,
 }: TUseInputSubscriptionParams): ReturnTUseInputSubscription => {
   const { user } = useAuthStore();
-  const { register, setValue, getValues } = useFormContext<Property>();
+  const { limit, page, orderBy, unit, fieldOrder } = usePropertyListStore();
+  const { register, getValues } = useFormContext<Property>();
   const [isDirty, setIsDirty] = useState(false);
-  const [
-    { username, itsMe, isCurrentInput, isFocused, isCurrentContext },
-    setState,
-  ] = useState({
+  const [{ username, itsMe, isCurrentInput, isFocused }, setState] = useState({
     username: "Usuario desconocido",
     itsMe: false,
     isCurrentInput: false,
@@ -101,6 +101,7 @@ export const useInputSubscription = ({
         });
       }
     },
+    skip: !getValues("id"),
   });
 
   const [focusedInput] = useMutation<string, TFucused>(FOCUSED_INPUT_MUTATION);
@@ -121,25 +122,22 @@ export const useInputSubscription = ({
     options?.valueAsNumber
       ? UPDATE_FIELD_NUMBER_MUTATION
       : UPDATE_FIELD_MUTATION,
+    {
+      refetchQueries: [
+        {
+          query: GET_ALL_PROPERTIES_QUERY,
+          variables: {
+            page,
+            limit,
+            orderBy,
+            unit,
+            fieldOrder,
+          },
+        },
+      ],
+    },
   );
 
-  const [onChangeMutation] = useMutation<
-    string,
-    { name: string; value: string }
-  >(CHANGE_INPUT_MUTATION);
-  useSubscription<{
-    changeInput: {
-      name: FieldPath<Property>;
-      value: string;
-    };
-  }>(CHANGE_INPUT_SUBSCRIPTION, {
-    onData({ data: { data } }) {
-      if (data && isCurrentContext) {
-        /// @ts-ignore
-        setValue(data.changeInput.name, data.changeInput.value);
-      }
-    },
-  });
   const { can } = useAuthStore();
   const canEdit = can(`${getValues("id") ? "UPDATE" : "CREATE"}@PROPERTY`);
   const { setIsAvailableModal } = useSeeker();
@@ -173,7 +171,7 @@ export const useInputSubscription = ({
           handleFocused(false);
         }
 
-        if (getValues("id") && isDirty && isCurrentContext) {
+        if (getValues("id") && isDirty) {
           const promise = updateField({
             variables: {
               fieldName: name,
@@ -197,16 +195,10 @@ export const useInputSubscription = ({
         }
       },
       onChange: async (e) => {
-        if (isCurrentContext) {
+        if (getValues("id")) {
           setIsDirty(true);
-          await onChangeMutation({
-            variables: {
-              name,
-              value: e.target.value,
-            },
-          });
-          onChange(e);
         }
+        onChange(e);
       },
       onKeyDown: async (e) => {
         if (name !== "technicalObservation") return;

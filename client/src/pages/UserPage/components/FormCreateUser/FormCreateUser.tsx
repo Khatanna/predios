@@ -1,8 +1,8 @@
 import { gql, useMutation } from "@apollo/client";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useCallback } from "react";
-import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
-import { CheckCircle, InfoCircle } from "react-bootstrap-icons";
+import { Col, Form, InputGroup, Row } from "react-bootstrap";
+import { CheckCircle, InfoCircle, PersonAdd } from "react-bootstrap-icons";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as yup from "yup";
@@ -22,6 +22,7 @@ import {
   GET_ALL_ROLES,
   GET_ALL_USER_TYPES_QUERY,
 } from "../../../../graphql/queries";
+import { Button } from "../../../../components/Button";
 
 export interface FormCreateUserProps {
   user?: UserInput;
@@ -439,9 +440,11 @@ const FormCreateUser: React.FC<FormCreateUserProps> = ({ user }) => {
           </Col>
           <Col xs={12}>
             <Button
-              className="w-100 text-white"
+              className="w-100 text-center"
               type="submit"
-              variant="success"
+              variant="secondary"
+              bold
+              leading={<PersonAdd fontSize={20} />}
             >
               {user ? "Actualizar" : "Crear"} usuario
             </Button>

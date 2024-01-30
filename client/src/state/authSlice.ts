@@ -42,6 +42,7 @@ export const authSlice: StateCreator<
   setUser(user) {
     set({
       user,
+      isAuth: true,
     });
   },
   can: (permission) => {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Col, FloatingLabel, Form, Spinner } from "react-bootstrap";
+import { Col, FloatingLabel, Form, Spinner } from "react-bootstrap";
 import {
   CapslockFill,
   InfoCircle,
@@ -12,6 +12,7 @@ import { useFetchLogin, useFormLogin } from "../../hooks";
 import { FormLoginValues } from "../../models/types";
 import { useRememberStore } from "../../state/useRememberStore";
 import { ShowPassword } from "../ShowPassword";
+import { Button } from "../../../../components/Button";
 
 const normalizeValues = (values: FormLoginValues): FormLoginValues => {
   return {
@@ -44,7 +45,7 @@ const LoginForm: React.FC = () => {
 
   return (
     <Col xs={11} sm={8} md={6} lg={4}>
-      <h1 className="display-6 mb-3 pb-2 border-bottom border-3 border-success ">
+      <h1 className="display-6 mb-3 pb-2 border-bottom border-1 border-success ">
         Iniciar sesión
       </h1>
       <Form
@@ -138,7 +139,12 @@ const LoginForm: React.FC = () => {
             </div>
           </div>
         )}
-        <Button variant="primary" type="submit" className="float-end">
+        <Button
+          variant="outline-primary"
+          bold
+          type="submit"
+          className="float-end"
+        >
           Iniciar sesión
         </Button>
       </Form>
