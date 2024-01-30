@@ -95,21 +95,21 @@ const PropertyForm: React.FC = () => {
 
   const submit: SubmitHandler<Property> = (data) => {
     console.log(data);
-    if (!methods.getValues("id")) {
-      toast.promise(
-        createProperty({
-          variables: {
-            input: data,
-          },
-        }),
-        {
-          loading: "Registrando datos",
-          success: "Nuevo predio creado",
-          error: "Ocurrio un error al intentar registrar el predio",
-          finally: methods.reset,
-        },
-      );
-    }
+    // if (!methods.getValues("id")) {
+    //   toast.promise(
+    //     createProperty({
+    //       variables: {
+    //         input: data,
+    //       },
+    //     }),
+    //     {
+    //       loading: "Registrando datos",
+    //       success: "Nuevo predio creado",
+    //       error: "Ocurrio un error al intentar registrar el predio",
+    //       finally: methods.reset,
+    //     },
+    //   );
+    // }
   };
 
   useEffect(() => {
