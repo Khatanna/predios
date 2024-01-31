@@ -152,7 +152,7 @@ const TrackingItem: React.FC<
         </Form.Group>
       </Col>
       {can("DELETE@TRACKING") && (
-        <div className={"position-absolute top-0 left-0 mt-2"}>
+        <div className={"position-absolute top-0 end-0 mt-2"}>
           <Tooltip label="Borrar seguimiento">
             <Trash
               color="red"
@@ -187,6 +187,9 @@ const TrackingList: React.FC = () => {
   >(CREATE_TRACKING_MUTATION, {
     onCompleted({ tracking }) {
       prepend(tracking);
+    },
+    onError() {
+      toast.error("Ocurrio un error, intentelo más tarde")
     },
   });
 

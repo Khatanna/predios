@@ -77,6 +77,7 @@ export const fieldNames: Record<
   "trackings.numberOfNote": "Nota de seguimiento",
   "trackings.dateOfInit": "Fecha de inicio del seguimiento",
   "trackings.state": "Estado de seguimiento",
+  "observations": "Observación",
 };
 
 export const useNotificationsStore = create<State & Actions>()(
