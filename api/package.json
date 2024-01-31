@@ -10,7 +10,8 @@
     "start": "node ./dist/index.js",
     "test": "jest --watchAll",
     "db:push": "prisma db push --force-reset --accept-data-loss --skip-generate",
-    "generate": "ts-node ./src/utilities/generate.ts"
+    "generate": "ts-node ./src/utilities/generate.ts",
+    "idFixer": "ts-node ./prisma/idFixer.ts"
   },
   "prisma": {
     "seed": "ts-node ./prisma/seed.ts"
