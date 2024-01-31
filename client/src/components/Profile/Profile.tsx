@@ -45,6 +45,7 @@ const NotificationPanel: React.FC<{
   show: boolean;
   onHide: () => void;
 }> = ({ show, onHide, notifications }) => {
+  const navigate = useNavigate();
   const [showOnlyRead, setShowOnlyRead] = useState<boolean | undefined>(
     undefined,
   );
@@ -121,10 +122,10 @@ const NotificationPanel: React.FC<{
                     {fieldNames[fieldName]}
                   </span>
                 </div>
-                <div className="d-flex align-items-center gap-2">
+                {property.code && property.code.length !== 0 && <div className="d-flex align-items-center gap-2">
                   <div>Codigo de predio: {property.code}</div>
-                  <CustomClipboard text={property.code!} />
-                </div>
+                  <CustomClipboard text={property.code} />
+                </div>}
                 <div>
                   <div>Nombre del predio:</div>
                   <p className="text-success fw-bold">{property.name}</p>
@@ -135,11 +136,11 @@ const NotificationPanel: React.FC<{
                       color="#3c7714"
                       fontSize={20}
                       role="button"
-                      // onClick={() => {
-                      //   navigate(`/properties/${property.id}`, {
-                      //     replace: true,
-                      //   });
-                      // }}
+                      onClick={() => {
+                        navigate(`/properties/${property.id}`, {
+                          replace: true,
+                        });
+                      }}
                     />
                   </Tooltip>
                   <Tooltip
