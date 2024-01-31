@@ -50,16 +50,18 @@ import { StateSelect } from "../StateSelect";
 import { SubdirectorySelect } from "../SubdirectorySelect";
 import { TrackingList } from "../TrackingList";
 import { TypeSelect } from "../TypeSelect";
+import { useNavigate } from "react-router";
 
 const PropertyForm: React.FC = () => {
   const { property, reset } = usePaginationStore();
+  const navigate = useNavigate()
   const colRef = useRef<HTMLDivElement | null>(null);
   const methods = useForm<Property>({
     values: property,
   });
   const { page, limit, orderBy, unit, fieldOrder } = usePropertyListStore();
   const [createProperty] = useMutation<
-    { property: Property },
+    { property: Pick<Property, 'id'> },
     { input: Property }
   >(CREATE_PROPERTY_MUTATION, {
     onCompleted() {
@@ -95,21 +97,28 @@ const PropertyForm: React.FC = () => {
 
   const submit: SubmitHandler<Property> = (data) => {
     console.log(data);
-    // if (!methods.getValues("id")) {
-    //   toast.promise(
-    //     createProperty({
-    //       variables: {
-    //         input: data,
-    //       },
-    //     }),
-    //     {
-    //       loading: "Registrando datos",
-    //       success: "Nuevo predio creado",
-    //       error: "Ocurrio un error al intentar registrar el predio",
-    //       finally: methods.reset,
-    //     },
-    //   );
-    // }
+    if (!methods.getValues("id")) {
+      toast.promise(
+        createProperty({
+          variables: {
+            input: data,
+          },
+        }),
+        {
+          loading: "Registrando datos",
+          success: ({data}) => {
+            console.log({data})
+            navigate(`/properties/${data?.property.id}`, { replace: true })
+            return "Nuevo predio creado"
+          },
+          error: "Ocurrio un error al intentar registrar el predio",
+          finally: () => {
+
+            // methods.reset()
+          },
+        },
+      );
+    }
   };
 
   useEffect(() => {

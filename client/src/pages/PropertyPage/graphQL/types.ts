@@ -101,7 +101,7 @@ query GetPropertyPaginate($nextCursor: String, $prevCursor: String) {
 export const CREATE_PROPERTY_MUTATION = gql`
   mutation CreateProperty($input: PropertyInput) {
     property: createProperty(input: $input) {
-      name
+      id
     }
   }
 `;
