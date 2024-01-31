@@ -10,6 +10,7 @@ const main = async () => {
   })
 
   for (let i = 0; i < properties.length; i++) {
+    console.log({ i })
     await prisma.property.update({
       where: {
         id: properties[i].id,
@@ -20,7 +21,10 @@ const main = async () => {
     })
   }
 
+  await prisma.$executeRaw`ALTER TABLE Predio AUTO_INCREMENT = 1;`;
   await prisma.$disconnect();
 }
 
-main();
+main().finally(() => {
+  console.log("Finalized")
+});
