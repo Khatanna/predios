@@ -106,10 +106,10 @@ export const createProperty = async (
         },
         observations: Array.isArray(observations)
           ? {
-              createMany: {
-                data: observations,
-              },
-            }
+            createMany: {
+              data: observations,
+            },
+          }
           : undefined,
         activity: {
           connect: activity,
@@ -147,22 +147,22 @@ export const createProperty = async (
         technical:
           technical && technical.user && technical.user.username
             ? {
-                create: {
-                  user: {
-                    connect: technical.user,
-                  },
+              create: {
+                user: {
+                  connect: technical.user,
                 },
-              }
+              },
+            }
             : undefined,
         legal:
           legal && legal.user && legal.user.username
             ? {
-                create: {
-                  user: {
-                    connect: legal.user,
-                  },
+              create: {
+                user: {
+                  connect: legal.user,
                 },
-              }
+              },
+            }
             : undefined,
       },
     });
@@ -206,10 +206,10 @@ export const createProperty = async (
             },
             responsible: tracking.responsible?.username
               ? {
-                  connect: {
-                    username: tracking.responsible.username,
-                  },
-                }
+                connect: {
+                  username: tracking.responsible.username,
+                },
+              }
               : undefined,
             property: {
               connect: {
@@ -284,15 +284,15 @@ export const updateField = async (
           responsible:
             newValue.length === 0
               ? {
-                  disconnect: {
-                    username: newValue,
-                  },
-                }
-              : {
-                  connect: {
-                    username: newValue,
-                  },
+                disconnect: {
+                  username: newValue,
                 },
+              }
+              : {
+                connect: {
+                  username: newValue,
+                },
+              },
         },
       });
     } else if (field.includes("state")) {
@@ -320,6 +320,26 @@ export const updateField = async (
     }
 
     fieldName = `trackings.${field}`;
+  } else if (fieldName?.includes('observations')) {
+    propertyUpdated = await prisma.property.findUniqueOrThrow({
+      where: {
+        id,
+      }
+    });
+
+    let [newValue, observationId] = value.split(":");
+
+    console.log({ observationId })
+    await prisma.observation.update({
+      where: {
+        id: observationId
+      },
+      data: {
+        observation: newValue,
+      }
+    })
+
+    fieldName = "observations";
   } else if (fieldName === "fileNumber.number") {
     propertyUpdated = await prisma.property.update({
       where: {
@@ -477,23 +497,23 @@ export const updateFieldNumber = async (
 const resolveFileNumber = (value: string, propertyId: string) => {
   return value.length === 0
     ? {
-        delete: {
+      delete: {
+        propertyId,
+      },
+    }
+    : {
+      upsert: {
+        where: {
           propertyId,
         },
-      }
-    : {
-        upsert: {
-          where: {
-            propertyId,
-          },
-          create: {
-            number: value,
-          },
-          update: {
-            number: value,
-          },
+        create: {
+          number: value,
         },
-      };
+        update: {
+          number: value,
+        },
+      },
+    };
 };
 const resolveUser = (value: string, propertyId: string) => {
   if (value.length === 0) {
