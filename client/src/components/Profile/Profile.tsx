@@ -1,18 +1,18 @@
-import { Dropdown, NavDropdown, Offcanvas, Toast } from "react-bootstrap";
-import { Avatar } from "../Avatar";
-import { useAuthStore } from "../../state/useAuthStore";
-import { useLogout } from "../../hooks/useLogout";
-import React, { useCallback, useState } from "react";
-import { useSettingsStore } from "../../state/useSettingsStore";
-import { useNavigate } from "react-router";
-import { Notification, fieldNames } from "../../state/useNotificationStore";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { AvatarPill } from "../AvatarPill";
-import { Tooltip } from "../Tooltip";
-import { Bell, Check2All, EyeFill, Filter } from "react-bootstrap-icons";
-import { CustomClipboard } from "../CustomClipboard";
+import React, { useMemo, useState } from "react";
+import { Dropdown, NavDropdown, Offcanvas, Toast } from "react-bootstrap";
+import { Bell, Check2All, EyeFill, Filter, PersonLock } from "react-bootstrap-icons";
+import { useNavigate } from "react-router";
+import { useLogout } from "../../hooks/useLogout";
 import { buildFullName } from "../../pages/UserPage/utils/buildFullName";
+import { useAuthStore } from "../../state/useAuthStore";
+import { Notification, fieldNames } from "../../state/useNotificationStore";
+import { useSettingsStore } from "../../state/useSettingsStore";
 import { buildTimeAgo } from "../../utilities/buildTimeAgo";
+import { Avatar } from "../Avatar";
+import { AvatarPill } from "../AvatarPill";
+import { CustomClipboard } from "../CustomClipboard";
+import { Tooltip } from "../Tooltip";
 
 const TOGGLE_READ_NOTIFICATION_MUTATION = gql`
   mutation ToggleReadNotification($id: String, $read: Boolean) {
@@ -40,16 +40,7 @@ const FilterToggle: React.FC<{ filter: string }> = ({ filter, ...props }) => {
   );
 };
 
-const NotificationPanel: React.FC<{
-  notifications?: Notification[];
-  show: boolean;
-  onHide: () => void;
-}> = ({ show, onHide, notifications }) => {
-  const navigate = useNavigate();
-  const [showOnlyRead, setShowOnlyRead] = useState<boolean | undefined>(
-    undefined,
-  );
-
+const ButtonToggleRead: React.FC<{ read: boolean, notificationId: string }> = ({ read, notificationId }) => {
   const [toggleReadNotification] = useMutation<
     { notification: Notification },
     { id: string; read: boolean }
@@ -57,120 +48,146 @@ const NotificationPanel: React.FC<{
     refetchQueries: [GET_ALL_NOTIFICATIONS],
   });
 
+  return <Check2All
+    color={read ? "#10c2b3" : "gray"}
+    fontSize={20}
+    role="button"
+    onClick={() => {
+      toggleReadNotification({
+        variables: {
+          id: notificationId,
+          read: !read,
+        },
+      });
+    }}
+  />
+}
+
+const FilterNotificationPanel: React.FC<{ showOnlyRead?: boolean; handleChange: (value?: boolean) => void }> = ({ showOnlyRead, handleChange }) => {
+  return <Dropdown role="button">
+    <Dropdown.Toggle
+      as={FilterToggle}
+      filter={
+        typeof showOnlyRead === "undefined"
+          ? "Todos"
+          : showOnlyRead
+            ? "Leidos"
+            : "No Leidos"
+      }
+    />
+    <Dropdown.Menu>
+      <Dropdown.Item onClick={() => handleChange(true)}>
+        <div className="d-flex gap-1 align-items-center">
+          <Check2All color={"#10c2b3"} fontSize={20} />
+          <div>Leidos</div>
+        </div>
+      </Dropdown.Item>
+      <Dropdown.Item onClick={() => handleChange(false)}>
+        <div className="d-flex gap-1 align-items-center">
+          <Check2All color={"gray"} fontSize={20} />
+          <div>No leidos</div>
+        </div>
+      </Dropdown.Item>
+      <Dropdown.Item onClick={() => handleChange(undefined)}>
+        <div className="d-flex gap-1 align-items-center">
+          <Check2All fontSize={20} color="red" />
+          <div>Todos</div>
+        </div>
+      </Dropdown.Item>
+    </Dropdown.Menu>
+  </Dropdown>
+}
+
+const ButtonReviewNotification: React.FC<{ propertyId: string }> = ({ propertyId }) => {
+  const navigate = useNavigate();
+  return <EyeFill
+    color="#3c7714"
+    fontSize={20}
+    role="button"
+    onClick={() => {
+      navigate(`/properties/${propertyId}`, {
+        replace: true,
+      });
+    }}
+  />
+}
+
+const NotificationItem: React.FC<Notification> = ({ fieldName, from, id, property, read, timeAgo, title, to }) => {
+  const timeAgoMemo = useMemo(() => buildTimeAgo(timeAgo), [timeAgo])
+  const fromMemo = useMemo(() => buildFullName(from), []);
+  const toMemo = useMemo(() => buildFullName(to), []);
+
+  return <Toast className="w-100">
+    <Toast.Header closeButton={false}>
+      <Bell className="rounded me-2" color="red" fontSize={18} />
+      <strong className="me-auto">{title}</strong>
+      <small>{timeAgoMemo}</small>
+    </Toast.Header>
+    <Toast.Body>
+      <div>
+        De:{" "}
+        <i>
+          <b>{fromMemo}</b>
+        </i>
+      </div>
+      <div>
+        Para:{" "}
+        <i>
+          <b>{toMemo}</b>
+        </i>
+      </div>
+      <div>
+        Campo modificado:{" "}
+        <span className="text-primary fw-bold">
+          {fieldNames[fieldName]}
+        </span>
+      </div>
+      {property.code && property.code.length !== 0 && <div className="d-flex align-items-center gap-2">
+        <div>Codigo de predio: {property.code}</div>
+        <CustomClipboard text={property.code} />
+      </div>}
+      <div>
+        <div>Nombre del predio:</div>
+        <p className="text-success fw-bold">{property.name}</p>
+      </div>
+      <div className="d-flex justify-content-end gap-2 mt-2">
+        <Tooltip label="Revisar">
+          <ButtonReviewNotification propertyId={property.id} />
+        </Tooltip>
+        <Tooltip
+          label={read ? "Marcar como no leido" : "Marcar como leido"}
+        >
+          <ButtonToggleRead read={read} notificationId={id} />
+        </Tooltip>
+      </div>
+    </Toast.Body>
+  </Toast>
+}
+
+const NotificationPanel: React.FC<{
+  notifications?: Notification[];
+  show: boolean;
+  onHide: () => void;
+}> = ({ show, onHide, notifications }) => {
+  const [showOnlyRead, setShowOnlyRead] = useState<boolean | undefined>(
+    undefined,
+  );
+
+  const filteredNotifications = useMemo(() => filterNotification(notifications, showOnlyRead), [showOnlyRead])
+
   return (
     <Offcanvas show={show} onHide={onHide}>
       <Offcanvas.Header closeButton>
         <Offcanvas.Title>Panel de notificaciones</Offcanvas.Title>
       </Offcanvas.Header>
       <Offcanvas.Body className="d-flex gap-2 flex-column">
-        <Dropdown role="button">
-          <Dropdown.Toggle
-            as={FilterToggle}
-            filter={
-              typeof showOnlyRead === "undefined"
-                ? "Todos"
-                : showOnlyRead
-                ? "Leidos"
-                : "No Leidos"
-            }
-          />
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={() => setShowOnlyRead(true)}>
-              <div className="d-flex gap-1 align-items-center">
-                <Check2All color={"#10c2b3"} fontSize={20} />
-                <div>Leidos</div>
-              </div>
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => setShowOnlyRead(false)}>
-              <div className="d-flex gap-1 align-items-center">
-                <Check2All color={"gray"} fontSize={20} />
-                <div>No leidos</div>
-              </div>
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => setShowOnlyRead(undefined)}>
-              <div className="d-flex gap-1 align-items-center">
-                <Check2All fontSize={20} color="red" />
-                <div>Todos</div>
-              </div>
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-        {filterNotification(notifications, showOnlyRead).map(
-          ({ id, title, read, fieldName, property, timeAgo, from, to }) => (
-            <Toast className="w-100">
-              <Toast.Header closeButton={false}>
-                <Bell className="rounded me-2" color="red" fontSize={18} />
-                <strong className="me-auto">{title}</strong>
-                <small>{buildTimeAgo(timeAgo)}</small>
-              </Toast.Header>
-              <Toast.Body>
-                <div>
-                  De:{" "}
-                  <i>
-                    <b>{buildFullName(from)}</b>
-                  </i>
-                </div>
-                <div>
-                  Para:{" "}
-                  <i>
-                    <b>{buildFullName(to)}</b>
-                  </i>
-                </div>
-                <div>
-                  Campo modificado:{" "}
-                  <span className="text-primary fw-bold">
-                    {fieldNames[fieldName]}
-                  </span>
-                </div>
-                {property.code && property.code.length !== 0 && <div className="d-flex align-items-center gap-2">
-                  <div>Codigo de predio: {property.code}</div>
-                  <CustomClipboard text={property.code} />
-                </div>}
-                <div>
-                  <div>Nombre del predio:</div>
-                  <p className="text-success fw-bold">{property.name}</p>
-                </div>
-                <div className="d-flex justify-content-end gap-2 mt-2">
-                  <Tooltip label="Revisar">
-                    <EyeFill
-                      color="#3c7714"
-                      fontSize={20}
-                      role="button"
-                      onClick={() => {
-                        navigate(`/properties/${property.id}`, {
-                          replace: true,
-                        });
-                      }}
-                    />
-                  </Tooltip>
-                  <Tooltip
-                    label={read ? "Marcar como no leido" : "Marcar como leido"}
-                  >
-                    <Check2All
-                      color={read ? "#10c2b3" : "gray"}
-                      fontSize={20}
-                      role="button"
-                      onClick={() => {
-                        toggleReadNotification({
-                          variables: {
-                            id,
-                            read: !read,
-                          },
-                        });
-                        // toast.promise(
-                        //   ,
-                        //   {
-                        //     loading: "cargando",
-                        //     success: "listo",
-                        //     error: "ups",
-                        //   },
-                        // );
-                      }}
-                    />
-                  </Tooltip>
-                </div>
-              </Toast.Body>
-            </Toast>
+        <FilterNotificationPanel
+          handleChange={(value) => setShowOnlyRead(value)}
+          showOnlyRead={showOnlyRead}
+        />
+        {filteredNotifications.map(
+          (notification) => (
+            <NotificationItem {...notification} />
           ),
         )}
       </Offcanvas.Body>
@@ -208,7 +225,6 @@ export const GET_ALL_NOTIFICATIONS = gql`
 `;
 
 const Profile: React.FC = () => {
-  const navigate = useNavigate();
   const { user } = useAuthStore();
   const { closeSession } = useLogout();
   const { sizeOfAvatar } = useSettingsStore();
@@ -218,13 +234,9 @@ const Profile: React.FC = () => {
     GET_ALL_NOTIFICATIONS,
   );
 
-  const unreadNotifications = data?.notifications.filter((n) => !n.read).length;
+  const unreadNotifications = useMemo(() => data?.notifications.filter((n) => !n.read).length, []);
 
   const handleLogout = () => closeSession();
-  const navigateConfigurationPage = useCallback(
-    () => navigate("/settings"),
-    [navigate],
-  );
 
   return (
     <>
@@ -248,15 +260,15 @@ const Profile: React.FC = () => {
           />
         }
       >
-        <NavDropdown.Item onClick={navigateConfigurationPage}>
-          ⚙ Configuraciones
-        </NavDropdown.Item>
+        {/* <NavDropdown.Item onClick={navigateConfigurationPage}>
+          <Gear fontSize={20} color="gray"/> Configuraciones
+        </NavDropdown.Item> */}
         <NavDropdown.Item onClick={() => setShowPanel(true)}>
-          🔔 Notificaciones
+          <Bell fontSize={20} color="orange" /> Notificaciones
         </NavDropdown.Item>
         <NavDropdown.Divider />
         <NavDropdown.Item onClick={handleLogout}>
-          🔐 Cerrar sesión
+          <PersonLock fontSize={20} color="red" /> Cerrar sesión
         </NavDropdown.Item>
       </NavDropdown>
     </>

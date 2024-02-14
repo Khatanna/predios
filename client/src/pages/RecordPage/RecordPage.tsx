@@ -8,6 +8,7 @@ import { Chip } from '../../components/Chip';
 import { levels, resources } from '../../utilities/constants';
 import { Form } from 'react-bootstrap';
 import { gql, useQuery } from '@apollo/client';
+import { buildTimeAgo } from '../../utilities/buildTimeAgo';
 
 const columns: TableColumn<Record>[] = [
 	{
@@ -27,19 +28,22 @@ const columns: TableColumn<Record>[] = [
 	{
 		name: 'Fecha de registro',
 		selector: (row) => {
-			const parse = new Date(+row.createdAt)
-			const time = parse.toLocaleString()
+			// const parse = new Date(+row.createdAt)
+			// const time = parse.toLocaleString()
 
-			return time;
+			// return time;
+			return buildTimeAgo(row.createdAt)
 		}
 	},
-	{
-		name: 'Operación',
-		selector: (row) => row.operation
-	},
+	// {
+	// 	name: 'Operación',
+	// 	selector: (row) => row.operation
+	// },
 	{
 		name: 'Acción',
-		cell: (row) => <Chip text={levels[row.action as keyof typeof levels]} background={row.action} key={crypto.randomUUID()} outline />
+		cell: (row) => <Chip text={levels[row.action as keyof typeof levels]} background={row.action} key={crypto.randomUUID()} outline />,
+		sortable: true,
+		sortFunction: (a, b) => a.action.localeCompare(b.action)
 	},
 	{
 		name: 'Recurso',

@@ -86,7 +86,7 @@ export const createProperty = async (
 ) => {
   try {
     hasPermission(userContext, "CREATE", "PROPERTY");
-    console.log({ trackings, beneficiaries, observations });
+    console.log({ trackings, beneficiaries, observations, createdBy: userContext?.username });
     const property = await prisma.property.create({
       data: {
         name,
@@ -254,7 +254,7 @@ export const updateField = async (
 ) => {
   hasPermission(userContext, "UPDATE", "PROPERTY");
   let propertyUpdated;
-  console.log({ fieldName, value });
+  console.log({ fieldName, value, updatedBy: userContext?.username });
   if (fieldName?.includes("trackings")) {
     propertyUpdated = await prisma.property.findUniqueOrThrow({
       where: {
@@ -274,7 +274,6 @@ export const updateField = async (
           new Date(b.dateOfInit).getTime() - new Date(a.dateOfInit).getTime(),
       )[+index].id;
     }
-    console.log({ trackingId });
     if (field.includes("responsible")) {
       await prisma.tracking.update({
         where: {
@@ -329,7 +328,6 @@ export const updateField = async (
 
     let [newValue, observationId] = value.split(":");
 
-    console.log({ observationId })
     await prisma.observation.update({
       where: {
         id: observationId

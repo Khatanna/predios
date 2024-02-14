@@ -166,11 +166,13 @@ const BeneficiaryItem: React.FC<BeneficiaryItemProps> = ({
                       cancelButtonColor: "red",
                       denyButtonColor: "orange",
                     }).then((result) => {
-                      deleteBeneficiary({
-                        propertyId: getValues("id"),
-                        input: getValues(`beneficiaries.${index}`),
-                        all: result.isDenied,
-                      });
+                      if(!result.dismiss) {
+                        deleteBeneficiary({
+                          propertyId: getValues("id"),
+                          input: getValues(`beneficiaries.${index}`),
+                          all: result.isDenied,
+                        });
+                      }
                     });
                   } else {
                     remove(index);

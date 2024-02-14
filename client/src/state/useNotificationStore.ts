@@ -1,9 +1,6 @@
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
-import { persist } from "zustand/middleware";
-import { User } from "../pages/UserPage/models/types";
-import { Property } from "../pages/PropertyPage/models/types";
 import { FieldPath } from "react-hook-form";
+import { Property } from "../pages/PropertyPage/models/types";
+import { User } from "../pages/UserPage/models/types";
 export type Notification = {
   id: string;
   title: string;
@@ -15,34 +12,13 @@ export type Notification = {
   timeAgo: string;
 };
 
-interface State {
-  notifications: Notification[];
-  unreadNotifications: number;
-}
-
-interface Actions {
-  addNotification: (
-    notification: Omit<
-      Notification,
-      "id" | "timeAgo" | "timestamp" | "fieldName"
-    > & { fieldName: FieldPath<Property> },
-  ) => void;
-  toggleReadNotification: (notification: Pick<Notification, "id">) => void;
-  removeNotification: (notification: Pick<Notification, "id">) => void;
-}
-
-const initialState: State = {
-  notifications: [],
-  unreadNotifications: 0,
-};
-
 export const fieldNames: Record<
   | FieldPath<Partial<Property>>
   | "trackings.observation"
   | "trackings.responsible"
   | "trackings.numberOfNote"
   | "trackings.dateOfInit"
-  | "trackings.state",
+  | "trackings.state" | string,
   string
 > = {
   registryNumber: "Numero de registro",
@@ -79,42 +55,3 @@ export const fieldNames: Record<
   "trackings.state": "Estado de seguimiento",
   "observations": "Observación",
 };
-
-export const useNotificationsStore = create<State & Actions>()(
-  persist(
-    immer((set) => ({
-      ...initialState,
-      addNotification(notification) {
-        set((state) => {
-          state.notifications.push({
-            id: crypto.randomUUID(),
-            timeAgo: `${new Date().getTime()}`,
-            ...notification,
-            fieldName: fieldNames[notification.fieldName],
-          });
-
-          state.unreadNotifications++;
-        });
-      },
-      toggleReadNotification({ id }) {
-        set((state) => {
-          const notification = state.notifications.find((n) => n.id === id);
-
-          if (notification) {
-            notification.read = !notification.read;
-            state.unreadNotifications += !notification.read ? 1 : -1;
-          }
-        });
-      },
-      removeNotification({ id }) {
-        set((state) => {
-          state.notifications = state.notifications.filter((n) => n.id !== id);
-          state.unreadNotifications = state.notifications.filter(
-            (n) => !n.read,
-          ).length;
-        });
-      },
-    })),
-    { name: "notifications" },
-  ),
-);
