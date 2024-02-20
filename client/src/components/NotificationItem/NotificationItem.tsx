@@ -3,11 +3,12 @@ import { buildTimeAgo } from '../../utilities/buildTimeAgo';
 import { buildFullName } from '../../pages/UserPage/utils/buildFullName';
 import { Toast } from 'react-bootstrap';
 import { Bell } from 'react-bootstrap-icons';
-import { Notification, fieldNames } from '../../state/useNotificationStore';
+import { Notification } from '../../state/useNotificationStore';
 import { CustomClipboard } from '../CustomClipboard';
 import { Tooltip } from '../Tooltip';
 import { ButtonReviewNotification } from '../ButtonReviewNotification';
 import { ButtonToggleReadNotification } from '../ButtonToggleReadNotification';
+import { fieldNames } from '../../utilities/constants';
 
 const NotificationItem: React.FC<Notification> = ({ fieldName, from, id, property, read, timeAgo, title, to }) => {
 	const timeAgoMemo = useMemo(() => buildTimeAgo(timeAgo), [timeAgo])

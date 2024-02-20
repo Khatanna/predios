@@ -1,6 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
 import { Check2All } from "react-bootstrap-icons";
-import { GET_ALL_NOTIFICATIONS } from "../Profile/Profile";
+import { GET_ALL_NOTIFICATIONS } from "../NotificationPanel/NotficationPanel";
 
 export type ButtonToggleReadNotificationProps = {
 	read: boolean, notificationId: string

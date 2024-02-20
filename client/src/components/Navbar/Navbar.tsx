@@ -8,6 +8,7 @@ import { SeekerModal } from "../SeekerModal";
 import { useApolloClient } from "@apollo/client";
 import { useConnectionSubscription } from "../../pages/UserPage/hooks/useConnectionSubscription";
 import { usePropertySubscription } from "../../pages/PropertyPage/hooks/usePropertySubscription";
+import { NotificationPanel } from "../NotificationPanel";
 
 const NavbarComponent: React.FC = () => {
   const { isModalOpen } = useSeeker();
@@ -41,6 +42,7 @@ const NavbarComponent: React.FC = () => {
       </Navbar>
       <Container as={"main"} fluid className="flex-grow-1 d-flex flex-column">
         {isModalOpen && <SeekerModal />}
+        <NotificationPanel />
         <Row>
           <Col xs={1}>
             <BackButton />

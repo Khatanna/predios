@@ -1,14 +1,40 @@
-import { useState, useMemo } from 'react';
-import { Notification } from '../../state/useNotificationStore';
+import { useState, useMemo, useEffect } from 'react';
+import { Notification, useNotificationStore } from '../../state/useNotificationStore';
 import { NotificationItem } from '../NotificationItem';
 import { Offcanvas } from 'react-bootstrap';
 import { FilterNotificationPanel } from '../FilterNotificationPanel';
+import { gql, useQuery } from '@apollo/client';
 
-export type NotficationPanelProps = {
-	notifications?: Notification[];
-	show: boolean;
-	onHide: () => void;
-}
+export const GET_ALL_NOTIFICATIONS = gql`
+  query GetAllNotifications {
+    notifications: getAllNotifications {
+      id
+      fieldName
+      title
+      timeAgo
+      read
+      to {
+        names
+        firstLastName
+        secondLastName
+        username
+      }
+      from {
+        names
+        firstLastName
+        secondLastName
+        username
+      }
+      property {
+        id
+        name
+        code
+      }
+    }
+  }
+`;
+
+
 const filterNotification = (notifications?: Notification[], show?: boolean) => {
 	if (!notifications) {
 		return [];
@@ -19,12 +45,23 @@ const filterNotification = (notifications?: Notification[], show?: boolean) => {
 	return notifications.filter((n) => n.read === show);
 };
 
-const NotificationPanel: React.FC<NotficationPanelProps> = ({ show, onHide, notifications }) => {
+const NotificationPanel: React.FC = () => {
+	const { show, onHide, setUnreadNotifications } = useNotificationStore();
+
 	const [showOnlyRead, setShowOnlyRead] = useState<boolean | undefined>(
 		undefined,
 	);
+	const { data } = useQuery<{ notifications: Notification[] }>(
+		GET_ALL_NOTIFICATIONS
+	);
 
-	const filteredNotifications = useMemo(() => filterNotification(notifications, showOnlyRead), [notifications, showOnlyRead])
+	useEffect(() => {
+		if (data?.notifications) {
+			setUnreadNotifications(data.notifications.filter((n) => !n.read).length);
+		}
+	}, [data?.notifications]);
+
+	const filteredNotifications = useMemo(() => filterNotification(data?.notifications, showOnlyRead), [data?.notifications, showOnlyRead])
 
 	return (
 		<Offcanvas show={show} onHide={onHide}>
